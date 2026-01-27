@@ -3,9 +3,9 @@
 ## 👥 Miembros del Equipo
 | Nombre y Apellidos | Correo URJC | Usuario GitHub |
 |:--- |:--- |:--- |
-| [Gonzalo Pérez Roca] | g.perezr.2019@alumnos.urjc.es | gonzaloperz |
-| [Jordi Guix Betancor] | j.guix.2023@alumnos.urjc.es | Jordigb44 |
-| [Nombre 3] | [email3]@alumnos.urjc.es | [User3] |
+| Gonzalo Pérez Roca | g.perezr.2019@alumnos.urjc.es | gonzaloperz |
+| Jordi Guix Betancor | j.guix.2023@alumnos.urjc.es | Jordigb44 |
+| Guillermo Blázquez Barbacid |g.blazquez.2019@alumnos.urjc.es | Blazk0o |
 | [Nombre 4] | [email4]@alumnos.urjc.es | [User4] |
 
 ---
