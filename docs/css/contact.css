@@ -1,0 +1,420 @@
+/* Contact Page Styles */
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: rgba(45, 35, 25, 0.8);
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid var(--cafe-claro);
+}
+
+.breadcrumb-item a {
+    color: var(--dorado);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--beige);
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--beige);
+}
+
+/* Contact Form Container */
+.contact-form-container {
+    background-color: rgba(45, 35, 25, 0.9);
+    border-radius: 12px;
+    padding: 30px;
+    border: 2px solid var(--cafe-claro);
+    backdrop-filter: blur(5px);
+}
+
+.contact-form-container h1 {
+    color: var(--beige);
+    border-bottom: 2px solid var(--dorado);
+    padding-bottom: 15px;
+}
+
+.contact-form-container p {
+    color: var(--cafe-claro);
+    line-height: 1.6;
+}
+
+/* Form Controls */
+.form-label {
+    color: var(--beige);
+    font-weight: 500;
+}
+
+.form-control, .form-select {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--cafe-claro);
+    color: var(--beige);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: var(--dorado);
+    color: var(--beige);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+
+.form-control::placeholder {
+    color: rgba(245, 245, 220, 0.5);
+}
+
+.form-check-label {
+    color: var(--cafe-claro);
+    cursor: pointer;
+}
+
+.form-check-input {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: var(--cafe-claro);
+}
+
+.form-check-input:checked {
+    background-color: var(--dorado);
+    border-color: var(--dorado);
+}
+
+/* Send Message Button */
+.btn-send-message {
+    background: linear-gradient(45deg, var(--dorado), #e6c260);
+    color: var(--cafe-oscuro);
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+}
+
+.btn-send-message:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(45deg, #e6c260, var(--dorado));
+}
+
+.btn-send-message:disabled {
+    opacity: 0.7;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Contact Info Container */
+.contact-info-container {
+    position: sticky;
+    top: 100px;
+}
+
+/* Contact Cards */
+.contact-card {
+    background-color: rgba(60, 45, 30, 0.8);
+    border: 1px solid var(--cafe-claro);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.contact-card:hover {
+    border-color: var(--dorado);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.contact-card i {
+    color: var(--dorado);
+}
+
+.contact-card .card-title {
+    color: var(--beige);
+    font-weight: bold;
+}
+
+.contact-card .card-text, 
+.contact-card ul li {
+    color: var(--cafe-claro);
+}
+
+.contact-card .btn-outline-primary {
+    border-color: var(--dorado);
+    color: var(--dorado);
+}
+
+.contact-card .btn-outline-primary:hover {
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+    border-color: var(--dorado);
+}
+
+/* Social Media */
+.social-media {
+    background-color: rgba(45, 35, 25, 0.9);
+    border: 1px solid var(--dorado);
+}
+
+.social-media .card-title {
+    color: var(--beige);
+}
+
+.social-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px) scale(1.1);
+}
+
+.social-icon.facebook {
+    background-color: #3b5998;
+}
+
+.social-icon.instagram {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+}
+
+.social-icon.twitter {
+    background-color: #1da1f2;
+}
+
+.social-icon.tiktok {
+    background-color: #000000;
+}
+
+.social-icon.whatsapp {
+    background-color: #25d366;
+}
+
+/* FAQ Links */
+.faq-links h6 {
+    color: var(--beige);
+    border-left: 3px solid var(--dorado);
+    padding-left: 10px;
+}
+
+.list-group-item {
+    background-color: rgba(45, 35, 25, 0.8);
+    border: 1px solid var(--cafe-claro);
+    color: var(--cafe-claro);
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: rgba(60, 45, 30, 0.9);
+    border-color: var(--dorado);
+    color: var(--beige);
+    padding-left: 20px;
+}
+
+.list-group-item i {
+    color: var(--dorado);
+}
+
+/* Map Section */
+.map-section h3 {
+    color: var(--beige);
+    border-bottom: 2px solid var(--dorado);
+    padding-bottom: 10px;
+}
+
+.map-placeholder {
+    position: relative;
+    height: 300px;
+    background: linear-gradient(135deg, #2d2319, #3d2e1e);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.map-image {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.map-overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(45, 35, 25, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--dorado);
+    max-width: 300px;
+    backdrop-filter: blur(5px);
+    z-index: 10;
+}
+
+.map-overlay h5 {
+    color: var(--beige);
+    margin-bottom: 10px;
+}
+
+.map-overlay p {
+    color: var(--cafe-claro);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.map-overlay i {
+    color: var(--dorado);
+    width: 20px;
+}
+
+.map-placeholder i.fa-map {
+    color: var(--dorado);
+    opacity: 0.5;
+}
+
+.map-placeholder p {
+    color: var(--cafe-claro);
+}
+
+/* Contact Team */
+.contact-team h3 {
+    color: var(--beige);
+    border-bottom: 2px solid var(--dorado);
+    padding-bottom: 10px;
+}
+
+.team-card {
+    background-color: rgba(60, 45, 30, 0.8);
+    border: 1px solid var(--cafe-claro);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.team-card:hover {
+    border-color: var(--dorado);
+    transform: translateY(-5px);
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--dorado), #e6c260);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: var(--cafe-oscuro);
+    font-size: 2rem;
+}
+
+.team-card .card-title {
+    color: var(--beige);
+}
+
+.team-card .card-subtitle {
+    color: var(--dorado);
+}
+
+.team-card .card-text {
+    color: var(--cafe-claro);
+    font-size: 0.9rem;
+}
+
+.contact-email {
+    color: var(--dorado);
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+/* Modal */
+.modal-content {
+    background-color: rgba(60, 45, 30, 0.95);
+    border: 2px solid var(--dorado);
+    backdrop-filter: blur(10px);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--cafe-claro);
+}
+
+.modal-title {
+    color: var(--beige);
+}
+
+.modal-body h5 {
+    color: var(--beige);
+}
+
+.modal-body p {
+    color: var(--cafe-claro);
+}
+
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Validation Styles */
+.was-validated .form-control:invalid,
+.was-validated .form-select:invalid {
+    border-color: #dc3545;
+}
+
+.was-validated .form-control:valid,
+.was-validated .form-select:valid {
+    border-color: #198754;
+}
+
+.invalid-feedback {
+    color: #ff6b6b;
+}
+
+.valid-feedback {
+    color: #a3d977;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .contact-info-container {
+        position: relative;
+        top: 0;
+        margin-top: 30px;
+    }
+    
+    .map-overlay {
+        position: relative;
+        top: 0;
+        left: 0;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .map-placeholder {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-form-container {
+        padding: 20px;
+    }
+    
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .team-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
