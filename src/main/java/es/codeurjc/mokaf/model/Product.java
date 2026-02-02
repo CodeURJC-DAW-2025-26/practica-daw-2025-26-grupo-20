@@ -1,6 +1,6 @@
 package es.codeurjc.mokaf.model;
 
-public class MenuItem {
+public class Product {
 
     private String name;
     private String description;
@@ -8,8 +8,13 @@ public class MenuItem {
     private String image;
     private String category;
 
+    //Used by JPA
+    public Product(){
+
+    }
+
     // Constructor
-    public MenuItem(String name, String description, String price, String image, String category) {
+    public Product(String name, String description, String price, String image, String category) {
         this.name = name;
         this.description = description;
         this.price = price;
