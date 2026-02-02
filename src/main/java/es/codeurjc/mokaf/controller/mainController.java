@@ -5,8 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class mainController { //Controller for fragments
-    
+public class mainController { // Controller for fragments
+
     @GetMapping("/cart")
     public String showCart(Model model) {
         model.addAttribute("title", "Carrito de Compra - Mokaf");
@@ -14,10 +14,17 @@ public class mainController { //Controller for fragments
         return "cart";
     }
 
-        @GetMapping("/contact")
+    @GetMapping("/contact")
     public String showContact(Model model) {
         model.addAttribute("title", "Contact Us");
         model.addAttribute("currentPage", "contact");
         return "contact";
+    }
+
+    @GetMapping("/nosotros")
+    public String showAboutUs(Model model) {
+        model.addAttribute("title", "Sobre Nosotros - Mokaf");
+        model.addAttribute("currentPage", "nosotros");
+        return "nosotros";
     }
 }
