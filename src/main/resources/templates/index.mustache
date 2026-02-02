@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Mokaf</title>
+    <title>{{title}}</title>
     
     <!-- Aquí enlazas tu CSS global -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -16,18 +16,18 @@
 </head>
 <body class="body-content">
     <!-- Header -->
-    <header th:replace="~{fragments/header :: header}"></header>
+    {{> fragments/header}}
 
     <!-- Main Content -->
     <main class="container">
         <!-- Banner Section -->
-        <section th:replace="~{fragments/banner :: banner}"></section>
+        {{> fragments/banner}}
 
         <!-- Additional content can go here -->
     </main>
 
     <!-- Footer -->
-    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    {{> fragments/footer}}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

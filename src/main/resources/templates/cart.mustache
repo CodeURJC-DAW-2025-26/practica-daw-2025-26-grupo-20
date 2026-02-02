@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body class="body-content">
-    <header th:replace="~{fragments/header :: header}"></header>
+    {{> fragments/header}}
 
     <main class="container my-5 cart-container">
         <div class="row">
@@ -222,7 +222,7 @@
         </div>
     </main>
 
-    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    {{> fragments/footer}}
 
     <!-- Toast Notifications -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">

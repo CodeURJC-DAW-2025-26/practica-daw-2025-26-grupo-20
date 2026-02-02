@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/css/contact.css">
 </head>
 <body class="body-content">
-    <header th:replace="~{fragments/header :: header}"></header>
+    {{> fragments/header}}
 
     <main class="container my-5">
         <!-- Breadcrumb -->
@@ -263,7 +263,7 @@
         </div>
     </main>
 
-    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    {{> fragments/footer}}
 
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
