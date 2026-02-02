@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokaf - Menú</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/menu.css">
+</head>
+
+<body class="body-content">
+    <header class="cafe-header">
+        <div class="header-container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-mug-hot"></i>El Rincón del Café
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">Menú</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="sucursales.html">Sucursales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contacto</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-header me-2">
+                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        </a>
+                        <a href="cart.html" class="btn btn-header">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span class="badge bg-danger ms-1">3</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container my-5 menu-container">
+        <h2 class="text-center mb-5">Nuestro Menú</h2>
+
+        <!-- Category Navigation -->
+        <div class="category-nav mb-4">
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <button class="btn btn-category active" data-category="all">
+                    Todos
+                </button>
+                <button class="btn btn-category" data-category="Hot">
+                    Calientes
+                </button>
+                <button class="btn btn-category" data-category="Cold">
+                    Fríos
+                </button>
+                <button class="btn btn-category" data-category="Blended">
+                    Mezclados
+                </button>
+                <button class="btn btn-category" data-category="Desserts">
+                    Postres
+                </button>
+                <button class="btn btn-category" data-category="Non-Coffee">
+                    Sin Café
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Items Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <!-- Items generated from MenuController.java -->
+
+            <!-- Hot -->
+            <div class="col menu-item" data-category="Hot">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Hot/Expreso.png" class="card-img-top" alt="Expreso"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Expreso'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Expreso</h5>
+                        <p class="card-text">Café negro fuerte y aromático.</p>
+                        <p class="card-price fw-bold mt-auto">2.50€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Hot">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Hot/Capuccino.png" class="card-img-top" alt="Capuccino"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Capuccino'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Capuccino</h5>
+                        <p class="card-text">Expreso con leche vaporizada y espuma.</p>
+                        <p class="card-price fw-bold mt-auto">3.50€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Hot">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Hot/Americano.png" class="card-img-top" alt="Americano"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Americano'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Americano</h5>
+                        <p class="card-text">Expreso diluido con agua caliente.</p>
+                        <p class="card-price fw-bold mt-auto">2.80€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Hot">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Hot/Latte.png" class="card-img-top" alt="Latte"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Latte'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Latte</h5>
+                        <p class="card-text">Expreso con una generosa cantidad de leche vaporizada.</p>
+                        <p class="card-price fw-bold mt-auto">3.20€</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cold -->
+            <div class="col menu-item" data-category="Cold">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Cold/IcedLatte.png" class="card-img-top" alt="Iced Latte"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Iced+Latte'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Iced Latte</h5>
+                        <p class="card-text">Expreso y leche fría sobre hielo.</p>
+                        <p class="card-price fw-bold mt-auto">4.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Cold">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Cold/Frappe.png" class="card-img-top" alt="Frappe"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Frappe'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Frappe</h5>
+                        <p class="card-text">Café batido con hielo, refrescante y cremoso.</p>
+                        <p class="card-price fw-bold mt-auto">4.20€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Cold">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Cold/IcedAmericano.png" class="card-img-top" alt="Iced Americano"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Iced+Americano'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Iced Americano</h5>
+                        <p class="card-text">Expreso y agua fría servido sobre hielo.</p>
+                        <p class="card-price fw-bold mt-auto">3.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Cold">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Cold/IcedVietnameseCoffe.png" class="card-img-top"
+                        alt="Iced Vietnamese Coffe"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Iced+Vietnamese+Coffe'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Iced Vietnamese Coffe</h5>
+                        <p class="card-text">Café con leche condensada y hielo.</p>
+                        <p class="card-price fw-bold mt-auto">4.50€</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blended -->
+            <div class="col menu-item" data-category="Blended">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Blended/Frapuccino.png" class="card-img-top" alt="Frapuccino"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Frapuccino'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Frapuccino</h5>
+                        <p class="card-text">Bebida de café mezclada con hielo y sabores.</p>
+                        <p class="card-price fw-bold mt-auto">4.50€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Blended">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Blended/ChocolateCoffeeBlend.png" class="card-img-top"
+                        alt="Chocolate Coffee Blend"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Chocolate+Coffee+Blend'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Chocolate Coffee Blend</h5>
+                        <p class="card-text">Mezcla de café y chocolate, batido con hielo.</p>
+                        <p class="card-price fw-bold mt-auto">4.80€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Blended">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Blended/HazelnutCoffeeShake.png" class="card-img-top"
+                        alt="Hazelnut Coffee Shake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Hazelnut+Coffee+Shake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Hazelnut Coffee Shake</h5>
+                        <p class="card-text">Batido de café con sirope de avellana.</p>
+                        <p class="card-price fw-bold mt-auto">4.80€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Blended">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Blended/VanillaFrappe.png" class="card-img-top" alt="Vanilla Frappe"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Vanilla+Frappe'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Vanilla Frappe</h5>
+                        <p class="card-text">Frappé suave con un toque de vainilla.</p>
+                        <p class="card-price fw-bold mt-auto">4.60€</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desserts -->
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/Croisants.png" class="card-img-top" alt="Croissants"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Croissants'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Croissants</h5>
+                        <p class="card-text">Clásico hojaldre francés.</p>
+                        <p class="card-price fw-bold mt-auto">2.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/ChocolateCarrotCake.png" class="card-img-top"
+                        alt="Chocolate Carrot Cake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Chocolate+Carrot+Cake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Chocolate Carrot Cake</h5>
+                        <p class="card-text">Pastel de zanahoria con cobertura de chocolate.</p>
+                        <p class="card-price fw-bold mt-auto">3.50€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/ChocolateCupcake.png" class="card-img-top"
+                        alt="Chocolate Cupcake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Chocolate+Cupcake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Chocolate Cupcake</h5>
+                        <p class="card-text">Muffin de chocolate con frosting.</p>
+                        <p class="card-price fw-bold mt-auto">2.80€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png" class="card-img-top"
+                        alt="Chocolate Green Tea Cupcake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Chocolate+Green+Tea+Cupcake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Chocolate Green Tea Cupcake</h5>
+                        <p class="card-text">Muffin de té verde con corazón de chocolate.</p>
+                        <p class="card-price fw-bold mt-auto">3.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/DulceDeLecheDesserts.png" class="card-img-top"
+                        alt="Dulce De Leche Desserts"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Dulce+De+Leche+Desserts'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Dulce De Leche Desserts</h5>
+                        <p class="card-text">Postre cremoso de dulce de leche.</p>
+                        <p class="card-price fw-bold mt-auto">3.20€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/OrangeCake.png" class="card-img-top" alt="Orange Cake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Orange+Cake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Orange Cake</h5>
+                        <p class="card-text">Bizcocho esponjoso con sabor a naranja.</p>
+                        <p class="card-price fw-bold mt-auto">3.50€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/RedVelvetCupcake.png" class="card-img-top"
+                        alt="Red Velvet Cupcake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Red+Velvet+Cupcake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Red Velvet Cupcake</h5>
+                        <p class="card-text">Clásico muffin Red Velvet con frosting de queso.</p>
+                        <p class="card-price fw-bold mt-auto">3.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/StrawberryCake.png" class="card-img-top" alt="Strawberry Cake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Strawberry+Cake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Strawberry Cake</h5>
+                        <p class="card-text">Pastel de fresas con nata.</p>
+                        <p class="card-price fw-bold mt-auto">3.80€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Desserts">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Desserts/VanillaCupcake.png" class="card-img-top" alt="Vanilla Cupcake"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Vanilla+Cupcake'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Vanilla Cupcake</h5>
+                        <p class="card-text">Muffin de vainilla con frosting.</p>
+                        <p class="card-price fw-bold mt-auto">2.80€</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Non-Coffee -->
+            <div class="col menu-item" data-category="Non-Coffee">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Non-Coffee/HerbalTea.png" class="card-img-top" alt="Herbal Tea"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Herbal+Tea'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Herbal Tea</h5>
+                        <p class="card-text">Infusión relajante sin cafeína.</p>
+                        <p class="card-price fw-bold mt-auto">3.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Non-Coffee">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Non-Coffee/ChatTeaLatte.png" class="card-img-top" alt="Chai Tea Latte"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Chai+Tea+Latte'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Chai Tea Latte</h5>
+                        <p class="card-text">Té negro especiado con leche vaporizada.</p>
+                        <p class="card-price fw-bold mt-auto">3.80€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Non-Coffee">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Non-Coffee/GoldenMilk.png" class="card-img-top" alt="Golden Milk"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Golden+Milk'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Golden Milk</h5>
+                        <p class="card-text">Leche con cúrcuma y especias.</p>
+                        <p class="card-price fw-bold mt-auto">4.00€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Non-Coffee">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Non-Coffee/HotChocolate.png" class="card-img-top" alt="Hot Chocolate"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Hot+Chocolate'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Hot Chocolate</h5>
+                        <p class="card-text">Chocolate caliente espeso y cremoso.</p>
+                        <p class="card-price fw-bold mt-auto">3.50€</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col menu-item" data-category="Non-Coffee">
+                <div class="card h-100 menu-card">
+                    <img src="images/MenuImages/Non-Coffee/MatchaLatte.png" class="card-img-top" alt="Matcha Latte"
+                        onerror="this.src='https://via.placeholder.com/300x200?text=Matcha+Latte'">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Matcha Latte</h5>
+                        <p class="card-text">Té verde matcha con leche vaporizada.</p>
+                        <p class="card-price fw-bold mt-auto">4.20€</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="coffee-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <h3>Kafé Noir</h3>
+                    <p>El arte del café en su máxima expresión. Disfruta de una experiencia única con nuestros blends
+                        exclusivos y ambiente acogedor.</p>
+                </div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Enlaces Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                    <li><a href="menu.html"><i class="fas fa-chevron-right"></i> Menú</a></li>
+                    <li><a href="nosotros.html"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
+                    <li><a href="galeria.html"><i class="fas fa-chevron-right"></i> Galería</a></li>
+                    <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Horario de Atención</h4>
+                <ul class="hours-list">
+                    <li><span class="day">Lunes - Viernes</span> <span class="time">7:00 - 20:00</span></li>
+                    <li><span class="day">Sábados</span> <span class="time">8:00 - 22:00</span></li>
+                    <li><span class="day">Domingos</span> <span class="time">8:00 - 18:00</span></li>
+                    <li><span class="day">Festivos</span> <span class="time">9:00 - 16:00</span></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Contacto</h4>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Av. Principal 123, Distrito Elegante, Ciudad</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>(123) 456-7890</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>info@kafenoir.com</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-truck"></i>
+                        <span>Delivery disponible en toda la ciudad</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Newsletter</h4>
+                <div class="newsletter">
+                    <p>Suscríbete para recibir nuestras promociones y novedades directamente en tu email.</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Tu correo electrónico">
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                    <p><small>Respetamos tu privacidad y no compartimos tu información.</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fab fa-cc-apple-pay"></i>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Kafé Noir - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
+                        style="color: #C6A87D;"></i> para amantes del café</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryButtons = document.querySelectorAll('.btn-category');
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    button.classList.add('active');
+
+                    const selectedCategory = button.getAttribute('data-category');
+
+                    menuItems.forEach(item => {
+                        if (selectedCategory === 'all' || item.getAttribute('data-category') === selectedCategory) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
