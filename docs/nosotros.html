@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokaf - Nosotros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        .about-section {
+            padding: 4rem 0;
+        }
+
+        .about-image {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--dorado);
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .value-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--cafe-medio);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--dorado);
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            color: var(--dorado);
+            margin-bottom: 1.5rem;
+        }
+
+        .team-section {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 4rem 0;
+            margin-top: 4rem;
+        }
+
+        .team-member {
+            margin-bottom: 30px;
+        }
+
+        .member-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--dorado);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="body-content">
+    <header class="cafe-header">
+        <div class="header-container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-mug-hot"></i>Mokaf
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">Menú</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="sucursales.html">Sucursales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contacto</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-header me-2">
+                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        </a>
+                        <a href="cart.html" class="btn btn-header">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span class="badge bg-danger ms-1">3</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <!-- Hero Section -->
+        <section class="about-section pt-0">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2>Nuestra Historia</h2>
+                    <p class="lead text-muted mb-4">Más que una cafetería, somos una familia apasionada por el buen
+                        café.</p>
+                    <p>Fundada en 2010, Mokaf nació con una misión simple: transformar la forma en que las personas
+                        experimentan el café. Lo que comenzó como un pequeño rincón para los amantes del espresso se ha
+                        convertido en un referente del café de especialidad.</p>
+                    <p>Nos enorgullecemos de trabajar directamente con agricultores locales y de comercio justo,
+                        asegurando que cada grano cuente una historia de sostenibilidad y excelencia. Nuestros baristas
+                        no solo sirven café; crean experiencias, perfeccionando cada taza con técnica y pasión.</p>
+                    <div class="mt-4">
+                        <a href="menu.html" class="btn btn-header">Descubre Nuestros Sabores <i
+                                class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Interior de Mokaf" class="about-image img-fluid">
+                </div>
+            </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="about-section">
+            <h2 class="text-center mb-5">Nuestros Valores</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-leaf value-icon"></i>
+                        <h4>Sostenibilidad</h4>
+                        <p>Comprometidos con el medio ambiente y prácticas de cultivo responsables. Utilizamos envases
+                            biodegradables y apoyamos la agricultura regenerativa.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-award value-icon"></i>
+                        <h4>Calidad Premium</h4>
+                        <p>Seleccionamos cuidadosamente los mejores granos de origen único. Nuestro proceso de tostado
+                            artesanal resalta las notas más sutiles de cada variedad.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-users value-icon"></i>
+                        <h4>Comunidad</h4>
+                        <p>Creemos en el poder del café para unir a las personas. Mokaf es tu espacio para conectar,
+                            trabajar o simplemente relajarte.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section text-center rounded">
+            <h2 class="text-center mb-5">Conoce al Equipo</h2>
+            <div class="row">
+                <div class="col-md-4 team-member">
+                    <img src="https://images.unsplash.com/photo-1583335513577-2244970207d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
+                        alt="María López" class="member-img">
+                    <h4>María López</h4>
+                    <p class="text-muted">Fundadora & Master Roaster</p>
+                    <p class="small">Visionaria detrás de cada blend exclusivo de Mokaf.</p>
+                </div>
+                <div class="col-md-4 team-member">
+                    <img src="https://images.unsplash.com/photo-1542596594-649edbc13630?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
+                        alt="Carlos Ruiz" class="member-img">
+                    <h4>Carlos Ruiz</h4>
+                    <p class="text-muted">Barista Principal</p>
+                    <p class="small">El artista que convierte la leche en lienzo.</p>
+                </div>
+                <div class="col-md-4 team-member">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
+                        alt="Ana García" class="member-img">
+                    <h4>Ana García</h4>
+                    <p class="text-muted">Gerente de Experiencia</p>
+                    <p class="small">Asegurando que cada visita sea inolvidable.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="coffee-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <h3>Kafé Noir</h3>
+                    <p>El arte del café en su máxima expresión. Disfruta de una experiencia única con nuestros blends
+                        exclusivos y ambiente acogedor.</p>
+                </div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Enlaces Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                    <li><a href="menu.html"><i class="fas fa-chevron-right"></i> Menú</a></li>
+                    <li><a href="nosotros.html"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
+                    <li><a href="galeria.html"><i class="fas fa-chevron-right"></i> Galería</a></li>
+                    <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Horario de Atención</h4>
+                <ul class="hours-list">
+                    <li><span class="day">Lunes - Viernes</span> <span class="time">7:00 - 20:00</span></li>
+                    <li><span class="day">Sábados</span> <span class="time">8:00 - 22:00</span></li>
+                    <li><span class="day">Domingos</span> <span class="time">8:00 - 18:00</span></li>
+                    <li><span class="day">Festivos</span> <span class="time">9:00 - 16:00</span></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Contacto</h4>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Av. Principal 123, Distrito Elegante, Ciudad</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>(123) 456-7890</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>info@kafenoir.com</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-truck"></i>
+                        <span>Delivery disponible en toda la ciudad</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Newsletter</h4>
+                <div class="newsletter">
+                    <p>Suscríbete para recibir nuestras promociones y novedades directamente en tu email.</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Tu correo electrónico">
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                    <p><small>Respetamos tu privacidad y no compartimos tu información.</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fab fa-cc-apple-pay"></i>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Kafé Noir - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
+                        style="color: #C6A87D;"></i> para amantes del café</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
