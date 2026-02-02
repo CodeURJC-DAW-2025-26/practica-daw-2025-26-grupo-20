@@ -1,0 +1,51 @@
+body.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+    background-color: var(--negro);
+}
+
+.login-container {
+    margin-bottom: 8rem !important;
+}
+
+.login-container .row {
+    align-items: stretch;
+}
+
+.login-container .col-md-6 {
+    padding: 2rem;
+}
+
+.login-container .col-md-6:first-child {
+    border-right: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    body.login-page {
+        display: block; /* Revert to block for natural scrolling on small devices */
+    }
+
+    .login-container .col-md-6:first-child {
+        border-right: none;
+        border-bottom: 1px solid rgba(198, 168, 125, 0.2);
+        padding-bottom: 2.5rem;
+    }
+
+    .login-container .col-md-6:last-child {
+        padding-top: 2.5rem;
+    }
+}
+
+main {
+    display: flex;
+    align-items: center;
+}
+
+.flex-grow-1 {
+    width: 100%;
+    padding-top: 7%;
+}
