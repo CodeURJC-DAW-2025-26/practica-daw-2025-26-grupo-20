@@ -1,0 +1,251 @@
+/* ==========================================================================
+   PROFILE PAGE - USUARIO NORMAL
+   Usa las variables de general.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR PRINCIPAL
+   -------------------------------------------------------------------------- */
+.profile-container {
+    max-width: 1000px;
+}
+
+.profile-container h2 {
+    color: var(--dorado);
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.profile-container h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--dorado), transparent);
+}
+
+/* --------------------------------------------------------------------------
+   COLUMNA IZQUIERDA - AVATAR
+   -------------------------------------------------------------------------- */
+.profile-avatar-card {
+    background-color: rgba(26, 26, 26, 0.85);
+    border-radius: 15px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--dorado);
+    height: 100%;
+}
+
+.profile-avatar-section {
+    text-align: center;
+}
+
+/* Wrapper para la imagen siempre visible */
+.profile-avatar-wrapper {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--dorado);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-username {
+    color: var(--dorado);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.profile-email {
+    color: var(--beige);
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   COLUMNA DERECHA - FORMULARIO
+   -------------------------------------------------------------------------- */
+.profile-form-card {
+    background-color: rgba(26, 26, 26, 0.85);
+    border-radius: 15px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--dorado);
+    height: 100%;
+}
+
+.profile-form-title {
+    color: var(--dorado);
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.profile-form-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 1px;
+    background-color: var(--dorado);
+}
+
+.profile-form-subtitle {
+    color: var(--beige);
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 1.5rem;
+}
+
+/* Formularios */
+.profile-form-card .form-label {
+    color: var(--beige);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.profile-form-card .form-control {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--cafe-medio);
+    color: var(--beige);
+    padding: 12px 15px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.profile-form-card .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--dorado);
+    box-shadow: 0 0 0 0.25rem rgba(198, 168, 125, 0.25);
+    color: var(--beige);
+}
+
+.profile-form-card .form-control::placeholder {
+    color: #9E9E9E;
+}
+
+.profile-form-card .form-control[readonly] {
+    background-color: rgba(255, 255, 255, 0.05);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   BOTONES
+   -------------------------------------------------------------------------- */
+.profile-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+.btn-save {
+    background: linear-gradient(to right, var(--cafe-medio), var(--cafe-oscuro));
+    border: none;
+    color: var(--beige);
+    padding: 12px 30px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.btn-save:hover {
+    background: linear-gradient(to right, var(--cafe-oscuro), var(--cafe-medio));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: var(--dorado);
+}
+
+.btn-cancel {
+    border-color: var(--cafe-medio);
+    color: var(--beige);
+    padding: 12px 25px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: rgba(198, 168, 125, 0.1);
+    border-color: var(--dorado);
+    color: var(--dorado);
+}
+
+/* --------------------------------------------------------------------------
+   BOTÓN ELIMINAR CUENTA
+   -------------------------------------------------------------------------- */
+.delete-account-section {
+    margin-top: 2rem;
+    text-align: right;
+}
+
+.btn-delete-account {
+    background: #dc3545;
+    border: none;
+    color: white;
+    padding: 14px 32px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.btn-delete-account:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   MODAL
+   -------------------------------------------------------------------------- */
+.modal-custom {
+    background-color: rgba(26, 26, 26, 0.95);
+    border-radius: 15px;
+    border: 1px solid var(--dorado);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-custom .modal-header {
+    border-bottom: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+.modal-custom .modal-title {
+    color: var(--dorado);
+    font-weight: 400;
+}
+
+.modal-custom .modal-body {
+    color: var(--beige);
+    padding: 1.5rem;
+}
+
+.modal-custom .modal-footer {
+    border-top: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}

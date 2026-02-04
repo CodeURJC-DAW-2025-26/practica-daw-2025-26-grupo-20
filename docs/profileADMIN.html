@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mokaf</title>
+    <title>Perfil Administrador - Mokaf</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/general.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/profileADMIN.css">
 </head>
 
-<body class="login-page d-flex flex-column min-vh-100">
+<body class="body-content">
+
+    <!-- HEADER (igual que menu.html pero con indicador admin) -->
     <header class="cafe-header">
         <div class="header-container">
             <nav class="navbar navbar-expand-lg navbar-dark">
@@ -47,8 +47,8 @@
                     </ul>
 
                     <div class="d-flex">
-                        <a href="login.html" class="btn btn-header me-2">
-                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        <a href="profileADMIN.html" class="btn btn-header active me-2">
+                            <i class="fas fa-user-shield me-1"></i> Admin
                         </a>
                         <a href="cart.html" class="btn btn-header">
                             <i class="fas fa-shopping-cart me-1"></i> Carrito
@@ -60,59 +60,108 @@
         </div>
     </header>
 
-    <main class="flex-grow-1">
-        <section class="container login-container my-5">
-            <h2 class="text-center">Login o Registro</h2>
-            <div class="row">
-                <!-- LOGIN -->
-                <div class="col-md-6">
-                    <h4>Login</h4>
-                    <form action="profile.html" method="GET">
-                        <div class="mb-3">
-                            <label for="loginEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="loginEmail" placeholder="Tu email" required>
+    <!-- MAIN CONTENT -->
+    <main class="container my-5 admin-container">
+        <h2 class="text-center mb-5">Perfil de Administrador</h2>
+        
+        <div class="row g-4 justify-content-center">
+            
+            <!-- COLUMNA IZQUIERDA - AVATAR -->
+            <div class="col-lg-4 col-md-5">
+                <div class="admin-avatar-card">
+                    <div class="admin-avatar-section">
+                        <span class="admin-badge">Administrador</span>
+                        
+                        <!-- IMAGEN POR DEFECTO SIEMPRE VISIBLE -->
+                        <div class="admin-avatar-wrapper">
+                            <img src="https://via.placeholder.com/150?text=👑" 
+                                 class="admin-avatar" 
+                                 alt="Avatar admin por defecto"
+                                 onerror="this.src='https://via.placeholder.com/150?text=Admin'">
                         </div>
-                        <div class="mb-3">
-                            <label for="loginPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="loginPassword" placeholder="Tu contraseña" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
-                </div>
-
-                <!-- REGISTRO -->
-                <div class="col-md-6">
-                    <h4>Registro</h4>
-                    <form action="profile.html" method="GET">
-                        <div class="mb-3">
-                            <label for="registerName" class="form-label">Nombre completo</label>
-                            <input type="text" class="form-control" id="registerName" placeholder="Tu nombre completo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerUsername" class="form-label">Nombre de usuario</label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="Tu nombre de usuario" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="Tu email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="registerPassword"
-                                placeholder="Crea una contraseña" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-                    </form>
+                        
+                        <h3 class="admin-username">admin</h3>
+                        <p class="admin-email">admin@mokaf.com</p>
+                        <p class="admin-role-text">Cuenta con privilegios de administración</p>
+                        <p class="admin-employee-id">ID Empleado: EMP-001</p>
+                    </div>
                 </div>
             </div>
-        </section>
+
+            <!-- COLUMNA DERECHA - FORMULARIO -->
+            <div class="col-lg-6 col-md-7">
+                <div class="admin-form-card">
+                    <h4 class="admin-form-title">Configuración del Administrador</h4>
+                    <p class="admin-form-subtitle">Gestiona tu cuenta de administrador</p>
+                    
+                    <form action="#" method="post">
+                        <!-- Nombre completo -->
+                        <div class="mb-3">
+                            <label class="form-label">Nombre completo</label>
+                            <input type="text" class="form-control" 
+                                   value="Administrador Principal" required>
+                        </div>
+
+                        <!-- Username y Email -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre de usuario</label>
+                                <input type="text" class="form-control" 
+                                       value="admin" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" 
+                                       value="admin@mokaf.com" required>
+                            </div>
+                        </div>
+
+                        <!-- ID Empleado (solo admin) -->
+                        <div class="mb-3">
+                            <label class="form-label">ID de Empleado</label>
+                            <input type="text" class="form-control" 
+                                   value="EMP-001" readonly>
+                        </div>
+
+                        <!-- Cambiar Contraseña -->
+                        <div class="mb-3">
+                            <label class="form-label">Nueva contraseña</label>
+                            <input type="password" class="form-control" 
+                                   placeholder="Dejar en blanco para mantener la actual">
+                        </div>
+
+                        <!-- Foto de Perfil -->
+                        <div class="mb-3">
+                            <label class="form-label">Foto de perfil (PNG)</label>
+                            <input type="file" class="form-control" 
+                                   accept="image/png">
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="admin-actions">
+                            <a href="index.html" class="btn btn-outline-light btn-cancel">Cancelar</a>
+                            <button type="submit" class="btn btn-admin-save">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- BOTÓN ELIMINAR CUENTA ADMIN -->
+                <div class="admin-delete-section">
+                    <button type="button" class="btn btn-admin-delete" 
+                            data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Eliminar cuenta de administrador
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
+    <!-- FOOTER (corregido - Mokaf) -->
     <footer class="coffee-footer">
         <div class="footer-container">
             <div class="footer-col">
                 <div class="footer-logo">
-                    <h3>Kafé Noir</h3>
+                    <h3>Mokaf</h3>
                     <p>El arte del café en su máxima expresión. Disfruta de una experiencia única con nuestros blends
                         exclusivos y ambiente acogedor.</p>
                 </div>
@@ -158,7 +207,7 @@
                     </li>
                     <li>
                         <i class="fas fa-envelope"></i>
-                        <span>info@kafenoir.com</span>
+                        <span>info@mokaf.com</span>
                     </li>
                     <li>
                         <i class="fas fa-truck"></i>
@@ -189,13 +238,31 @@
                 <i class="fab fa-cc-apple-pay"></i>
             </div>
             <div class="copyright">
-                <p>&copy; 2025 Kafé Noir - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
+                <p>&copy; 2025 Mokaf - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
                         style="color: #C6A87D;"></i> para amantes del café</p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- MODAL CONFIRMACIÓN ADMIN -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-admin-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar cuenta de administrador</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Advertencia:</strong> Estás a punto de eliminar una cuenta de administrador. Esta acción no se puede deshacer y podría afectar la gestión del sistema. ¿Estás absolutamente seguro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="alert('Cuenta de admin eliminada (simulado)')">Sí, eliminar definitivamente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
