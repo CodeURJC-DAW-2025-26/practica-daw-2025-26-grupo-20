@@ -35,3 +35,11 @@
 .card-title, .card-text, .card-price {
     color: var(--cafe-claro);
 }
+.product-link{
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.product-link:hover{
+  color: inherit;
+}
