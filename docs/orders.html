@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokaf - Mis Pedidos</title>
+
+    <!-- Aquí enlazas tu CSS global -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/banner.css">
+    <link rel="stylesheet" href="css/footer.css">
+</head>
+
+<body class="body-content">
+    <!-- Header -->
+    <header class="cafe-header">
+        <div class="header-container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-mug-hot"></i>Mokaf
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">Menú</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="sucursales.html">Sucursales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contacto</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex">
+                        <a href="login.html" class="btn btn-header me-2">
+                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        </a>
+                        <a href="cart.html" class="btn btn-header">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span class="badge bg-danger ms-1">3</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <!-- Page Title -->
+        <div class="text-center mb-5">
+            <h2 class="text-center mb-5">Historial de Pedidos</h2>
+         
+        </div>
+
+        <!-- Orders List -->
+        <div class="row g-4">
+            <!-- Pedido 1 -->
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-receipt text-primary me-2"></i>Pedido #001234
+                                </h5>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <strong>Fecha:</strong> 15/01/2025
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Hora:</strong> 14:30
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge bg-success float-end fs-6 px-3 py-2">Completado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>Sucursal
+                            </h6>
+                            <p class="mb-0 text-muted ms-4">Barcelona - Paseo de Gracia 85</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="fas fa-shopping-bag me-2"></i>Productos
+                            </h6>
+                            <div class="table-responsive ms-4">
+                                <table class="table table-sm">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th class="text-end">Precio Unit.</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Capuccino</td>
+                                            <td>2</td>
+                                            <td class="text-end">3.50€</td>
+                                            <td class="text-end">7.00€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Croissants</td>
+                                            <td>1</td>
+                                            <td class="text-end">2.00€</td>
+                                            <td class="text-end">2.00€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Latte</td>
+                                            <td>1</td>
+                                            <td class="text-end">3.20€</td>
+                                            <td class="text-end">3.20€</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="alert alert-primary border-0 mb-0 text-end" style="background-color: #cfe2ff;">
+                                    <h5 class="mb-0 fw-bold text-dark">
+                                        <i class="fas fa-euro-sign me-2"></i>Total: 12.20€
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedido 2 -->
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-receipt text-primary me-2"></i>Pedido #001235
+                                </h5>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <strong>Fecha:</strong> 20/01/2025
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Hora:</strong> 11:15
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge bg-success float-end fs-6 px-3 py-2">Completado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>Sucursal
+                            </h6>
+                            <p class="mb-0 text-muted ms-4">Madrid - Gran Vía 42</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="fas fa-shopping-bag me-2"></i>Productos
+                            </h6>
+                            <div class="table-responsive ms-4">
+                                <table class="table table-sm">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th class="text-end">Precio Unit.</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Iced Latte</td>
+                                            <td>1</td>
+                                            <td class="text-end">4.00€</td>
+                                            <td class="text-end">4.00€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Frappe</td>
+                                            <td>2</td>
+                                            <td class="text-end">4.20€</td>
+                                            <td class="text-end">8.40€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Chocolate Carrot Cake</td>
+                                            <td>1</td>
+                                            <td class="text-end">3.50€</td>
+                                            <td class="text-end">3.50€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Red Velvet Cupcake</td>
+                                            <td>1</td>
+                                            <td class="text-end">3.00€</td>
+                                            <td class="text-end">3.00€</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="alert alert-primary border-0 mb-0 text-end" style="background-color: #cfe2ff;">
+                                    <h5 class="mb-0 fw-bold text-dark">
+                                        <i class="fas fa-euro-sign me-2"></i>Total: 18.90€
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedido 3 -->
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-receipt text-primary me-2"></i>Pedido #001236
+                                </h5>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <strong>Fecha:</strong> 28/01/2025
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Hora:</strong> 16:45
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge bg-success float-end fs-6 px-3 py-2">Completado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>Sucursal
+                            </h6>
+                            <p class="mb-0 text-muted ms-4">Móstoles - Calle Dos de Mayo 15</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="fas fa-shopping-bag me-2"></i>Productos
+                            </h6>
+                            <div class="table-responsive ms-4">
+                                <table class="table table-sm">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th class="text-end">Precio Unit.</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Frapuccino</td>
+                                            <td>1</td>
+                                            <td class="text-end">4.50€</td>
+                                            <td class="text-end">4.50€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Chocolate Coffee Blend</td>
+                                            <td>1</td>
+                                            <td class="text-end">4.80€</td>
+                                            <td class="text-end">4.80€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Strawberry Cake</td>
+                                            <td>2</td>
+                                            <td class="text-end">3.80€</td>
+                                            <td class="text-end">7.60€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vanilla Cupcake</td>
+                                            <td>2</td>
+                                            <td class="text-end">2.80€</td>
+                                            <td class="text-end">5.60€</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="alert alert-primary border-0 mb-0 text-end" style="background-color: #cfe2ff;">
+                                    <h5 class="mb-0 fw-bold text-dark">
+                                        <i class="fas fa-euro-sign me-2"></i>Total: 22.50€
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedido 4 -->
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="fas fa-receipt text-primary me-2"></i>Pedido #001237
+                                </h5>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <strong>Fecha:</strong> 02/02/2025
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Hora:</strong> 09:30
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge bg-success float-end fs-6 px-3 py-2">Completado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i>Sucursal
+                            </h6>
+                            <p class="mb-0 text-muted ms-4">Santander - Paseo de Pereda 28</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="fas fa-shopping-bag me-2"></i>Productos
+                            </h6>
+                            <div class="table-responsive ms-4">
+                                <table class="table table-sm">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th class="text-end">Precio Unit.</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Expreso</td>
+                                            <td>3</td>
+                                            <td class="text-end">2.50€</td>
+                                            <td class="text-end">7.50€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Americano</td>
+                                            <td>1</td>
+                                            <td class="text-end">2.80€</td>
+                                            <td class="text-end">2.80€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Matcha Latte</td>
+                                            <td>1</td>
+                                            <td class="text-end">4.20€</td>
+                                            <td class="text-end">4.20€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hot Chocolate</td>
+                                            <td>1</td>
+                                            <td class="text-end">3.50€</td>
+                                            <td class="text-end">3.50€</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Orange Cake</td>
+                                            <td>1</td>
+                                            <td class="text-end">3.50€</td>
+                                            <td class="text-end">3.50€</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <div class="alert alert-primary border-0 mb-0 text-end" style="background-color: #cfe2ff;">
+                                    <h5 class="mb-0 fw-bold text-dark">
+                                        <i class="fas fa-euro-sign me-2"></i>Total: 21.50€
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Empty State (optional - hide if there are orders) -->
+        <!-- <div class="text-center py-5" style="display: none;">
+            <i class="fas fa-shopping-bag text-muted" style="font-size: 5rem;"></i>
+            <h3 class="mt-4 text-muted">No tienes pedidos aún</h3>
+            <p class="text-muted">Cuando realices tu primer pedido, aparecerá aquí</p>
+            <a href="menu.html" class="btn btn-primary mt-3">Ver Menú</a>
+        </div> -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="coffee-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <h3>Kafé Noir</h3>
+                    <p>El arte del café en su máxima expresión. Disfruta de una experiencia única con nuestros blends
+                        exclusivos y ambiente acogedor.</p>
+                </div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Enlaces Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                    <li><a href="menu.html"><i class="fas fa-chevron-right"></i> Menú</a></li>
+                    <li><a href="nosotros.html"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
+                    <li><a href="galeria.html"><i class="fas fa-chevron-right"></i> Galería</a></li>
+                    <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Horario de Atención</h4>
+                <ul class="hours-list">
+                    <li><span class="day">Lunes - Viernes</span> <span class="time">7:00 - 20:00</span></li>
+                    <li><span class="day">Sábados</span> <span class="time">8:00 - 22:00</span></li>
+                    <li><span class="day">Domingos</span> <span class="time">8:00 - 18:00</span></li>
+                    <li><span class="day">Festivos</span> <span class="time">9:00 - 16:00</span></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Contacto</h4>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Av. Principal 123, Distrito Elegante, Ciudad</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span>(123) 456-7890</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>info@kafenoir.com</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-truck"></i>
+                        <span>Delivery disponible en toda la ciudad</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="footer-heading">Newsletter</h4>
+                <div class="newsletter">
+                    <p>Suscríbete para recibir nuestras promociones y novedades directamente en tu email.</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Tu correo electrónico">
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                    <p><small>Respetamos tu privacidad y no compartimos tu información.</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fab fa-cc-apple-pay"></i>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Kafé Noir - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
+                        style="color: #C6A87D;"></i> para amantes del café</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
