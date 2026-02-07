@@ -92,7 +92,12 @@
                                     <option value="Blended">Mezclados</option>
                                     <option value="Desserts">Postres</option>
                                     <option value="Non-Coffee">Sin Café</option>
+                                    <option value="new">+ Nueva Categoría</option>
                                 </select>
+                                <div id="newCategoryContainer" class="mt-2 d-none">
+                                    <input type="text" class="form-control" id="newCategoryInput"
+                                        placeholder="Nombre de la nueva categoría">
+                                </div>
                             </div>
 
                             <div class="col-md-4">
@@ -103,7 +108,7 @@
                             <div class="col-md-8">
                                 <label for="productImage" class="form-label">URL de Imagen</label>
                                 <input type="text" class="form-control" id="productImage"
-                                    placeholder="images/MenuImages/...">
+                                    placeholder="../images/MenuImages/...">
                             </div>
 
                             <div class="col-12">
@@ -150,7 +155,7 @@
                 <tbody>
                     <!-- Hot -->
                     <tr data-category="Hot">
-                        <td><img src="images/MenuImages/Hot/Expreso.png" class="product-thumb" alt="Expreso"></td>
+                        <td><img src="../images/MenuImages/Hot/Expreso.png" class="product-thumb" alt="Expreso"></td>
                         <td>Expreso</td>
                         <td><span class="badge bg-danger text-white">Calientes</span></td>
                         <td>2.50€</td>
@@ -160,7 +165,8 @@
                         </td>
                     </tr>
                     <tr data-category="Hot">
-                        <td><img src="images/MenuImages/Hot/Capuccino.png" class="product-thumb" alt="Capuccino"></td>
+                        <td><img src="../images/MenuImages/Hot/Capuccino.png" class="product-thumb" alt="Capuccino">
+                        </td>
                         <td>Capuccino</td>
                         <td><span class="badge bg-danger text-white">Calientes</span></td>
                         <td>3.50€</td>
@@ -170,7 +176,8 @@
                         </td>
                     </tr>
                     <tr data-category="Hot">
-                        <td><img src="images/MenuImages/Hot/Americano.png" class="product-thumb" alt="Americano"></td>
+                        <td><img src="../images/MenuImages/Hot/Americano.png" class="product-thumb" alt="Americano">
+                        </td>
                         <td>Americano</td>
                         <td><span class="badge bg-danger text-white">Calientes</span></td>
                         <td>2.80€</td>
@@ -180,7 +187,7 @@
                         </td>
                     </tr>
                     <tr data-category="Hot">
-                        <td><img src="images/MenuImages/Hot/Latte.png" class="product-thumb" alt="Latte"></td>
+                        <td><img src="../images/MenuImages/Hot/Latte.png" class="product-thumb" alt="Latte"></td>
                         <td>Latte</td>
                         <td><span class="badge bg-danger text-white">Calientes</span></td>
                         <td>3.20€</td>
@@ -192,7 +199,8 @@
 
                     <!-- Cold -->
                     <tr data-category="Cold">
-                        <td><img src="images/MenuImages/Cold/IcedLatte.png" class="product-thumb" alt="Iced Latte"></td>
+                        <td><img src="../images/MenuImages/Cold/IcedLatte.png" class="product-thumb" alt="Iced Latte">
+                        </td>
                         <td>Iced Latte</td>
                         <td><span class="badge bg-info text-dark">Fríos</span></td>
                         <td>4.00€</td>
@@ -202,7 +210,7 @@
                         </td>
                     </tr>
                     <tr data-category="Cold">
-                        <td><img src="images/MenuImages/Cold/Frappe.png" class="product-thumb" alt="Frappe"></td>
+                        <td><img src="../images/MenuImages/Cold/Frappe.png" class="product-thumb" alt="Frappe"></td>
                         <td>Frappe</td>
                         <td><span class="badge bg-info text-dark">Fríos</span></td>
                         <td>4.20€</td>
@@ -212,7 +220,7 @@
                         </td>
                     </tr>
                     <tr data-category="Cold">
-                        <td><img src="images/MenuImages/Cold/IcedAmericano.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Cold/IcedAmericano.png" class="product-thumb"
                                 alt="Iced Americano"></td>
                         <td>Iced Americano</td>
                         <td><span class="badge bg-info text-dark">Fríos</span></td>
@@ -223,7 +231,7 @@
                         </td>
                     </tr>
                     <tr data-category="Cold">
-                        <td><img src="images/MenuImages/Cold/IcedVietnameseCoffe.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Cold/IcedVietnameseCoffe.png" class="product-thumb"
                                 alt="Iced Vietnamese Coffe"></td>
                         <td>Iced Vietnamese Coffe</td>
                         <td><span class="badge bg-info text-dark">Fríos</span></td>
@@ -236,7 +244,8 @@
 
                     <!-- Blended -->
                     <tr data-category="Blended">
-                        <td><img src="images/MenuImages/Blended/Frapuccino.png" class="product-thumb" alt="Frapuccino">
+                        <td><img src="../images/MenuImages/Blended/Frapuccino.png" class="product-thumb"
+                                alt="Frapuccino">
                         </td>
                         <td>Frapuccino</td>
                         <td><span class="badge bg-primary text-white">Mezclados</span></td>
@@ -247,7 +256,7 @@
                         </td>
                     </tr>
                     <tr data-category="Blended">
-                        <td><img src="images/MenuImages/Blended/ChocolateCoffeeBlend.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Blended/ChocolateCoffeeBlend.png" class="product-thumb"
                                 alt="Chocolate Coffee Blend"></td>
                         <td>Chocolate Coffee Blend</td>
                         <td><span class="badge bg-primary text-white">Mezclados</span></td>
@@ -258,7 +267,7 @@
                         </td>
                     </tr>
                     <tr data-category="Blended">
-                        <td><img src="images/MenuImages/Blended/HazelnutCoffeeShake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Blended/HazelnutCoffeeShake.png" class="product-thumb"
                                 alt="Hazelnut Coffee Shake"></td>
                         <td>Hazelnut Coffee Shake</td>
                         <td><span class="badge bg-primary text-white">Mezclados</span></td>
@@ -269,7 +278,7 @@
                         </td>
                     </tr>
                     <tr data-category="Blended">
-                        <td><img src="images/MenuImages/Blended/VanillaFrappe.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Blended/VanillaFrappe.png" class="product-thumb"
                                 alt="Vanilla Frappe"></td>
                         <td>Vanilla Frappe</td>
                         <td><span class="badge bg-primary text-white">Mezclados</span></td>
@@ -282,7 +291,8 @@
 
                     <!-- Desserts -->
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/Croisants.png" class="product-thumb" alt="Croissants">
+                        <td><img src="../images/MenuImages/Desserts/Croisants.png" class="product-thumb"
+                                alt="Croissants">
                         </td>
                         <td>Croissants</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -293,7 +303,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/ChocolateCarrotCake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/ChocolateCarrotCake.png" class="product-thumb"
                                 alt="Chocolate Carrot Cake"></td>
                         <td>Chocolate Carrot Cake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -304,7 +314,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/ChocolateCupcake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/ChocolateCupcake.png" class="product-thumb"
                                 alt="Chocolate Cupcake"></td>
                         <td>Chocolate Cupcake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -315,7 +325,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png" class="product-thumb"
                                 alt="Chocolate Green Tea Cupcake"></td>
                         <td>Chocolate Green Tea Cupcake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -326,7 +336,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/DulceDeLecheDesserts.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/DulceDeLecheDesserts.png" class="product-thumb"
                                 alt="Dulce De Leche Desserts"></td>
                         <td>Dulce De Leche Desserts</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -337,7 +347,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/OrangeCake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/OrangeCake.png" class="product-thumb"
                                 alt="Orange Cake"></td>
                         <td>Orange Cake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -348,7 +358,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/RedVelvetCupcake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/RedVelvetCupcake.png" class="product-thumb"
                                 alt="Red Velvet Cupcake"></td>
                         <td>Red Velvet Cupcake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -359,7 +369,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/StrawberryCake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/StrawberryCake.png" class="product-thumb"
                                 alt="Strawberry Cake"></td>
                         <td>Strawberry Cake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -370,7 +380,7 @@
                         </td>
                     </tr>
                     <tr data-category="Desserts">
-                        <td><img src="images/MenuImages/Desserts/VanillaCupcake.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Desserts/VanillaCupcake.png" class="product-thumb"
                                 alt="Vanilla Cupcake"></td>
                         <td>Vanilla Cupcake</td>
                         <td><span class="badge bg-warning text-dark">Postres</span></td>
@@ -383,7 +393,7 @@
 
                     <!-- Non-Coffee -->
                     <tr data-category="Non-Coffee">
-                        <td><img src="images/MenuImages/Non-Coffee/HerbalTea.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Non-Coffee/HerbalTea.png" class="product-thumb"
                                 alt="Herbal Tea"></td>
                         <td>Herbal Tea</td>
                         <td><span class="badge bg-success text-white">Sin Café</span></td>
@@ -394,7 +404,7 @@
                         </td>
                     </tr>
                     <tr data-category="Non-Coffee">
-                        <td><img src="images/MenuImages/Non-Coffee/ChatTeaLatte.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Non-Coffee/ChatTeaLatte.png" class="product-thumb"
                                 alt="Chai Tea Latte"></td>
                         <td>Chai Tea Latte</td>
                         <td><span class="badge bg-success text-white">Sin Café</span></td>
@@ -405,7 +415,7 @@
                         </td>
                     </tr>
                     <tr data-category="Non-Coffee">
-                        <td><img src="images/MenuImages/Non-Coffee/GoldenMilk.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Non-Coffee/GoldenMilk.png" class="product-thumb"
                                 alt="Golden Milk"></td>
                         <td>Golden Milk</td>
                         <td><span class="badge bg-success text-white">Sin Café</span></td>
@@ -416,7 +426,7 @@
                         </td>
                     </tr>
                     <tr data-category="Non-Coffee">
-                        <td><img src="images/MenuImages/Non-Coffee/HotChocolate.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Non-Coffee/HotChocolate.png" class="product-thumb"
                                 alt="Hot Chocolate"></td>
                         <td>Hot Chocolate</td>
                         <td><span class="badge bg-success text-white">Sin Café</span></td>
@@ -427,7 +437,7 @@
                         </td>
                     </tr>
                     <tr data-category="Non-Coffee">
-                        <td><img src="images/MenuImages/Non-Coffee/MatchaLatte.png" class="product-thumb"
+                        <td><img src="../images/MenuImages/Non-Coffee/MatchaLatte.png" class="product-thumb"
                                 alt="Matcha Latte"></td>
                         <td>Matcha Latte</td>
                         <td><span class="badge bg-success text-white">Sin Café</span></td>
@@ -558,6 +568,18 @@
                             }
                         });
                     });
+                });
+
+                // New Category Toggle
+                const categorySelect = document.getElementById('productCategory');
+                const newCategoryContainer = document.getElementById('newCategoryContainer');
+
+                categorySelect.addEventListener('change', function () {
+                    if (this.value === 'new') {
+                        newCategoryContainer.classList.remove('d-none');
+                    } else {
+                        newCategoryContainer.classList.add('d-none');
+                    }
                 });
             });
         </script>
