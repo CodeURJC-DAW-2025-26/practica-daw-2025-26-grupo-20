@@ -22,4 +22,12 @@ public class mainController { //Controller for fragments
         model.addAttribute("currentPage", "contact");
         return "contact";
     }
+
+
+        @GetMapping("/statistics")
+    public String showStat(Model model) {
+        model.addAttribute("title", "Statistics");
+        model.addAttribute("currentPage", "Statistics");
+        return "statistics";
+    }
 }
