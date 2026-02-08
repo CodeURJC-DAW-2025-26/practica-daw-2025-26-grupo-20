@@ -151,38 +151,85 @@
         <section class="product-section">
             <h3 class="section-title">Reseñas</h3>
 
-            <div class="review-card">
-                <div class="review-head">
-                    <div class="review-user">
-                        <div class="avatar">A</div>
-                        <div>
-                            <div class="review-name">Ana</div>
-                            <div class="review-date">Hace 3 días</div>
+            <div id="reviewsList">
+                <div class="review-card">
+                    <div class="review-head">
+                        <div class="review-user">
+                            <div class="avatar">A</div>
+                            <div>
+                                <div class="review-name">Ana</div>
+                                <div class="review-date">Hace 3 días</div>
+                            </div>
+                        </div>
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="far fa-star"></i>
                         </div>
                     </div>
-                    <div class="review-stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="far fa-star"></i>
-                    </div>
+                    <p class="review-text">Muy cremoso, la espuma aguanta y el sabor es intenso sin amargar.</p>
                 </div>
-                <p class="review-text">Muy cremoso, la espuma aguanta y el sabor es intenso sin amargar.</p>
+
+                <div class="review-card">
+                    <div class="review-head">
+                        <div class="review-user">
+                            <div class="avatar">J</div>
+                            <div>
+                                <div class="review-name">Javier</div>
+                                <div class="review-date">Hace 1 semana</div>
+                            </div>
+                        </div>
+                        <div class="review-stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="far fa-star"></i><i class="far fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="review-text">Está bien, pero me gusta más el latte. Aun así repetiría.</p>
+                </div>
             </div>
 
-            <div class="review-card">
-                <div class="review-head">
-                    <div class="review-user">
-                        <div class="avatar">J</div>
-                        <div>
-                            <div class="review-name">Javier</div>
-                            <div class="review-date">Hace 1 semana</div>
+
+            <!--nuevas reseñas-->
+            <div class="review-card mt-3">
+                <h4 class="section-title" style="margin-bottom: 12px;">Añade tu comentario</h4>
+
+                <form id="reviewForm">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label">Nombre</label>
+                            <input id="reviewName" class="form-control" type="text" placeholder="Tu nombre" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Puntuación</label>
+                            <select id="reviewStars" class="form-select" required>
+                                <option value="5">5 estrellas</option>
+                                <option value="4" selected>4 estrellas</option>
+                                <option value="3">3 estrellas</option>
+                                <option value="2">2 estrellas</option>
+                                <option value="1">1 estrella</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Comentario</label>
+                            <textarea id="reviewText" class="form-control" rows="3"
+                                placeholder="Escribe tu reseña..." required></textarea>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2">
+                            <button class="btn btn-product-primary" type="submit">
+                                <i class="fas fa-paper-plane me-2"></i>Publicar
+                            </button>
+                            <button id="reviewClearBtn" class="btn btn-product-secondary" type="button">
+                                Limpiar
+                            </button>
+                        </div>
+
+                        <div class="col-12">
+                            <small class="text-muted">Se perderá al recargar la página.</small>
                         </div>
                     </div>
-                    <div class="review-stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                    </div>
-                </div>
-                <p class="review-text">Está bien, pero me gusta más el latte. Aun así repetiría.</p>
+                </form>
             </div>
         </section>
 
@@ -266,6 +313,85 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    function starsHtml(n) {
+        const full = Math.max(0, Math.min(5, Number(n)));
+        let html = "";
+        for (let i = 1; i <= 5; i++) {
+            html += (i <= full) ? `<i class="fas fa-star"></i>` : `<i class="far fa-star"></i>`;
+        }
+        return html;
+    }
+
+    (function setupReviews() {
+        const form = document.getElementById("reviewForm");
+        const clearBtn = document.getElementById("reviewClearBtn");
+
+        // IMPORTANTE: envuelve las reseñas existentes en un contenedor con id="reviewsList"
+        // Si no lo tienes, te digo abajo cómo ponerlo.
+        const reviewsList = document.getElementById("reviewsList");
+
+        const nameEl = document.getElementById("reviewName");
+        const starsEl = document.getElementById("reviewStars");
+        const textEl = document.getElementById("reviewText");
+
+        function clearForm() {
+            nameEl.value = "";
+            starsEl.value = "4";
+            textEl.value = "";
+        }
+
+        clearBtn.addEventListener("click", clearForm);
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const user = nameEl.value.trim();
+            const stars = Number(starsEl.value);
+            const text = textEl.value.trim();
+
+            if (!user || !text) return;
+
+            const card = document.createElement("div");
+            card.className = "review-card";
+
+            const avatarLetter = user[0].toUpperCase();
+
+            card.innerHTML = `
+                <div class="review-head">
+                    <div class="review-user">
+                        <div class="avatar">${avatarLetter}</div>
+                        <div>
+                            <div class="review-name">${user}</div>
+                            <div class="review-date">Ahora</div>
+                        </div>
+                    </div>
+                    <div class="review-stars">
+                        ${starsHtml(stars)}
+                    </div>
+                </div>
+                <p class="review-text"></p>
+            `;
+
+            card.querySelector(".review-text").textContent = text;
+
+            // Añade arriba para que se vea el último primero
+            reviewsList.prepend(card);
+
+            clearForm();
+        });
+    })();
+</script>
+
+
+
+
+
+
+
+
+
 </body>
 
 </html>
