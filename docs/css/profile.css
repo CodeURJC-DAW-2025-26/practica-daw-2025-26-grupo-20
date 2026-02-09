@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PROFILE PAGE - MOKAF (ESTILO IGUAL AL ADMIN PERO DORADO)
+   PROFILE PAGE 
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   TARJETA DE PERFIL COMPACTA
+   TARJETA DE PERFIL
    -------------------------------------------------------------------------- */
 .profile-avatar-card {
     background-color: rgba(26, 26, 26, 0.85);
@@ -47,7 +47,7 @@
     align-items: center;
 }
 
-/* FOTO DE PERFIL MÁS PEQUEÑA */
+/* FOTO DE PERFIL */
 .profile-avatar-wrapper {
     width: 100px;
     height: 100px;
@@ -81,7 +81,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   PANEL DE ATAJOS - IGUAL AL ADMIN PERO DORADO
+   PANEL DE ATAJOS 
    -------------------------------------------------------------------------- */
 .user-quick-actions {
     background-color: rgba(26, 26, 26, 0.6);    /* Fondo oscuro igual al admin */
@@ -101,7 +101,7 @@
     text-transform: uppercase;
 }
 
-/* BOTÓN DORADO SÓLIDO - IGUAL AL ADMIN */
+/* BOTÓN DORADO SÓLIDO */
 .btn-user-quick {
     display: flex;
     align-items: center;
