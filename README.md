@@ -1,4 +1,4 @@
-# [Nombre de la Aplicación]
+# Mokaf
 
 ## 👥 Miembros del Equipo
 | Nombre y Apellidos | Correo URJC | Usuario GitHub |
@@ -7,7 +7,7 @@
 | Jordi Guix Betancor | j.guix.2023@alumnos.urjc.es | Jordigb44 |
 | Guillermo Blázquez Barbacid |g.blazquez.2019@alumnos.urjc.es | Blazk0o |
 | Elinee Nathalie Freites Muñoz | en.freites.2022@alumnos.urjc.es | ElineeF |
-| Nombre y Apellidos | Correo URJC | Usuario GitHub |
+| Alexandra Cararus Verdes | a.cararus.2021@alumnos.urjc.es | alexandraaCS |
 
 
 ---
@@ -15,66 +15,66 @@
 ## 🎭 **Preparación 1: Definición del Proyecto**
 
 ### **Descripción del Tema**
-[Escribe aquí una descripción breve y concisa de qué trata tu aplicación, el sector al que pertenece y qué valor aporta al usuario].
+### **Descripción del Tema**
+Mokaf es una aplicación web diseñada para una cafetería de especialidad. Permite a los usuarios consultar la carta de cafés, bebidas frías, postres y más. Los usuarios pueden registrarse para acceder a funcionalidades personalizadas, mientras que los administradores tienen herramientas para gestionar el catálogo de productos y visualizar estadísticas de ventas.
 
 ### **Entidades**
 Indicar las entidades principales que gestionará la aplicación y las relaciones entre ellas:
 
-1. **[Entidad 1]**: [Ej: Usuario]
-2. **[Entidad 2]**: [Ej: Producto]
-3. **[Entidad 3]**: [Ej: Pedido]
-4. **[Entidad 4]**: [Ej: Categoría]
+1. **Usuario (User)**: Entidad base que representa a cualquier usuario registrado en el sistema.
+2. **Cliente (Customer)**: Extiende de Usuario. Representa a los clientes de la cafetería. Incluye información de envío.
+3. **Administrador (Admin)**: Extiende de Usuario. Representa al personal con permisos de gestión. Tiene un ID de empleado.
+4. **Producto (Product)**: Representa los artículos del menú (cafés, postres, etc.).
+5. **Pedido (Order)**: (Planificado) Representa la compra realizada por un cliente.
 
 **Relaciones entre entidades:**
-- [Ej: Usuario - Pedido: Un usuario puede tener múltiples pedidos (1:N)]
-- [Ej: Pedido - Producto: Un pedido puede contener múltiples productos y un producto puede estar en múltiples pedidos (N:M)]
-- [Ej: Producto - Categoría: Un producto pertenece a una categoría (N:1)]
-- [Descripción de otras relaciones relevantes]
+- **Herencia**: Cliente y Administrador heredan de Usuario (Estrategia JOINED).
+- **Usuario - Pedido**: Un clientes puede realizar múltiples pedidos (1:N).
+- **Pedido - Producto**: Un pedido puede contener varios productos (N:M).
+- **Producto - Categoría**: Los productos se categorizan (Hot, Cold, Blended, Desserts, Non-Coffee).
 
 ### **Permisos de los Usuarios**
 Describir los permisos de cada tipo de usuario e indicar de qué entidades es dueño:
 
 * **Usuario Anónimo**: 
-  - Permisos: [Ej: Visualización de catálogo, búsqueda de productos, registro]
-  - No es dueño de ninguna entidad
+  - Permisos: Visualización de la página de inicio, menú completo, página "Sobre Nosotros" y contacto. Acceso a Login y Registro.
+  - No es dueño de ninguna entidad.
 
-* **Usuario Registrado**: 
-  - Permisos: [Ej: Gestión de perfil, realizar pedidos, crear valoraciones]
-  - Es dueño de: [Ej: Sus propios Pedidos, su Perfil de Usuario, sus Valoraciones]
+* **Usuario Registrado (Cliente)**: 
+  - Permisos: Gestión de su perfil de usuario, visualización del carrito de compra.
+  - Es dueño de: Su Perfil de Usuario, sus Pedidos.
 
 * **Administrador**: 
-  - Permisos: [Ej: Gestión completa de productos (CRUD), visualización de estadísticas, moderación de contenido]
-  - Es dueño de: [Ej: Productos, Categorías, puede gestionar todos los Pedidos y Usuarios]
+  - Permisos: Acceso al panel de estadísticas y gestión de productos.
+  - Es dueño de: Gestión del catálogo de productos.
 
 ### **Imágenes**
 Indicar qué entidades tendrán asociadas una o varias imágenes:
 
-- **[Entidad con imágenes 1]**: [Ej: Usuario - Una imagen de avatar por usuario]
-- **[Entidad con imágenes 2]**: [Ej: Producto - Múltiples imágenes por producto (galería)]
-- **[Entidad con imágenes 3]**: [Ej: Categoría - Una imagen representativa por categoría]
+- **Producto**: Cada ítem del menú tiene una imagen representativa (ej. `Expreso.png`, `Croisants.png`).
+- **Estadísticas**: El dashboard incluye visualizaciones gráficas pre-generadas.
 
 ### **Gráficos**
 Indicar qué información se mostrará usando gráficos y de qué tipo serán:
 
-- **Gráfico 1**: [Ej: Ventas mensuales - Gráfico de barras]
-- **Gráfico 2**: [Ej: Productos más vendidos - Gráfico de tarta/circular]
-- **Gráfico 3**: [Ej: Evolución de usuarios registrados - Gráfico de líneas]
-- **Gráfico 4**: [Ej: Distribución de pedidos por categoría - Gráfico de barras horizontales]
+- **Estadísticas de Ventas**: Gráfico de barras/líneas mostrando el rendimiento del negocio (visualizado actualmente como imagen estática en la sección de estadísticas).
 
 ### **Tecnología Complementaria**
 Indicar qué tecnología complementaria se empleará:
 
-- [Ej: Envío de correos electrónicos automáticos mediante JavaMailSender]
-- [Ej: Generación de PDFs de facturas usando iText o similar]
-- [Ej: Sistema de autenticación OAuth2 o JWT]
-- [Otras tecnologías externas que se integrarán]
+- **Java 21**: Lenguaje de programación principal.
+- **Spring Boot 3.5.6**: Framework para el backend.
+- **Mustache**: Motor de plantillas para generar el HTML en el servidor.
+- **Hibernate / JPA**: Para la persistencia de datos (MySQL).
+- **Bootstrap 5.3.3**: Framework CSS para el diseño responsivo.
+- **FontAwesome**: Para iconos.
 
 ### **Algoritmo o Consulta Avanzada**
 Indicar cuál será el algoritmo o consulta avanzada que se implementará:
 
-- **Algoritmo/Consulta**: [Ej: Sistema de recomendaciones basado en el historial de compras del usuario]
-- **Descripción**: [Ej: Analiza los productos comprados previamente y sugiere productos similares o complementarios utilizando filtrado colaborativo]
-- **Alternativa**: [Ej: Consulta compleja que agrupe ventas por categoría, mes y región, con cálculo de tendencias]
+- **Algoritmo/Consulta**: Sistema de recomendación de productos (Planificado).
+- **Descripción**: Sugerir productos basados en la categoría del último pedido del usuario.
+
 
 ---
 
@@ -134,11 +134,15 @@ Solo si han cambiado.
    cd [nombre-repositorio]
    ```
 
-2. **AQUÍ INDICAR LO SIGUIENTES PASOS**
+3. **Ejecutar la aplicación**:
+   ```bash
+   mvn spring-boot:run
+   ```
+4. **Acceder a la aplicación**:
+   Abre tu navegador y ve a `http://localhost:8080`.
 
 #### **Credenciales de prueba**
-- **Usuario Admin**: usuario: `admin`, contraseña: `admin`
-- **Usuario Registrado**: usuario: `user`, contraseña: `user`
+Actualmente no hay usuarios predefinidos. Puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
 
 ### **Diagrama de Entidades de Base de Datos**
 
