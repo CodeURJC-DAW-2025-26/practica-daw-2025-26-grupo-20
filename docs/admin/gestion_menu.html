@@ -28,31 +28,31 @@
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Inicio</a>
+                            <a class="nav-link" href="../index.html">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="menu.html">Menú</a>
+                            <a class="nav-link" href="../menu.html">Menú</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                            <a class="nav-link" href="../nosotros.html">Nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="sucursales.html">Sucursales</a>
+                            <a class="nav-link" href="../sucursales.html">Sucursales</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contacto</a>
+                            <a class="nav-link" href="../contact.html">Contacto</a>
                         </li>
                         <!-- New Link -->
                         <li class="nav-item">
-                            <a class="nav-link active" href="admin/gestion_menu.html">Gestión</a>
+                            <a class="nav-link active" href="gestion_menu.html">Gestión</a>
                         </li>
                     </ul>
 
                     <div class="d-flex">
-                        <a href="login.html" class="btn btn-header me-2">
+                        <a href="../login.html" class="btn btn-header me-2">
                             <i class="fas fa-user me-1"></i> Mi Cuenta
                         </a>
-                        <a href="cart.html" class="btn btn-header">
+                        <a href="../cart.html" class="btn btn-header">
                             <i class="fas fa-shopping-cart me-1"></i> Carrito
                             <span class="badge bg-danger ms-1">3</span>
                         </a>
@@ -475,11 +475,11 @@
                 <div class="footer-col">
                     <h4 class="footer-heading">Enlaces Rápidos</h4>
                     <ul class="footer-links">
-                        <li><a href="index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
-                        <li><a href="menu.html"><i class="fas fa-chevron-right"></i> Menú</a></li>
-                        <li><a href="nosotros.html"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
-                        <li><a href="galeria.html"><i class="fas fa-chevron-right"></i> Galería</a></li>
-                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+                        <li><a href="../index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                        <li><a href="../menu.html"><i class="fas fa-chevron-right"></i> Menú</a></li>
+                        <li><a href="../nosotros.html"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
+                        <li><a href="../galeria.html"><i class="fas fa-chevron-right"></i> Galería</a></li>
+                        <li><a href="../contact.html"><i class="fas fa-chevron-right"></i> Contacto</a></li>
                         <li><a href="gestion_menu.html"><i class="fas fa-chevron-right"></i> Gestión</a></li>
                     </ul>
                 </div>
@@ -543,45 +543,5 @@
                 </div>
             </div>
         </footer>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const categoryButtons = document.querySelectorAll('.btn-category');
-                const tableRows = document.querySelectorAll('tbody tr');
-
-                categoryButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        // Remove active class from all buttons
-                        categoryButtons.forEach(btn => btn.classList.remove('active'));
-                        // Add active class to clicked button
-                        button.classList.add('active');
-
-                        const selectedCategory = button.getAttribute('data-category');
-
-                        tableRows.forEach(row => {
-                            if (selectedCategory === 'all' || row.getAttribute('data-category') === selectedCategory) {
-                                row.style.display = '';
-                            } else {
-                                row.style.display = 'none';
-                            }
-                        });
-                    });
-                });
-
-                // New Category Toggle
-                const categorySelect = document.getElementById('productCategory');
-                const newCategoryContainer = document.getElementById('newCategoryContainer');
-
-                categorySelect.addEventListener('change', function () {
-                    if (this.value === 'new') {
-                        newCategoryContainer.classList.remove('d-none');
-                    } else {
-                        newCategoryContainer.classList.add('d-none');
-                    }
-                });
-            });
-        </script>
 
 </html>

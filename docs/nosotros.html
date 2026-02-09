@@ -4,18 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - Mokaf</title>
-
+    <title>Mokaf - Nosotros</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/general.css">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/nosotros.css">
 </head>
 
 <body class="body-content">
-
-    <!-- HEADER -->
     <header class="cafe-header">
         <div class="header-container">
             <nav class="navbar navbar-expand-lg navbar-dark">
@@ -36,7 +33,7 @@
                             <a class="nav-link" href="menu.html">Menú</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="nosotros.html">Nosotros</a>
+                            <a class="nav-link active" href="nosotros.html">Nosotros</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="sucursales.html">Sucursales</a>
@@ -47,7 +44,7 @@
                     </ul>
 
                     <div class="d-flex">
-                        <a href="profile.html" class="btn btn-header active me-2">
+                        <a href="login.html" class="btn btn-header me-2">
                             <i class="fas fa-user me-1"></i> Mi Cuenta
                         </a>
                         <a href="cart.html" class="btn btn-header">
@@ -60,106 +57,128 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="container my-5 profile-container">
-        <h2 class="text-center mb-5">Mi Perfil</h2>
-        
-        <div class="row g-4 justify-content-center">
-            
-            <!-- COLUMNA IZQUIERDA - AVATAR Y PANEL DE ATAJOS -->
-            <div class="col-lg-4 col-md-5">
-                <!-- TARJETA DE PERFIL COMPACTA -->
-                <div class="profile-avatar-card">
-                    <div class="profile-avatar-section">
-                        <div class="profile-avatar-wrapper">
-                            <img src="https://via.placeholder.com/150?text=👤" 
-                                 class="profile-avatar" 
-                                 alt="Avatar por defecto"
-                                 onerror="this.src='https://via.placeholder.com/150?text=Usuario'">
-                        </div>
-                        
-                        <h3 class="profile-username">guilleUser</h3>
-                        <p class="profile-email">guille.blazquez@email.com</p>
+    <main class="container my-5">
+        <!-- Hero Section -->
+        <section class="about-section pt-0">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2>Nuestra Historia</h2>
+                    <div class="history-text">
+                        <p class="mb-4">Más que una cafetería, somos una <span class="history-highlight">familia
+                                apasionada</span> por el buen café.</p>
+                        <p>Fundada en 2010, <span class="history-highlight">Mokaf</span> nació con una misión simple:
+                            transformar la forma en que las personas experimentan el café. Lo que comenzó como un
+                            pequeño rincón para los amantes del espresso se ha convertido en un referente del café de
+                            especialidad.</p>
+                        <p>Nos enorgullecemos de trabajar directamente con agricultores locales y de comercio justo,
+                            asegurando que cada grano cuente una historia de sostenibilidad y excelencia. Nuestros
+                            baristas no solo sirven café; crean experiencias, perfeccionando cada taza con técnica y
+                            pasión.</p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="menu.html" class="btn btn-header">Descubre Nuestros Sabores <i
+                                class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
-
-                <!-- PANEL DE ATAJOS -->
-                <div class="user-quick-actions mt-4">
-                    <h5 class="user-quick-title">Panel de Atajos</h5>
-                    <a href="orders.html" class="btn btn-user-quick">
-                        <i class="fas fa-history"></i>
-                        <span>Historial</span>
-                    </a>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Interior de Mokaf" class="about-image img-fluid">
                 </div>
             </div>
+        </section>
 
-            <!-- COLUMNA DERECHA - FORMULARIO -->
-            <div class="col-lg-6 col-md-7">
-                <div class="profile-form-card">
-                    <h4 class="profile-form-title">Configuración de la Cuenta</h4>
-                    <p class="profile-form-subtitle">Actualiza tus datos personales</p>
-                    
-                    <form action="#" method="post">
-                        <!-- Nombre completo -->
-                        <div class="mb-3">
-                            <label class="form-label">Nombre completo</label>
-                            <input type="text" class="form-control" 
-                                   value="Guillermo Blázquez" required>
-                        </div>
-
-                        <!-- Username y Email -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nombre de usuario</label>
-                                <input type="text" class="form-control" 
-                                       value="guilleUser" readonly>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" 
-                                       value="guille.blazquez@email.com" required>
-                            </div>
-                        </div>
-
-                        <!-- Cambiar Contraseña -->
-                        <div class="mb-3">
-                            <label class="form-label">Nueva contraseña</label>
-                            <input type="password" class="form-control" 
-                                   placeholder="Dejar en blanco para mantener la actual">
-                        </div>
-
-                        <!-- Foto de Perfil -->
-                        <div class="mb-3">
-                            <label class="form-label">Foto de perfil (PNG)</label>
-                            <input type="file" class="form-control" 
-                                   accept="image/png">
-                        </div>
-
-                        <!-- Botones -->
-                        <div class="profile-actions">
-                            <a href="index.html" class="btn btn-outline-light btn-cancel">Cancelar</a>
-                            <button type="submit" class="btn btn-save">Guardar Cambios</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- BOTÓN ELIMINAR CUENTA -->
-                <div class="delete-account-section">
-                    <button type="button" class="btn btn-delete-account" 
-                            data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="fas fa-trash-alt"></i> Eliminar mi cuenta
-                    </button>
-                </div>
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Años de Experiencia</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">Premios Nacionales</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">15k+</span>
+                <span class="stat-label">Clientes Felices</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Café Orgánico</span>
             </div>
         </div>
+
+        <!-- Values Section -->
+        <section class="about-section">
+            <h2 class="text-center mb-5">Nuestros Valores</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-leaf value-icon"></i>
+                        <h4>Sostenibilidad</h4>
+                        <p>Comprometidos con el medio ambiente y prácticas de cultivo responsables. Utilizamos envases
+                            biodegradables y apoyamos la agricultura regenerativa.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-award value-icon"></i>
+                        <h4>Calidad Premium</h4>
+                        <p>Seleccionamos cuidadosamente los mejores granos de origen único. Nuestro proceso de tostado
+                            artesanal resalta las notas más sutiles de cada variedad.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-users value-icon"></i>
+                        <h4>Comunidad</h4>
+                        <p>Creemos en el poder del café para unir a las personas. Mokaf es tu espacio para conectar,
+                            trabajar o simplemente relajarte.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section text-center">
+            <h2 class="text-center mb-5">Conoce al Equipo</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-4 col-lg-3 team-member">
+                    <div class="member-img-container">
+                        <img src="https://images.unsplash.com/photo-1583335513577-2244970207d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
+                            alt="María López" class="member-img">
+                    </div>
+                    <h4>María López</h4>
+                    <p class="member-role">Fundadora & Master Roaster</p>
+                    <p class="small text-muted">Visionaria detrás de cada blend exclusivo de Mokaf.</p>
+                </div>
+                <div class="col-md-4 col-lg-3 team-member">
+                    <div class="member-img-container">
+                        <img src="https://images.unsplash.com/photo-1542596594-649edbc13630?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
+                            alt="Carlos Ruiz" class="member-img">
+                    </div>
+                    <h4>Carlos Ruiz</h4>
+                    <p class="member-role">Barista Principal</p>
+                    <p class="small text-muted">El artista que convierte la leche en lienzo.</p>
+                </div>
+                <div class="col-md-4 col-lg-3 team-member">
+                    <div class="member-img-container">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
+                            alt="Ana García" class="member-img">
+                    </div>
+                    <h4>Ana García</h4>
+                    <p class="member-role">Gerente de Experiencia</p>
+                    <p class="small text-muted">Asegurando que cada visita sea inolvidable.</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- FOOTER -->
     <footer class="coffee-footer">
         <div class="footer-container">
             <div class="footer-col">
                 <div class="footer-logo">
-                    <h3>Mokaf</h3>
+                    <h3>Kafé Noir</h3>
                     <p>El arte del café en su máxima expresión. Disfruta de una experiencia única con nuestros blends
                         exclusivos y ambiente acogedor.</p>
                 </div>
@@ -205,7 +224,7 @@
                     </li>
                     <li>
                         <i class="fas fa-envelope"></i>
-                        <span>info@mokaf.com</span>
+                        <span>info@kafenoir.com</span>
                     </li>
                     <li>
                         <i class="fas fa-truck"></i>
@@ -236,30 +255,11 @@
                 <i class="fab fa-cc-apple-pay"></i>
             </div>
             <div class="copyright">
-                <p>&copy; 2025 Mokaf - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
+                <p>&copy; 2025 Kafé Noir - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
                         style="color: #C6A87D;"></i> para amantes del café</p>
             </div>
         </div>
     </footer>
-
-    <!-- MODAL CONFIRMACIÓN -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-custom">
-                <div class="modal-header">
-                    <h5 class="modal-title">¿Eliminar cuenta?</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar tu cuenta permanentemente?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" onclick="alert('Cuenta eliminada (simulado)')">Sí, eliminar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

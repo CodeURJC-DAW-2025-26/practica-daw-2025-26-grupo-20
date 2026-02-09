@@ -15,7 +15,7 @@
 
 <body class="body-content">
 
-    <!-- HEADER (igual que menu.html pero con indicador admin) -->
+    <!-- HEADER con menú de admin -->
     <header class="cafe-header">
         <div class="header-container">
             <nav class="navbar navbar-expand-lg navbar-dark">
@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="contact.html">Contacto</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link admin-nav-link" href="gestion_menu.html">Gestión Productos</a>
+                        </li>
+                        
                     </ul>
 
                     <div class="d-flex">
@@ -71,13 +75,13 @@
         
         <div class="row g-4 justify-content-center">
             
-            <!-- COLUMNA IZQUIERDA - AVATAR -->
+            <!-- COLUMNA IZQUIERDA - AVATAR Y BOTONES RÁPIDOS -->
             <div class="col-lg-4 col-md-5">
                 <div class="admin-avatar-card">
                     <div class="admin-avatar-section">
                         <span class="admin-badge">Administrador</span>
                         
-                        <!-- IMAGEN POR DEFECTO SIEMPRE VISIBLE -->
+                        <!-- IMAGEN POR DEFECTO -->
                         <div class="admin-avatar-wrapper">
                             <img src="https://via.placeholder.com/150?text=👑" 
                                  class="admin-avatar" 
@@ -91,9 +95,35 @@
                         <p class="admin-employee-id">ID Empleado: EMP-001</p>
                     </div>
                 </div>
+
+                <!-- BOTONES DE GESTIÓN RÁPIDOS -->
+                <div class="admin-quick-actions mt-4">
+                    <h5 class="admin-quick-title">Panel de Control</h5>
+                    <a href="gestion_menu.html" class="btn btn-admin-quick">
+                        <p class="admin-role-text">
+                        <span>Gestión de Productos</span>
+                        </p>
+                    </a>
+                    <a href="stats.html" class="btn btn-admin-quick">
+                        <p class="admin-role-text">
+                        <span>Ver Estadísticas</span>
+                        </p>
+                    </a>
+                    <a href="gestion_menu.html" class="btn btn-admin-quick">
+                        <p class="admin-role-text">
+                        <span>Gestionar Usuarios</span>
+                        </p>
+                        
+                    </a>
+                    <a href="orders.html" class="btn btn-admin-quick">
+                        <p class="admin-role-text">
+                        <span>Ver Pedidos</span>
+                        </p>
+                    </a>
+                </div>
             </div>
 
-            <!-- COLUMNA DERECHA - FORMULARIO -->
+            <!-- COLUMNA DERECHA - FORMULARIO Y BOTONES ROJOS -->
             <div class="col-lg-6 col-md-7">
                 <div class="admin-form-card">
                     <h4 class="admin-form-title">Configuración del Administrador</h4>
@@ -121,7 +151,7 @@
                             </div>
                         </div>
 
-                        <!-- ID Empleado (solo admin) -->
+                        <!-- ID Empleado -->
                         <div class="mb-3">
                             <label class="form-label">ID de Empleado</label>
                             <input type="text" class="form-control" 
@@ -150,18 +180,20 @@
                     </form>
                 </div>
 
-                <!-- BOTÓN ELIMINAR CUENTA ADMIN -->
-                <div class="admin-delete-section">
+                <!-- BOTONES FUERA DEL RECUADRO (3 botones) -->
+                <div class="admin-external-buttons">
+                    <!-- Botón eliminar (original) -->
                     <button type="button" class="btn btn-admin-delete" 
                             data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        Eliminar cuenta de administrador
+                        <i class="fas fa-trash-alt"></i> Eliminar cuenta
                     </button>
+                    
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER (corregido - Mokaf) -->
+    <!-- FOOTER -->
     <footer class="coffee-footer">
         <div class="footer-container">
             <div class="footer-col">
@@ -249,7 +281,7 @@
         </div>
     </footer>
 
-    <!-- MODAL CONFIRMACIÓN ADMIN -->
+    <!-- MODAL -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-admin-custom">
