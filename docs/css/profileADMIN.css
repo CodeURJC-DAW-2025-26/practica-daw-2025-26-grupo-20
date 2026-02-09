@@ -1,13 +1,12 @@
 /* ==========================================================================
-   ADMIN PROFILE PAGE - ADMINISTRADOR
-   Usa las variables de general.css con toques en rojo
+   ADMIN PROFILE PAGE - MOKAF
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   CONTENEDOR PRINCIPAL
+   CONTENEDOR
    -------------------------------------------------------------------------- */
 .admin-container {
-    max-width: 1000px;
+    max-width: 1200px;
 }
 
 .admin-container h2 {
@@ -31,87 +30,164 @@
 }
 
 /* --------------------------------------------------------------------------
-   COLUMNA IZQUIERDA - AVATAR
+   TARJETA DE PERFIL (IZQUIERDA)
    -------------------------------------------------------------------------- */
 .admin-avatar-card {
     background-color: rgba(26, 26, 26, 0.85);
     border-radius: 15px;
-    padding: 2.5rem;
+    padding: 2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 2px solid #dc3545;
-    height: 100%;
-}
-
-.admin-avatar-section {
     text-align: center;
 }
 
 .admin-badge {
     display: inline-block;
-    background: linear-gradient(to right, #dc3545, #c82333);
+    background: #dc3545;
     color: white;
-    padding: 8px 20px;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 1.5rem;
 }
 
-/* Wrapper para la imagen siempre visible */
+/* FOTO DE PERFIL CON FONDO CLARO */
 .admin-avatar-wrapper {
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
     margin: 0 auto 1.5rem;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid #dc3545;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 4px solid #dc3545;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.admin-avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.admin-avatar-placeholder {
+    font-size: 4rem;
+    color: #dc3545;
+}
+
+.admin-avatar-placeholder i {
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
 .admin-username {
-    color: var(--dorado);
-    font-size: 1.5rem;
+    color: #C6A87D;
+    font-size: 1.4rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    letter-spacing: 1px;
 }
 
 .admin-email {
-    color: var(--beige);
-    font-size: 0.95rem;
-    opacity: 0.8;
+    color: #D7CCC8;
+    font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
 
 .admin-role-text {
     color: #dc3545;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .admin-employee-id {
-    color: var(--beige);
-    font-size: 0.85rem;
-    opacity: 0.6;
-    margin-bottom: 0;
+    color: #8B6B61;
+    font-size: 0.8rem;
+    margin: 0;
 }
 
 /* --------------------------------------------------------------------------
-   COLUMNA DERECHA - FORMULARIO
+   PANEL DE ACCIONES (BOTONES ROJOS VISIBLES)
+   -------------------------------------------------------------------------- */
+.admin-actions-panel {
+    background-color: rgba(26, 26, 26, 0.6);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.admin-actions-title {
+    color: #C6A87D;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* BOTONES DE ACCIÓN EN ROJO BRILLANTE */
+.btn-admin-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: #dc3545;
+    border: 2px solid #dc3545;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-admin-action:last-child {
+    margin-bottom: 0;
+}
+
+.btn-admin-action i {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+}
+
+.btn-admin-action:hover {
+    background: transparent;
+    color: #dc3545;
+    transform: translateX(5px);
+    text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   BOTÓN ELIMINAR CUENTA
+   -------------------------------------------------------------------------- */
+.btn-admin-delete {
+    background: linear-gradient(to right, #dc3545, #c82333);
+    border: none;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-admin-delete:hover {
+    background: linear-gradient(to right, #c82333, #a71d2a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   FORMULARIO (DERECHA)
    -------------------------------------------------------------------------- */
 .admin-form-card {
     background-color: rgba(26, 26, 26, 0.85);
     border-radius: 15px;
-    padding: 2.5rem;
+    padding: 2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 2px solid #dc3545;
     height: 100%;
@@ -137,51 +213,41 @@
 }
 
 .admin-form-subtitle {
-    color: var(--beige);
+    color: #8B6B61;
     font-size: 0.9rem;
-    opacity: 0.7;
     margin-bottom: 1.5rem;
 }
 
-/* Formularios */
 .admin-form-card .form-label {
-    color: var(--beige);
+    color: #D7CCC8;
     margin-bottom: 8px;
     font-size: 0.9rem;
 }
 
 .admin-form-card .form-control {
     background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--cafe-medio);
-    color: var(--beige);
+    border: 1px solid #5D4037;
+    color: #D7CCC8;
     padding: 12px 15px;
     border-radius: 4px;
-    transition: all 0.3s;
 }
 
 .admin-form-card .form-control:focus {
     background-color: rgba(255, 255, 255, 0.12);
     border-color: #dc3545;
     box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
-    color: var(--beige);
-}
-
-.admin-form-card .form-control::placeholder {
-    color: #9E9E9E;
+    color: #D7CCC8;
 }
 
 .admin-form-card .form-control[readonly] {
     background-color: rgba(255, 255, 255, 0.05);
     opacity: 0.6;
-    cursor: not-allowed;
 }
 
-/* --------------------------------------------------------------------------
-   BOTONES
-   -------------------------------------------------------------------------- */
+/* Botones del formulario */
 .admin-actions {
     display: flex;
-    gap: 1rem;
+    gap: 12px;
     justify-content: flex-end;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -189,25 +255,24 @@
 }
 
 .btn-admin-save {
-    background: linear-gradient(to right, #dc3545, #c82333);
+    background: #dc3545;
     border: none;
     color: white;
     padding: 12px 30px;
     border-radius: 4px;
     font-weight: 500;
-    letter-spacing: 1px;
     transition: all 0.3s;
 }
 
 .btn-admin-save:hover {
-    background: linear-gradient(to right, #c82333, #a71d2a);
+    background: #c82333;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
 }
 
 .btn-cancel {
-    border-color: var(--cafe-medio);
-    color: var(--beige);
+    border-color: #5D4037;
+    color: #D7CCC8;
     padding: 12px 25px;
     border-radius: 4px;
     transition: all 0.3s;
@@ -215,35 +280,8 @@
 
 .btn-cancel:hover {
     background-color: rgba(198, 168, 125, 0.1);
-    border-color: var(--dorado);
-    color: var(--dorado);
-}
-
-/* --------------------------------------------------------------------------
-   BOTÓN ELIMINAR CUENTA ADMIN
-   -------------------------------------------------------------------------- */
-.admin-delete-section {
-    margin-top: 2rem;
-    text-align: right;
-}
-
-.btn-admin-delete {
-    background: linear-gradient(to right, var(--cafe-medio), var(--cafe-oscuro));
-    border: 2px solid #dc3545;
-    color: var(--beige);
-    padding: 14px 32px;
-    border-radius: 4px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-}
-
-.btn-admin-delete:hover {
-    background: linear-gradient(to right, #dc3545, #c82333);
-    border-color: #dc3545;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-    color: white;
+    border-color: #C6A87D;
+    color: #C6A87D;
 }
 
 /* --------------------------------------------------------------------------
@@ -253,7 +291,6 @@
     background-color: rgba(26, 26, 26, 0.95);
     border-radius: 15px;
     border: 2px solid #dc3545;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .modal-admin-custom .modal-header {
@@ -262,16 +299,10 @@
 
 .modal-admin-custom .modal-title {
     color: #dc3545;
-    font-weight: 400;
 }
 
 .modal-admin-custom .modal-body {
-    color: var(--beige);
-    padding: 1.5rem;
-}
-
-.modal-admin-custom .modal-body strong {
-    color: #dc3545;
+    color: #D7CCC8;
 }
 
 .modal-admin-custom .modal-footer {
@@ -280,4 +311,82 @@
 
 .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --------------------------------------------------------------------------
+   MENÚ ADMIN EN NAVBAR
+   -------------------------------------------------------------------------- */
+.admin-nav-link {
+    color: #ff6b7a !important;
+    font-weight: 500;
+}
+
+.admin-nav-link:hover {
+    color: #dc3545 !important;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+/* BOTONES DE GESTIÓN RÁPIDOS - ROJOS */
+.admin-quick-actions {
+    background-color: rgba(26, 26, 26, 0.6);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.admin-quick-title {
+    color: #C6A87D;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* BOTONES ROJOS SÓLIDOS */
+.btn-admin-quick {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    background: #dc3545;                    /* Rojo sólido */
+    border: 2px solid #dc3545;              /* Borde rojo */
+    color: white;                           /* Texto blanco */
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-admin-quick:last-child {
+    margin-bottom: 0;
+}
+
+.btn-admin-quick i {
+    font-size: 1.2rem;
+    color: white;                           /* Icono blanco */
+    width: 24px;
+    text-align: center;
+}
+
+.btn-admin-quick span {
+    color: white;                           /* Texto blanco */
+    font-size: 0.95rem;
+}
+
+/* HOVER: transparente con borde rojo */
+.btn-admin-quick:hover {
+    background: transparent;
+    border-color: #dc3545;
+    color: #dc3545;
+    transform: translateX(5px);
+    text-decoration: none;
+}
+
+.btn-admin-quick:hover i,
+.btn-admin-quick:hover span {
+    color: #dc3545;                         /* Al hover, todo rojo */
 }
