@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokaf - Gestión de Menú</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/general.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/gestion_menu.css">
+    <link rel="stylesheet" href="../css/menu.css">
+</head>
+
+<body class="body-content">
+    <header class="cafe-header">
+        <div class="header-container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-mug-hot"></i>Mokaf
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../menu.html">Menú</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../nosotros.html">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../sucursales.html">Sucursales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../contact.html">Contacto</a>
+                        </li>
+                        <!-- New Link -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="gestion_menu.html">Gestión</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex">
+                        <a href="../login.html" class="btn btn-header me-2">
+                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        </a>
+                        <a href="../cart.html" class="btn btn-header">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span class="badge bg-danger ms-1">3</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container my-5 admin-container">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2>Gestión de Productos</h2>
+            <button class="btn btn-header"
+                onclick="document.getElementById('productForm').scrollIntoView({behavior: 'smooth'})">
+                <i class="fas fa-plus me-2"></i>Nuevo Producto
+            </button>
+        </div>
+
+        <!-- Product Form -->
+        <div id="productForm" class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <h4 class="mb-4">Agregar / Editar Producto</h4>
+                <div class="form-container">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="productName" class="form-label">Nombre del Producto</label>
+                                <input type="text" class="form-control" id="productName"
+                                    placeholder="Ej: Café Mokaf Especial">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="productCategory" class="form-label">Categoría</label>
+                                <select class="form-select" id="productCategory">
+                                    <option value="" selected disabled>Seleccionar...</option>
+                                    <option value="Hot">Calientes</option>
+                                    <option value="Cold">Fríos</option>
+                                    <option value="Blended">Mezclados</option>
+                                    <option value="Desserts">Postres</option>
+                                    <option value="Non-Coffee">Sin Café</option>
+                                    <option value="new">+ Nueva Categoría</option>
+                                </select>
+                                <div id="newCategoryContainer" class="mt-2 d-none">
+                                    <input type="text" class="form-control" id="newCategoryInput"
+                                        placeholder="Nombre de la nueva categoría">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="productPrice" class="form-label">Precio (€)</label>
+                                <input type="number" step="0.01" class="form-control" id="productPrice"
+                                    placeholder="0.00">
+                            </div>
+                            <div class="col-md-8">
+                                <label for="productImage" class="form-label">URL de Imagen</label>
+                                <input type="text" class="form-control" id="productImage"
+                                    placeholder="../images/MenuImages/...">
+                            </div>
+
+                            <div class="col-12">
+                                <label for="productDescription" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="productDescription" rows="3"
+                                    placeholder="Descripción breve del producto..."></textarea>
+                            </div>
+
+                            <div class="col-12 mt-4 d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    style="color: var(--beige); border-color: var(--cafe-claro);">Cancelar</button>
+                                <button type="submit" class="btn btn-header">Guardar Producto</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-nav mb-5">
+            <div class="d-flex justify-content-start flex-wrap gap-2">
+                <button class="btn btn-category active" data-category="all">Todos</button>
+                <button class="btn btn-category" data-category="Hot">Calientes</button>
+                <button class="btn btn-category" data-category="Cold">Fríos</button>
+                <button class="btn btn-category" data-category="Blended">Mezclados</button>
+                <button class="btn btn-category" data-category="Desserts">Postres</button>
+                <button class="btn btn-category" data-category="Non-Coffee">Sin Café</button>
+            </div>
+        </div>
+
+        <!-- Product List -->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Hot -->
+                    <tr data-category="Hot">
+                        <td><img src="../images/MenuImages/Hot/Expreso.png" class="product-thumb" alt="Expreso"></td>
+                        <td>Expreso</td>
+                        <td><span class="badge bg-danger text-white">Calientes</span></td>
+                        <td>2.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Hot">
+                        <td><img src="../images/MenuImages/Hot/Capuccino.png" class="product-thumb" alt="Capuccino">
+                        </td>
+                        <td>Capuccino</td>
+                        <td><span class="badge bg-danger text-white">Calientes</span></td>
+                        <td>3.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Hot">
+                        <td><img src="../images/MenuImages/Hot/Americano.png" class="product-thumb" alt="Americano">
+                        </td>
+                        <td>Americano</td>
+                        <td><span class="badge bg-danger text-white">Calientes</span></td>
+                        <td>2.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Hot">
+                        <td><img src="../images/MenuImages/Hot/Latte.png" class="product-thumb" alt="Latte"></td>
+                        <td>Latte</td>
+                        <td><span class="badge bg-danger text-white">Calientes</span></td>
+                        <td>3.20€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Cold -->
+                    <tr data-category="Cold">
+                        <td><img src="../images/MenuImages/Cold/IcedLatte.png" class="product-thumb" alt="Iced Latte">
+                        </td>
+                        <td>Iced Latte</td>
+                        <td><span class="badge bg-info text-dark">Fríos</span></td>
+                        <td>4.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Cold">
+                        <td><img src="../images/MenuImages/Cold/Frappe.png" class="product-thumb" alt="Frappe"></td>
+                        <td>Frappe</td>
+                        <td><span class="badge bg-info text-dark">Fríos</span></td>
+                        <td>4.20€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Cold">
+                        <td><img src="../images/MenuImages/Cold/IcedAmericano.png" class="product-thumb"
+                                alt="Iced Americano"></td>
+                        <td>Iced Americano</td>
+                        <td><span class="badge bg-info text-dark">Fríos</span></td>
+                        <td>3.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Cold">
+                        <td><img src="../images/MenuImages/Cold/IcedVietnameseCoffe.png" class="product-thumb"
+                                alt="Iced Vietnamese Coffe"></td>
+                        <td>Iced Vietnamese Coffe</td>
+                        <td><span class="badge bg-info text-dark">Fríos</span></td>
+                        <td>4.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Blended -->
+                    <tr data-category="Blended">
+                        <td><img src="../images/MenuImages/Blended/Frapuccino.png" class="product-thumb"
+                                alt="Frapuccino">
+                        </td>
+                        <td>Frapuccino</td>
+                        <td><span class="badge bg-primary text-white">Mezclados</span></td>
+                        <td>4.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Blended">
+                        <td><img src="../images/MenuImages/Blended/ChocolateCoffeeBlend.png" class="product-thumb"
+                                alt="Chocolate Coffee Blend"></td>
+                        <td>Chocolate Coffee Blend</td>
+                        <td><span class="badge bg-primary text-white">Mezclados</span></td>
+                        <td>4.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Blended">
+                        <td><img src="../images/MenuImages/Blended/HazelnutCoffeeShake.png" class="product-thumb"
+                                alt="Hazelnut Coffee Shake"></td>
+                        <td>Hazelnut Coffee Shake</td>
+                        <td><span class="badge bg-primary text-white">Mezclados</span></td>
+                        <td>4.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Blended">
+                        <td><img src="../images/MenuImages/Blended/VanillaFrappe.png" class="product-thumb"
+                                alt="Vanilla Frappe"></td>
+                        <td>Vanilla Frappe</td>
+                        <td><span class="badge bg-primary text-white">Mezclados</span></td>
+                        <td>4.60€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Desserts -->
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/Croisants.png" class="product-thumb"
+                                alt="Croissants">
+                        </td>
+                        <td>Croissants</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>2.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/ChocolateCarrotCake.png" class="product-thumb"
+                                alt="Chocolate Carrot Cake"></td>
+                        <td>Chocolate Carrot Cake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>3.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/ChocolateCupcake.png" class="product-thumb"
+                                alt="Chocolate Cupcake"></td>
+                        <td>Chocolate Cupcake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>2.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png" class="product-thumb"
+                                alt="Chocolate Green Tea Cupcake"></td>
+                        <td>Chocolate Green Tea Cupcake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>3.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/DulceDeLecheDesserts.png" class="product-thumb"
+                                alt="Dulce De Leche Desserts"></td>
+                        <td>Dulce De Leche Desserts</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>3.20€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/OrangeCake.png" class="product-thumb"
+                                alt="Orange Cake"></td>
+                        <td>Orange Cake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>3.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/RedVelvetCupcake.png" class="product-thumb"
+                                alt="Red Velvet Cupcake"></td>
+                        <td>Red Velvet Cupcake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>3.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/StrawberryCake.png" class="product-thumb"
+                                alt="Strawberry Cake"></td>
+                        <td>Strawberry Cake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>3.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Desserts">
+                        <td><img src="../images/MenuImages/Desserts/VanillaCupcake.png" class="product-thumb"
+                                alt="Vanilla Cupcake"></td>
+                        <td>Vanilla Cupcake</td>
+                        <td><span class="badge bg-warning text-dark">Postres</span></td>
+                        <td>2.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Non-Coffee -->
+                    <tr data-category="Non-Coffee">
+                        <td><img src="../images/MenuImages/Non-Coffee/HerbalTea.png" class="product-thumb"
+                                alt="Herbal Tea"></td>
+                        <td>Herbal Tea</td>
+                        <td><span class="badge bg-success text-white">Sin Café</span></td>
+                        <td>3.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Non-Coffee">
+                        <td><img src="../images/MenuImages/Non-Coffee/ChatTeaLatte.png" class="product-thumb"
+                                alt="Chai Tea Latte"></td>
+                        <td>Chai Tea Latte</td>
+                        <td><span class="badge bg-success text-white">Sin Café</span></td>
+                        <td>3.80€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Non-Coffee">
+                        <td><img src="../images/MenuImages/Non-Coffee/GoldenMilk.png" class="product-thumb"
+                                alt="Golden Milk"></td>
+                        <td>Golden Milk</td>
+                        <td><span class="badge bg-success text-white">Sin Café</span></td>
+                        <td>4.00€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Non-Coffee">
+                        <td><img src="../images/MenuImages/Non-Coffee/HotChocolate.png" class="product-thumb"
+                                alt="Hot Chocolate"></td>
+                        <td>Hot Chocolate</td>
+                        <td><span class="badge bg-success text-white">Sin Café</span></td>
+                        <td>3.50€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-category="Non-Coffee">
+                        <td><img src="../images/MenuImages/Non-Coffee/MatchaLatte.png" class="product-thumb"
+                                alt="Matcha Latte"></td>
+                        <td>Matcha Latte</td>
+                        <td><span class="badge bg-success text-white">Sin Café</span></td>
+                        <td>4.20€</td>
+                        <td class="text-end">
+                            <button class="btn btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr class="my-5" style="border-color: var(--dorado); opacity: 0.3;">
+
+
+
+        <footer class="coffee-footer">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <h3>Kafé Noir</h3>
+                        <p>El arte del café en su máxima expresión. Disfruta de una experiencia única con nuestros
+                            blends
+                            exclusivos y ambiente acogedor.</p>
+                    </div>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading">Enlaces Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                        <li><a href="../menu.html"><i class="fas fa-chevron-right"></i> Menú</a></li>
+                        <li><a href="../nosotros.html"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
+                        <li><a href="../galeria.html"><i class="fas fa-chevron-right"></i> Galería</a></li>
+                        <li><a href="../contact.html"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+                        <li><a href="gestion_menu.html"><i class="fas fa-chevron-right"></i> Gestión</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading">Horario de Atención</h4>
+                    <ul class="hours-list">
+                        <li><span class="day">Lunes - Viernes</span> <span class="time">7:00 - 20:00</span></li>
+                        <li><span class="day">Sábados</span> <span class="time">8:00 - 22:00</span></li>
+                        <li><span class="day">Domingos</span> <span class="time">8:00 - 18:00</span></li>
+                        <li><span class="day">Festivos</span> <span class="time">9:00 - 16:00</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading">Contacto</h4>
+                    <ul class="contact-info">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Av. Principal 123, Distrito Elegante, Ciudad</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>(123) 456-7890</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>info@kafenoir.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-truck"></i>
+                            <span>Delivery disponible en toda la ciudad</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading">Newsletter</h4>
+                    <div class="newsletter">
+                        <p>Suscríbete para recibir nuestras promociones y novedades directamente en tu email.</p>
+                        <form class="newsletter-form">
+                            <input type="email" class="newsletter-input" placeholder="Tu correo electrónico">
+                            <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                        </form>
+                        <p><small>Respetamos tu privacidad y no compartimos tu información.</small></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-amex"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-cc-apple-pay"></i>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2025 Kafé Noir - Todos los derechos reservados | Diseñado con <i class="fas fa-heart"
+                            style="color: #C6A87D;"></i> para amantes del café</p>
+                </div>
+            </div>
+        </footer>
+
+</html>

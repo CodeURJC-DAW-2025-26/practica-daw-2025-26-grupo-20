@@ -3,6 +3,8 @@ package es.codeurjc.mokaf.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 public class mainController { // Controller for fragments
@@ -21,6 +23,14 @@ public class mainController { // Controller for fragments
         return "contact";
     }
 
+
+    @GetMapping("/statistics")
+    public String showStat(Model model) {
+        model.addAttribute("title", "Statistics");
+        model.addAttribute("currentPage", "Statistics");
+        return "statistics";
+    }
+  
     @GetMapping("/nosotros")
     public String showAboutUs(Model model) {
         model.addAttribute("title", "Sobre Nosotros - Mokaf");
