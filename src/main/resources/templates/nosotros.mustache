@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokaf - Nosotros</title>
+    
+    <!-- Aquí enlazas tu CSS global -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/nosotros.css">
+</head>
+<body class="body-content">
+    <!-- Header -->
+    {{> fragments/header}}
+
+    <main class="container my-5">
+        <!-- Hero Section -->
+        <section class="about-section pt-0">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2>Nuestra Historia</h2>
+                    <div class="history-text">
+                        <p class="mb-4">Más que una cafetería, somos una <span class="history-highlight">familia apasionada</span> por el buen café.</p>
+                        <p>Fundada en 2010, <span class="history-highlight">Mokaf</span> nació con una misión simple: transformar la forma en que las personas experimentan el café. Lo que comenzó como un pequeño rincón para los amantes del espresso se ha convertido en un referente del café de especialidad.</p>
+                        <p>Nos enorgullecemos de trabajar directamente con agricultores locales y de comercio justo, asegurando que cada grano cuente una historia de sostenibilidad y excelencia. Nuestros baristas no solo sirven café; crean experiencias, perfeccionando cada taza con técnica y pasión.</p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="/menu" class="btn btn-header">Descubre Nuestros Sabores <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Interior de Mokaf" class="about-image img-fluid">
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Años de Experiencia</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">Premios Nacionales</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">15k+</span>
+                <span class="stat-label">Clientes Felices</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Café Orgánico</span>
+            </div>
+        </div>
+
+        <!-- Values Section -->
+        <section class="about-section">
+            <h2 class="text-center mb-5">Nuestros Valores</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-leaf value-icon"></i>
+                        <h4>Sostenibilidad</h4>
+                        <p>Comprometidos con el medio ambiente y prácticas de cultivo responsables. Utilizamos envases biodegradables y apoyamos la agricultura regenerativa.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-award value-icon"></i>
+                        <h4>Calidad Premium</h4>
+                        <p>Seleccionamos cuidadosamente los mejores granos de origen único. Nuestro proceso de tostado artesanal resalta las notas más sutiles de cada variedad.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="value-card">
+                        <i class="fas fa-users value-icon"></i>
+                        <h4>Comunidad</h4>
+                        <p>Creemos en el poder del café para unir a las personas. Mokaf es tu espacio para conectar, trabajar o simplemente relajarte.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section text-center">
+            <h2 class="text-center mb-5">Conoce al Equipo</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-4 col-lg-3 team-member">
+                    <div class="member-img-container">
+                        <img src="https://images.unsplash.com/photo-1583335513577-2244970207d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="María López" class="member-img">
+                    </div>
+                    <h4>María López</h4>
+                    <p class="member-role">Fundadora & Master Roaster</p>
+                    <p class="small text-muted">Visionaria detrás de cada blend exclusivo de Mokaf.</p>
+                </div>
+                <div class="col-md-4 col-lg-3 team-member">
+                    <div class="member-img-container">
+                        <img src="https://images.unsplash.com/photo-1542596594-649edbc13630?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Carlos Ruiz" class="member-img">
+                    </div>
+                    <h4>Carlos Ruiz</h4>
+                    <p class="member-role">Barista Principal</p>
+                    <p class="small text-muted">El artista que convierte la leche en lienzo.</p>
+                </div>
+                <div class="col-md-4 col-lg-3 team-member">
+                    <div class="member-img-container">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="Ana García" class="member-img">
+                    </div>
+                    <h4>Ana García</h4>
+                    <p class="member-role">Gerente de Experiencia</p>
+                    <p class="small text-muted">Asegurando que cada visita sea inolvidable.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    {{> fragments/footer}}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
