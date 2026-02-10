@@ -88,7 +88,7 @@ Indicar cuál será el algoritmo o consulta avanzada que se implementará:
 Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicación:
 
 
-![Diagrama de Navegación](./images/naviation-diagram.png)
+![Diagrama de Navegación](/images/naviation-diagram.png)
 
 > [Descripción del flujo de navegación:"Los usuarios no autenticados, al igual que a cualquier rol puede acceder a la página de inicio, ver el menú de productos disponibles, consultar las distintas sucursales, viistar la sección de Nosotros, página de contacto, acceso al login y registro y a las páginas de errores.
 
