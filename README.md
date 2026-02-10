@@ -87,9 +87,14 @@ Indicar cuál será el algoritmo o consulta avanzada que se implementará:
 ### **Diagrama de Navegación**
 Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicación:
 
-![Diagrama de Navegación](images/navigation-diagram.png)
 
-> [Descripción opcional del flujo de navegación: Ej: "El usuario puede acceder desde la página principal a todas las secciones mediante el menú de navegación. Los usuarios anónimos solo tienen acceso a las páginas públicas, mientras que los registrados pueden acceder a su perfil y panel de usuario."]
+![Diagrama de Navegación](./images/naviation-diagram.png)
+
+> [Descripción del flujo de navegación:"Los usuarios no autenticados, al igual que a cualquier rol puede acceder a la página de inicio, ver el menú de productos disponibles, consultar las distintas sucursales, viistar la sección de Nosotros, página de contacto, acceso al login y registro y a las páginas de errores.
+
+Un usuario registrado, podrá comprar productos, añadir productos al carrito, verificar el resúmen de su pedido, acceder al su perfil, consultar el historial de pedidos y getsión de datos personales.
+
+Por último pero no menos importante, el rol de Administrador tendrá acceso a su propio perfil, gestión de productos (crear, eliminar y editar), visualizar estadísticas de las últimas ventas y tener una visión global del funcionamiento del negocio."]
 
 ### **Capturas de Pantalla y Descripción de Páginas**
 
