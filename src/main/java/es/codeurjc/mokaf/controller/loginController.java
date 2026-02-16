@@ -19,7 +19,6 @@ public class loginController {
         return "index";
     }
 
-
     @GetMapping("/login")
     public String showLogin(Model model) {
         model.addAttribute("title", "Login");
