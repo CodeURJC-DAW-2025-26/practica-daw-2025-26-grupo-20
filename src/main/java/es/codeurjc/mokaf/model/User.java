@@ -1,80 +1,104 @@
 package es.codeurjc.mokaf.model;
 
-import java.util.List;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "MOKAF_USER")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false, length = 120)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 190)
     private String email;
-    private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
-    public User() {
+    // null si CUSTOMER, valor si ADMIN
+    @Column(name = "employee_id", unique = true, length = 50)
+    private String employeeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    private Image image;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    public enum Role {
+        CUSTOMER, ADMIN
     }
 
-    public User(String name, String email, String password, List<String> roles) {
+    public User() {}
+
+    public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
         this.email = email;
-        this.password = password;
-        this.roles = roles;
+        this.passwordHash = passwordHash;
+        this.role = role;
     }
 
-    public Long getId() {
-        return id;
+    // getters/setters
+    public Long getId() { 
+        return id; 
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getName() { 
+        return name; 
+    }
+    public void setName(String name) { 
+        this.name = name; 
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() { 
+        return email; 
+    }
+    public void setEmail(String email) { 
+        this.email = email; 
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPasswordHash() { 
+        return passwordHash; 
+    }
+    public void setPasswordHash(String passwordHash) { 
+        this.passwordHash = passwordHash; 
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmployeeId() { 
+        return employeeId; 
+    }
+    public void setEmployeeId(String employeeId) { 
+        this.employeeId = employeeId; 
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public Image getImage() { 
+        return image; 
+    }
+    public void setImage(Image image) { 
+        this.image = image; 
     }
 
-    public String getPassword() {
-        return password;
+    public Role getRole() { 
+        return role; 
+    }
+    public void setRole(Role role) { 
+        this.role = role; 
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public LocalDateTime getCreatedAt() { 
+        return createdAt; 
     }
 }
