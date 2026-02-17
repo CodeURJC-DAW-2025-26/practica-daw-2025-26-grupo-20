@@ -26,12 +26,28 @@
 
 .menu-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .menu-item {
     transition: all 0.3s ease;
 }
-.card-title, .card-text, .card-price {
+
+.card-title,
+.card-text,
+.card-price {
     color: var(--cafe-claro);
+}
+
+.btn-add-cart {
+    border-color: var(--dorado);
+    color: var(--dorado);
+    transition: all 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
 }
