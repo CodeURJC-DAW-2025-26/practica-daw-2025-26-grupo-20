@@ -35,10 +35,6 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Category category;
-
-    @Column(nullable = false)
-    private boolean active = true;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -81,10 +77,7 @@ public class Product {
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
-
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
-
+    
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public Set<Allergen> getAllergens() { return allergens; }
