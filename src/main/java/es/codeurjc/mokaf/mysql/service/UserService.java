@@ -14,8 +14,8 @@ public class UserService {
     private final List<User> users = new ArrayList<>();
 
     public UserService() {
-        users.add(new User("Admin User", "admin@mokaf.es", "hashedpass", Role.ADMIN));
-        users.add(new User("Alice Customer", "alice@test.com", "hashedpass", Role.CUSTOMER));
+        users.add(new User((long) 1,"Admin", "admin@mokaf.es", "hashedpass", Role.ADMIN));
+        users.add(new User((long) 2,"Alice", "alice@test.com", "hashedpass", Role.CUSTOMER));
     }
 
     public List<User> findAll() {

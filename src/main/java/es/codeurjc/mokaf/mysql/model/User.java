@@ -33,7 +33,8 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String passwordHash, Role role) {
+    public User(Long id,String name, String email, String passwordHash, Role role) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
