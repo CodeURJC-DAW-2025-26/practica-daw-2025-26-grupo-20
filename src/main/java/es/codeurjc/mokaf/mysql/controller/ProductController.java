@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController("mysqlProductController")
 @RequestMapping("/api/products")
 public class ProductController {
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service("mysqlOrderService")
 public class OrderService {
 
     private final List<Order> orders = new ArrayList<>();

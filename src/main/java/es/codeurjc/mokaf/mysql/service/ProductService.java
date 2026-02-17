@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service("mysqlProductService")
 public class ProductService {
 
     private final List<Product> products = new ArrayList<>();

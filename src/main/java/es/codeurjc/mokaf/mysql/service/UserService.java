@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service("mysqlUserService")
 public class UserService {
 
     private final List<User> users = new ArrayList<>();
