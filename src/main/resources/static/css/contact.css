@@ -48,14 +48,16 @@
     font-weight: 500;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     background-color: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--cafe-claro);
     color: var(--beige);
     transition: all 0.3s ease;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     background-color: rgba(0, 0, 0, 0.3);
     border-color: var(--dorado);
     color: var(--beige);
@@ -136,7 +138,7 @@
     font-weight: bold;
 }
 
-.contact-card .card-text, 
+.contact-card .card-text,
 .contact-card ul li {
     color: var(--cafe-claro);
 }
@@ -387,7 +389,7 @@
         top: 0;
         margin-top: 30px;
     }
-    
+
     .map-overlay {
         position: relative;
         top: 0;
@@ -395,7 +397,7 @@
         max-width: 100%;
         margin-bottom: 20px;
     }
-    
+
     .map-placeholder {
         height: 400px;
     }
@@ -405,16 +407,75 @@
     .contact-form-container {
         padding: 20px;
     }
-    
+
     .social-icon {
         width: 40px;
         height: 40px;
         font-size: 1rem;
     }
-    
+
     .team-avatar {
         width: 60px;
         height: 60px;
         font-size: 1.5rem;
     }
+}
+
+/* Accordion Styles */
+.accordion-item {
+    background-color: rgba(45, 35, 25, 0.8);
+    border: 1px solid var(--cafe-claro);
+    margin-bottom: 8px;
+    border-radius: 8px !important;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.accordion-button {
+    background-color: transparent;
+    color: var(--beige);
+    box-shadow: none !important;
+    font-weight: 500;
+    padding: 1rem 1.25rem;
+}
+
+.accordion-button:hover {
+    background-color: rgba(60, 45, 30, 0.9);
+    color: var(--dorado);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: rgba(60, 45, 30, 0.9);
+    color: var(--dorado);
+    border-bottom: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+.accordion-button::after {
+    filter: invert(90%) sepia(10%) saturate(150%) hue-rotate(320deg) brightness(95%) contrast(90%);
+    /* Beige-ish */
+    transition: all 0.3s ease;
+}
+
+.accordion-button:not(.collapsed)::after {
+    filter: invert(70%) sepia(30%) saturate(600%) hue-rotate(5deg) brightness(95%) contrast(90%);
+    /* Gold-ish */
+    transform: rotate(180deg);
+}
+
+.accordion-body {
+    color: var(--beige);
+    /* Changed from cafe-claro for better readability on dark background */
+    padding: 1.25rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.accordion-button i {
+    transition: color 0.3s ease;
+}
+
+.accordion-button:hover i,
+.accordion-button:not(.collapsed) i {
+    color: var(--dorado) !important;
 }
