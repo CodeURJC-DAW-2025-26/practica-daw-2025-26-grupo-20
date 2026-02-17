@@ -3,9 +3,16 @@ package es.codeurjc.mokaf.model;
 import java.time.LocalDateTime;
 
 public class Product {
+    public static Object Category;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private Long id;
     private String name;
+
+    @Lob
     private String description;
     private String basePrice;
     private String image;
@@ -15,7 +22,15 @@ public class Product {
     // Used by JPA
     public Product() {
 
-    }
+    @Column(name = "price_base", nullable = false, precision = 10, scale = 2)
+    private BigDecimal priceBase;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Category category;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     // Constructor
     public Product(Long id, String name, String description, String basePrice, String image, String category) {
@@ -24,6 +39,7 @@ public class Product {
         this.description = description;
         this.basePrice = basePrice;
         this.image = image;
+        this.priceBase = priceBase;
         this.category = category;
         this.timestamp = LocalDateTime.now();
     }

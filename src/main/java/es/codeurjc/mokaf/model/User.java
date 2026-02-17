@@ -1,80 +1,93 @@
 package es.codeurjc.mokaf.model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
-
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "MOKAF_USER")
+@Table(name = "users")
 public class User {
+
+    public enum Role {
+        CUSTOMER, ADMIN
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false, length = 120)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 190)
     private String email;
-    private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
-    public User() {
-    }
+    // null si CUSTOMER, valor si ADMIN
+    @Column(name = "employee_id", unique = true, length = 50)
+    private String employeeId;
 
-    public User(String name, String email, String password, List<String> roles) {
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id", unique = true)
+    private Image image;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    // Reviews para borrar en cascada al borrar el usuario
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+    public User() {}
+
+    public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
         this.email = email;
-        this.password = password;
-        this.roles = roles;
+        this.passwordHash = passwordHash;
+        this.role = role;
     }
 
-    public Long getId() {
-        return id;
+    public Long getId() { return id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+
+    public Image getImage() { return image; }
+    public void setImage(Image image) { this.image = image; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public List<Review> getReviews() { return reviews; }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setUser(null);
     }
 }

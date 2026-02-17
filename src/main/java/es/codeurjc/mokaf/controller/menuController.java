@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import es.codeurjc.mokaf.service.ProductService;
 
 @Controller
-public class menuController {
+public class MenuController {
 
         @Autowired
         @Qualifier("applicationProductService")
