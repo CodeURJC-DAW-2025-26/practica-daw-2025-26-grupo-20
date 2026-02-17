@@ -4,10 +4,16 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
+
+    public enum Role {
+        CUSTOMER, ADMIN
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,8 +32,8 @@ public class User {
     @Column(name = "employee_id", unique = true, length = 50)
     private String employeeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id", unique = true)
     private Image image;
 
     @Enumerated(EnumType.STRING)
@@ -38,9 +44,9 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    public enum Role {
-        CUSTOMER, ADMIN
-    }
+    // Reviews para borrar en cascada al borrar el usuario
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     public User() {}
 
@@ -51,54 +57,37 @@ public class User {
         this.role = role;
     }
 
-    // getters/setters
-    public Long getId() { 
-        return id; 
+    public Long getId() { return id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+
+    public Image getImage() { return image; }
+    public void setImage(Image image) { this.image = image; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public List<Review> getReviews() { return reviews; }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
     }
 
-    public String getName() { 
-        return name; 
-    }
-    public void setName(String name) { 
-        this.name = name; 
-    }
-
-    public String getEmail() { 
-        return email; 
-    }
-    public void setEmail(String email) { 
-        this.email = email; 
-    }
-
-    public String getPasswordHash() { 
-        return passwordHash; 
-    }
-    public void setPasswordHash(String passwordHash) { 
-        this.passwordHash = passwordHash; 
-    }
-
-    public String getEmployeeId() { 
-        return employeeId; 
-    }
-    public void setEmployeeId(String employeeId) { 
-        this.employeeId = employeeId; 
-    }
-
-    public Image getImage() { 
-        return image; 
-    }
-    public void setImage(Image image) { 
-        this.image = image; 
-    }
-
-    public Role getRole() { 
-        return role; 
-    }
-    public void setRole(Role role) { 
-        this.role = role; 
-    }
-
-    public LocalDateTime getCreatedAt() { 
-        return createdAt; 
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setUser(null);
     }
 }

@@ -5,12 +5,15 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "products")
 public class Product {
+    public static Object Category;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,8 +25,8 @@ public class Product {
     @Lob
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id", unique = true)
     private Image image;
 
     @Column(name = "price_base", nullable = false, precision = 10, scale = 2)
@@ -48,6 +51,10 @@ public class Product {
     )
     private Set<Allergen> allergens = new HashSet<>();
 
+    // Reviews para borrar en cascada al borrar el producto
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
     public Product() {}
 
     public Product(String name, String description, Image image, BigDecimal priceBase, Category category) {
@@ -58,60 +65,40 @@ public class Product {
         this.category = category;
     }
 
-    // getters/setters (añade los que te falten)
-    public Long getId() {
-        return id; 
-    }
-    public String getName() {
-        return name; 
-    }
-    public void setName(String name) { 
-        this.name = name; 
+    public Long getId() { return id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Image getImage() { return image; }
+    public void setImage(Image image) { this.image = image; }
+
+    public BigDecimal getPriceBase() { return priceBase; }
+    public void setPriceBase(BigDecimal priceBase) { this.priceBase = priceBase; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public Set<Allergen> getAllergens() { return allergens; }
+    public void setAllergens(Set<Allergen> allergens) { this.allergens = allergens; }
+
+    public List<Review> getReviews() { return reviews; }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setProduct(this);
     }
 
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description; 
-    }
-
-    public Image getImage() { 
-        return image; 
-    }
-    public void setImage(Image image) { 
-        this.image = image; 
-    }
-
-    public BigDecimal getPriceBase() { 
-        return priceBase; 
-    }
-    public void setPriceBase(BigDecimal priceBase) { 
-        this.priceBase = priceBase; 
-    }
-
-    public Category getCategory() { 
-        return category; 
-    }
-    public void setCategory(Category category) { 
-        this.category = category; 
-    }
-
-    public boolean isActive() { 
-        return active; 
-    }
-    public void setActive(boolean active) { 
-        this.active = active; 
-    }
-
-    public LocalDateTime getCreatedAt() { 
-        return createdAt; 
-    }
-
-    public Set<Allergen> getAllergens() { 
-        return allergens; 
-    }
-    public void setAllergens(Set<Allergen> allergens) { 
-        this.allergens = allergens; 
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setProduct(null);
     }
 }
