@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - Mokaf</title>
+    <title>{{title}}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/general.css">
@@ -14,14 +14,6 @@
     {{> fragments/header}}
 
     <main class="container my-5">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Contacto</li>
-            </ol>
-        </nav>
-
         <div class="row">
             <!-- Left Column - Contact Form -->
             <div class="col-lg-7">
@@ -108,11 +100,11 @@
                             <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
                             <h5 class="card-title">Nuestra Ubicación</h5>
                             <p class="card-text">
-                                Calle del Café, 123<br>
-                                28001 Madrid<br>
-                                España
+                                {{locationAddress}}<br>
+                                {{locationCity}}<br>
+                                {{locationCountry}}
                             </p>
-                            <a href="https://maps.google.com/?q=Calle+del+Café+123+Madrid" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <a href="{{mapUrl}}" target="_blank" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-directions me-1"></i>Ver en Maps
                             </a>
                         </div>
@@ -123,9 +115,9 @@
                             <i class="fas fa-clock fa-2x mb-3"></i>
                             <h5 class="card-title">Horario de Atención</h5>
                             <ul class="list-unstyled">
-                                <li><strong>Lunes a Viernes:</strong> 7:00 - 22:00</li>
-                                <li><strong>Sábados:</strong> 8:00 - 23:00</li>
-                                <li><strong>Domingos:</strong> 9:00 - 21:00</li>
+                                {{#hours}}
+                                <li><strong>{{.}}</strong></li>
+                                {{/hours}}
                             </ul>
                         </div>
                     </div>
@@ -135,9 +127,9 @@
                             <i class="fas fa-phone fa-2x mb-3"></i>
                             <h5 class="card-title">Contacto Directo</h5>
                             <ul class="list-unstyled">
-                                <li><i class="fas fa-phone-alt me-2"></i>+34 910 123 456</li>
-                                <li><i class="fas fa-envelope me-2"></i>info@mokaf.com</li>
-                                <li><i class="fas fa-headset me-2"></i>Atención al cliente: 24/7</li>
+                                <li><i class="fas fa-phone-alt me-2"></i>{{contactPhone}}</li>
+                                <li><i class="fas fa-envelope me-2"></i>{{contactEmail}}</li>
+                                <li><i class="fas fa-headset me-2"></i>{{contactSupport}}</li>
                             </ul>
                         </div>
                     </div>
@@ -171,18 +163,22 @@
                     <div class="faq-links mt-4">
                         <h6 class="mb-3"><i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes</h6>
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Hacen envíos a domicilio?
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Tienen opciones sin gluten?
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Puedo reservar una mesa?
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Venden granos de café?
-                            </a>
+                            <div class="accordion" id="faqAccordion">
+                                {{#faqs}}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{id}}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{id}}" aria-expanded="false" aria-controls="collapse{{id}}">
+                                            <i class="fas fa-question-circle me-2 text-primary"></i>{{question}}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{id}}" class="accordion-collapse collapse" aria-labelledby="heading{{id}}" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            {{answer}}
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/faqs}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,70 +193,27 @@
                     <!-- Google Maps Embed (placeholder) -->
                     <div class="map-placeholder">
                         <div class="map-overlay">
-                            <h5>Mokaf Café de Especialidad</h5>
-                            <p><i class="fas fa-map-marker-alt me-2"></i>Calle del Café, 123, Madrid</p>
-                            <p><i class="fas fa-subway me-2"></i>Metro: Sol (Líneas 1, 2, 3)</p>
-                            <p><i class="fas fa-bus me-2"></i>Autobuses: 3, 5, 9, 15, 20, 51, 52, 53</p>
+                            <h5>{{locationName}}</h5>
+                            <p><i class="fas fa-map-marker-alt me-2"></i>{{locationAddress}}, {{locationCity}}</p>
+                            <p><i class="fas fa-subway me-2"></i>{{locationMetro}}</p>
+                            <p><i class="fas fa-bus me-2"></i>{{locationBus}}</p>
                         </div>
                         <div class="map-image">
-                            <!-- En una implementación real, aquí iría el iframe de Google Maps -->
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <div class="text-center">
-                                    <i class="fas fa-map fa-3x mb-3"></i>
-                                    <p>Mapa de ubicación</p>
-                                </div>
-                            </div>
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                style="border:0; min-height: 400px;" 
+                                loading="lazy" 
+                                allowfullscreen 
+                                src="{{mapUrl}}">
+                            </iframe>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Contact Team -->
-        <div class="contact-team mt-5">
-            <h3 class="mb-4"><i class="fas fa-users me-2"></i>Nuestro Equipo de Atención</h3>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="team-card card h-100">
-                        <div class="card-body text-center">
-                            <div class="team-avatar mb-3">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <h5 class="card-title">María López</h5>
-                            <p class="card-subtitle mb-2 text-muted">Gerente</p>
-                            <p class="card-text small">Especialista en café de origen y atención al cliente.</p>
-                            <p class="contact-email"><i class="fas fa-envelope me-1"></i>maria@mokaf.com</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="team-card card h-100">
-                        <div class="card-body text-center">
-                            <div class="team-avatar mb-3">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <h5 class="card-title">Carlos Ruiz</h5>
-                            <p class="card-subtitle mb-2 text-muted">Barista Jefe</p>
-                            <p class="card-text small">Campeón nacional de latte art 2023.</p>
-                            <p class="contact-email"><i class="fas fa-envelope me-1"></i>carlos@mokaf.com</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="team-card card h-100">
-                        <div class="card-body text-center">
-                            <div class="team-avatar mb-3">
-                                <i class="fas fa-user-md"></i>
-                            </div>
-                            <h5 class="card-title">Ana García</h5>
-                            <p class="card-subtitle mb-2 text-muted">Atención al Cliente</p>
-                            <p class="card-text small">Encargada de eventos y reservas grupales.</p>
-                            <p class="contact-email"><i class="fas fa-envelope me-1"></i>ana@mokaf.com</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </main>
 
     {{> fragments/footer}}
