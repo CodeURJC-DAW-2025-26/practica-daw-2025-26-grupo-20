@@ -10,7 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Image;
 import es.codeurjc.mokaf.service.ProductService;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.sql.rowset.serial.SerialBlob;
 
 @Controller
 public class GestionController {
@@ -33,12 +39,20 @@ public class GestionController {
             @RequestParam String description,
             @RequestParam String price,
             @RequestParam String image,
-            @RequestParam String category) {
+            @RequestParam String category) throws Exception {
 
-        // Ensure price has symbol
-        String priceWithSymbol = price.contains("€") ? price : price + "€";
+        // Convert price to BigDecimal
+        String priceValue = price.replace("€", "").trim();
+        BigDecimal priceBase = new BigDecimal(priceValue);
 
-        Product newProduct = new Product(name, description, priceWithSymbol, image, category);
+        // Convert category string to enum
+        Category categoryEnum = Category.valueOf(category.toUpperCase());
+
+        // Convert image file to Blob
+        byte[] imageData = Files.readAllBytes(Paths.get(image));
+        Image imageObj = new Image(new SerialBlob(imageData));
+
+        Product newProduct = new Product(name, description, imageObj, priceBase, categoryEnum);
         productService.addProduct(newProduct);
 
         return "redirect:/gestion_menu";
@@ -51,12 +65,20 @@ public class GestionController {
             @RequestParam String description,
             @RequestParam String price,
             @RequestParam String image,
-            @RequestParam String category) {
+            @RequestParam String category) throws Exception {
 
-        // Ensure price has symbol
-        String priceWithSymbol = price.contains("€") ? price : price + "€";
+        // Convert price to BigDecimal
+        String priceValue = price.replace("€", "").trim();
+        BigDecimal priceBase = new BigDecimal(priceValue);
 
-        Product updatedProduct = new Product(name, description, priceWithSymbol, image, category);
+        // Convert category string to enum
+        Category categoryEnum = Category.valueOf(category.toUpperCase());
+
+        // Convert image file to Blob
+        byte[] imageData = Files.readAllBytes(Paths.get(image));
+        Image imageObj = new Image(new SerialBlob(imageData));
+
+        Product updatedProduct = new Product(name, description, imageObj, priceBase, categoryEnum);
         productService.updateProduct(id, updatedProduct);
 
         return "redirect:/gestion_menu";
