@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
 import es.codeurjc.mokaf.model.Product;
 
-@Service
+@Service("applicationProductService")
 public class ProductService {
 
         private List<Product> products = new ArrayList<>();
