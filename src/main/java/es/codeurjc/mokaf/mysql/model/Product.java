@@ -35,10 +35,8 @@ public class Product {
         HOT, COLD, BLENDED, DESSERTS, NON_COFFEE
     }
 
-    public Product() {
-    }
-
-    public Product(String name, String description, BigDecimal priceBase, Category category, Boolean active) {
+    public Product(Long id,String name, String description, BigDecimal priceBase, Category category, Boolean active) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.priceBase = priceBase;

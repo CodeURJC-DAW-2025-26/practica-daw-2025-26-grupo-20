@@ -15,9 +15,9 @@ public class ProductService {
     private final List<Product> products = new ArrayList<>();
 
     public ProductService() {
-        products.add(new Product("Expreso", "Café negro fuerte", new BigDecimal("2.50"), Category.HOT, true));
-        products.add(new Product("Iced Latte", "Café con leche y hielo", new BigDecimal("3.50"), Category.COLD, true));
-        products.add(new Product("Croissant", "Bollería francesa", new BigDecimal("2.00"), Category.DESSERTS, true));
+        products.add(new Product((long) 1,"Expreso", "Café negro fuerte", new BigDecimal("2.50"), Category.HOT, true));
+        products.add(new Product((long)2,"Iced Latte", "Café con leche y hielo", new BigDecimal("3.50"), Category.COLD, true));
+        products.add(new Product((long)3,"Croissant", "Bolleria francesa", new BigDecimal("2.00"), Category.DESSERTS, true));
     }
 
     public List<Product> findAll() {
