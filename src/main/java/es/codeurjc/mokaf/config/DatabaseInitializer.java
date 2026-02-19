@@ -1,159 +1,147 @@
 package es.codeurjc.mokaf.config;
 
-import es.codeurjc.mokaf.model.*;
-import es.codeurjc.mokaf.model.Order.Status;
-import es.codeurjc.mokaf.model.User.Role;
-import es.codeurjc.mokaf.repository.*;
-
+import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.repository.ImageRepository;
+import es.codeurjc.mokaf.repository.ProductRepository;
+import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.rowset.serial.SerialBlob;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Configuration
-@Profile("dev")
-public class DatabaseInitializer {
+@Component
+public class DatabaseInitializer implements ApplicationRunner {
 
-    private Blob createBlob(String tag) throws Exception {
-        byte[] bytes = ("DUMMY_IMAGE_" + tag).getBytes(StandardCharsets.UTF_8);
-        return new SerialBlob(bytes);
+    private final ProductRepository productRepository;
+    private final ImageRepository imageRepository;
+
+    public DatabaseInitializer(ProductRepository productRepository, ImageRepository imageRepository) {
+        this.productRepository = productRepository;
+        this.imageRepository = imageRepository;
     }
 
-    @Bean
-    public ApplicationRunner seedDatabase(
-            BranchRepository branchRepo,
-            UserRepository userRepo,
-            ProductRepository productRepo,
-            AllergenRepository allergenRepo,
-            OrderRepository orderRepo,
-            ReviewRepository reviewRepo
-    ) {
-        return args -> {
+    @Override
+    @Transactional
+    public void run(ApplicationArguments args) throws Exception {
 
-            // Evita resembrar si ya hay algo
-            if (userRepo.count() > 0 || productRepo.count() > 0 || branchRepo.count() > 0) {
-                return;
+        // 1) BORRAR TODO (si quieres mantener datos, quita esto)
+        productRepository.deleteAll();   // por orphanRemoval debería borrar images
+        imageRepository.deleteAll();     // seguridad extra
+
+        // 2) Cargar catálogo
+        List<ProductSeed> seeds = List.of(
+                // HOT
+                new ProductSeed("Expreso", "Café negro fuerte y aromático.", "2.50", Category.HOT,
+                        "/static/images/MenuImages/Hot/Expreso.png"),
+                new ProductSeed("Capuccino", "Expreso con leche vaporizada y espuma.", "3.50", Category.HOT,
+                        "/static/images/MenuImages/Hot/Capuccino.png"),
+                new ProductSeed("Americano", "Expreso diluido con agua caliente.", "2.80", Category.HOT,
+                        "/static/images/MenuImages/Hot/Americano.png"),
+                new ProductSeed("Latte", "Expreso con una generosa cantidad de leche vaporizada.", "3.20", Category.HOT,
+                        "/static/images/MenuImages/Hot/Latte.png"),
+
+                // COLD
+                new ProductSeed("Iced Latte", "Expreso y leche fría sobre hielo.", "4.00", Category.COLD,
+                        "/static/images/MenuImages/Cold/IcedLatte.png"),
+                new ProductSeed("Frappe", "Café batido con hielo, refrescante y cremoso.", "4.20", Category.COLD,
+                        "/static/images/MenuImages/Cold/Frappe.png"),
+                new ProductSeed("Iced Americano", "Expreso y agua fría servido sobre hielo.", "3.00", Category.COLD,
+                        "/static/images/MenuImages/Cold/IcedAmericano.png"),
+                new ProductSeed("Iced Vietnamese Coffe", "Café con leche condensada y hielo.", "4.50", Category.COLD,
+                        "/static/images/MenuImages/Cold/IcedVietnameseCoffe.png"),
+
+                // BLENDED
+                new ProductSeed("Frapuccino", "Bebida de café mezclada con hielo y sabores.", "4.50", Category.BLENDED,
+                        "/static/images/MenuImages/Blended/Frapuccino.png"),
+                new ProductSeed("Chocolate Coffee Blend", "Mezcla de café y chocolate, batido con hielo.", "4.80", Category.BLENDED,
+                        "/static/images/MenuImages/Blended/ChocolateCoffeeBlend.png"),
+                new ProductSeed("Hazelnut Coffee Shake", "Batido de café con sirope de avellana.", "4.80", Category.BLENDED,
+                        "/static/images/MenuImages/Blended/HazelnutCoffeeShake.png"),
+                new ProductSeed("Vanilla Frappe", "Frappé suave con un toque de vainilla.", "4.60", Category.BLENDED,
+                        "/static/images/MenuImages/Blended/VanillaFrappe.png"),
+
+                // DESSERTS
+                new ProductSeed("Croissants", "Clásico hojaldre francés.", "2.00", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/Croisants.png"),
+                new ProductSeed("Chocolate Carrot Cake", "Pastel de zanahoria con cobertura de chocolate.", "3.50", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/ChocolateCarrotCake.png"),
+                new ProductSeed("Chocolate Cupcake", "Muffin de chocolate con frosting.", "2.80", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/ChocolateCupcake.png"),
+                new ProductSeed("Chocolate Green Tea Cupcake", "Muffin de té verde con corazón de chocolate.", "3.00", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png"),
+                new ProductSeed("Dulce De Leche Desserts", "Postre cremoso de dulce de leche.", "3.20", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/DulceDeLecheDesserts.png"),
+                new ProductSeed("Orange Cake", "Bizcocho esponjoso con sabor a naranja.", "3.50", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/OrangeCake.png"),
+                new ProductSeed("Red Velvet Cupcake", "Clásico muffin Red Velvet con frosting de queso.", "3.00", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/RedVelvetCupcake.png"),
+                new ProductSeed("Strawberry Cake", "Pastel de fresas con nata.", "3.80", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/StrawberryCake.png"),
+                new ProductSeed("Vanilla Cupcake", "Muffin de vainilla con frosting.", "2.80", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/VanillaCupcake.png"),
+
+                // NON-COFFEE
+                new ProductSeed("Herbal Tea", "Infusión relajante sin cafeína.", "3.00", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/HerbalTea.png"),
+                new ProductSeed("Chai Tea Latte", "Té negro especiado con leche vaporizada.", "3.80", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/ChatTeaLatte.png"),
+                new ProductSeed("Golden Milk", "Leche con cúrcuma y especias.", "4.00", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/GoldenMilk.png"),
+                new ProductSeed("Hot Chocolate", "Chocolate caliente espeso y cremoso.", "3.50", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/HotChocolate.png"),
+                new ProductSeed("Matcha Latte", "Té verde matcha con leche vaporizada.", "4.20", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/MatchaLatte.png")
+        );
+
+        // 3) Insertar
+        for (ProductSeed s : seeds) {
+            Product p = new Product();
+            p.setName(s.name);
+            p.setDescription(s.description);
+            p.setPriceBase(new BigDecimal(s.price));
+            p.setCategory(s.category);
+
+            Image img = new Image();
+            img.setImageFile(loadAsBlob(s.classpathImagePath));
+            p.setImage(img);
+
+            productRepository.save(p); // cascade guarda Image
+        }
+
+        System.out.println(">>> DB seeded: " + seeds.size() + " products");
+    }
+
+    private Blob loadAsBlob(String classpathPath) throws Exception {
+        byte[] bytes;
+        try (InputStream is = getClass().getResourceAsStream(classpathPath)) {
+            if (is == null) {
+                throw new IllegalStateException("No se encontró recurso: " + classpathPath);
             }
+            bytes = is.readAllBytes();
+        }
+        return BlobProxy.generateProxy(bytes);
+    }
 
-            // -------- Branches --------
-            Branch b1 = new Branch("Sucursal Centro", "Sucursal principal", new BigDecimal("10.00"));
-            Branch b2 = new Branch("Sucursal Norte", "Sucursal secundaria", new BigDecimal("0.00"));
-            branchRepo.save(b1);
-            branchRepo.save(b2);
+    private static class ProductSeed {
+        final String name;
+        final String description;
+        final String price;
+        final Category category;
+        final String classpathImagePath;
 
-            // -------- Users (IMPORTANTE: NO guardes Image aparte) --------
-            User u1 = new User("Cliente Demo", "cliente@mokaf.test", "hash-demo", Role.CUSTOMER);
-            u1.setImage(new Image(createBlob("USER1")));
-
-            User admin = new User("Admin Demo", "admin@mokaf.test", "hash-admin", Role.ADMIN);
-            admin.setEmployeeId("EMP-0001");
-            admin.setImage(new Image(createBlob("USER2")));
-
-            userRepo.save(u1);
-            userRepo.save(admin);
-
-            // -------- Allergens --------
-            Allergen gluten = new Allergen("GLUTEN");
-            Allergen lactosa = new Allergen("LACTOSA");
-            Allergen frutosSecos = new Allergen("FRUTOS_SECOS");
-            allergenRepo.save(gluten);
-            allergenRepo.save(lactosa);
-            allergenRepo.save(frutosSecos);
-
-            // -------- Products (IMPORTANTE: NO guardes Image aparte) --------
-                Product p1 = new Product(
-                    "Expreso",
-                    "Café fuerte",
-                    new Image(createBlob("PROD1")),
-                    new BigDecimal("2.50"),
-                    Category.HOT
-                );
-
-                Product p2 = new Product(
-                    "Capuccino",
-                    "Con leche y espuma",
-                    new Image(createBlob("PROD2")),
-                    new BigDecimal("3.50"),
-                    Category.HOT
-                );
-
-                Product p3 = new Product(
-                    "Brownie",
-                    "Chocolate intenso",
-                    new Image(createBlob("PROD3")),
-                    new BigDecimal("2.90"),
-                    Category.DESSERTS
-                );
-
-            // ManyToMany (si no quieres helpers, esto vale para seed)
-            p2.getAllergens().add(lactosa);
-            p3.getAllergens().add(gluten);
-            p3.getAllergens().add(frutosSecos);
-
-            productRepo.save(p1);
-            productRepo.save(p2);
-            productRepo.save(p3);
-
-            // -------- Order (carrito) + items --------
-            Order cart = new Order();
-            cart.setUser(u1);
-            cart.setBranch(b1);
-            cart.setStatus(Status.CART);
-
-            BigDecimal discountPercent = b1.getPurchaseDiscountPercent(); // 10.00
-            cart.setDiscountPercent(discountPercent);
-
-            int q1 = 2;
-            BigDecimal unit1 = p1.getPriceBase();
-            BigDecimal finalUnit1 = unit1.multiply(BigDecimal.ONE.subtract(discountPercent.divide(new BigDecimal("100"))));
-            BigDecimal line1 = finalUnit1.multiply(new BigDecimal(q1));
-            cart.addItem(new OrderItem(p1, q1, unit1, finalUnit1, line1));
-
-            int q2 = 1;
-            BigDecimal unit2 = p2.getPriceBase();
-            BigDecimal finalUnit2 = unit2.multiply(BigDecimal.ONE.subtract(discountPercent.divide(new BigDecimal("100"))));
-            BigDecimal line2 = finalUnit2.multiply(new BigDecimal(q2));
-            cart.addItem(new OrderItem(p2, q2, unit2, finalUnit2, line2));
-
-            BigDecimal subtotal = unit1.multiply(new BigDecimal(q1)).add(unit2.multiply(new BigDecimal(q2)));
-            BigDecimal discountAmount = subtotal.multiply(discountPercent.divide(new BigDecimal("100")));
-            BigDecimal total = subtotal.subtract(discountAmount);
-
-            cart.setSubtotalAmount(subtotal);
-            cart.setDiscountAmount(discountAmount);
-            cart.setTotalAmount(total);
-
-            orderRepo.save(cart);
-
-            // -------- Review --------
-            Review r1 = new Review(u1, p1, 5, "Muy bueno. Volveré a pedirlo.");
-            reviewRepo.save(r1);
-
-            // -------- Paid order demo (opcional) --------
-            Order paid = new Order();
-            paid.setUser(u1);
-            paid.setBranch(b2);
-            paid.setStatus(Status.PAID);
-            paid.setPaidAt(LocalDateTime.now());
-            paid.setDiscountPercent(b2.getPurchaseDiscountPercent()); // 0.00
-
-            int q3 = 1;
-            BigDecimal unit3 = p3.getPriceBase();
-            BigDecimal finalUnit3 = unit3;
-            BigDecimal line3 = finalUnit3.multiply(new BigDecimal(q3));
-            paid.addItem(new OrderItem(p3, q3, unit3, finalUnit3, line3));
-
-            paid.setSubtotalAmount(unit3);
-            paid.setDiscountAmount(BigDecimal.ZERO);
-            paid.setTotalAmount(unit3);
-
-            orderRepo.save(paid);
-        };
+        ProductSeed(String name, String description, String price, Category category, String classpathImagePath) {
+            this.name = name;
+            this.description = description;
+            this.price = price;
+            this.category = category;
+            this.classpathImagePath = classpathImagePath;
+        }
     }
 }

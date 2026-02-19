@@ -1,27 +1,24 @@
 package es.codeurjc.mokaf.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import es.codeurjc.mokaf.repository.ProductRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import es.codeurjc.mokaf.service.ProductService;
-
 @Controller
 public class MenuController {
 
-        @Autowired
-        @Qualifier("applicationProductService")
-        private ProductService productService;
+    private final ProductRepository productRepository;
 
-        @GetMapping("/menu")
-        public String showMenu(Model model) {
-                model.addAttribute("title", "Menú");
-                model.addAttribute("items", productService.getAllProducts()); // Añadimos la lista del servicio al
-                                                                              // modelo
-                model.addAttribute("currentPage", "menu");
-                return "menu"; // Devuelve el nombre de la plantilla
-        }
+    public MenuController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
+    @GetMapping("/menu")
+    public String showMenu(Model model) {
+        model.addAttribute("title", "Menú");
+        model.addAttribute("items", productRepository.findAll());
+        model.addAttribute("currentPage", "menu");
+        return "menu";
+    }
 }
