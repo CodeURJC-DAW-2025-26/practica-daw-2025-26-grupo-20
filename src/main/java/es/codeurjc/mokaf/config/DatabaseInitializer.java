@@ -1,30 +1,42 @@
 package es.codeurjc.mokaf.config;
 
-import es.codeurjc.mokaf.model.Category;
-import es.codeurjc.mokaf.model.Image;
-import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.repository.ImageRepository;
-import es.codeurjc.mokaf.repository.ProductRepository;
-import org.hibernate.engine.jdbc.BlobProxy;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.List;
+
+import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.model.User;
+import es.codeurjc.mokaf.repository.ImageRepository;
+import es.codeurjc.mokaf.repository.ProductRepository;
+import es.codeurjc.mokaf.repository.UserRepository;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
 
     private final ProductRepository productRepository;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public DatabaseInitializer(ProductRepository productRepository, ImageRepository imageRepository) {
+    public DatabaseInitializer(ProductRepository productRepository, 
+                               ImageRepository imageRepository,
+                               UserRepository userRepository) {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -32,10 +44,14 @@ public class DatabaseInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         // 1) BORRAR TODO (si quieres mantener datos, quita esto)
-        productRepository.deleteAll();   // por orphanRemoval debería borrar images
-        imageRepository.deleteAll();     // seguridad extra
+        productRepository.deleteAll();
+        imageRepository.deleteAll();
+        userRepository.deleteAll();
 
-        // 2) Cargar catálogo
+        // 2) CREAR USUARIOS DE EJEMPLO
+        createUsers();
+
+        // 3) Cargar catálogo de productos
         List<ProductSeed> seeds = List.of(
                 // HOT
                 new ProductSeed("Expreso", "Café negro fuerte y aromático.", "2.50", Category.HOT,
@@ -100,7 +116,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "/static/images/MenuImages/Non-Coffee/MatchaLatte.png")
         );
 
-        // 3) Insertar
+        // 4) Insertar productos
         for (ProductSeed s : seeds) {
             Product p = new Product();
             p.setName(s.name);
@@ -112,10 +128,68 @@ public class DatabaseInitializer implements ApplicationRunner {
             img.setImageFile(loadAsBlob(s.classpathImagePath));
             p.setImage(img);
 
-            productRepository.save(p); // cascade guarda Image
+            productRepository.save(p);
         }
 
         System.out.println(">>> DB seeded: " + seeds.size() + " products");
+    }
+
+    private void createUsers() {
+        // ========== 2 ADMINS ==========
+        
+        // Admin 1
+        User admin1 = new User();
+        admin1.setName("Administrador Principal");
+        admin1.setEmail("admin@mokaf.com");
+        admin1.setPasswordHash(passwordEncoder.encode("admin123"));
+        admin1.setRole(User.Role.ADMIN);
+        admin1.setEmployeeId("EMP-001");
+        userRepository.save(admin1);
+        
+        // Admin 2
+        User admin2 = new User();
+        admin2.setName("María González");
+        admin2.setEmail("maria.admin@mokaf.com");
+        admin2.setPasswordHash(passwordEncoder.encode("maria456"));
+        admin2.setRole(User.Role.ADMIN);
+        admin2.setEmployeeId("EMP-002");
+        userRepository.save(admin2);
+        
+        // ========== 4 USUARIOS (CUSTOMERS) ==========
+        
+        // Usuario 1
+        User user1 = new User();
+        user1.setName("Carlos Rodríguez");
+        user1.setEmail("carlos@email.com");
+        user1.setPasswordHash(passwordEncoder.encode("carlos123"));
+        user1.setRole(User.Role.CUSTOMER);
+        userRepository.save(user1);
+        
+        // Usuario 2
+        User user2 = new User();
+        user2.setName("Ana Martínez");
+        user2.setEmail("ana@email.com");
+        user2.setPasswordHash(passwordEncoder.encode("ana456"));
+        user2.setRole(User.Role.CUSTOMER);
+        userRepository.save(user2);
+        
+        // Usuario 3
+        User user3 = new User();
+        user3.setName("Luis Fernández");
+        user3.setEmail("luis@email.com");
+        user3.setPasswordHash(passwordEncoder.encode("luis789"));
+        user3.setRole(User.Role.CUSTOMER);
+        userRepository.save(user3);
+        
+        // Usuario 4
+        User user4 = new User();
+        user4.setName("Sofía López");
+        user4.setEmail("sofia@email.com");
+        user4.setPasswordHash(passwordEncoder.encode("sofia012"));
+        user4.setRole(User.Role.CUSTOMER);
+        userRepository.save(user4);
+        
+        System.out.println(">>> Users created: 2 ADMINS + 4 CUSTOMERS");
     }
 
     private Blob loadAsBlob(String classpathPath) throws Exception {
