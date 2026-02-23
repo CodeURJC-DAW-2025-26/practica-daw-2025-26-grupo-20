@@ -45,7 +45,6 @@ public class DatabaseInitializer implements ApplicationRunner {
 
         // 1) BORRAR TODO (si quieres mantener datos, quita esto)
         productRepository.deleteAll();
-        imageRepository.deleteAll();
         userRepository.deleteAll();
 
         // 2) CREAR USUARIOS DE EJEMPLO
