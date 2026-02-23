@@ -96,6 +96,35 @@
             </ul>
         </section>
 
+        <!-- Reseñas -->
+        <section class="product-section">
+            <h3 class="section-title">Reseñas</h3>
+
+            <div id="reviewsList">
+                {{#product.reviews}}
+                    <div class="review-card">
+                        <div class="review-head">
+                            <div class="review-user">
+                                <div class="avatar">•</div>
+                                <div>
+                                    <div class="review-name">{{user.name}}</div>
+                                    <div class="review-date">{{createdAt}}</div>
+                                </div>
+                            </div>
+                            <div class="review-stars">
+                                <span>★ {{stars}}/5</span>
+                            </div>
+                        </div>
+                        <p class="review-text">{{text}}</p>
+                    </div>
+                {{/product.reviews}}
+
+                {{^product.reviews}}
+                    <p class="section-text">Aún no hay reseñas para este producto.</p>
+                {{/product.reviews}}
+            </div>
+        </section>
+
     </main>
 
     {{> fragments/footer}}
