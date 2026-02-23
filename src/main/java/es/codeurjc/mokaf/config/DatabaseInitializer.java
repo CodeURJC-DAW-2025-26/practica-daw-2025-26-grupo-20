@@ -20,6 +20,9 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.repository.ImageRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
+import es.codeurjc.mokaf.model.Review;
+import es.codeurjc.mokaf.repository.ReviewRepository;
+
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
@@ -27,16 +30,19 @@ public class DatabaseInitializer implements ApplicationRunner {
     private final ProductRepository productRepository;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public DatabaseInitializer(ProductRepository productRepository, 
-                               ImageRepository imageRepository,
-                               UserRepository userRepository) {
-        this.productRepository = productRepository;
-        this.imageRepository = imageRepository;
-        this.userRepository = userRepository;
+    public DatabaseInitializer(ProductRepository productRepository,
+                           ImageRepository imageRepository,
+                           UserRepository userRepository,
+                           ReviewRepository reviewRepository) {
+    this.productRepository = productRepository;
+    this.imageRepository = imageRepository;
+    this.userRepository = userRepository;
+    this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -44,6 +50,7 @@ public class DatabaseInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         // 1) BORRAR TODO (si quieres mantener datos, quita esto)
+        reviewRepository.deleteAll();
         productRepository.deleteAll();
         imageRepository.deleteAll();
         userRepository.deleteAll();
@@ -131,6 +138,7 @@ public class DatabaseInitializer implements ApplicationRunner {
             productRepository.save(p);
         }
 
+        createReviews();
         System.out.println(">>> DB seeded: " + seeds.size() + " products");
     }
 
@@ -218,4 +226,41 @@ public class DatabaseInitializer implements ApplicationRunner {
             this.classpathImagePath = classpathImagePath;
         }
     }
+
+    private void createReviews() {
+
+        List<User> users = userRepository.findAll();
+        List<Product> products = productRepository.findAll();
+
+        if (users.isEmpty() || products.isEmpty()) return;
+
+        int[] stars = {5, 4, 5, 4, 5, 3};
+        String[] texts = {
+                "Café excelente, aromático y bien equilibrado.",
+                "Muy buen servicio y presentación impecable.",
+                "El capuccino estaba espectacular, repetiré.",
+                "Buena relación calidad-precio. Recomendable.",
+                "Postres muy ricos, especialmente la red velvet.",
+                "Correcto, aunque lo prefiero un poco más intenso."
+        };
+
+        for (int i = 0; i < users.size(); i++) {
+                User u = users.get(i);
+
+                // Si NO quieres admins reseñando, usa esto:
+                // if (u.getRole() == User.Role.ADMIN) continue;
+
+                Product p = products.get(i % products.size());
+
+                Review r = new Review();
+                r.setUser(u);
+                r.setProduct(p);
+                r.setStars(stars[i % stars.length]);
+                r.setText(texts[i % texts.length]);
+
+                reviewRepository.save(r);
+        }
+
+        System.out.println(">>> Reviews created: " + users.size());
+        }
 }
