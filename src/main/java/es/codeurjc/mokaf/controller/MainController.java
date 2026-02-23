@@ -23,6 +23,8 @@ public class MainController { // Controller for fragments
         return "cart";
     }
 
+  
+   
     @GetMapping("/contact")
     public String showContact(HttpServletRequest request, Model model) {
         model.addAttribute("title", "Contact Us");
@@ -87,10 +89,4 @@ public class MainController { // Controller for fragments
         return "statistics";
     }
 
-    @GetMapping("/nosotros")
-    public String showAboutUs(Model model) {
-        model.addAttribute("title", "Sobre Nosotros - Mokaf");
-        model.addAttribute("currentPage", "nosotros");
-        return "nosotros";
-    }
 }
