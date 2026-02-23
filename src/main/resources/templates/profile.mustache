@@ -55,6 +55,16 @@
                         <i class="fas fa-history"></i>
                         <span>Historial de Pedidos</span>
                     </a>
+                    
+                    <!-- BOTÓN CERRAR SESIÓN -->
+                    <form action="/logout" method="post" class="mt-3">
+                        {{#_csrf}}
+                        <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}"/>
+                        {{/_csrf}}
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -65,7 +75,9 @@
                     <p class="profile-form-subtitle">Actualiza tus datos personales</p>
                     
                     <form action="/profile/update" method="post">
+                        {{#_csrf}}
                         <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}"/>
+                        {{/_csrf}}
                         
                         <div class="mb-3">
                             <label class="form-label">Nombre completo</label>
@@ -110,7 +122,9 @@
                 <div class="delete-account-section">
                     <form action="/profile/delete" method="post" 
                           onsubmit="return confirm('¿Estás seguro de eliminar tu cuenta? Esta acción no se puede deshacer.');">
+                        {{#_csrf}}
                         <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}"/>
+                        {{/_csrf}}
                         <button type="submit" class="btn btn-delete-account">
                             <i class="fas fa-trash-alt"></i> Eliminar mi cuenta
                         </button>

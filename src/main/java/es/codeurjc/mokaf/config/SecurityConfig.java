@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -28,9 +29,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Authentication provider with UserService and PasswordEncoder
-     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -39,40 +37,40 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    /**
-     * Expose AuthenticationManager as bean so it can be injected in controllers
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
+    public SecurityContextRepository securityContextRepository() {
+        HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+        repo.setSpringSecurityContextKey("SPRING_SECURITY_CONTEXT");
+        return repo;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Enable CSRF for form security
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+            )
             
-            // URL authorization rules
+            .securityContext(context -> context
+                .securityContextRepository(securityContextRepository())
+                .requireExplicitSave(false) // Automatically save security context
+            )
+            
             .authorizeHttpRequests(auth -> auth
-                // Static resources
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                
-                // Public pages
                 .requestMatchers("/", "/index", "/menu", "/nosotros", 
                                "/sucursales", "/contact", "/login", "/register").permitAll()
-                
-                // Admin only
                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**", 
                                "/statistics", "/gestion_menu").hasRole("ADMIN")
-                
-                // Authenticated users only
                 .requestMatchers("/profile", "/profile/**", "/cart", "/orders").authenticated()
-                
                 .anyRequest().permitAll()
             )
             
-            // Form login
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
@@ -83,7 +81,6 @@ public class SecurityConfig {
                 .permitAll()
             )
             
-            // Logout
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
                 .logoutSuccessUrl("/login?logout=true")
@@ -94,6 +91,7 @@ public class SecurityConfig {
             
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
             );
         
         return http.build();

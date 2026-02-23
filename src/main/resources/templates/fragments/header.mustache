@@ -28,12 +28,27 @@
                     </li>
                 </ul>
                 
-                <div class="d-flex">
-                    <!-- Este botón SIEMPRE va a /login -->
-                    <!-- Si está logueado, Spring Security redirige automáticamente -->
-                    <a href="/login" class="btn btn-header me-2">
-                        <i class="fas fa-user me-1"></i> Mi Cuenta
-                    </a>
+                <div class="d-flex align-items-center">
+                    {{#user}}
+                        <!-- Usuario logueado: Botón Mi Perfil -->
+                        {{#isAdmin}}
+                            <a href="/profileADMIN" class="btn btn-header me-2">
+                                <i class="fas fa-user me-1"></i> Mi Perfil
+                            </a>
+                        {{/isAdmin}}
+                        {{^isAdmin}}
+                            <a href="/profile" class="btn btn-header me-2">
+                                <i class="fas fa-user me-1"></i> Mi Perfil
+                            </a>
+                        {{/isAdmin}}
+                    {{/user}}
+                    
+                    {{^user}}
+                        <!-- Usuario NO logueado: Botón Mi Cuenta (va a login) -->
+                        <a href="/login" class="btn btn-header me-2">
+                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        </a>
+                    {{/user}}
                     
                     <a href="/cart" class="btn btn-header">
                         <i class="fas fa-shopping-cart me-1"></i> Carrito
