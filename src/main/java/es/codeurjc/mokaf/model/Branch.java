@@ -17,15 +17,12 @@ public class Branch {
     @Lob
     private String description;
 
-    @Column(name = "purchase_discount_percent", nullable = false, precision = 5, scale = 2)
-    private BigDecimal purchaseDiscountPercent = BigDecimal.ZERO;
 
     public Branch() {}
 
     public Branch(String name, String description, BigDecimal purchaseDiscountPercent) {
         this.name = name;
         this.description = description;
-        this.purchaseDiscountPercent = purchaseDiscountPercent;
     }
 
     public Long getId() { 
@@ -46,10 +43,4 @@ public class Branch {
         this.description = description; 
     }
 
-    public BigDecimal getPurchaseDiscountPercent() { 
-        return purchaseDiscountPercent; 
-    }
-    public void setPurchaseDiscountPercent(BigDecimal purchaseDiscountPercent) { 
-        this.purchaseDiscountPercent = purchaseDiscountPercent; 
-    }
 }
