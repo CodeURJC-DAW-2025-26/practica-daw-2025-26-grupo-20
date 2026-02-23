@@ -30,7 +30,12 @@ public class ProfileController {
                          Model model) {
         
         User user = getCurrentUser(authentication);
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            System.out.println("PROFILE: No authenticated user found, redirecting to login");
+            return "redirect:/login";
+        }
+        
+        System.out.println("PROFILE: Authenticated user: " + user.getEmail() + " with role: " + user.getRole());
         
         if (user.getRole() == User.Role.ADMIN) {
             return "redirect:/profileADMIN";
@@ -48,7 +53,12 @@ public class ProfileController {
                               Model model) {
         
         User user = getCurrentUser(authentication);
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            System.out.println("PROFILE_ADMIN: No authenticated user found, redirecting to login");
+            return "redirect:/login";
+        }
+        
+        System.out.println("PROFILE_ADMIN: Authenticated user: " + user.getEmail() + " with role: " + user.getRole());
         
         if (user.getRole() != User.Role.ADMIN) {
             return "redirect:/profile";

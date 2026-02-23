@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class AuthController {
@@ -28,6 +30,9 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private SecurityContextRepository securityContextRepository;
 
     @GetMapping("/redirect-after-login")
     public String redirectAfterLogin(Authentication authentication) {
@@ -43,62 +48,46 @@ public class AuthController {
                           @RequestParam String email,
                           @RequestParam String password,
                           HttpServletRequest request,
+                          HttpServletResponse response,
                           Model model) {
         
-        System.out.println("=== REGISTER START ===");
-        System.out.println("Name: " + name);
-        System.out.println("Email: " + email);
-        
-        // Check if email already exists
         if (userService.existsByEmail(email)) {
-            System.out.println("Email already exists!");
             model.addAttribute("errorMessage", "Email already registered");
             model.addAttribute("title", "Login - Mokaf");
             return "login";
         }
 
         try {
-            // Create new user
             User newUser = new User();
             newUser.setName(name);
             newUser.setEmail(email);
             newUser.setPasswordHash(passwordEncoder.encode(password));
             newUser.setRole(User.Role.CUSTOMER);
-            
-            System.out.println("Saving user...");
-            User savedUser = userService.save(newUser);
-            System.out.println("User saved with ID: " + savedUser.getId());
+            userService.save(newUser);
             
         } catch (Exception e) {
-            System.out.println("ERROR saving user: " + e.getMessage());
-            e.printStackTrace();
             model.addAttribute("errorMessage", "Error creating user: " + e.getMessage());
             return "login";
         }
 
-        // Auto-login after registration
+        // Auto-login after registration with persistent session
         try {
-            System.out.println("Attempting auto-login...");
-            
             UsernamePasswordAuthenticationToken token = 
                 new UsernamePasswordAuthenticationToken(email, password);
             
             Authentication authentication = authenticationManager.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
             
-            request.getSession(true).setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext()
-            );
+            // Create new security context and set authentication
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
             
-            System.out.println("Auto-login successful!");
-            System.out.println("=== REGISTER END ===");
+            // Save security context to session (THIS MAKES IT PERSISTENT)
+            securityContextRepository.saveContext(context, request, response);
             
             return "redirect:/profile";
             
         } catch (Exception e) {
-            System.out.println("Auto-login failed: " + e.getMessage());
-            System.out.println("=== REGISTER END (fallback to login) ===");
             return "redirect:/login?registered=true";
         }
     }

@@ -14,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -28,9 +30,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Authentication provider with UserService and PasswordEncoder
-     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -39,40 +38,42 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    /**
-     * Expose AuthenticationManager as bean so it can be injected in controllers
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * SecurityContextRepository that stores security context in HTTP session
+     * This makes authentication persistent across requests
+     */
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Enable CSRF for form security
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+            )
             
-            // URL authorization rules
+            // Configure security context repository for session persistence
+            .securityContext(context -> context
+                .securityContextRepository(securityContextRepository())
+            )
+            
             .authorizeHttpRequests(auth -> auth
-                // Static resources
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                
-                // Public pages
                 .requestMatchers("/", "/index", "/menu", "/nosotros", 
                                "/sucursales", "/contact", "/login", "/register").permitAll()
-                
-                // Admin only
                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**", 
                                "/statistics", "/gestion_menu").hasRole("ADMIN")
-                
-                // Authenticated users only
                 .requestMatchers("/profile", "/profile/**", "/cart", "/orders").authenticated()
-                
                 .anyRequest().permitAll()
             )
             
-            // Form login
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
@@ -83,7 +84,6 @@ public class SecurityConfig {
                 .permitAll()
             )
             
-            // Logout
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
                 .logoutSuccessUrl("/login?logout=true")
@@ -94,6 +94,8 @@ public class SecurityConfig {
             
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
             );
         
         return http.build();
