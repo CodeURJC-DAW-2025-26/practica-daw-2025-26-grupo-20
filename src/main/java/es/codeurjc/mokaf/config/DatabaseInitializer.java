@@ -64,7 +64,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         @Transactional
         public void run(ApplicationArguments args) throws Exception {
 
-                // 1) BORRAR TODO (si quieres mantener datos, quita esto)
+                // 1) ERASE EVERYTING (If u wanna keep old data, delete this)
                 productRepository.deleteAll();
                 imageRepository.deleteAll();
                 userRepository.deleteAll();
@@ -72,10 +72,10 @@ public class DatabaseInitializer implements ApplicationRunner {
                 branchRepository.deleteAll();
                 orderRepository.deleteAll();
 
-                // 2) CREAR USUARIOS DE EJEMPLO
+                // 2) Create Users
                 createUsers();
 
-                // 3) Cargar catálogo de productos
+                // 3) loading catalog
                 List<ProductSeed> seeds = List.of(
                                 // HOT
                                 new ProductSeed("Expreso", "Café negro fuerte y aromático.", "2.50", Category.HOT,
@@ -166,7 +166,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                                                 Category.NON_COFFEE,
                                                 "/static/images/MenuImages/Non-Coffee/MatchaLatte.png"));
 
-                // 4) Insertar productos
+                // 4) Inserting Products
                 for (ProductSeed s : seeds) {
                         Product p = new Product();
                         p.setName(s.name);
@@ -210,9 +210,9 @@ public class DatabaseInitializer implements ApplicationRunner {
                 admin2.setEmployeeId("EMP-002");
                 userRepository.save(admin2);
 
-                // ========== 4 USUARIOS (CUSTOMERS) ==========
+                // ========== 4 USERS (CUSTOMERS) ==========
 
-                // Usuario 1
+                // User 1
                 User user1 = new User();
                 user1.setName("Carlos Rodríguez");
                 user1.setEmail("carlos@email.com");
@@ -220,7 +220,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                 user1.setRole(User.Role.CUSTOMER);
                 userRepository.save(user1);
 
-                // Usuario 2
+                // User 2
                 User user2 = new User();
                 user2.setName("Ana Martínez");
                 user2.setEmail("ana@email.com");
@@ -228,7 +228,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                 user2.setRole(User.Role.CUSTOMER);
                 userRepository.save(user2);
 
-                // Usuario 3
+                // User 3
                 User user3 = new User();
                 user3.setName("Luis Fernández");
                 user3.setEmail("luis@email.com");
@@ -236,7 +236,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                 user3.setRole(User.Role.CUSTOMER);
                 userRepository.save(user3);
 
-                // Usuario 4
+                // User 4
                 User user4 = new User();
                 user4.setName("Sofía López");
                 user4.setEmail("sofia@email.com");
@@ -300,9 +300,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                                                 "Localización\n" +
                                                 "Paseo de Gracia 85, 08008 Barcelona\n\n" +
                                                 "Horario\n" +
-                                                "Lunes a Domingo: 10:00 - 20:00\n\n" +
-                                                "Oferta Especial\n" +
-                                                "20% de descuento en todos los Cafés Calientes de Lunes a Viernes");
+                                                "Lunes a Domingo: 10:00 - 20:00\n\n");
                 branchRepository.save(barcelona);
 
                 // Madrid branch
@@ -315,9 +313,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                                                 "Localización\n" +
                                                 "Gran Vía 42, 28013 Madrid\n\n" +
                                                 "Horario\n" +
-                                                "Lunes a Domingo: 10:00 - 20:00\n\n" +
-                                                "Oferta Especial\n" +
-                                                "15% de descuento en Bebidas Frías todos los Sábados y Domingos");
+                                                "Lunes a Domingo: 10:00 - 20:00\n\n");
                 branchRepository.save(madrid);
 
                 // Móstoles branch
@@ -330,9 +326,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                                                 "Localización\n" +
                                                 "Calle Dos de Mayo 15, 28935 Móstoles\n\n" +
                                                 "Horario\n" +
-                                                "Lunes a Domingo: 10:00 - 20:00\n\n" +
-                                                "Oferta Especial\n" +
-                                                "2x1 en todos los Postres comprando cualquier bebida");
+                                                "Lunes a Domingo: 10:00 - 20:00\n\n");
                 branchRepository.save(mostoles);
 
                 // Santander branch
@@ -346,9 +340,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                                                 "Localización\n" +
                                                 "Paseo de Pereda 28, 39004 Santander\n\n" +
                                                 "Horario\n" +
-                                                "Lunes a Domingo: 10:00 - 20:00\n\n" +
-                                                "Oferta Especial\n" +
-                                                "25% de descuento en Bebidas Mezcladas todos los días antes de las 12:00");
+                                                "Lunes a Domingo: 10:00 - 20:00\n\n");
                 branchRepository.save(santander);
 
                 System.out.println(">>> Branches created: 4 branches");
@@ -553,12 +545,9 @@ public class DatabaseInitializer implements ApplicationRunner {
 
                                 order.setSubtotalAmount(subtotal);
 
-                                // Apply random discount (0%, 10%, 15%, 20%)
+                                // Discount
                                 double discountPercent = 0;
-                                if (random.nextDouble() < 0.3) {
-                                        int[] discounts = { 10, 15, 20 };
-                                        discountPercent = discounts[random.nextInt(discounts.length)];
-                                }
+                        
 
                                 BigDecimal discountPerc = BigDecimal.valueOf(discountPercent);
                                 order.setDiscountPercent(discountPerc);
