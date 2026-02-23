@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,13 +42,11 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    /**
-     * SecurityContextRepository that stores security context in HTTP session
-     * This makes authentication persistent across requests
-     */
     @Bean
     public SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
+        HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+        repo.setSpringSecurityContextKey("SPRING_SECURITY_CONTEXT");
+        return repo;
     }
 
     @Bean
@@ -59,9 +56,9 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/api/**")
             )
             
-            // Configure security context repository for session persistence
             .securityContext(context -> context
                 .securityContextRepository(securityContextRepository())
+                .requireExplicitSave(false) // Automatically save security context
             )
             
             .authorizeHttpRequests(auth -> auth
@@ -94,8 +91,7 @@ public class SecurityConfig {
             
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(false)
+                .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
             );
         
         return http.build();
