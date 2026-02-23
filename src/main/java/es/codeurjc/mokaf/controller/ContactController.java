@@ -9,7 +9,7 @@ public class ContactController {
 
     @GetMapping("/contact")
     public String contact(Model model) {
-    
+         model.addAttribute("title", "CONTACTANOS");
         return "contact"; // Mustache: contact.mustache
     }
 }
