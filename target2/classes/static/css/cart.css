@@ -1,0 +1,334 @@
+/* Cart Page Styles */
+.cart-empty {
+    background-color: rgba(45, 35, 25, 0.9); /* Café oscuro semitransparente */
+    border: 1px solid var(--cafe-claro);
+    border-radius: 10px;
+    color: var(--cafe-claro);
+    backdrop-filter: blur(5px);
+}
+
+.cart-empty-icon {
+    font-size: 4rem;
+    color: var(--dorado);
+}
+
+.cart-item {
+    background-color: rgba(60, 45, 30, 0.8); /* Café medio semitransparente */
+    border: 1px solid var(--cafe-claro);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.cart-item:hover {
+    border-color: var(--dorado);
+    transform: translateX(5px);
+    background-color: rgba(70, 55, 40, 0.9);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cart-item-image {
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--cafe-claro);
+}
+
+.cart-item-title {
+    color: var(--beige);
+    font-weight: bold;
+}
+
+.cart-item-price {
+    color: var(--dorado);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.cart-item-category {
+    color: rgba(212, 175, 55, 0.7); /* Dorado más suave */
+    font-size: 0.9rem;
+}
+
+.cart-item-desc {
+    color: rgba(245, 245, 220, 0.8); /* Beige semitransparente */
+    font-size: 0.95rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.btn-quantity {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--cafe-oscuro);
+    color: var(--beige);
+    border: 1px solid var(--dorado);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-quantity:hover {
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+}
+
+.quantity-display {
+    color: var(--beige);
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.btn-remove {
+    background-color: transparent;
+    color: var(--cafe-claro);
+    border: 1px solid transparent;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-remove:hover {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.item-subtotal {
+    color: var(--dorado);
+    font-weight: bold;
+    font-size: 1.1rem;
+    min-width: 60px;
+    display: inline-block;
+    text-align: right;
+    background-color: rgba(212, 175, 55, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Order Summary */
+.order-summary {
+    background-color: rgba(45, 35, 25, 0.9); /* Café oscuro semitransparente */
+    border: 2px solid var(--dorado);
+    border-radius: 10px;
+    top: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.order-summary .card-header {
+    background: linear-gradient(135deg, var(--cafe-oscuro), rgba(60, 45, 30, 0.9)) !important;
+    border-bottom: 2px solid var(--dorado);
+    color: var(--beige);
+}
+
+.order-details span {
+    color: var(--cafe-claro);
+}
+
+.order-details hr {
+    border-color: var(--dorado);
+    opacity: 0.3;
+}
+
+/* Promo Code */
+.promo-code .form-control {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--cafe-claro);
+    color: var(--beige);
+}
+
+.promo-code .form-control:focus {
+    border-color: var(--dorado);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.promo-code .btn-outline-secondary {
+    border-color: var(--cafe-claro);
+    color: var(--beige);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.promo-code .btn-outline-secondary:hover {
+    border-color: var(--dorado);
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+}
+
+/* Payment Methods */
+.payment-methods {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--cafe-claro);
+}
+
+.form-check-input {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-color: var(--cafe-claro);
+}
+
+.form-check-input:checked {
+    background-color: var(--dorado);
+    border-color: var(--dorado);
+}
+
+.form-check-label {
+    color: var(--cafe-claro);
+    cursor: pointer;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+
+/* Checkout Button */
+.btn-checkout {
+    background: linear-gradient(45deg, var(--dorado), #e6c260);
+    color: var(--cafe-oscuro);
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-checkout:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(45deg, #e6c260, var(--dorado));
+}
+
+.btn-checkout:disabled {
+    opacity: 0.7;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Security Info */
+.security-info {
+    background-color: rgba(212, 175, 55, 0.1);
+    border: 1px solid var(--dorado);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 15px;
+}
+
+/* Delivery Info Card */
+.card {
+    background-color: rgba(45, 35, 25, 0.8);
+    border: 1px solid var(--cafe-claro);
+    color: var(--cafe-claro);
+}
+
+.card h6 {
+    color: var(--beige);
+}
+
+/* Toast Notifications */
+.toast {
+    background-color: rgba(45, 35, 25, 0.95);
+    border: 1px solid var(--dorado);
+    backdrop-filter: blur(10px);
+}
+
+.toast-header {
+    background-color: rgba(60, 45, 30, 0.95);
+    border-bottom: 1px solid var(--dorado);
+}
+
+/* Continue Shopping Button */
+.btn-outline-primary {
+    border-color: var(--dorado);
+    color: var(--dorado);
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+    border-color: var(--dorado);
+}
+
+/* Form styling */
+.form-label {
+    color: var(--beige);
+}
+
+/* Subtle text effects */
+.text-muted {
+    color: rgba(245, 245, 220, 0.6) !important; /* Beige semitransparente */
+}
+
+.text-success {
+    color: #a3d977 !important; /* Verde suave que combine */
+}
+
+.text-danger {
+    color: #ff9a9a !important; /* Rojo suave */
+}
+
+/* Badge for cart count */
+.badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cart-item .row {
+        flex-direction: column;
+    }
+    
+    .cart-item-image {
+        max-height: 150px;
+        max-width: 150px;
+        margin: 0 auto;
+    }
+    
+    .order-summary {
+        position: static !important;
+        margin-top: 2rem;
+    }
+    
+    .cart-item {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(45, 35, 25, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dorado);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #e6c260;
+}
