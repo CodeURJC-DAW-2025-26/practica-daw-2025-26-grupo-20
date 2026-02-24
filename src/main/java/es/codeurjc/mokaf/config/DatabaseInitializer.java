@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,13 +46,13 @@ public class DatabaseInitializer implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
 
     public DatabaseInitializer(ProductRepository productRepository,
-                               ImageRepository imageRepository,
-                               UserRepository userRepository,
-                               ReviewRepository reviewRepository,
-                               AllergenRepository allergenRepository,
-                               BranchRepository branchRepository,
-                               OrderRepository orderRepository,
-                               PasswordEncoder passwordEncoder) {
+            ImageRepository imageRepository,
+            UserRepository userRepository,
+            ReviewRepository reviewRepository,
+            AllergenRepository allergenRepository,
+            BranchRepository branchRepository,
+            OrderRepository orderRepository,
+            PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
@@ -69,11 +68,13 @@ public class DatabaseInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         // 1) BORRADO (hijos -> padres) para evitar violaciones de FK
-        // Si tienes cascades bien configurados, podrías simplificar, pero así es robusto.
+        // Si tienes cascades bien configurados, podrías simplificar, pero así es
+        // robusto.
         orderRepository.deleteAll();
         reviewRepository.deleteAll();
 
-        // Si Product tiene relación 1-1/1-n con Image con cascade, puedes no borrar imageRepository.
+        // Si Product tiene relación 1-1/1-n con Image con cascade, puedes no borrar
+        // imageRepository.
         // Pero como lo haces explícito, lo dejamos.
         productRepository.deleteAll();
         imageRepository.deleteAll();
@@ -104,68 +105,69 @@ public class DatabaseInitializer implements ApplicationRunner {
 
     private void seedProducts() throws Exception {
         List<ProductSeed> seeds = List.of(
-            // HOT
-            new ProductSeed("Expreso", "Café negro fuerte y aromático.", "2.50", Category.HOT,
-                    "/static/images/MenuImages/Hot/Expreso.png"),
-            new ProductSeed("Capuccino", "Expreso con leche vaporizada y espuma.", "3.50", Category.HOT,
-                    "/static/images/MenuImages/Hot/Capuccino.png"),
-            new ProductSeed("Americano", "Expreso diluido con agua caliente.", "2.80", Category.HOT,
-                    "/static/images/MenuImages/Hot/Americano.png"),
-            new ProductSeed("Latte", "Expreso con una generosa cantidad de leche vaporizada.", "3.20", Category.HOT,
-                    "/static/images/MenuImages/Hot/Latte.png"),
+                // HOT
+                new ProductSeed("Expreso", "Café negro fuerte y aromático.", "2.50", Category.HOT,
+                        "/static/images/MenuImages/Hot/Expreso.png"),
+                new ProductSeed("Capuccino", "Expreso con leche vaporizada y espuma.", "3.50", Category.HOT,
+                        "/static/images/MenuImages/Hot/Capuccino.png"),
+                new ProductSeed("Americano", "Expreso diluido con agua caliente.", "2.80", Category.HOT,
+                        "/static/images/MenuImages/Hot/Americano.png"),
+                new ProductSeed("Latte", "Expreso con una generosa cantidad de leche vaporizada.", "3.20", Category.HOT,
+                        "/static/images/MenuImages/Hot/Latte.png"),
 
-            // COLD
-            new ProductSeed("Iced Latte", "Expreso y leche fría sobre hielo.", "4.00", Category.COLD,
-                    "/static/images/MenuImages/Cold/IcedLatte.png"),
-            new ProductSeed("Frappe", "Café batido con hielo, refrescante y cremoso.", "4.20", Category.COLD,
-                    "/static/images/MenuImages/Cold/Frappe.png"),
-            new ProductSeed("Iced Americano", "Expreso y agua fría servido sobre hielo.", "3.00", Category.COLD,
-                    "/static/images/MenuImages/Cold/IcedAmericano.png"),
-            new ProductSeed("Iced Vietnamese Coffe", "Café con leche condensada y hielo.", "4.50", Category.COLD,
-                    "/static/images/MenuImages/Cold/IcedVietnameseCoffe.png"),
+                // COLD
+                new ProductSeed("Iced Latte", "Expreso y leche fría sobre hielo.", "4.00", Category.COLD,
+                        "/static/images/MenuImages/Cold/IcedLatte.png"),
+                new ProductSeed("Frappe", "Café batido con hielo, refrescante y cremoso.", "4.20", Category.COLD,
+                        "/static/images/MenuImages/Cold/Frappe.png"),
+                new ProductSeed("Iced Americano", "Expreso y agua fría servido sobre hielo.", "3.00", Category.COLD,
+                        "/static/images/MenuImages/Cold/IcedAmericano.png"),
+                new ProductSeed("Iced Vietnamese Coffe", "Café con leche condensada y hielo.", "4.50", Category.COLD,
+                        "/static/images/MenuImages/Cold/IcedVietnameseCoffe.png"),
 
-            // BLENDED
-            new ProductSeed("Frapuccino", "Bebida de café mezclada con hielo y sabores.", "4.50", Category.BLENDED,
-                    "/static/images/MenuImages/Blended/Frapuccino.png"),
-            new ProductSeed("Chocolate Coffee Blend", "Mezcla de café y chocolate, batido con hielo.", "4.80",
-                    Category.BLENDED, "/static/images/MenuImages/Blended/ChocolateCoffeeBlend.png"),
-            new ProductSeed("Hazelnut Coffee Shake", "Batido de café con sirope de avellana.", "4.80",
-                    Category.BLENDED, "/static/images/MenuImages/Blended/HazelnutCoffeeShake.png"),
-            new ProductSeed("Vanilla Frappe", "Frappé suave con un toque de vainilla.", "4.60", Category.BLENDED,
-                    "/static/images/MenuImages/Blended/VanillaFrappe.png"),
+                // BLENDED
+                new ProductSeed("Frapuccino", "Bebida de café mezclada con hielo y sabores.", "4.50", Category.BLENDED,
+                        "/static/images/MenuImages/Blended/Frapuccino.png"),
+                new ProductSeed("Chocolate Coffee Blend", "Mezcla de café y chocolate, batido con hielo.", "4.80",
+                        Category.BLENDED, "/static/images/MenuImages/Blended/ChocolateCoffeeBlend.png"),
+                new ProductSeed("Hazelnut Coffee Shake", "Batido de café con sirope de avellana.", "4.80",
+                        Category.BLENDED, "/static/images/MenuImages/Blended/HazelnutCoffeeShake.png"),
+                new ProductSeed("Vanilla Frappe", "Frappé suave con un toque de vainilla.", "4.60", Category.BLENDED,
+                        "/static/images/MenuImages/Blended/VanillaFrappe.png"),
 
-            // DESSERTS
-            new ProductSeed("Croissants", "Clásico hojaldre francés.", "2.00", Category.DESSERTS,
-                    "/static/images/MenuImages/Desserts/Croisants.png"),
-            new ProductSeed("Chocolate Carrot Cake", "Pastel de zanahoria con cobertura de chocolate.", "3.50",
-                    Category.DESSERTS, "/static/images/MenuImages/Desserts/ChocolateCarrotCake.png"),
-            new ProductSeed("Chocolate Cupcake", "Muffin de chocolate con frosting.", "2.80", Category.DESSERTS,
-                    "/static/images/MenuImages/Desserts/ChocolateCupcake.png"),
-            new ProductSeed("Chocolate Green Tea Cupcake", "Muffin de té verde con corazón de chocolate.", "3.00",
-                    Category.DESSERTS, "/static/images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png"),
-            new ProductSeed("Dulce De Leche Desserts", "Postre cremoso de dulce de leche.", "3.20", Category.DESSERTS,
-                    "/static/images/MenuImages/Desserts/DulceDeLecheDesserts.png"),
-            new ProductSeed("Orange Cake", "Bizcocho esponjoso con sabor a naranja.", "3.50", Category.DESSERTS,
-                    "/static/images/MenuImages/Desserts/OrangeCake.png"),
-            new ProductSeed("Red Velvet Cupcake", "Clásico muffin Red Velvet con frosting de queso.", "3.00",
-                    Category.DESSERTS, "/static/images/MenuImages/Desserts/RedVelvetCupcake.png"),
-            new ProductSeed("Strawberry Cake", "Pastel de fresas con nata.", "3.80", Category.DESSERTS,
-                    "/static/images/MenuImages/Desserts/StrawberryCake.png"),
-            new ProductSeed("Vanilla Cupcake", "Muffin de vainilla con frosting.", "2.80", Category.DESSERTS,
-                    "/static/images/MenuImages/Desserts/VanillaCupcake.png"),
+                // DESSERTS
+                new ProductSeed("Croissants", "Clásico hojaldre francés.", "2.00", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/Croisants.png"),
+                new ProductSeed("Chocolate Carrot Cake", "Pastel de zanahoria con cobertura de chocolate.", "3.50",
+                        Category.DESSERTS, "/static/images/MenuImages/Desserts/ChocolateCarrotCake.png"),
+                new ProductSeed("Chocolate Cupcake", "Muffin de chocolate con frosting.", "2.80", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/ChocolateCupcake.png"),
+                new ProductSeed("Chocolate Green Tea Cupcake", "Muffin de té verde con corazón de chocolate.", "3.00",
+                        Category.DESSERTS, "/static/images/MenuImages/Desserts/ChocolateGreenTeaCupcake.png"),
+                new ProductSeed("Dulce De Leche Desserts", "Postre cremoso de dulce de leche.", "3.20",
+                        Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/DulceDeLecheDesserts.png"),
+                new ProductSeed("Orange Cake", "Bizcocho esponjoso con sabor a naranja.", "3.50", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/OrangeCake.png"),
+                new ProductSeed("Red Velvet Cupcake", "Clásico muffin Red Velvet con frosting de queso.", "3.00",
+                        Category.DESSERTS, "/static/images/MenuImages/Desserts/RedVelvetCupcake.png"),
+                new ProductSeed("Strawberry Cake", "Pastel de fresas con nata.", "3.80", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/StrawberryCake.png"),
+                new ProductSeed("Vanilla Cupcake", "Muffin de vainilla con frosting.", "2.80", Category.DESSERTS,
+                        "/static/images/MenuImages/Desserts/VanillaCupcake.png"),
 
-            // NON-COFFEE
-            new ProductSeed("Herbal Tea", "Infusión relajante sin cafeína.", "3.00", Category.NON_COFFEE,
-                    "/static/images/MenuImages/Non-Coffee/HerbalTea.png"),
-            new ProductSeed("Chai Tea Latte", "Té negro especiado con leche vaporizada.", "3.80", Category.NON_COFFEE,
-                    "/static/images/MenuImages/Non-Coffee/ChatTeaLatte.png"),
-            new ProductSeed("Golden Milk", "Leche con cúrcuma y especias.", "4.00", Category.NON_COFFEE,
-                    "/static/images/MenuImages/Non-Coffee/GoldenMilk.png"),
-            new ProductSeed("Hot Chocolate", "Chocolate caliente espeso y cremoso.", "3.50", Category.NON_COFFEE,
-                    "/static/images/MenuImages/Non-Coffee/HotChocolate.png"),
-            new ProductSeed("Matcha Latte", "Té verde matcha con leche vaporizada.", "4.20", Category.NON_COFFEE,
-                    "/static/images/MenuImages/Non-Coffee/MatchaLatte.png")
-        );
+                // NON-COFFEE
+                new ProductSeed("Herbal Tea", "Infusión relajante sin cafeína.", "3.00", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/HerbalTea.png"),
+                new ProductSeed("Chai Tea Latte", "Té negro especiado con leche vaporizada.", "3.80",
+                        Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/ChatTeaLatte.png"),
+                new ProductSeed("Golden Milk", "Leche con cúrcuma y especias.", "4.00", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/GoldenMilk.png"),
+                new ProductSeed("Hot Chocolate", "Chocolate caliente espeso y cremoso.", "3.50", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/HotChocolate.png"),
+                new ProductSeed("Matcha Latte", "Té verde matcha con leche vaporizada.", "4.20", Category.NON_COFFEE,
+                        "/static/images/MenuImages/Non-Coffee/MatchaLatte.png"));
 
         for (ProductSeed s : seeds) {
             Product p = new Product();
@@ -235,16 +237,17 @@ public class DatabaseInitializer implements ApplicationRunner {
     private void createReviews() {
         List<User> users = userRepository.findAll();
         List<Product> products = productRepository.findAll();
-        if (users.isEmpty() || products.isEmpty()) return;
+        if (users.isEmpty() || products.isEmpty())
+            return;
 
-        int[] stars = {5, 4, 5, 4, 5, 3};
+        int[] stars = { 5, 4, 5, 4, 5, 3 };
         String[] texts = {
-            "Café excelente, aromático y bien equilibrado.",
-            "Muy buen servicio y presentación impecable.",
-            "El capuccino estaba espectacular, repetiré.",
-            "Buena relación calidad-precio. Recomendable.",
-            "Postres muy ricos, especialmente la red velvet.",
-            "Correcto, aunque lo prefiero un poco más intenso."
+                "Café excelente, aromático y bien equilibrado.",
+                "Muy buen servicio y presentación impecable.",
+                "El capuccino estaba espectacular, repetiré.",
+                "Buena relación calidad-precio. Recomendable.",
+                "Postres muy ricos, especialmente la red velvet.",
+                "Correcto, aunque lo prefiero un poco más intenso."
         };
 
         int created = 0;
@@ -270,8 +273,7 @@ public class DatabaseInitializer implements ApplicationRunner {
 
     private void createAllergens() {
         List<String> allergenNames = Arrays.asList(
-            "Gluten", "Lácteos", "Huevos", "Frutos secos", "Cacahuetes", "Soja", "Sulfitos", "Sésamo"
-        );
+                "Gluten", "Lácteos", "Huevos", "Frutos secos", "Cacahuetes", "Soja", "Sulfitos", "Sésamo");
 
         for (String name : allergenNames) {
             allergenRepository.save(new Allergen(name));
@@ -284,55 +286,51 @@ public class DatabaseInitializer implements ApplicationRunner {
         Branch barcelona = new Branch();
         barcelona.setName("Barcelona - Paseo de Gracia");
         barcelona.setDescription(
-            "Nuestra sucursal emblemática en el corazón de Barcelona. " +
-            "Un espacio moderno y acogedor donde podrás disfrutar de " +
-            "nuestros mejores cafés de especialidad mientras trabajas " +
-            "o te reúnes con amigos.\n\n" +
-            "Localización\n" +
-            "Paseo de Gracia 85, 08008 Barcelona\n\n" +
-            "Horario\n" +
-            "Lunes a Domingo: 10:00 - 20:00\n\n"
-        );
+                "Nuestra sucursal emblemática en el corazón de Barcelona. " +
+                        "Un espacio moderno y acogedor donde podrás disfrutar de " +
+                        "nuestros mejores cafés de especialidad mientras trabajas " +
+                        "o te reúnes con amigos.\n\n" +
+                        "Localización\n" +
+                        "Paseo de Gracia 85, 08008 Barcelona\n\n" +
+                        "Horario\n" +
+                        "Lunes a Domingo: 10:00 - 20:00\n\n");
         branchRepository.save(barcelona);
 
         Branch madrid = new Branch();
         madrid.setName("Madrid - Gran Vía");
         madrid.setDescription(
-            "Ubicada en la Gran Vía madrileña, esta sucursal combina " +
-            "elegancia y tradición. Perfecta para una pausa en tu día " +
-            "de compras o para disfrutar de nuestros pasteles artesanales.\n\n" +
-            "Localización\n" +
-            "Gran Vía 42, 28013 Madrid\n\n" +
-            "Horario\n" +
-            "Lunes a Domingo: 10:00 - 20:00\n\n"
-        );
+                "Ubicada en la Gran Vía madrileña, esta sucursal combina " +
+                        "elegancia y tradición. Perfecta para una pausa en tu día " +
+                        "de compras o para disfrutar de nuestros pasteles artesanales.\n\n" +
+                        "Localización\n" +
+                        "Gran Vía 42, 28013 Madrid\n\n" +
+                        "Horario\n" +
+                        "Lunes a Domingo: 10:00 - 20:00\n\n");
         branchRepository.save(madrid);
 
         Branch mostoles = new Branch();
         mostoles.setName("Móstoles - Centro");
         mostoles.setDescription(
-            "Nuestra cafetería más familiar y acogedora. Con una amplia " +
-            "terraza y zona de juegos, es el lugar ideal para disfrutar " +
-            "en familia. Ambiente relajado y servicio excepcional.\n\n" +
-            "Localización\n" +
-            "Calle Dos de Mayo 15, 28935 Móstoles\n\n" +
-            "Horario\n" +
-            "Lunes a Domingo: 10:00 - 20:00\n\n"
-        );
+                "Nuestra cafetería más familiar y acogedora. Con una amplia " +
+                        "terraza y zona de juegos, es el lugar ideal para disfrutar " +
+                        "en familia. Ambiente relajado y servicio excepcional.\n\n" +
+                        "Localización\n" +
+                        "Calle Dos de Mayo 15, 28935 Móstoles\n\n" +
+                        "Horario\n" +
+                        "Lunes a Domingo: 10:00 - 20:00\n\n");
         branchRepository.save(mostoles);
 
         Branch santander = new Branch();
         santander.setName("Santander - Paseo de Pereda");
         santander.setDescription(
-            "Con vistas al mar Cantábrico, esta sucursal ofrece una " +
-            "experiencia única. Disfruta de nuestro café mientras " +
-            "contemplas el océano. Ambiente tranquilo y perfecto para " +
-            "relajarse.\n\n" +
-            "Localización\n" +
-            "Paseo de Pereda 28, 39004 Santander\n\n" +
-            "Horario\n" +
-            "Lunes a Domingo: 10:00 - 20:00\n\n"
-        );
+                "Con vistas al mar Cantábrico, esta sucursal ofrece una " +
+                        "experiencia única. Disfruta de nuestro café mientras " +
+                        "contemplas el océano. Ambiente tranquilo y perfecto para " +
+                        "relajarse.\n\n" +
+                        "Localización\n" +
+                        "Paseo de Pereda 28, 39004 Santander\n\n" +
+                        "Horario\n" +
+                        "Lunes a Domingo: 10:00 - 20:00\n\n");
         branchRepository.save(santander);
 
         System.out.println(">>> Branches created: 4 branches");
@@ -367,29 +365,40 @@ public class DatabaseInitializer implements ApplicationRunner {
                 case "Chai Tea Latte":
                 case "Golden Milk":
                 case "Hot Chocolate":
-                    if (lacteos != null) productAllergens.add(lacteos);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
                     break;
 
                 case "Chocolate Coffee Blend":
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (gluten != null) productAllergens.add(gluten);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (gluten != null)
+                        productAllergens.add(gluten);
                     break;
 
                 case "Hazelnut Coffee Shake":
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (frutosSecos != null) productAllergens.add(frutosSecos);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (frutosSecos != null)
+                        productAllergens.add(frutosSecos);
                     break;
 
                 case "Croissants":
-                    if (gluten != null) productAllergens.add(gluten);
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (huevos != null) productAllergens.add(huevos);
+                    if (gluten != null)
+                        productAllergens.add(gluten);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (huevos != null)
+                        productAllergens.add(huevos);
                     break;
 
                 case "Chocolate Carrot Cake":
-                    if (gluten != null) productAllergens.add(gluten);
-                    if (huevos != null) productAllergens.add(huevos);
-                    if (frutosSecos != null) productAllergens.add(frutosSecos);
+                    if (gluten != null)
+                        productAllergens.add(gluten);
+                    if (huevos != null)
+                        productAllergens.add(huevos);
+                    if (frutosSecos != null)
+                        productAllergens.add(frutosSecos);
                     break;
 
                 case "Chocolate Cupcake":
@@ -397,26 +406,37 @@ public class DatabaseInitializer implements ApplicationRunner {
                 case "Strawberry Cake":
                 case "Vanilla Cupcake":
                 case "Orange Cake":
-                    if (gluten != null) productAllergens.add(gluten);
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (huevos != null) productAllergens.add(huevos);
+                    if (gluten != null)
+                        productAllergens.add(gluten);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (huevos != null)
+                        productAllergens.add(huevos);
                     break;
 
                 case "Chocolate Green Tea Cupcake":
-                    if (gluten != null) productAllergens.add(gluten);
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (huevos != null) productAllergens.add(huevos);
-                    if (soja != null) productAllergens.add(soja);
+                    if (gluten != null)
+                        productAllergens.add(gluten);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (huevos != null)
+                        productAllergens.add(huevos);
+                    if (soja != null)
+                        productAllergens.add(soja);
                     break;
 
                 case "Dulce De Leche Desserts":
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (huevos != null) productAllergens.add(huevos);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (huevos != null)
+                        productAllergens.add(huevos);
                     break;
 
                 case "Matcha Latte":
-                    if (lacteos != null) productAllergens.add(lacteos);
-                    if (soja != null) productAllergens.add(soja);
+                    if (lacteos != null)
+                        productAllergens.add(lacteos);
+                    if (soja != null)
+                        productAllergens.add(soja);
                     break;
 
                 default:
@@ -501,7 +521,8 @@ public class DatabaseInitializer implements ApplicationRunner {
 
         // Active carts (0-1 por cliente)
         for (User customer : customers) {
-            if (!random.nextBoolean()) continue;
+            if (!random.nextBoolean())
+                continue;
 
             Branch branch = branches.get(random.nextInt(branches.size()));
 
@@ -556,7 +577,7 @@ public class DatabaseInitializer implements ApplicationRunner {
             }
             bytes = is.readAllBytes();
         }
-        return BlobProxy.generateProxy(bytes);
+        return new javax.sql.rowset.serial.SerialBlob(bytes);
     }
 
     private static class ProductSeed {

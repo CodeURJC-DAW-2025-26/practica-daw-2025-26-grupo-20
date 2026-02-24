@@ -15,83 +15,85 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserService userService;
+        @Autowired
+        private UserService userService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userService);
+                authProvider.setPasswordEncoder(passwordEncoder());
+                return authProvider;
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+                return authConfig.getAuthenticationManager();
+        }
 
-    @Bean
-    public SecurityContextRepository securityContextRepository() {
-        HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
-        repo.setSpringSecurityContextKey("SPRING_SECURITY_CONTEXT");
-        return repo;
-    }
+        @Bean
+        public SecurityContextRepository securityContextRepository() {
+                HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+                repo.setSpringSecurityContextKey("SPRING_SECURITY_CONTEXT");
+                return repo;
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/**"))
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf
+                                                .ignoringRequestMatchers("/api/**"))
 
-                .securityContext(context -> context
-                        .securityContextRepository(securityContextRepository())
-                        .requireExplicitSave(false) // Automatically save security context
-                )
+                                .securityContext(context -> context
+                                                .securityContextRepository(securityContextRepository())
+                                                .requireExplicitSave(false) // Automatically save security context
+                                )
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/", "/index", "/menu", "/nosotros",
-                                "/sucursales", "/contact", "/login", "/register", "/statistics/**")
-                        .permitAll()
-                        .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
-                                "/statistics", "/gestion_menu")
-                        .hasRole("ADMIN")
-                        .requestMatchers("/profile", "/profile/**", "/cart", "/orders").authenticated()
-                        .anyRequest().permitAll())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
+                                                                "/favicon.ico")
+                                                .permitAll()
+                                                .requestMatchers("/", "/index", "/menu", "/nosotros",
+                                                                "/sucursales", "/contact", "/login", "/register",
+                                                                "/statistics/**")
+                                                .permitAll()
+                                                .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
+                                                                "/statistics", "/gestion_menu")
+                                                .hasRole("ADMIN")
+                                                .requestMatchers("/profile", "/profile/**", "/cart", "/orders")
+                                                .authenticated()
+                                                .anyRequest().permitAll())
 
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("email")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/redirect-after-login", true)
-                        .failureUrl("/login?error=true")
-                        .permitAll())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .loginProcessingUrl("/login")
+                                                .usernameParameter("email")
+                                                .passwordParameter("password")
+                                                .defaultSuccessUrl("/redirect-after-login", true)
+                                                .failureUrl("/login?error=true")
+                                                .permitAll())
 
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll())
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout=true")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID")
+                                                .permitAll())
 
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
-                );
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                                                .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
+                                );
 
-        return http.build();
-    }
+                return http.build();
+        }
 }
