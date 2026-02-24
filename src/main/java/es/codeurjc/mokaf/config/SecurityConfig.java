@@ -52,51 +52,46 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**")
-            )
-            
-            .securityContext(context -> context
-                .securityContextRepository(securityContextRepository())
-                .requireExplicitSave(false) // Automatically save security context
-            )
-            
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                .requestMatchers("/", "/index", "/menu", "/nosotros", 
-                               "/sucursales", "/contact", "/login", "/register", "/statistics/**").permitAll()
-                .requestMatchers("/admin/**", "/profileADMIN").hasRole("ADMIN")
-                .requestMatchers("/profile", "/cart", "/orders").authenticated()
-                               "/sucursales", "/contact", "/login", "/register").permitAll()
-                .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**", 
-                               "/statistics", "/gestion_menu").hasRole("ADMIN")
-                .requestMatchers("/profile", "/profile/**", "/cart", "/orders").authenticated()
-                .anyRequest().permitAll()
-            )
-            
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/redirect-after-login", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
-            
-            .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
-                .logoutSuccessUrl("/login?logout=true")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
-            );
-        
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/**"))
+
+                .securityContext(context -> context
+                        .securityContextRepository(securityContextRepository())
+                        .requireExplicitSave(false) // Automatically save security context
+                )
+
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/index", "/menu", "/nosotros",
+                                "/sucursales", "/contact", "/login", "/register", "/statistics/**")
+                        .permitAll()
+                        .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
+                                "/statistics", "/gestion_menu")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/profile", "/profile/**", "/cart", "/orders").authenticated()
+                        .anyRequest().permitAll())
+
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/redirect-after-login", true)
+                        .failureUrl("/login?error=true")
+                        .permitAll())
+
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                        .logoutSuccessUrl("/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
+
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
+                );
+
         return http.build();
     }
 }
