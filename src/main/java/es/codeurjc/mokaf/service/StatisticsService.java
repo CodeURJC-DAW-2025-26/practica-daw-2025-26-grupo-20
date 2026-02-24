@@ -1,6 +1,5 @@
 package es.codeurjc.mokaf.service;
 
-import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.repository.StatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
