@@ -100,7 +100,7 @@
     </dependencies>
 
     <build>
-        <directory>/tmp/mokaf-build</directory>
+        <directory>${project.basedir}/target</directory>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
