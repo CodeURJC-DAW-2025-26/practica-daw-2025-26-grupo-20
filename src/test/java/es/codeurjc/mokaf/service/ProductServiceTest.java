@@ -2,10 +2,12 @@ package es.codeurjc.mokaf.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.repository.OrderItemRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +29,9 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private OrderItemRepository orderItemRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -124,5 +131,65 @@ class ProductServiceTest {
         productService.deleteProduct(1L);
 
         verify(productRepository).deleteById(1L);
+    }
+
+    // ===== Recommendation Tests =====
+
+    @Test
+    void testGetRecommendedProductsForUser() {
+        List<Product> userFavorites = List.of(sampleProduct);
+        when(orderItemRepository.findTopProductsByUserId(eq(1L), any(PageRequest.class)))
+                .thenReturn(userFavorites);
+
+        List<Product> result = productService.getRecommendedProducts(1L, 4);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Expreso", result.get(0).getName());
+        verify(orderItemRepository).findTopProductsByUserId(eq(1L), any(PageRequest.class));
+    }
+
+    @Test
+    void testGetRecommendedProductsFallbackToBestSellers() {
+        // User has no order history
+        when(orderItemRepository.findTopProductsByUserId(eq(1L), any(PageRequest.class)))
+                .thenReturn(Collections.emptyList());
+
+        List<Product> bestSellers = List.of(sampleProduct);
+        when(orderItemRepository.findTopBestSellingProducts(any(PageRequest.class)))
+                .thenReturn(bestSellers);
+
+        List<Product> result = productService.getRecommendedProducts(1L, 4);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(orderItemRepository).findTopBestSellingProducts(any(PageRequest.class));
+    }
+
+    @Test
+    void testGetBestSellingProducts() {
+        List<Product> bestSellers = List.of(sampleProduct);
+        when(orderItemRepository.findTopBestSellingProducts(any(PageRequest.class)))
+                .thenReturn(bestSellers);
+
+        List<Product> result = productService.getBestSellingProducts(4);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Expreso", result.get(0).getName());
+    }
+
+    @Test
+    void testGetBestSellingProductsFallbackToAllProducts() {
+        // No sales yet
+        when(orderItemRepository.findTopBestSellingProducts(any(PageRequest.class)))
+                .thenReturn(Collections.emptyList());
+        when(productRepository.findAll()).thenReturn(List.of(sampleProduct));
+
+        List<Product> result = productService.getBestSellingProducts(4);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(productRepository).findAll();
     }
 }
