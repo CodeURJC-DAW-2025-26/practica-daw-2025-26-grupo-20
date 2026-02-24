@@ -1,6 +1,12 @@
 package es.codeurjc.mokaf.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import es.codeurjc.mokaf.model.OrderItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {}
+import java.util.List;
+@Repository
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+
+    List<OrderItem> findByOrderId(Long orderId);
+}
