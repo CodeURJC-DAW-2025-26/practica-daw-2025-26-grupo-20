@@ -40,13 +40,15 @@
                                 <p class="mb-0 text-muted">Fecha: {{createdAt}}</p>
                             </div>
 
+                            {{#isAdmin}}
                             <div class="col-md-3">
                                 <p class="mb-0 text-muted">
                                     Nombre del cliente: <strong>{{user.name}}</strong>
                                 </p>
                             </div>
+                            {{/isAdmin}}
 
-                            <div class="col-md-3">
+                            <div class="{{#isAdmin}}col-md-3{{/isAdmin}}{{^isAdmin}}col-md-6{{/isAdmin}}">
                                 <span class="badge bg-success">{{status}}</span>
                             </div>
                         </div>

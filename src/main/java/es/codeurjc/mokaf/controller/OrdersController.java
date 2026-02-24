@@ -1,7 +1,15 @@
 package es.codeurjc.mokaf.controller;
 
 import es.codeurjc.mokaf.model.Order;
+import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.OrdersService;
+import es.codeurjc.mokaf.service.UserService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,23 +20,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
-
 @Controller
 public class OrdersController {
 
     private final OrdersService ordersService;
+    private final UserService userService;
 
-    public OrdersController(OrdersService ordersService) {
+    public OrdersController(OrdersService ordersService, UserService userService) {
         this.ordersService = ordersService;
+        this.userService = userService;
     }
 
     @GetMapping("/orders")
-    public String showOrders(Model model,
-                            @RequestParam(defaultValue = "0") int page) {
+    public String showOrders(Authentication authentication,
+                             Model model,
+                             @RequestParam(defaultValue = "0") int page) {
+
+        User user = getCurrentUser(authentication);
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         int pageSize = 3; // Pedidos por página
-        Page<Order> ordersPage = ordersService.getPaidOrders(page, pageSize);
+        Page<Order> ordersPage;
+
+        if (user.getRole() == User.Role.ADMIN) {
+            // Admin ve todas las órdenes
+            ordersPage = ordersService.getPaidOrders(page, pageSize);
+            model.addAttribute("isAdmin", true);
+        } else {
+            // Usuario normal ve solo sus órdenes
+            ordersPage = ordersService.getPaidOrdersByUser(user.getId(), page, pageSize);
+            model.addAttribute("isAdmin", false);
+        }
 
         model.addAttribute("orders", ordersPage.getContent());
         model.addAttribute("currentPage", page);
@@ -56,4 +80,25 @@ public class OrdersController {
 
         return "orders";
     }
-} 
+
+    private User getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return null;
+            }
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof User) {
+            return (User) principal;
+        }
+
+        if (principal instanceof String) {
+            String email = (String) principal;
+            return userService.findByEmail(email).orElse(null);
+        }
+
+        return null;
+    }
+}
