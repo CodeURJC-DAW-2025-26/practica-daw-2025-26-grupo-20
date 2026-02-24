@@ -35,7 +35,7 @@
                         
                         <div class="admin-avatar-wrapper">
                             {{#user.image}}
-                            <img src="/api/images/{{user.image.id}}" 
+                            <img src="/profiles/images/{{user.image.id}}" 
                                  class="admin-avatar" 
                                  alt="Avatar admin">
                             {{/user.image}}
@@ -94,7 +94,7 @@
                     <h4 class="admin-form-title">Configuración del Administrador</h4>
                     <p class="admin-form-subtitle">Gestiona tu cuenta de administrador</p>
                     
-                    <form action="/profileADMIN/update" method="post">
+                    <form action="/profileADMIN/update" method="post" enctype="multipart/form-data">
                         {{#_csrf}}
                         <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}"/>
                         {{/_csrf}}
@@ -134,7 +134,8 @@
                         <div class="mb-3">
                             <label class="form-label">Foto de perfil (PNG)</label>
                             <input type="file" class="form-control" name="image"
-                                   accept="image/png">
+                                   accept="image/png,image/jpeg,image/jpg">
+                            <small class="text-muted">Formatos permitidos: PNG, JPG, JPEG</small>
                         </div>
 
                         <div class="admin-actions">

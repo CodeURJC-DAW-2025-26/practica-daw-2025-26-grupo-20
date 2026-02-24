@@ -1,6 +1,5 @@
 package es.codeurjc.mokaf.config;
 
-import es.codeurjc.mokaf.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+
+import es.codeurjc.mokaf.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +58,7 @@ public class SecurityConfig {
                                                 .securityContextRepository(securityContextRepository())
                                                 .requireExplicitSave(false) // Automatically save security context
                                 )
-
+                                
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
                                                                 "/favicon.ico")
@@ -66,7 +67,7 @@ public class SecurityConfig {
                                                                 "/sucursales", "/contact", "/login", "/register")
                                                 .permitAll()
                                                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
-                                                                "/statistics/**", "/gestion_menu")
+                                                                "/statistics/**", "/gestion_menu", "/profiles/images/**")
                                                 .hasRole("ADMIN")
                                                 .requestMatchers("/profile", "/profile/**", "/cart", "/orders")
                                                 .authenticated()

@@ -49,7 +49,7 @@ public class User implements UserDetails {
     @Column(name = "employee_id", unique = true, length = 50)
     private String employeeId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id", unique = true)
     private Image image;
 
