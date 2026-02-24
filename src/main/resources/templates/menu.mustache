@@ -14,7 +14,50 @@
     {{> fragments/header}}
 
     <main class="container my-5 menu-container">
-        <h2 class="text-center mb-5">Nuestro Menú</h2>
+        <h2 class="text-center mb-2">Nuestro Menú</h2>
+
+        <!-- Recommended Products Section -->
+        {{#recommendedItems.0}}
+        <section class="recommended-section mb-5">
+            <div class="recommended-header">
+                <i class="fas fa-star"></i>
+                <h3>{{recommendedTitle}}</h3>
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="recommended-grid">
+                {{#recommendedItems}}
+                <a class="product-link" href="/product/{{id}}">
+                    <div class="recommended-card">
+                        <div class="recommended-badge">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="recommended-img-wrapper">
+                            {{#image}}
+                            <img src="/images/{{id}}" alt="{{name}}"
+                                 onerror="this.src='https://via.placeholder.com/300x200?text={{name}}'">
+                            {{/image}}
+                            {{^image}}
+                            <img src="https://via.placeholder.com/300x200?text={{name}}" alt="{{name}}">
+                            {{/image}}
+                        </div>
+                        <div class="recommended-info">
+                            <h5>{{name}}</h5>
+                            <p class="recommended-price">{{priceBase}}€</p>
+                            <form action="/cart/add" method="POST" class="d-inline">
+                                <input type="hidden" name="productId" value="{{id}}">
+                                <input type="hidden" name="qty" value="1">
+                                <button type="submit" class="btn btn-sm btn-recommended-cart"
+                                        onclick="event.stopPropagation();">
+                                    <i class="fas fa-cart-plus me-1"></i> Añadir
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </a>
+                {{/recommendedItems}}
+            </div>
+        </section>
+        {{/recommendedItems.0}}
 
         <!-- Category Navigation -->
         <div class="category-nav mb-4">
