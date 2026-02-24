@@ -1,0 +1,442 @@
+/* ==========================================================================
+   ADMIN PROFILE PAGE - OPTIMIZADO PARA ESCRITORIO
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR PRINCIPAL - SIN MÁRGENES EXCESIVOS
+   -------------------------------------------------------------------------- */
+.admin-container {
+    max-width: 1400px;          /* Más ancho para aprovechar pantalla */
+    width: 95%;                  /* Casi todo el ancho disponible */
+    margin: 0 auto;              /* Centrado */
+    padding: 0 15px;             /* Padding reducido */
+    padding-bottom: 3rem;
+}
+
+.admin-container h2 {
+    color: #dc3545;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+     margin-top: 1.5rem; 
+    position: relative;
+    padding-bottom: 15px;
+    text-align: center;          /* CENTRAR EL TÍTULO */
+    width: 100%;                 /* ASEGURAR QUE OCUPA TODO EL ANCHO */
+}
+
+.admin-container h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #dc3545, transparent);
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT DE DOS COLUMNAS - MEJOR DISTRIBUCIÓN
+   -------------------------------------------------------------------------- */
+.admin-container .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;             /* Reducir gutter */
+}
+
+.admin-container .col-lg-4 {
+    padding: 0 10px;             /* Reducir padding lateral */
+    flex: 0 0 30%;               /* 30% en lugar de 33.33% */
+    max-width: 350px;            /* Ancho máximo fijo */
+}
+
+.admin-container .col-lg-6 {
+    padding: 0 10px;
+    flex: 1;                     /* Ocupa el resto del espacio */
+    max-width: none;             /* Sin límite de ancho */
+}
+
+/* --------------------------------------------------------------------------
+   TARJETA DE PERFIL (IZQUIERDA) - MÁS COMPACTA
+   -------------------------------------------------------------------------- */
+.admin-avatar-card {
+    background-color: rgba(26, 26, 26, 0.85);
+    border-radius: 15px;
+    padding: 1.5rem;             /* Reducido de 2rem */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #dc3545;
+    text-align: center;
+}
+
+.admin-badge {
+    display: inline-block;
+    background: #dc3545;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;         /* Reducido */
+}
+
+/* FOTO DE PERFIL */
+.admin-avatar-wrapper {
+    width: 120px;                /* Reducido de 140px */
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #dc3545;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-avatar-placeholder {
+    font-size: 3.5rem;           /* Reducido */
+    color: #dc3545;
+}
+
+.admin-avatar-placeholder i {
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+}
+
+.admin-username {
+    color: #C6A87D;
+    font-size: 1.2rem;           /* Reducido */
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.admin-email {
+    color: #D7CCC8;
+    font-size: 0.85rem;          /* Reducido */
+    margin-bottom: 0.3rem;
+    word-break: break-word;      /* Evitar desbordamiento */
+}
+
+.admin-role-text {
+    color: #dc3545;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
+
+.admin-employee-id {
+    color: #8B6B61;
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   PANEL DE ACCIONES - MÁS COMPACTO
+   -------------------------------------------------------------------------- */
+.admin-quick-actions {
+    background-color: rgba(26, 26, 26, 0.6);
+    border-radius: 15px;
+    padding: 1.25rem;            /* Reducido */
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    margin-top: 1rem;            /* Reducido */
+}
+
+.admin-quick-title {
+    color: #C6A87D;
+    font-size: 0.9rem;           /* Reducido */
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 0.75rem;      /* Reducido */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* BOTONES DE GESTIÓN */
+.btn-admin-quick {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alineado a la izquierda */
+    gap: 10px;
+    width: 100%;
+    background: #dc3545;
+    border: 2px solid #dc3545;
+    color: white;
+    padding: 10px 14px;          /* Reducido */
+    border-radius: 8px;
+    margin-bottom: 8px;          /* Reducido */
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+    font-size: 0.9rem;           /* Tamaño de fuente reducido */
+}
+
+.btn-admin-quick:last-child {
+    margin-bottom: 0;
+}
+
+.btn-admin-quick i {
+    font-size: 1rem;             /* Reducido */
+    color: white;
+    width: 20px;
+    text-align: center;
+}
+
+.btn-admin-quick span {
+    color: white;
+    font-size: 0.85rem;
+}
+
+.btn-admin-quick:hover {
+    background: transparent;
+    border-color: #dc3545;
+    color: #dc3545;
+    transform: translateX(3px);
+    text-decoration: none;
+}
+
+.btn-admin-quick:hover i,
+.btn-admin-quick:hover span {
+    color: #dc3545;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+.admin-quick-actions form {
+    margin-top: 0.75rem;
+}
+
+.admin-quick-actions .btn-danger {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   FORMULARIO (DERECHA) - OCUPA TODO EL ESPACIO DISPONIBLE
+   -------------------------------------------------------------------------- */
+.admin-form-card {
+    background-color: rgba(26, 26, 26, 0.85);
+    border-radius: 15px;
+    padding: 1.5rem;             /* Reducido */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #dc3545;
+    height: 100%;
+}
+
+.admin-form-title {
+    color: #dc3545;
+    font-size: 1.1rem;           /* Reducido */
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+    position: relative;
+    padding-bottom: 8px;         /* Reducido */
+}
+
+.admin-form-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 1px;
+    background-color: #dc3545;
+}
+
+.admin-form-subtitle {
+    color: #8B6B61;
+    font-size: 0.85rem;          /* Reducido */
+    margin-bottom: 1rem;         /* Reducido */
+}
+
+.admin-form-card .form-label {
+    color: #D7CCC8;
+    margin-bottom: 6px;          /* Reducido */
+    font-size: 0.85rem;          /* Reducido */
+}
+
+.admin-form-card .form-control {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid #5D4037;
+    color: #D7CCC8;
+    padding: 10px 12px;          /* Reducido */
+    border-radius: 4px;
+    font-size: 0.9rem;           /* Reducido */
+}
+
+.admin-form-card .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    color: #D7CCC8;
+}
+
+.admin-form-card .form-control[readonly] {
+    background-color: rgba(255, 255, 255, 0.05);
+    opacity: 0.6;
+}
+
+/* GRID DE DOS COLUMNAS EN FORMULARIO */
+.admin-form-card .row {
+    margin: 0 -8px;
+}
+
+.admin-form-card .col-md-6 {
+    padding: 0 8px;
+}
+
+/* Botones del formulario */
+.admin-actions {
+    display: flex;
+    gap: 10px;                   /* Reducido */
+    justify-content: flex-end;
+    margin-top: 1rem;            /* Reducido */
+    padding-top: 1rem;           /* Reducido */
+    border-top: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+.btn-admin-save {
+    background: #dc3545;
+    border: none;
+    color: white;
+    padding: 10px 24px;          /* Reducido */
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.9rem;           /* Reducido */
+    transition: all 0.3s;
+}
+
+.btn-admin-save:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
+
+.btn-cancel {
+    border-color: #5D4037;
+    color: #D7CCC8;
+    padding: 10px 20px;          /* Reducido */
+    border-radius: 4px;
+    font-size: 0.9rem;           /* Reducido */
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: rgba(198, 168, 125, 0.1);
+    border-color: #C6A87D;
+    color: #C6A87D;
+}
+
+/* --------------------------------------------------------------------------
+   BOTÓN ELIMINAR CUENTA
+   -------------------------------------------------------------------------- */
+.admin-external-buttons {
+    margin-top: 1rem;            /* Reducido */
+}
+
+.btn-admin-delete {
+    background: linear-gradient(to right, #dc3545, #c82333);
+    border: none;
+    color: white;
+    padding: 12px 20px;          /* Reducido */
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;           /* Reducido */
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-admin-delete:hover {
+    background: linear-gradient(to right, #c82333, #a71d2a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   MODAL
+   -------------------------------------------------------------------------- */
+.modal-admin-custom {
+    background-color: rgba(26, 26, 26, 0.95);
+    border-radius: 15px;
+    border: 2px solid #dc3545;
+}
+
+.modal-admin-custom .modal-header {
+    border-bottom: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.modal-admin-custom .modal-title {
+    color: #dc3545;
+}
+
+.modal-admin-custom .modal-body {
+    color: #D7CCC8;
+}
+
+.modal-admin-custom .modal-footer {
+    border-top: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE - AJUSTES PARA PANTALLAS GRANDES
+   -------------------------------------------------------------------------- */
+@media (min-width: 1400px) {
+    .admin-container {
+        max-width: 1600px;       /* Más ancho en pantallas muy grandes */
+    }
+    
+    .admin-container .col-lg-4 {
+        flex: 0 0 25%;           /* Columna izquierda más estrecha */
+        max-width: 320px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .admin-container .col-lg-4 {
+        flex: 0 0 28%;
+        max-width: 300px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 991px) {
+    .admin-container {
+        width: 100%;
+        padding: 0 20px;
+    }
+    
+    .admin-container .col-lg-4,
+    .admin-container .col-lg-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Móviles */
+@media (max-width: 576px) {
+    .admin-container {
+        padding: 0 15px;
+    }
+    
+    .admin-avatar-card,
+    .admin-form-card {
+        padding: 1rem;
+    }
+}

@@ -1,0 +1,53 @@
+package es.codeurjc.mokaf.controller;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.repository.ProductRepository;
+
+@WebMvcTest(controllers = MenuController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+class MenuControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ProductRepository productRepository;
+
+    @Test
+    @WithMockUser
+    void testShowMenu() throws Exception {
+        Product p1 = new Product("Expreso", "Desc", null, new BigDecimal("2.5"), Category.HOT);
+        p1.setId(1L);
+        Product p2 = new Product("Latte", "Desc", null, new BigDecimal("3.5"), Category.HOT);
+        p2.setId(2L);
+        List<Product> products = Arrays.asList(p1, p2);
+
+        when(productRepository.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/menu"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("menu"))
+                .andExpect(model().attributeExists("items"))
+                .andExpect(model().attribute("items", products))
+                .andExpect(model().attribute("title", "Menú"))
+                .andExpect(model().attribute("currentPage", "menu"));
+    }
+}

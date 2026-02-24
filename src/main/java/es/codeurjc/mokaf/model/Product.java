@@ -40,18 +40,15 @@ public class Product {
     private LocalDateTime createdAt;
 
     @ManyToMany
-    @JoinTable(
-        name = "product_allergens",
-        joinColumns = @JoinColumn(name = "product_id"),
-        inverseJoinColumns = @JoinColumn(name = "allergen_id")
-    )
+    @JoinTable(name = "product_allergens", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "allergen_id"))
     private Set<Allergen> allergens = new HashSet<>();
 
     // Reviews para borrar en cascada al borrar el producto
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    public Product() {}
+    public Product() {
+    }
 
     public Product(String name, String description, Image image, BigDecimal priceBase, Category category) {
         this.name = name;
@@ -61,29 +58,69 @@ public class Product {
         this.category = category;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public Image getImage() { return image; }
-    public void setImage(Image image) { this.image = image; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public BigDecimal getPriceBase() { return priceBase; }
-    public void setPriceBase(BigDecimal priceBase) { this.priceBase = priceBase; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
-    
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Set<Allergen> getAllergens() { return allergens; }
-    public void setAllergens(Set<Allergen> allergens) { this.allergens = allergens; }
+    public Image getImage() {
+        return image;
+    }
 
-    public List<Review> getReviews() { return reviews; }
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public BigDecimal getPriceBase() {
+        return priceBase;
+    }
+
+    public void setPriceBase(BigDecimal priceBase) {
+        this.priceBase = priceBase;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public Set<Allergen> getAllergens() {
+        return allergens;
+    }
+
+    public void setAllergens(Set<Allergen> allergens) {
+        this.allergens = allergens;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
 
     public void addReview(Review review) {
         reviews.add(review);
