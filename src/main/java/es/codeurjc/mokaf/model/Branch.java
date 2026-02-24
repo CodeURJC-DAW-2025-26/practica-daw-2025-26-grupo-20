@@ -20,8 +20,8 @@ public class Branch {
     @Lob
     private String description;
 
-
-    public Branch() {}
+    public Branch() {
+    }
 
     public Branch(String name, String description, BigDecimal purchaseDiscountPercent) {
         this.name = name;
@@ -29,29 +29,36 @@ public class Branch {
         this.purchaseDiscountPercent = purchaseDiscountPercent;
     }
 
-    public Long getId() { 
-        return id; 
+    public Long getId() {
+        return id;
     }
 
-    public String getName() { 
-        return name; 
-    }
-    public void setName(String name) { 
-        this.name = name; 
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getDescription() { 
-        return description; 
-    }
-    public void setDescription(String description) { 
-        this.description = description; 
+    public String getName() {
+        return name;
     }
 
-    public BigDecimal getPurchaseDiscountPercent() { 
-        return purchaseDiscountPercent; 
+    public void setName(String name) {
+        this.name = name;
     }
-    public void setPurchaseDiscountPercent(BigDecimal purchaseDiscountPercent) { 
-        this.purchaseDiscountPercent = purchaseDiscountPercent; 
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getPurchaseDiscountPercent() {
+        return purchaseDiscountPercent;
+    }
+
+    public void setPurchaseDiscountPercent(BigDecimal purchaseDiscountPercent) {
+        this.purchaseDiscountPercent = purchaseDiscountPercent;
     }
 
 }
