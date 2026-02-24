@@ -3,19 +3,742 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadisticas - Mokaf</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <!-- Añadir Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Estadísticas | Mokaf</title>
+    <style>
+        /* Estilos específicos para estadísticas */
+        :root {
+            --cafe-oscuro: #3A2A1D;
+            --cafe-medio: #5D4037;
+            --cafe-claro: #8B6B61;
+            --negro: #1A1A1A;
+            --beige: #D7CCC8;
+            --dorado: #C6A87D;
+            --blanco: #FFFFFF;
+            --gris-claro: #E0E0E0;
+            --sombra: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            color: var(--blanco);
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 4% auto;
+            padding: 2rem;
+            background: linear-gradient(145deg, rgba(26, 26, 26, 0.95), rgba(58, 42, 29, 0.9));
+            border-radius: 25px;
+            box-shadow: 0 20px 40px var(--sombra);
+            border: 1px solid var(--dorado);
+            backdrop-filter: blur(5px);
+        }
+
+        .stats-title {
+            color: var(--dorado);
+            margin-bottom: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-align: center;
+            text-shadow: 2px 2px 4px var(--sombra);
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .stats-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--dorado), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.98), rgba(58, 42, 29, 0.95));
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 15px 35px var(--sombra);
+            border: 1px solid rgba(198, 168, 125, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px var(--sombra);
+            border-color: var(--dorado);
+        }
+
+        .stats-card h2 {
+            color: var(--dorado);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 1px solid rgba(198, 168, 125, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .stats-card h2 i {
+            font-size: 2rem;
+        }
+
+        .stats-card h3 {
+            color: var(--dorado);
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin: 1rem 0 0.8rem 0;
+        }
+
+        .product-spotlight {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 18px;
+            border: 1px solid rgba(198, 168, 125, 0.3);
+            align-items: center;
+        }
+
+        .product-image-frame {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--dorado);
+            box-shadow: 0 10px 20px var(--sombra);
+            background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .product-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image-placeholder {
+            font-size: 4rem;
+            opacity: 0.7;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+            color: var(--dorado);
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .product-category {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(198, 168, 125, 0.15);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--beige);
+            border: 1px solid rgba(198, 168, 125, 0.3);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .kpi-item {
+            text-align: center;
+            padding: 1.2rem 0.8rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            border: 1px solid rgba(198, 168, 125, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-item:hover {
+            border-color: var(--dorado);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .kpi-label {
+            color: var(--gris-claro);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            color: var(--dorado);
+            font-size: 1.6rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .kpi-unit {
+            font-size: 0.9rem;
+            color: var(--beige);
+            margin-left: 0.2rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+            margin: 1.5rem 0 0.5rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(198, 168, 125, 0.15);
+        }
+
+        .branches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .branch-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(198, 168, 125, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .branch-card:hover {
+            border-color: var(--dorado);
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .branch-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        .branch-info {
+            flex: 1;
+        }
+
+        .branch-name {
+            font-weight: 500;
+            color: var(--blanco);
+            margin-bottom: 0.2rem;
+        }
+
+        .branch-stats {
+            display: flex;
+            gap: 1.2rem;
+            font-size: 0.85rem;
+            color: var(--gris-claro);
+        }
+
+        .branch-badge {
+            background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+            color: var(--blanco);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--dorado);
+            white-space: nowrap;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(198, 168, 125, 0.15);
+            margin: 0.5rem 0;
+        }
+
+        .summary-label {
+            color: var(--gris-claro);
+            font-size: 0.9rem;
+        }
+
+        .summary-value {
+            color: var(--dorado);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--dorado), var(--cafe-claro));
+            color: var(--negro);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gris-claro);
+            opacity: 0.7;
+            font-style: italic;
+            border: 2px dashed var(--dorado);
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            grid-column: 1 / -1;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 2.5rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+            color: var(--blanco);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: 1px solid var(--dorado);
+            box-shadow: 0 5px 15px var(--sombra);
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-medio));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--sombra);
+            color: var(--dorado);
+        }
+
+        .stats-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-spotlight {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .product-image-frame {
+                margin: 0 auto;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .branch-stats {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-card {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .stats-card:nth-child(2) { animation-delay: 0.2s; }
+        .stats-card:nth-child(3) { animation-delay: 0.4s; }
+    </style>
 </head>
-<body class="body-content">
+<body>
     {{> fragments/header}}
-    <div class="statistics-image-container">
-        <img src="images/statisticsImage.png" 
-             class="statistics-image"
-             alt="Dashboard de Estadísticas Mokaf">
+    
+    <div class="body-content">
+        <div class="stats-container">
+            <h1 class="stats-title">☕ Estadísticas Mokaf</h1>
+
+            <div class="stats-grid">
+                <!-- Card 1: Producto estrella del mes con imagen -->
+                <div class="stats-card">
+                    <h2>
+                        <span>🏆</span>
+                        Producto Estrella del Mes
+                    </h2>
+                    
+                    {{#hasBestProduct}}
+                    <div class="product-spotlight">
+                        <div class="product-image-frame">
+                            {{#bestProduct.imagePath}}
+                                <img src="{{bestProduct.imagePath}}" alt="{{bestProduct.name}}">
+                            {{/bestProduct.imagePath}}
+                            {{^bestProduct.imagePath}}
+                                <div class="product-image-placeholder">☕</div>
+                            {{/bestProduct.imagePath}}
+                        </div>
+                        <div class="product-details">
+                            <div class="product-name">{{bestProduct.name}}</div>
+                            <span class="product-category">{{bestProduct.category}}</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-item">
+                            <div class="kpi-label">Unidades Vendidas</div>
+                            <div class="kpi-value">{{bestProduct.totalUnits}} <span class="kpi-unit">uds</span></div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Ingresos Generados</div>
+                            <div class="kpi-value">{{bestProduct.totalAmountFormatted}} <span class="kpi-unit">€</span></div>
+                        </div>
+                    </div>
+                    {{/hasBestProduct}}
+                    
+                    {{^hasBestProduct}}
+                    <div class="no-data">
+                        <p>📭 No hay datos de ventas para este mes</p>
+                    </div>
+                    {{/hasBestProduct}}
+                </div>
+
+                <!-- Card 2: Categorías -->
+                <div class="stats-card">
+                    <h2>
+                        <span>📊</span>
+                        Ventas por Categoría
+                    </h2>
+                    
+                    {{#hasTopCategory}}
+                    <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="kpi-item">
+                            <div class="kpi-label">Categoría Top</div>
+                            <div class="kpi-value">{{topCategory.category}}</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Unidades</div>
+                            <div class="kpi-value">{{topCategory.totalUnits}} <span class="kpi-unit">uds</span></div>
+                        </div>
+                    </div>
+
+                    <div class="summary-row">
+                        <span class="summary-label">Ingresos totales</span>
+                        <span class="summary-value">{{topCategory.totalAmountFormatted}} €</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Pedidos</span>
+                        <span class="summary-value">{{topCategory.orderCount}}</span>
+                    </div>
+
+                    {{#allCategories.size}}
+                    <h3>Distribución por categorías</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryPieChart"></canvas>
+                    </div>
+                    {{/allCategories.size}}
+                    {{^allCategories.size}}
+                    <div class="no-data" style="padding: 1.5rem;">
+                        <p>No hay datos suficientes para mostrar gráfico</p>
+                    </div>
+                    {{/allCategories.size}}
+                    {{/hasTopCategory}}
+                    
+                    {{^hasTopCategory}}
+                    <div class="no-data">
+                        <p>📭 No hay datos de categorías en los últimos 3 meses</p>
+                    </div>
+                    {{/hasTopCategory}}
+                </div>
+
+                <!-- Card 3: Sucursal destacada -->
+                <div class="stats-card">
+                    <h2>
+                        <span>📍</span>
+                        Sucursal Destacada
+                    </h2>
+                    
+                    {{#hasTopBranch}}
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <span class="badge-primary">{{topBranch.name}}</span>
+                    </div>
+
+                    <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="kpi-item">
+                            <div class="kpi-label">Pedidos</div>
+                            <div class="kpi-value">{{topBranch.totalOrders}}</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Unidades</div>
+                            <div class="kpi-value">{{topBranch.totalUnits}}</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Ingresos</div>
+                            <div class="kpi-value">{{topBranch.totalRevenueFormatted}} <span class="kpi-unit">€</span></div>
+                        </div>
+                    </div>
+
+                    <div class="summary-row">
+                        <span class="summary-label">Valor medio por pedido</span>
+                        <span class="summary-value">{{topBranch.avgOrderValue}} €</span>
+                    </div>
+                    {{/hasTopBranch}}
+                    
+                    {{^hasTopBranch}}
+                    <div class="no-data">
+                        <p>📭 No hay datos de sucursales</p>
+                    </div>
+                    {{/hasTopBranch}}
+                </div>
+            </div>
+
+            <!-- Card 4: Ranking de sucursales -->
+            <div class="stats-card" style="margin-top: 1.5rem;">
+                <h2>
+                    <span>📈</span>
+                    Ranking de Sucursales
+                </h2>
+                
+                {{#allBranches.size}}
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="allBranchesChart"></canvas>
+                </div>
+
+                <div class="branches-grid">
+                    {{#allBranches}}
+                    <div class="branch-card">
+                        <div class="branch-color" style="background-color: {{color}};"></div>
+                        <div class="branch-info">
+                            <div class="branch-name">{{name}}</div>
+                            <div class="branch-stats">
+                                <span>📦 {{units}} uds</span>
+                                <span>💰 {{revenueFormatted}}€</span>
+                            </div>
+                        </div>
+                        <span class="branch-badge">{{percentage}}%</span>
+                    </div>
+                    {{/allBranches}}
+                </div>
+                {{/allBranches.size}}
+                
+                {{^allBranches.size}}
+                <div class="no-data">
+                    <p>📭 No hay datos de sucursales para mostrar</p>
+                </div>
+                {{/allBranches.size}}
+            </div>
+
+            <div class="stats-footer">
+                <a href="/" class="back-button">← Volver al Inicio</a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuración global de Chart.js
+            Chart.defaults.color = '#FFFFFF';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+            {{#hasTopCategory}}
+            {{#allCategories.size}}
+            // Datos para categorías
+            const categoryNames = [
+                {{#allCategories}}'{{category}}',{{/allCategories}}
+            ];
+            const categoryUnits = [
+                {{#allCategories}}{{units}},{{/allCategories}}
+            ];
+            const categoryColors = [
+                {{#allCategories}}'{{color}}',{{/allCategories}}
+            ];
+
+            // Solo crear el gráfico si hay datos
+            if (categoryNames.length > 0) {
+                // Gráfico circular de categorías
+                const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
+                new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryNames,
+                        datasets: [{
+                            data: categoryUnits,
+                            backgroundColor: categoryColors,
+                            borderColor: 'var(--negro)',
+                            borderWidth: 2,
+                            hoverOffset: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { 
+                                    color: '#FFFFFF',
+                                    font: { size: 11, weight: '300' },
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(26, 26, 26, 0.95)',
+                                titleColor: '#C6A87D',
+                                bodyColor: '#FFFFFF',
+                                borderColor: '#C6A87D',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} uds (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            {{/allCategories.size}}
+            {{/hasTopCategory}}
+
+            {{#allBranches.size}}
+            // Gráfico de todas las sucursales
+            const branchNames = [
+                {{#allBranches}}'{{name}}',{{/allBranches}}
+            ];
+            const branchRevenues = [
+                {{#allBranches}}{{revenue}},{{/allBranches}}
+            ];
+            const branchColors = [
+                {{#allBranches}}'{{color}}',{{/allBranches}}
+            ];
+
+            if (branchNames.length > 0) {
+                const allBranchesCtx = document.getElementById('allBranchesChart').getContext('2d');
+                new Chart(allBranchesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: branchNames,
+                        datasets: [
+                            {
+                                label: 'Ingresos (€)',
+                                data: branchRevenues,
+                                backgroundColor: branchColors,
+                                borderRadius: 8,
+                                borderSkipped: false,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(26, 26, 26, 0.95)',
+                                titleColor: '#C6A87D',
+                                bodyColor: '#FFFFFF',
+                                borderColor: '#C6A87D',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Ingresos: ${context.raw}€`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { 
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    drawBorder: false
+                                },
+                                ticks: { 
+                                    color: '#FFFFFF',
+                                    callback: function(value) {
+                                        return value + '€';
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { 
+                                    color: '#FFFFFF',
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: { size: 11 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            {{/allBranches.size}}
+        });
+    </script>
+
     {{> fragments/footer}}
 </body>
 </html>

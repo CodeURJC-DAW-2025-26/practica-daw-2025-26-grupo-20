@@ -50,7 +50,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 .requestMatchers("/", "/index", "/menu", "/nosotros", 
-                               "/sucursales", "/contact", "/login", "/register").permitAll()
+                               "/sucursales", "/contact", "/login", "/register", "/statistics/**").permitAll()
                 .requestMatchers("/admin/**", "/profileADMIN").hasRole("ADMIN")
                 .requestMatchers("/profile", "/cart", "/orders").authenticated()
                 .anyRequest().permitAll()

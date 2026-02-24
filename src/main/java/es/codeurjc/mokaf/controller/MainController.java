@@ -68,12 +68,6 @@ public class MainController { // Controller for fragments
         return "contact";
     }
 
-    @GetMapping("/statistics")
-    public String showStat(Model model) {
-        model.addAttribute("title", "Statistics");
-        model.addAttribute("currentPage", "Statistics");
-        return "statistics";
-    }
 
     @GetMapping("/nosotros")
     public String showAboutUs(Model model) {
