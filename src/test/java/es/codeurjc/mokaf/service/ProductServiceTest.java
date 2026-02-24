@@ -1,99 +1,128 @@
 package es.codeurjc.mokaf.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.repository.ProductRepository;
 
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
+    @Mock
+    private ProductRepository productRepository;
+
+    @InjectMocks
     private ProductService productService;
+
+    private Product sampleProduct;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService();
+        sampleProduct = new Product("Expreso", "Café negro fuerte y aromático.", null,
+                new BigDecimal("2.50"), Category.HOT);
+        sampleProduct.setId(1L);
     }
 
     @Test
     void testGetAllProducts() {
+        List<Product> mockProducts = new ArrayList<>();
+        mockProducts.add(sampleProduct);
+        mockProducts.add(new Product("Capuccino", "Expreso con leche vaporizada y espuma.", null,
+                new BigDecimal("3.50"), Category.HOT));
+
+        when(productRepository.findAll()).thenReturn(mockProducts);
+
         List<Product> products = productService.getAllProducts();
+
         assertNotNull(products);
-        assertFalse(products.isEmpty());
-        assertTrue(products.size() > 20); // There are multiple default seeded products
+        assertEquals(2, products.size());
+        assertEquals("Expreso", products.get(0).getName());
+        verify(productRepository).findAll();
     }
 
     @Test
     void testGetProductById() {
-        // Find existing product in default data
-        List<Product> products = productService.getAllProducts();
-        assertFalse(products.isEmpty());
-        Product firstProduct = products.get(0);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
 
-        // Let's set an ID explicitly because the service might not assign it
-        // automatically in the default constructor list.
-        firstProduct.setId(99L);
+        Product found = productService.getProductById(1L);
 
-        Product found = productService.getProductById(99L);
         assertNotNull(found);
         assertEquals("Expreso", found.getName());
+        assertEquals(new BigDecimal("2.50"), found.getPriceBase());
+        verify(productRepository).findById(1L);
     }
 
     @Test
     void testGetProductByIdNotFound() {
+        when(productRepository.findById(999L)).thenReturn(Optional.empty());
+
         Product found = productService.getProductById(999L);
+
         assertNull(found);
+        verify(productRepository).findById(999L);
     }
 
     @Test
     void testAddProduct() {
-        int initialSize = productService.getAllProducts().size();
+        Product newProduct = new Product("New Drink", "Test drink", null,
+                new BigDecimal("2.00"), Category.HOT);
 
-        Product newProduct = new Product("New Drink", "Test drink", null, new BigDecimal("2.00"), Category.HOT);
+        when(productRepository.save(newProduct)).thenReturn(newProduct);
+
         productService.addProduct(newProduct);
 
-        List<Product> products = productService.getAllProducts();
-        assertEquals(initialSize + 1, products.size());
-        assertTrue(products.contains(newProduct));
+        verify(productRepository).save(newProduct);
     }
 
     @Test
     void testUpdateProduct() {
-        // Setup product with auto-assigned ID
-        Product product = new Product("Test Coffee", "Test", null, new BigDecimal("1.00"), Category.HOT);
-        productService.addProduct(product);
-        Long newId = product.getId();
+        Product updatedProduct = new Product("Updated Coffee", "Updated", null,
+                new BigDecimal("3.00"), Category.HOT);
 
-        // Update product
-        Product newProductData = new Product("Updated Coffee", "Updated", null, new BigDecimal("3.00"), Category.HOT);
-        newProductData.setId(newId);
+        when(productRepository.existsById(1L)).thenReturn(true);
+        when(productRepository.save(any(Product.class))).thenReturn(updatedProduct);
 
-        productService.updateProduct(newId, newProductData);
+        productService.updateProduct(1L, updatedProduct);
 
-        Product found = productService.getProductById(newId);
-        assertNotNull(found);
-        assertEquals("Updated Coffee", found.getName());
-        assertEquals("Updated", found.getDescription());
-        assertEquals(new BigDecimal("3.00"), found.getPriceBase());
+        assertEquals(1L, updatedProduct.getId());
+        verify(productRepository).existsById(1L);
+        verify(productRepository).save(updatedProduct);
+    }
+
+    @Test
+    void testUpdateProductNotFound() {
+        Product updatedProduct = new Product("Updated Coffee", "Updated", null,
+                new BigDecimal("3.00"), Category.HOT);
+
+        when(productRepository.existsById(999L)).thenReturn(false);
+
+        productService.updateProduct(999L, updatedProduct);
+
+        verify(productRepository).existsById(999L);
+        verify(productRepository, never()).save(any());
     }
 
     @Test
     void testDeleteProduct() {
-        // Setup product with auto-assigned ID
-        Product product = new Product("To Be Deleted", "Test", null, new BigDecimal("1.00"), Category.HOT);
-        productService.addProduct(product);
-        Long newId = product.getId();
+        doNothing().when(productRepository).deleteById(1L);
 
-        int initialSize = productService.getAllProducts().size();
+        productService.deleteProduct(1L);
 
-        productService.deleteProduct(newId);
-
-        assertEquals(initialSize - 1, productService.getAllProducts().size());
-        assertNull(productService.getProductById(newId));
+        verify(productRepository).deleteById(1L);
     }
 }
