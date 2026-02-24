@@ -454,7 +454,7 @@ public class DatabaseInitializer implements ApplicationRunner {
 
     private void createOrders() {
         List<User> customers = userRepository.findAll().stream()
-                .filter(u -> u.getRole() == User.Role.CUSTOMER)
+                .filter(user -> user.getRole() == User.Role.CUSTOMER)
                 .toList();
 
         List<Branch> branches = branchRepository.findAll();
@@ -465,78 +465,92 @@ public class DatabaseInitializer implements ApplicationRunner {
             return;
         }
 
-        Random random = new Random();
+        // Categorize products by type for easy access
+        List<Product> hotCoffees = products.stream()
+                .filter(p -> p.getCategory() == Category.HOT)
+                .toList();
 
-        // Past orders
-        for (User customer : customers) {
-            int numOrders = 2 + random.nextInt(2); // 2-3
+        List<Product> coldCoffees = products.stream()
+                .filter(p -> p.getCategory() == Category.COLD)
+                .toList();
 
-            for (int i = 0; i < numOrders; i++) {
-                Branch branch = branches.get(random.nextInt(branches.size()));
+        List<Product> desserts = products.stream()
+                .filter(p -> p.getCategory() == Category.DESSERTS)
+                .toList();
 
-                Order order = new Order();
-                order.setUser(customer);
-                order.setBranch(branch);
+        List<Product> nonCoffee = products.stream()
+                .filter(p -> p.getCategory() == Category.NON_COFFEE)
+                .toList();
 
-                if (random.nextDouble() < 0.8) {
-                    order.setStatus(Order.Status.PAID);
-                    order.setPaidAt(LocalDateTime.now().minusDays(random.nextInt(30)));
-                } else {
-                    order.setStatus(Order.Status.CANCELLED);
-                }
+        List<Product> blended = products.stream()
+                .filter(p -> p.getCategory() == Category.BLENDED)
+                .toList();
 
-                int numItems = 2 + random.nextInt(4); // 2-5
-                BigDecimal subtotal = BigDecimal.ZERO;
+        System.out.println(">>> Creating orders with specific quantities...");
+        int orderCounter = 0;
 
-                for (int j = 0; j < numItems; j++) {
-                    Product product = products.get(random.nextInt(products.size()));
-                    int quantity = 1 + random.nextInt(3);
+        // ============ HOT COFFEES: 13 units ============
+        orderCounter = createCategoryOrders(customers, branches, hotCoffees, 13, orderCounter, "HOT COFFEES");
 
-                    OrderItem item = new OrderItem();
-                    item.setProduct(product);
-                    item.setQuantity(quantity);
-                    item.setUnitPrice(product.getPriceBase());
-                    item.setFinalUnitPrice(product.getPriceBase());
+        // ============ COLD COFFEES: 24 units ============
+        orderCounter = createCategoryOrders(customers, branches, coldCoffees, 24, orderCounter, "COLD COFFEES");
 
-                    BigDecimal lineTotal = product.getPriceBase().multiply(BigDecimal.valueOf(quantity));
-                    item.setLineTotal(lineTotal);
+        // ============ DESSERTS: 14 units with variety ============
+        orderCounter = createDessertOrders(customers, branches, desserts, orderCounter);
 
-                    order.addItem(item);
-                    subtotal = subtotal.add(lineTotal);
-                }
+        // ============ NON-COFFEE: 10 units ============
+        orderCounter = createCategoryOrders(customers, branches, nonCoffee, 10, orderCounter, "NON-COFFEE");
 
-                order.setSubtotalAmount(subtotal);
+        // ============ BLENDED: 8 units ============
+        orderCounter = createCategoryOrders(customers, branches, blended, 8, orderCounter, "BLENDED");
 
-                BigDecimal discountPercent = BigDecimal.ZERO; // si quieres, random aquí
-                order.setDiscountPercent(discountPercent);
+        // ============ Create one active cart ============
+        createActiveCart(customers, branches, products);
 
-                BigDecimal discountAmount = subtotal.multiply(discountPercent).divide(BigDecimal.valueOf(100));
-                order.setDiscountAmount(discountAmount);
+        long orderCount = orderRepository.count();
+        System.out.println(">>> Orders created: " + orderCount + " orders (including active carts)");
+    }
 
-                order.setTotalAmount(subtotal.subtract(discountAmount));
-
-                orderRepository.save(order);
-            }
+    /**
+     * Creates orders to achieve a specific total quantity of products from a
+     * category
+     * 
+     * @return updated order counter
+     */
+    private int createCategoryOrders(List<User> customers, List<Branch> branches,
+            List<Product> products, int targetQuantity,
+            int startOrderIndex, String categoryName) {
+        if (products.isEmpty()) {
+            System.out.println(">>> No products available for category: " + categoryName);
+            return startOrderIndex;
         }
 
-        // Active carts (0-1 por cliente)
-        for (User customer : customers) {
-            if (!random.nextBoolean())
-                continue;
+        int remainingQuantity = targetQuantity;
+        int orderIndex = startOrderIndex;
+        Random random = new Random(42 + orderIndex); // Different seed for variety but still deterministic
 
-            Branch branch = branches.get(random.nextInt(branches.size()));
+        while (remainingQuantity > 0) {
+            // Select customer and branch cyclically
+            User customer = customers.get(orderIndex % customers.size());
+            Branch branch = branches.get(orderIndex % branches.size());
 
-            Order cart = new Order();
-            cart.setUser(customer);
-            cart.setBranch(branch);
-            cart.setStatus(Order.Status.CART);
+            // Create order
+            Order order = new Order();
+            order.setUser(customer);
+            order.setBranch(branch);
+            order.setStatus(Order.Status.PAID);
+            order.setPaidAt(LocalDateTime.now().minusDays(orderIndex * 2)); // Spread over time
 
-            int numItems = 1 + random.nextInt(3);
             BigDecimal subtotal = BigDecimal.ZERO;
+            int itemsInThisOrder = 0;
 
-            for (int j = 0; j < numItems; j++) {
+            // Add items to this order (max 3 items per order)
+            while (remainingQuantity > 0 && itemsInThisOrder < 3) {
+                // Select random product from the category
                 Product product = products.get(random.nextInt(products.size()));
-                int quantity = 1 + random.nextInt(2);
+
+                // Determine quantity for this item (1-3 units, but not exceeding remaining)
+                int quantity = Math.min(1 + random.nextInt(3), remainingQuantity);
 
                 OrderItem item = new OrderItem();
                 item.setProduct(product);
@@ -544,22 +558,185 @@ public class DatabaseInitializer implements ApplicationRunner {
                 item.setUnitPrice(product.getPriceBase());
                 item.setFinalUnitPrice(product.getPriceBase());
 
-                BigDecimal lineTotal = product.getPriceBase().multiply(BigDecimal.valueOf(quantity));
+                BigDecimal lineTotal = product.getPriceBase()
+                        .multiply(BigDecimal.valueOf(quantity));
+                item.setLineTotal(lineTotal);
+
+                order.addItem(item);
+                subtotal = subtotal.add(lineTotal);
+
+                remainingQuantity -= quantity;
+                itemsInThisOrder++;
+            }
+
+            if (itemsInThisOrder > 0) {
+                order.setSubtotalAmount(subtotal);
+                order.setDiscountPercent(BigDecimal.ZERO);
+                order.setDiscountAmount(BigDecimal.ZERO);
+                order.setTotalAmount(subtotal);
+
+                orderRepository.save(order);
+            }
+
+            orderIndex++;
+        }
+
+        System.out.println(">>> Created orders for " + targetQuantity + " " + categoryName + " units");
+        return orderIndex;
+    }
+
+    /**
+     * Creates specific dessert orders with variety: cakes, croissants, cupcakes
+     * 
+     * @return updated order counter
+     */
+    private int createDessertOrders(List<User> customers, List<Branch> branches,
+            List<Product> desserts, int startOrderIndex) {
+        if (desserts.isEmpty()) {
+            System.out.println(">>> No desserts available");
+            return startOrderIndex;
+        }
+
+        // Map specific desserts by name (with fallbacks)
+        Product croissants = findProductByName(desserts, "Croissants");
+        Product chocolateCake = findProductByName(desserts, "Chocolate Carrot Cake");
+        Product redVelvet = findProductByName(desserts, "Red Velvet Cupcake");
+        Product vanillaCupcake = findProductByName(desserts, "Vanilla Cupcake");
+        Product strawberryCake = findProductByName(desserts, "Strawberry Cake");
+        Product chocolateCupcake = findProductByName(desserts, "Chocolate Cupcake");
+        Product orangeCake = findProductByName(desserts, "Orange Cake");
+
+        int orderIndex = startOrderIndex;
+
+        // 4 Croissants (2 orders of 2 units each)
+        orderIndex = createSingleItemOrder(customers, branches, croissants, 2, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, croissants, 2, orderIndex++);
+
+        // 2 Chocolate Cakes (1 order of 2 units)
+        orderIndex = createSingleItemOrder(customers, branches, chocolateCake, 2, orderIndex++);
+
+        // 2 Red Velvet Cupcakes
+        orderIndex = createSingleItemOrder(customers, branches, redVelvet, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, redVelvet, 1, orderIndex++);
+
+        // 2 Vanilla Cupcakes
+        orderIndex = createSingleItemOrder(customers, branches, vanillaCupcake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, vanillaCupcake, 1, orderIndex++);
+
+        // 2 Strawberry Cakes
+        orderIndex = createSingleItemOrder(customers, branches, strawberryCake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, strawberryCake, 1, orderIndex++);
+
+        // 2 Chocolate Cupcakes
+        orderIndex = createSingleItemOrder(customers, branches, chocolateCupcake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, chocolateCupcake, 1, orderIndex++);
+
+        // 2 Orange Cakes
+        orderIndex = createSingleItemOrder(customers, branches, orangeCake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, orangeCake, 1, orderIndex++);
+
+        System.out.println(
+                ">>> Created specific dessert orders: 4 croissants, 2 chocolate cakes, 2 red velvet, 2 vanilla, 2 strawberry, 2 chocolate cupcakes, 2 orange cakes");
+        return orderIndex;
+    }
+
+    /**
+     * Helper method to create an order with a single item
+     * 
+     * @return updated order counter
+     */
+    private int createSingleItemOrder(List<User> customers, List<Branch> branches,
+            Product product, int quantity, int orderIndex) {
+        if (product == null)
+            return orderIndex;
+
+        User customer = customers.get(orderIndex % customers.size());
+        Branch branch = branches.get(orderIndex % branches.size());
+
+        Order order = new Order();
+        order.setUser(customer);
+        order.setBranch(branch);
+        order.setStatus(Order.Status.PAID);
+        order.setPaidAt(LocalDateTime.now().minusDays(orderIndex * 3));
+
+        OrderItem item = new OrderItem();
+        item.setProduct(product);
+        item.setQuantity(quantity);
+        item.setUnitPrice(product.getPriceBase());
+        item.setFinalUnitPrice(product.getPriceBase());
+
+        BigDecimal lineTotal = product.getPriceBase()
+                .multiply(BigDecimal.valueOf(quantity));
+        item.setLineTotal(lineTotal);
+
+        order.addItem(item);
+
+        order.setSubtotalAmount(lineTotal);
+        order.setDiscountPercent(BigDecimal.ZERO);
+        order.setDiscountAmount(BigDecimal.ZERO);
+        order.setTotalAmount(lineTotal);
+
+        orderRepository.save(order);
+
+        return orderIndex + 1;
+    }
+
+    /**
+     * Creates the active shopping cart
+     */
+    private void createActiveCart(List<User> customers, List<Branch> branches, List<Product> products) {
+        if (customers.isEmpty() || branches.isEmpty() || products.isEmpty()) {
+            return;
+        }
+
+        Order cart = new Order();
+        cart.setUser(customers.get(0)); // First customer
+        cart.setBranch(branches.get(2)); // Móstoles branch
+        cart.setStatus(Order.Status.CART);
+
+        // Add 3 different items to cart for variety
+        int[] productIndices = { 0, 2, 5 }; // Different products: Expreso, Frappe, Croissants
+        int[] quantities = { 2, 1, 3 }; // Different quantities
+
+        BigDecimal subtotal = BigDecimal.ZERO;
+
+        for (int j = 0; j < productIndices.length; j++) {
+            if (productIndices[j] < products.size()) {
+                Product product = products.get(productIndices[j]);
+                int quantity = quantities[j];
+
+                OrderItem item = new OrderItem();
+                item.setProduct(product);
+                item.setQuantity(quantity);
+                item.setUnitPrice(product.getPriceBase());
+                item.setFinalUnitPrice(product.getPriceBase());
+
+                BigDecimal lineTotal = product.getPriceBase()
+                        .multiply(BigDecimal.valueOf(quantity));
                 item.setLineTotal(lineTotal);
 
                 cart.addItem(item);
                 subtotal = subtotal.add(lineTotal);
             }
-
-            cart.setSubtotalAmount(subtotal);
-            cart.setDiscountPercent(BigDecimal.ZERO);
-            cart.setDiscountAmount(BigDecimal.ZERO);
-            cart.setTotalAmount(subtotal);
-
-            orderRepository.save(cart);
         }
 
-        System.out.println(">>> Orders created: " + orderRepository.count() + " (including carts)");
+        cart.setSubtotalAmount(subtotal);
+        cart.setDiscountPercent(BigDecimal.ZERO);
+        cart.setDiscountAmount(BigDecimal.ZERO);
+        cart.setTotalAmount(subtotal);
+
+        orderRepository.save(cart);
+        System.out.println(">>> Active cart created with 3 different items");
+    }
+
+    /**
+     * Helper method to find a product by name in a list
+     */
+    private Product findProductByName(List<Product> products, String name) {
+        return products.stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     private Allergen findAllergenByName(List<Allergen> allergens, String name) {
