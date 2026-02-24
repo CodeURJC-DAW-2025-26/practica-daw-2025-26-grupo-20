@@ -64,6 +64,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
                 .requestMatchers("/", "/index", "/menu", "/nosotros", 
+                               "/sucursales", "/contact", "/login", "/register", "/statistics/**").permitAll()
+                .requestMatchers("/admin/**", "/profileADMIN").hasRole("ADMIN")
+                .requestMatchers("/profile", "/cart", "/orders").authenticated()
                                "/sucursales", "/contact", "/login", "/register").permitAll()
                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**", 
                                "/statistics", "/gestion_menu").hasRole("ADMIN")

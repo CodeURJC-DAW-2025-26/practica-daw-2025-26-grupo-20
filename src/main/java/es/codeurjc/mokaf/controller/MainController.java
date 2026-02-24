@@ -20,11 +20,5 @@ public class MainController { // Controller for fragments
 
     // Contact handled by ContactController
 
-    @GetMapping("/statistics")
-    public String showStat(Model model) {
-        model.addAttribute("title", "Statistics");
-        model.addAttribute("currentPage", "Statistics");
-        return "statistics";
-    }
 
 }
