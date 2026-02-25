@@ -294,6 +294,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Paseo de Gracia 85, 08008 Barcelona\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        barcelona.setPurchaseDiscountPercent(BigDecimal.valueOf(10));
         branchRepository.save(barcelona);
 
         Branch madrid = new Branch();
@@ -306,6 +307,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Gran Vía 42, 28013 Madrid\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        madrid.setPurchaseDiscountPercent(BigDecimal.valueOf(15));
         branchRepository.save(madrid);
 
         Branch mostoles = new Branch();
@@ -318,6 +320,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Calle Dos de Mayo 15, 28935 Móstoles\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        mostoles.setPurchaseDiscountPercent(BigDecimal.valueOf(25));
         branchRepository.save(mostoles);
 
         Branch santander = new Branch();
@@ -331,6 +334,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Paseo de Pereda 28, 39004 Santander\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        santander.setPurchaseDiscountPercent(BigDecimal.valueOf(10));
         branchRepository.save(santander);
 
         System.out.println(">>> Branches created: 4 branches");
@@ -681,9 +685,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         return orderIndex + 1;
     }
 
-    /**
-     * Creates the active shopping cart
-     */
+    
     private void createActiveCart(List<User> customers, List<Branch> branches, List<Product> products) {
         if (customers.isEmpty() || branches.isEmpty() || products.isEmpty()) {
             return;
@@ -694,31 +696,8 @@ public class DatabaseInitializer implements ApplicationRunner {
         cart.setBranch(branches.get(2)); // Móstoles branch
         cart.setStatus(Order.Status.CART);
 
-        // Add 3 different items to cart for variety
-        int[] productIndices = { 0, 2, 5 }; // Different products: Expreso, Frappe, Croissants
-        int[] quantities = { 2, 1, 3 }; // Different quantities
 
         BigDecimal subtotal = BigDecimal.ZERO;
-
-        for (int j = 0; j < productIndices.length; j++) {
-            if (productIndices[j] < products.size()) {
-                Product product = products.get(productIndices[j]);
-                int quantity = quantities[j];
-
-                OrderItem item = new OrderItem();
-                item.setProduct(product);
-                item.setQuantity(quantity);
-                item.setUnitPrice(product.getPriceBase());
-                item.setFinalUnitPrice(product.getPriceBase());
-
-                BigDecimal lineTotal = product.getPriceBase()
-                        .multiply(BigDecimal.valueOf(quantity));
-                item.setLineTotal(lineTotal);
-
-                cart.addItem(item);
-                subtotal = subtotal.add(lineTotal);
-            }
-        }
 
         cart.setSubtotalAmount(subtotal);
         cart.setDiscountPercent(BigDecimal.ZERO);
@@ -726,7 +705,6 @@ public class DatabaseInitializer implements ApplicationRunner {
         cart.setTotalAmount(subtotal);
 
         orderRepository.save(cart);
-        System.out.println(">>> Active cart created with 3 different items");
     }
 
     /**
