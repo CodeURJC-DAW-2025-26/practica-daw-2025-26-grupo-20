@@ -86,7 +86,6 @@ public class ProfileController {
 
         return "profileADMIN";
     }
-
     @PostMapping("/profile/update")
     public String updateProfile(@RequestParam String name,
             @RequestParam String email,
@@ -117,6 +116,8 @@ public class ProfileController {
             user.setPasswordHash(passwordEncoder.encode(password));
         }
 
+        Long newImageId = null;
+
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 Image newImage = imageService.updateImage(
@@ -125,16 +126,40 @@ public class ProfileController {
                 );
                 if (newImage != null) {
                     user.setImage(newImage);
+                    newImageId = newImage.getId();
+                    System.out.println(">>> Nueva imagen asignada con ID: " + newImageId);
                 }
             } catch (IOException e) {
                 return "redirect:/profile?error=image_upload_failed";
             }
         }
 
+        // Guardar usuario
         User savedUser = userService.save(user);
+        System.out.println(">>> Usuario guardado. ID: " + savedUser.getId());
 
-        // IMPORTANTE: Actualizar el Authentication con los nuevos datos
-        updateAuthentication(savedUser, request, response);
+       
+        final String emailToReload = email;
+
+        java.util.Optional<User> userOpt = userService.findByEmail(emailToReload);
+        User refreshedUser;
+
+        if (userOpt.isPresent()) {
+            refreshedUser = userOpt.get();
+            System.out.println(">>> Usuario recargado correctamente");
+        } else {
+            refreshedUser = savedUser; // Fallback al objeto guardado
+            System.out.println(">>> WARNING: No se pudo recargar, usando savedUser");
+        }
+
+        // Inicializar imagen si existe
+        if (refreshedUser.getImage() != null) {
+            refreshedUser.getImage().getId(); // Touch para inicializar
+            System.out.println(">>> Imagen inicializada. ID: " + refreshedUser.getImage().getId());
+        }
+
+        // Actualizar autenticación
+        updateAuthentication(refreshedUser, request, response);
 
         return "redirect:/profile?updated=true";
     }
