@@ -65,7 +65,7 @@ public class SecurityConfig {
                                                                 "/favicon.ico")
                                                 .permitAll()
                                                 .requestMatchers("/", "/index", "/menu", "/nosotros",
-                                                                "/sucursales", "/contact", "/login", "/register")
+                                                                "/branches", "/contact", "/login", "/register")
                                                 .permitAll()
                                                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
                                                                 "/statistics/**", "/gestion_menu")

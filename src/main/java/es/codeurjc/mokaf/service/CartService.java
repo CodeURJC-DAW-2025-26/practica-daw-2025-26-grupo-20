@@ -333,9 +333,6 @@ public class CartService {
                     return new RuntimeException("No active cart found");
                 });
 
-        System.out.println("Carrito actual: ID=" + cart.getId() +
-                ", sucursal actual=" + (cart.getBranch() != null ? cart.getBranch().getName() : "null") +
-                ", descuento actual=" + cart.getDiscountPercent() + "%");
 
         // Get new branch
         Branch newBranch = branchRepository.findById(newBranchId)
