@@ -62,8 +62,7 @@ public class CartController {
         return "cart";
     }
 
-
-    //Add product to cart    
+    // Add product to cart
     @PostMapping("/add")
     @ResponseBody
     public Map<String, Object> addToCart(@RequestParam("productId") Long productId,
@@ -103,8 +102,7 @@ public class CartController {
         return response;
     }
 
-    
-     //Get cart count
+    // Get cart count
     @GetMapping("/count")
     @ResponseBody
     public Map<String, Object> getCartCount(@AuthenticationPrincipal User user) {
@@ -128,8 +126,7 @@ public class CartController {
         return response;
     }
 
-    
-     //Get cart summary
+    // Get cart summary
     @GetMapping("/summary")
     @ResponseBody
     public Map<String, Object> getCartSummary(@AuthenticationPrincipal User user) {
@@ -170,8 +167,7 @@ public class CartController {
         return response;
     }
 
-    
-     // Update item quantity
+    // Update item quantity
     @PostMapping("/update")
     @ResponseBody
     public Map<String, Object> updateQuantity(@RequestParam("itemId") Long itemId,
@@ -187,14 +183,11 @@ public class CartController {
                 return response;
             }
 
-
             cartService.updateItemQuantity(user.getId(), itemId, quantity);
 
-
             CartService.CartSummary summary = cartService.getCartSummary(user.getId());
-            int totalUnits = cartService.getCartItemCount(user.getId()); 
+            int totalUnits = cartService.getCartItemCount(user.getId());
 
-           
             String itemLineTotal = "0.00€";
             if (summary.getCart() != null) {
                 Optional<OrderItem> updatedItem = summary.getCart().getItems().stream()
@@ -222,8 +215,7 @@ public class CartController {
         return response;
     }
 
-    
-     //Remove item from cart
+    // Remove item from cart
 
     @PostMapping("/remove")
     @ResponseBody

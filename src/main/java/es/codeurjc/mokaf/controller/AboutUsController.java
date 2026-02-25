@@ -1,19 +1,25 @@
 package es.codeurjc.mokaf.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import ch.qos.logback.core.model.Model;
+import es.codeurjc.mokaf.repository.EmployeeRepository;
 
 @Controller
 public class AboutUsController {
 
-     @GetMapping("/nosotros")
-    public String nosotros ( Model model) {
+    private final EmployeeRepository employeeRepository;
 
-       
-        return "nosotros";
+    public AboutUsController(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
+    @GetMapping("/nosotros")
+    public String nosotros(Model model) {
+        // Fetch team from DB
+        model.addAttribute("team", employeeRepository.findByDepartment("Atencion al cliente"));
+        return "nosotros";
+    }
 
 }

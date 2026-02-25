@@ -20,18 +20,22 @@ import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.model.Branch;
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.Employee;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.OrderItem;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
+import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.repository.AllergenRepository;
 import es.codeurjc.mokaf.repository.BranchRepository;
 import es.codeurjc.mokaf.repository.ImageRepository;
+import es.codeurjc.mokaf.repository.EmployeeRepository;
 import es.codeurjc.mokaf.repository.OrderRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
+import es.codeurjc.mokaf.repository.FaqRepository;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
@@ -42,7 +46,9 @@ public class DatabaseInitializer implements ApplicationRunner {
     private final ReviewRepository reviewRepository;
     private final AllergenRepository allergenRepository;
     private final BranchRepository branchRepository;
+    private final EmployeeRepository employeeRepository;
     private final OrderRepository orderRepository;
+    private final FaqRepository faqRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DatabaseInitializer(ProductRepository productRepository,
@@ -51,7 +57,9 @@ public class DatabaseInitializer implements ApplicationRunner {
             ReviewRepository reviewRepository,
             AllergenRepository allergenRepository,
             BranchRepository branchRepository,
+            EmployeeRepository employeeRepository,
             OrderRepository orderRepository,
+            FaqRepository faqRepository,
             PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
@@ -59,7 +67,9 @@ public class DatabaseInitializer implements ApplicationRunner {
         this.reviewRepository = reviewRepository;
         this.allergenRepository = allergenRepository;
         this.branchRepository = branchRepository;
+        this.employeeRepository = employeeRepository;
         this.orderRepository = orderRepository;
+        this.faqRepository = faqRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -72,6 +82,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         // robusto.
         orderRepository.deleteAll();
         reviewRepository.deleteAll();
+        userRepository.deleteAll(); // Delete users BEFORE employees and products
 
         // Si Product tiene relación 1-1/1-n con Image con cascade, puedes no borrar
         // imageRepository.
@@ -80,27 +91,46 @@ public class DatabaseInitializer implements ApplicationRunner {
         imageRepository.deleteAll();
 
         allergenRepository.deleteAll();
+        employeeRepository.deleteAll();
         branchRepository.deleteAll();
-        userRepository.deleteAll();
+        faqRepository.deleteAll();
 
-        // 2) USUARIOS
+        // 2) SUCURSALES Y EMPLEADOS (Usuarios dependen de empleados por employee_id)
+        createBranches();
+        createEmployees();
+
+        // 3) USUARIOS
         createUsers();
 
-        // 3) PRODUCTOS + IMÁGENES
+        // 4) PRODUCTOS + IMÁGENES + ALÉRGENOS
         seedProducts();
-
-        // 4) REVIEWS (depende de users y products)
-        createReviews();
-
-        // 5) ALÉRGENOS + SUCURSALES + ASIGNACIÓN
         createAllergens();
-        createBranches();
         updateProductsWithAllergens();
+
+        // 5) REVIEWS (depende de users y products)
+        createReviews();
 
         // 6) PEDIDOS Y CARRITOS
         createOrders();
 
+        // 7) FAQS
+        createFaqs();
+
         System.out.println(">>> DB seeded OK");
+    }
+
+    private void createFaqs() {
+        Faq faq1 = new Faq("¿Hacen envíos a domicilio?",
+                "Sí, realizamos envíos a través de Glovo y Uber Eats en un radio de 5km de nuestras sucursales.");
+        Faq faq2 = new Faq("¿Tienen opciones sin gluten?",
+                "Contamos con una variedad de opciones sin gluten, aunque advertimos de la posible contaminación cruzada en nuestra cocina.");
+        Faq faq3 = new Faq("¿Puedo reservar una mesa?",
+                "Aceptamos reservas de mesa con una antelación mínima de 24 horas contactando a nuestra sucursal correspondiente o mediante nuestro formulario de contacto.");
+        Faq faq4 = new Faq("¿Venden granos de café?",
+                "Sí, vendemos nuestros propios blends de café de especialidad de orígenes seleccionados recién tostados.");
+
+        faqRepository.saveAll(Arrays.asList(faq1, faq2, faq3, faq4));
+        System.out.println(">>> FAQs created: 4 FAQs seeded");
     }
 
     private void seedProducts() throws Exception {
@@ -338,6 +368,61 @@ public class DatabaseInitializer implements ApplicationRunner {
         branchRepository.save(santander);
 
         System.out.println(">>> Branches created: 4 branches");
+    }
+
+    private void createEmployees() {
+        List<Branch> branches = branchRepository.findAll();
+        if (branches.isEmpty())
+            return;
+
+        Branch madrid = branches.stream().filter(b -> b.getName().contains("Madrid")).findFirst()
+                .orElse(branches.get(0));
+        Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
+                .orElse(branches.get(0));
+
+        // Administradores (Referenciados en createUsers)
+        Employee admin1 = new Employee("EMP-001", "Administrador", "Principal", "Administrador del Sistema",
+                "Direccion",
+                new BigDecimal("4000.00"), madrid,
+                "Gestor general de la plataforma Mokaf.", "admin@mokaf.com",
+                "../images/Profile/default.png");
+
+        Employee admin2 = new Employee("EMP-002", "María", "González", "Supervisora", "Direccion",
+                new BigDecimal("3200.00"), madrid,
+                "Supervisora de operaciones y atención al cliente.", "maria.admin@mokaf.com",
+                "../images/Profile/default.png");
+
+        // Equipo Público
+        Employee elinee = new Employee("EMP-003", "Elinee", "Freites", "Fundadora & Master Roaster",
+                "Atencion al cliente",
+                new BigDecimal("3500.00"), madrid,
+                "Visionaria detrás de cada blend exclusivo de Mokaf.", "elinee@mokaf.com",
+                "../images/Profile/elinee.png");
+
+        Employee jordi = new Employee("EMP-004", "Jordi", "Guix", "Barista Principal", "Atencion al cliente",
+                new BigDecimal("2500.00"),
+                barcelona,
+                "El artista que convierte el cafe en lienzo.", "jordi@mokaf.com", "../images/Profile/jordi.png");
+
+        Employee alexandra = new Employee("EMP-005", "Alexandra", "Cararus", "Gerente de Experiencia",
+                "Atencion al cliente",
+                new BigDecimal("2800.00"), madrid,
+                "Asegurando que cada visita sea inolvidable.", "alexandra@mokaf.com",
+                "../images/Profile/alexandra.png");
+
+        Employee guillermo = new Employee("EMP-006", "Guillermo", "Velázquez", "Director de Tecnología",
+                "Atencion al cliente",
+                new BigDecimal("3200.00"), barcelona,
+                "Innovando para llevar la experiencia Mokaf al mundo digital.", "guillermo@mokaf.com",
+                "../images/Profile/guillermo.png");
+
+        Employee gonzalo = new Employee("EMP-007", "Gonzalo", "Pérez", "Estratega de Negocio", "Atencion al cliente",
+                new BigDecimal("3100.00"), madrid,
+                "Expandiendo horizontes y buscando nuevas oportunidades.", "gonzalo@mokaf.com",
+                "../images/Profile/Gonzalo.png");
+
+        employeeRepository.saveAll(Arrays.asList(admin1, admin2, elinee, jordi, alexandra, guillermo, gonzalo));
+        System.out.println(">>> Employees created: 7 real members seeded (including admins)");
     }
 
     private void updateProductsWithAllergens() {
@@ -685,7 +770,6 @@ public class DatabaseInitializer implements ApplicationRunner {
         return orderIndex + 1;
     }
 
-    
     private void createActiveCart(List<User> customers, List<Branch> branches, List<Product> products) {
         if (customers.isEmpty() || branches.isEmpty() || products.isEmpty()) {
             return;
@@ -695,7 +779,6 @@ public class DatabaseInitializer implements ApplicationRunner {
         cart.setUser(customers.get(0)); // First customer
         cart.setBranch(branches.get(2)); // Móstoles branch
         cart.setStatus(Order.Status.CART);
-
 
         BigDecimal subtotal = BigDecimal.ZERO;
 
