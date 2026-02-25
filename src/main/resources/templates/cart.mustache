@@ -125,9 +125,11 @@
                         </div>
 
                         <!-- Checkout Button -->
-                        <button class="btn btn-checkout w-100 py-3" onclick="processCheckout(event)">
-                            <i class="fas fa-lock me-2"></i>Pagar
-                        </button>
+                        <form action="/cart/checkout" method="POST">
+                            <button type="submit" class="btn btn-checkout w-100 py-3" onclick="processCheckout(event)">
+                                <i class="fas fa-lock me-2"></i>Proceder al Pago
+                            </button>
+                        </form>
 
                         <!-- Security Info -->
                         <div class="text-center mt-3">
@@ -399,7 +401,7 @@
     
     try {
         //Calling backend
-        const response = await fetch('/cart/checkout', {
+        const response = await fetch('/cart/checkoutProcess', {
             method: 'POST',
             headers: getFetchHeaders(),
             body: new URLSearchParams({

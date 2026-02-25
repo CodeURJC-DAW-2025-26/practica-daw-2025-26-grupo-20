@@ -375,7 +375,7 @@ public class CartController {
         return response;
     }
 
-    @PostMapping("/checkout")
+    @PostMapping("/checkoutProcess")
     @ResponseBody
     public Map<String, Object> processCheckout(@RequestParam("paymentMethod") String paymentMethod,
             @AuthenticationPrincipal User user) {
