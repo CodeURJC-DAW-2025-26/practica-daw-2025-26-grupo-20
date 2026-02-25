@@ -36,7 +36,7 @@ public class CartService {
      * Get or create an active cart for a user
      */
     public Order getOrCreateCart(Long userId, Long branchId) {
-        
+
         cleanDuplicateCarts(userId);
 
         // Try to find existing cart
@@ -62,7 +62,7 @@ public class CartService {
             branch = branchRepository.findById(branchId)
                     .orElseThrow(() -> new RuntimeException("Branch not found with id: " + branchId));
         } else {
-            branch = branchRepository.findFirstBranch()
+            branch = branchRepository.findFirstByOrderByIdAsc()
                     .orElseThrow(() -> new RuntimeException("No branches available"));
         }
 
@@ -302,7 +302,7 @@ public class CartService {
 
         public int getItemCount() {
             return itemCount;
-        } 
+        }
 
         // Helper method to check if cart is empty
         public boolean isEmpty() {
@@ -332,7 +332,6 @@ public class CartService {
                     System.out.println("No se encontró carrito para usuario: " + userId);
                     return new RuntimeException("No active cart found");
                 });
-
 
         // Get new branch
         Branch newBranch = branchRepository.findById(newBranchId)
@@ -370,7 +369,6 @@ public class CartService {
                 .add(tax)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        
         String discountInfo = "";
         if (cart.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0) {
             discountInfo = cart.getDiscountPercent() + "% (" + formatPrice(cart.getDiscountAmount()) + ")";
@@ -424,7 +422,6 @@ public class CartService {
         Order paidOrder = orderRepository.save(cart);
         System.out.println("✅ Orden pagada guardada con ID: " + paidOrder.getId());
 
-
         List<Branch> branches = branchRepository.findAll();
         if (branches.isEmpty()) {
             throw new RuntimeException("No hay sucursales disponibles");
@@ -452,7 +449,6 @@ public class CartService {
         if (carts.size() > 1) {
             System.out.println("⚠️ Se encontraron " + carts.size() + " carritos para el usuario " + userId);
 
-            
             Order keepCart = carts.stream()
                     .max((c1, c2) -> c1.getId().compareTo(c2.getId()))
                     .orElse(carts.get(0));

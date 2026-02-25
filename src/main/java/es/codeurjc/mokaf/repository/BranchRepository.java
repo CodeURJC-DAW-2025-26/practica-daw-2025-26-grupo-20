@@ -9,12 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import es.codeurjc.mokaf.model.Branch;
 
 public interface BranchRepository extends JpaRepository<Branch, Long> {
-   
-    @Query("SELECT b FROM Branch b ORDER BY b.id ASC")
-    Optional<Branch> findFirstBranch();
+
+    Optional<Branch> findFirstByOrderByIdAsc();
 
     @Query("SELECT b FROM Branch b ORDER BY b.id ASC")
     List<Branch> findAllBranchesOrdered();
-    
+
     Optional<Branch> findByName(String name);
 }
