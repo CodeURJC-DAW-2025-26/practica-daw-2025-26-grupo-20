@@ -267,103 +267,99 @@ public class DatabaseInitializer implements ApplicationRunner {
     }
 
     private void createReviews() {
-    List<User> users = userRepository.findAll();
-    List<Product> products = productRepository.findAll();
-    if (users.isEmpty() || products.isEmpty())
-        return;
+        List<User> users = userRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        if (users.isEmpty() || products.isEmpty())
+            return;
 
-    // Filter only customers (no admins)
-    List<User> customers = users.stream()
-            .filter(u -> u.getRole() == User.Role.CUSTOMER)
-            .toList();
-    
-    if (customers.isEmpty()) {
-        System.out.println(">>> No customers found for reviews");
-        return;
-    }
+        // Filter only customers (no admins)
+        List<User> customers = users.stream()
+                .filter(u -> u.getRole() == User.Role.CUSTOMER)
+                .toList();
 
-    System.out.println(">>> Creating reviews for different products...");
-    
-    // Define reviews for specific products - CONTENT IN SPANISH FOR USERS
-    // Format: [productName, stars, reviewText]
-    List<Object[]> reviewData = Arrays.asList(
-        // HOT COFFEES
-        new Object[]{"Expreso", 5, "Café perfecto, fuerte y aromático. ¡Así me gusta!"},
-        new Object[]{"Expreso", 4, "Buena intensidad, quizás un poco fuerte para mi gusto."},
-        new Object[]{"Expreso", 5, "El mejor expreso de la zona, la crema es perfecta."},
-        new Object[]{"Capuccino", 5, "Cremoso y delicioso, la espuma es perfecta."},
-        new Object[]{"Capuccino", 4, "Muy buen capuccino, ¿quizás un poco más de chocolate?"},
-        new Object[]{"Capuccino", 5, "Mi capuccino favorito, siempre consistente."},
-        new Object[]{"Latte", 5, "Suave y cremoso, simplemente perfecto."},
-        new Object[]{"Latte", 4, "Buen latte, temperatura ideal."},
-        new Object[]{"Americano", 3, "Bueno pero un poco aguado para mi gusto."},
-        
-        // COLD COFFEES
-        new Object[]{"Iced Latte", 5, "Refrescante y fuerte, ¡perfecto para el verano!"},
-        new Object[]{"Iced Latte", 4, "Muy bueno, quizás un poco más de hielo."},
-        new Object[]{"Frappe", 5, "El mejor frappe que he probado, ¡cremoso y delicioso!"},
-        new Object[]{"Frappe", 5, "¡Muy refrescante, me encanta!"},
-        new Object[]{"Iced Vietnamese Coffe", 5, "Sabor auténtico, dulce y fuerte."},
-        new Object[]{"Iced Vietnamese Coffe", 4, "Bueno pero demasiado dulce para mí."},
-        
-        // DESSERTS
-        new Object[]{"Croissants", 5, "Hojaldrado y mantecoso, ¡como en París!"},
-        new Object[]{"Croissants", 4, "Muy buenos croissants, frescos cada día."},
-        new Object[]{"Croissants", 5, "¡Los mejores croissants de la ciudad!"},
-        new Object[]{"Chocolate Carrot Cake", 5, "Jugoso y chocolatoso, ¡increíble!"},
-        new Object[]{"Chocolate Carrot Cake", 5, "Mi tarta favorita, siempre fresca."},
-        new Object[]{"Red Velvet Cupcake", 5, "Red velvet perfecto, frosting cremoso."},
-        new Object[]{"Red Velvet Cupcake", 4, "Bueno pero un poco seco."},
-        new Object[]{"Vanilla Cupcake", 4, "Vainilla clásica, muy bueno."},
-        new Object[]{"Strawberry Cake", 5, "Fresas frescas, ligero y delicioso."},
-        new Object[]{"Chocolate Cupcake", 5, "Sabor a chocolate intenso, ¡espectacular!"},
-        new Object[]{"Orange Cake", 4, "Agradable sabor cítrico, muy refrescante."},
-        
-        // NON-COFFEE
-        new Object[]{"Chai Tea Latte", 5, "Especias perfectas, muy aromático."},
-        new Object[]{"Chai Tea Latte", 4, "Buen chai, podría ser más especiado."},
-        new Object[]{"Hot Chocolate", 5, "Rico y cremoso, perfecto para días fríos."},
-        new Object[]{"Hot Chocolate", 5, "¡El mejor chocolate caliente!"},
-        new Object[]{"Matcha Latte", 4, "Buen matcha, suave y cremoso."},
-        
-        // BLENDED
-        new Object[]{"Frapuccino", 5, "Café mezclado perfecto, ¡no demasiado dulce!"},
-        new Object[]{"Chocolate Coffee Blend", 5, "Combinación increíble de café y chocolate."},
-        new Object[]{"Hazelnut Coffee Shake", 5, "Me encanta el sabor a avellana, equilibrio perfecto."}
-    );
-
-    int created = 0;
-    Random random = new Random(42); // Fixed seed for reproducibility
-
-    // Create reviews distributing among customers
-    for (Object[] data : reviewData) {
-        String productName = (String) data[0];
-        int stars = (int) data[1];
-        String text = (String) data[2];
-        
-        // Find the product
-        Product product = findProductByName(products, productName);
-        if (product == null) {
-            System.out.println(">>> Product not found: " + productName);
-            continue;
+        if (customers.isEmpty()) {
+            System.out.println(">>> No customers found for reviews");
+            return;
         }
-        
-        // Select random customer
-        User customer = customers.get(random.nextInt(customers.size()));
-        
-        // Create and save review
-        Review review = new Review();
-        review.setUser(customer);
-        review.setProduct(product);
-        review.setStars(stars);
-        review.setText(text);
-        
-        reviewRepository.save(review);
-        created++;
+
+        System.out.println(">>> Creating reviews for different products...");
+
+        // Define reviews for specific products - CONTENT IN SPANISH FOR USERS
+        // Format: [productName, stars, reviewText]
+        List<Object[]> reviewData = Arrays.asList(
+                // HOT COFFEES
+                new Object[] { "Expreso", 5, "Café perfecto, fuerte y aromático. ¡Así me gusta!" },
+                new Object[] { "Expreso", 4, "Buena intensidad, quizás un poco fuerte para mi gusto." },
+                new Object[] { "Expreso", 5, "El mejor expreso de la zona, la crema es perfecta." },
+                new Object[] { "Capuccino", 5, "Cremoso y delicioso, la espuma es perfecta." },
+                new Object[] { "Capuccino", 4, "Muy buen capuccino, ¿quizás un poco más de chocolate?" },
+                new Object[] { "Capuccino", 5, "Mi capuccino favorito, siempre consistente." },
+                new Object[] { "Latte", 5, "Suave y cremoso, simplemente perfecto." },
+                new Object[] { "Latte", 4, "Buen latte, temperatura ideal." },
+                new Object[] { "Americano", 3, "Bueno pero un poco aguado para mi gusto." },
+
+                // COLD COFFEES
+                new Object[] { "Iced Latte", 5, "Refrescante y fuerte, ¡perfecto para el verano!" },
+                new Object[] { "Iced Latte", 4, "Muy bueno, quizás un poco más de hielo." },
+                new Object[] { "Frappe", 5, "El mejor frappe que he probado, ¡cremoso y delicioso!" },
+                new Object[] { "Frappe", 5, "¡Muy refrescante, me encanta!" },
+                new Object[] { "Iced Vietnamese Coffe", 5, "Sabor auténtico, dulce y fuerte." },
+                new Object[] { "Iced Vietnamese Coffe", 4, "Bueno pero demasiado dulce para mí." },
+
+                // DESSERTS
+                new Object[] { "Croissants", 5, "Hojaldrado y mantecoso, ¡como en París!" },
+                new Object[] { "Croissants", 4, "Muy buenos croissants, frescos cada día." },
+                new Object[] { "Croissants", 5, "¡Los mejores croissants de la ciudad!" },
+                new Object[] { "Chocolate Carrot Cake", 5, "Jugoso y chocolatoso, ¡increíble!" },
+                new Object[] { "Chocolate Carrot Cake", 5, "Mi tarta favorita, siempre fresca." },
+                new Object[] { "Red Velvet Cupcake", 5, "Red velvet perfecto, frosting cremoso." },
+                new Object[] { "Red Velvet Cupcake", 4, "Bueno pero un poco seco." },
+                new Object[] { "Vanilla Cupcake", 4, "Vainilla clásica, muy bueno." },
+                new Object[] { "Strawberry Cake", 5, "Fresas frescas, ligero y delicioso." },
+                new Object[] { "Chocolate Cupcake", 5, "Sabor a chocolate intenso, ¡espectacular!" },
+                new Object[] { "Orange Cake", 4, "Agradable sabor cítrico, muy refrescante." },
+
+                // NON-COFFEE
+                new Object[] { "Chai Tea Latte", 5, "Especias perfectas, muy aromático." },
+                new Object[] { "Chai Tea Latte", 4, "Buen chai, podría ser más especiado." },
+                new Object[] { "Hot Chocolate", 5, "Rico y cremoso, perfecto para días fríos." },
+                new Object[] { "Hot Chocolate", 5, "¡El mejor chocolate caliente!" },
+                new Object[] { "Matcha Latte", 4, "Buen matcha, suave y cremoso." },
+
+                // BLENDED
+                new Object[] { "Frapuccino", 5, "Café mezclado perfecto, ¡no demasiado dulce!" },
+                new Object[] { "Chocolate Coffee Blend", 5, "Combinación increíble de café y chocolate." },
+                new Object[] { "Hazelnut Coffee Shake", 5, "Me encanta el sabor a avellana, equilibrio perfecto." });
+
+        Random random = new Random(42); // Fixed seed for reproducibility
+
+        // Create reviews distributing among customers
+        for (Object[] data : reviewData) {
+            String productName = (String) data[0];
+            int stars = (int) data[1];
+            String text = (String) data[2];
+
+            // Find the product
+            Product product = findProductByName(products, productName);
+            if (product == null) {
+                System.out.println(">>> Product not found: " + productName);
+                continue;
+            }
+
+            // Select random customer
+            User customer = customers.get(random.nextInt(customers.size()));
+
+            // Create and save review
+            Review review = new Review();
+            review.setUser(customer);
+            review.setProduct(product);
+            review.setStars(stars);
+            review.setText(text);
+
+            reviewRepository.save(review);
+        }
+
     }
-
-}
-
 
     private void createAllergens() {
         List<String> allergenNames = Arrays.asList(

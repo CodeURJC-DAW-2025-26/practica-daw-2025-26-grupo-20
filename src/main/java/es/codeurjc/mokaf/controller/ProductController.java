@@ -1,10 +1,8 @@
 package es.codeurjc.mokaf.controller;
 
 import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.repository.ProductRepository;
-import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.service.ReviewService;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

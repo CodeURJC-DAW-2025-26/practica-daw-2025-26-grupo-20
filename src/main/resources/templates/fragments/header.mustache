@@ -4,11 +4,16 @@
             <a class="navbar-brand" href="/">
                 <i class="fas fa-mug-hot"></i>Mokaf
             </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarContent"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -27,7 +32,7 @@
                         <a class="nav-link" href="/contact">Contacto</a>
                     </li>
                 </ul>
-                
+
                 <div class="d-flex align-items-center">
                     {{#user}}
                         <!-- Logged User: My Profile button -->
@@ -42,7 +47,7 @@
                             </a>
                         {{/isAdmin}}
                     {{/user}}
-                    
+
                     {{^user}}
                         <!-- Unloggeg User: My Account Button (Redirect to login) -->
                         <a href="/login" class="btn btn-header me-2">
@@ -51,12 +56,16 @@
                     {{/user}}
 
                     {{#user}}
-                    
-                    <a href="/cart" class="btn btn-header position-relative">
-                        <i class="fas fa-shopping-cart me-1"></i> Carrito
-                        <span class="badge bg-danger ms-1 cart-counter" id="cartCounter">0</span>
-                    </a>
-
+                        <a
+                            href="/cart"
+                            class="btn btn-header position-relative"
+                        >
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span
+                                class="badge bg-danger ms-1 cart-counter"
+                                id="cartCounter"
+                            >0</span>
+                        </a>
                     {{/user}}
                 </div>
             </div>
@@ -64,63 +73,72 @@
     </div>
 </header>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Actualizar contador al cargar la página
-    updateCartCount();
+    document.addEventListener('DOMContentLoaded', function () {
+        // Actualizar contador al cargar la página
+        updateCartCount();
     
-    // Update Counter
-    window.addEventListener('cartUpdated', function(event) {
-        if (event.detail && event.detail.count !== undefined) {
-            updateCartCounterDisplay(event.detail.count);
-        }
+        // Update Counter
+        window.addEventListener('cartUpdated', function (event) {
+            if (event.detail && event.detail.count !== undefined) {
+                updateCartCounterDisplay(event.detail.count);
+            }
+        });
     });
-});
-
-async function updateCartCount() {
-    try {
-        const response = await fetch('/cart/count');
-        const data = await response.json();
-        
-        if (data.success) {
-            updateCartCounterDisplay(data.count);
+    
+    async function updateCartCount() {
+        try {
+            const response = await fetch('/cart/count');
+            const data = await response.json();
+    
+            if (data.success) {
+                updateCartCounterDisplay(data.count);
+            }
+        } catch (error) {
+            console.error('Error al actualizar contador:', error);
         }
-    } catch (error) {
-        console.error('Error al actualizar contador:', error);
     }
-}
-
-
-function updateCartCounterDisplay(count) {
-    const counter = document.getElementById('cartCounter');
-    if (counter) {
-        counter.textContent = count;
-        counter.style.display = count > 0 ? 'inline-block' : 'none';
-        
-        // Animación sutil cuando cambia
-        counter.classList.add('counter-pulse');
-        setTimeout(() => {
-            counter.classList.remove('counter-pulse');
-        }, 500);
+    
+    
+    function updateCartCounterDisplay(count) {
+        const counter = document.getElementById('cartCounter');
+        if (counter) {
+            counter.textContent = count;
+            counter.style.display = count > 0 ? 'inline-block' : 'none';
+    
+            // Animación sutil cuando cambia
+            counter.classList.add('counter-pulse');
+            setTimeout(() => {
+                counter.classList.remove('counter-pulse');
+            }, 500);
+        }
     }
-}
 </script>
 
 <style>
-.cart-counter {
-    transition: all 0.3s ease;
-}
-
-.counter-pulse {
-    animation: pulse 0.5s ease;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); background-color: #dc3545; }
-    50% { transform: scale(1.2); background-color: #28a745; }
-}
-
-.btn-header .badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-}
+    .cart-counter {
+        transition: all 0.3s ease;
+    }
+    
+    .counter-pulse {
+        animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+    
+        0%,
+        100% {
+            transform: scale(1);
+            background-color: #dc3545;
+        }
+    
+        50% {
+            transform: scale(1.2);
+            background-color: #28a745;
+        }
+    }
+    
+    .btn-header .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
 </style>

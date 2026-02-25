@@ -4,8 +4,6 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.OrdersService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,7 +15,6 @@ public class MainController {
     public MainController(OrdersService ordersService) {
         this.ordersService = ordersService;
     }
-
 
     @PostMapping("/cart/checkout")
     public String checkout(Authentication authentication, RedirectAttributes redirectAttributes) {
