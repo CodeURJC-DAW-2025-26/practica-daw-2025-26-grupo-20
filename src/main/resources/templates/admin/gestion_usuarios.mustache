@@ -1,185 +1,588 @@
 <!DOCTYPE html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{title}}</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/gestion_menu.css">
+        <link rel="stylesheet" href="/css/menu.css">
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/general.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/gestion_menu.css">
-    <link rel="stylesheet" href="/css/menu.css">
-</head>
+    <body class="body-content">
+        {{> fragments/header}}
 
-<body class="body-content">
-    {{> fragments/header}}
+        <main class="container my-5 admin-container">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2>Gestión de Usuarios</h2>
+                <button
+                    class="btn btn-header"
+                    id="toggleFormBtn"
+                    onclick="toggleUserForm()"
+                >
+                    <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
+                </button>
+            </div>
 
-    <main class="container my-5 admin-container">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2>Gestión de Usuarios</h2>
-            <button class="btn btn-header"
-                onclick="document.getElementById('userForm').scrollIntoView({behavior: 'smooth'})">
-                <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
-            </button>
-        </div>
+            <!-- User Form -->
+            <div
+                id="userForm"
+                class="row justify-content-center mb-5"
+                style="display: none;"
+            >
+                <div class="col-lg-8">
+                    <h4 class="mb-4" id="formTitle">Agregar Usuario</h4>
+                    <div class="form-container">
+                        <form
+                            id="userFormEl"
+                            action="/admin/users/add"
+                            method="POST"
+                        >
+                            <input
+                                type="hidden"
+                                name="{{_csrf.parameterName}}"
+                                value="{{_csrf.token}}"
+                            />
+                            <input type="hidden" id="userId" name="id">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="userName" class="form-label">
+                                        Nombre Completo
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="userName"
+                                        name="name"
+                                        placeholder="Ej: Juan Pérez"
+                                        required
+                                    >
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="userEmail" class="form-label">
+                                        Correo Electrónico
+                                    </label>
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="userEmail"
+                                        name="email"
+                                        placeholder="ejemplo@correo.com"
+                                        required
+                                    >
+                                </div>
 
-        <!-- User Form -->
-        <div id="userForm" class="row justify-content-center mb-5">
-            <div class="col-lg-8">
-                <h4 class="mb-4" id="formTitle">Agregar Usuario</h4>
-                <div class="form-container">
-                    <form id="userFormEl" action="/admin/users/add" method="POST">
-                        <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}" />
-                        <input type="hidden" id="userId" name="id">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="userName" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="userName" name="name"
-                                    placeholder="Ej: Juan Pérez" required>
+                                <div class="col-md-6">
+                                    <label for="userRole" class="form-label">
+                                        Rol
+                                    </label>
+                                    <select
+                                        class="form-select"
+                                        id="userRole"
+                                        name="role"
+                                        required
+                                    >
+                                        <option value="" selected disabled>
+                                            Seleccionar...
+                                        </option>
+                                        {{#availableRoles}}
+                                            <option value="{{.}}">{{.}}</option>
+                                        {{/availableRoles}}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label
+                                        for="userPassword"
+                                        class="form-label"
+                                    >
+                                        Contraseña
+                                    </label>
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        id="userPassword"
+                                        name="password"
+                                        placeholder="(Solo rellenar para cambiar)"
+                                    >
+                                    <small class="text-white-50 form-text">
+                                        En nuevo usuario es obligatoria.
+                                    </small>
+                                </div>
+
+                                <!-- Employee specific fields (Initially hidden) -->
+                                <div
+                                    id="employeeFields"
+                                    style="display: none;"
+                                    class="row g-3 mt-2"
+                                >
+                                    <div class="col-12">
+                                        <hr class="border-secondary opacity-25">
+                                        <h6 class="text-white-50 mb-3">
+                                            Información del Empleado
+                                        </h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label
+                                            for="empPosition"
+                                            class="form-label"
+                                        >
+                                            Cargo / Posición
+                                        </label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="empPosition"
+                                            name="position"
+                                            placeholder="Ej: Barista Senior"
+                                        >
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label
+                                            for="empDepartment"
+                                            class="form-label"
+                                        >
+                                            Departamento
+                                        </label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="empDepartment"
+                                            name="department"
+                                            placeholder="Ej: Atención al cliente"
+                                        >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label
+                                            for="empSalary"
+                                            class="form-label"
+                                        >
+                                            Salario
+                                        </label>
+                                        <div class="input-group">
+                                            <span
+                                                class="input-group-text bg-dark border-secondary text-white"
+                                            >
+                                                €
+                                            </span>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                class="form-control"
+                                                id="empSalary"
+                                                name="salary"
+                                                placeholder="0.00"
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label
+                                            for="empBranch"
+                                            class="form-label"
+                                        >
+                                            Sucursal Asignada
+                                        </label>
+                                        <select
+                                            class="form-select"
+                                            id="empBranch"
+                                            name="branchId"
+                                        >
+                                            <option value="" selected>
+                                                Sin sucursal (General)
+                                            </option>
+                                            {{#branches}}
+                                                <option value="{{id}}">
+                                                    {{name}}
+                                                </option>
+                                            {{/branches}}
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label
+                                            for="empDescription"
+                                            class="form-label"
+                                        >
+                                            Descripción / Biografía
+                                        </label>
+                                        <textarea
+                                            class="form-control"
+                                            id="empDescription"
+                                            name="description"
+                                            rows="2"
+                                            placeholder="Breve descripción del empleado..."
+                                        ></textarea>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="col-md-12"
+                                    id="employeeSelectContainer"
+                                    style="display: none;"
+                                >
+                                    <label for="employeeId" class="form-label">
+                                        ID Empleado Asignado
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="employeeId"
+                                        name="employeeId"
+                                        readonly
+                                        style="background-color: var(--cafe-oscuro); color: var(--beige-oscuro); opacity: 0.7;"
+                                    >
+                                    <small class="text-white-50">
+                                        Generado automáticamente por el sistema.
+                                    </small>
+                                </div>
+
+                                <div
+                                    class="col-12 mt-4 d-flex justify-content-end gap-2"
+                                >
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        id="cancelEditBtn"
+                                        style="color: var(--beige); border-color: var(--cafe-claro); display: none;"
+                                        onclick="cancelEdit()"
+                                    >
+                                        Cancelar Edición
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        id="closeFormBtn"
+                                        style="color: var(--beige); border-color: var(--cafe-claro);"
+                                        onclick="document.forms[0].reset(); toggleUserForm();"
+                                    >
+                                        Cerrar Formulario
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-header"
+                                        id="submitBtn"
+                                    >
+                                        Guardar Usuario
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="userEmail" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="userEmail" name="email"
-                                    placeholder="ejemplo@correo.com" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="userRole" class="form-label">Rol</label>
-                                <select class="form-select" id="userRole" name="role" required>
-                                    <option value="" selected disabled>Seleccionar...</option>
-                                    <option value="CUSTOMER">Cliente (CUSTOMER)</option>
-                                    <option value="ADMIN">Administrador (ADMIN)</option>
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="userPassword" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="userPassword" name="password"
-                                    placeholder="(Solo rellenar para cambiar)">
-                                <small class="text-white-50 form-text">En nuevo usuario es obligatoria.</small>
-                            </div>
-
-                            <div class="col-md-12">
-                                <label for="employeeId" class="form-label">ID Empleado</label>
-                                <input type="text" class="form-control" id="employeeId" name="employeeId"
-                                    placeholder="Ej: EMP-001">
-                            </div>
-
-                            <div class="col-12 mt-4 d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-secondary d-none" id="cancelEditBtn">Cancelar Edición</button>
-                                <button type="submit" class="btn btn-header" id="submitBtn">Guardar Usuario</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Users List -->
-        <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Rol</th>
-                        <th scope="col">ID Empleado</th>
-                        <th scope="col" class="text-end">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#users}}
-                    <tr>
-                        <td>{{id}}</td>
-                        <td>{{name}}</td>
-                        <td>{{email}}</td>
-                        <td>
-                            {{#role}}
-                                <span class="badge bg-primary">{{.}}</span>
-                            {{/role}}
-                        </td>
-                        <td>{{#employeeId}}{{.}}{{/employeeId}}{{^employeeId}}N/A{{/employeeId}}</td>
-                        <td class="text-end">
-                            <button class="btn btn-action btn-edit" 
-                                onclick="editUser('{{id}}', '{{name}}', '{{email}}', '{{role}}', '{{#employeeId}}{{.}}{{/employeeId}}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <form action="/admin/users/delete/{{id}}" method="POST" style="display:inline;">
-                                <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}" />
-                                <button type="submit" class="btn btn-action btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar a este usuario?');"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </td>
-                    </tr>
-                    {{/users}}
-                </tbody>
-            </table>
-        </div>
+            <!-- Filter and Actions -->
+            <div class="mb-4 text-center">
+                <h6 class="text-white-50 mb-3 small">Filtrar por rol:</h6>
+                <div
+                    class="d-flex justify-content-center flex-wrap gap-2"
+                    id="roleFilterContainer"
+                >
+                    <button
+                        class="badge rounded-pill role-filter-btn active"
+                        data-role="ALL"
+                        style="border: 2px solid var(--dorado); background-color: var(--cafe-claro); opacity: 1; cursor: pointer; transition: all 0.2s; font-size: 0.9em; padding: 8px 15px; color: var(--cafe-oscuro); font-weight: bold;"
+                    >
+                        Todos
+                    </button>
+                    {{#availableRoles}}
+                        <button
+                            class="badge rounded-pill role-filter-btn"
+                            data-role="{{.}}"
+                            style="border: 2px solid transparent; opacity: 0.6; cursor: pointer; transition: all 0.2s; font-size: 0.9em; padding: 8px 15px; color: white;"
+                        >
+                            {{.}}
+                        </button>
+                    {{/availableRoles}}
+                </div>
+            </div>
 
-        <script>
-            function editUser(id, name, email, role, employeeId) {
-                // Populate form
-                document.getElementById('userId').value = id;
-                document.getElementById('userName').value = name;
-                document.getElementById('userEmail').value = email;
-                document.getElementById('userRole').value = role;
+            <!-- Users List -->
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">Empleado</th>
+                            <th scope="col" class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#users}}
+                            <tr>
+                                <td>{{id}}</td>
+                                <td>{{name}}</td>
+                                <td>{{email}}</td>
+                                <td>
+                                    {{#role}}
+                                        <span class="badge bg-primary">
+                                            {{.}}
+                                        </span>
+                                    {{/role}}
+                                </td>
+                                <td>
+                                    {{#employeeId}}{{.}}{{/employeeId}}
+                                    {{^employeeId}}N/A{{/employeeId}}
+                                </td>
+                                <td class="text-end">
+                                    <button
+                                        class="btn btn-action btn-edit"
+                                        onclick="editUser('{{id}}', '{{name}}', '{{email}}', '{{role}}', '{{#employeeId}}{{.}}{{/employeeId}}')"
+                                        data-employee-id="{{#employeeId}}{{.}}{{/employeeId}}"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form
+                                        action="/admin/users/delete/{{id}}"
+                                        method="POST"
+                                        style="display:inline;"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="{{_csrf.parameterName}}"
+                                            value="{{_csrf.token}}"
+                                        />
+                                        <button
+                                            type="submit"
+                                            class="btn btn-action btn-delete"
+                                            onclick="return confirm('¿Estás seguro de que quieres eliminar a este usuario?');"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {{/users}}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Hidden storage for employee data to avoid Mustache corruption in scripts -->
+            <div id="employeeDataStore" style="display: none;">
+                {{#allEmployees}}
+                    <div
+                        class="employee-record"
+                        data-id="{{id}}"
+                        data-position="{{position}}"
+                        data-department="{{department}}"
+                        data-salary="{{salary}}"
+                        data-branch-id="{{#branch}}{{id}}{{/branch}}"
+                        data-description="{{description}}"
+                    >
+                    </div>
+                {{/allEmployees}}
+            </div>
+            <script>
+                // Dictionary to store employee details for quick lookup in JS
+                const employeeDetails = {};
+                document.querySelectorAll('#employeeDataStore .employee-record').forEach(el => {
+                    employeeDetails[el.dataset.id] = {
+                        "position": el.dataset.position || '',
+                        "department": el.dataset.department || '',
+                        "salary": el.dataset.salary || '',
+                        "branchId": el.dataset.branchId || '',
+                        "description": el.dataset.description || ''
+                    };
+                });
                 
-                // Set employee ID or clear if null/undefined
-                document.getElementById('employeeId').value = employeeId && employeeId !== 'null' ? employeeId : '';
+                // Add listener to show/hide employee fields based on role
+                document.getElementById('userRole').addEventListener('change', function () {
+                    const role = this.value;
+                    const employeeFields = document.getElementById('employeeFields');
+                    const empSelectContainer = document.getElementById('employeeSelectContainer');
+                    if (role === 'ADMIN' || role === 'EMPLOYEE') {
+                        employeeFields.style.display = 'flex';
+                    } else {
+                        employeeFields.style.display = 'none';
+                        if (empSelectContainer) empSelectContainer.style.display = 'none';
+                    }
+                });
                 
-                // Password should be empty and not required for edit
-                document.getElementById('userPassword').value = '';
-                document.getElementById('userPassword').required = false;
+                function toggleUserForm() {
+                    const formDiv = document.getElementById('userForm');
+                    const toggleBtn = document.getElementById('toggleFormBtn');
+                    const employeeFields = document.getElementById('employeeFields');
                 
-                // Employee ID is readonly during edit
-                document.getElementById('employeeId').readOnly = true;
-
-                // Change UI state
-                document.getElementById('formTitle').innerText = 'Actualizar Usuario';
-                document.getElementById('submitBtn').innerText = 'Actualizar Usuario';
-                document.getElementById('cancelEditBtn').classList.remove('d-none');
-                
-                // Change form action
-                document.getElementById('userFormEl').action = '/admin/users/edit';
-
-                // Scroll to form
-                document.getElementById('userForm').scrollIntoView({behavior: 'smooth'});
-            }
-
-            document.getElementById('cancelEditBtn').addEventListener('click', function() {
-                // Reset form
-                document.getElementById('userFormEl').reset();
-                document.getElementById('userId').value = '';
-
-                // Restore UI state
-                document.getElementById('userPassword').required = true;
-                document.getElementById('employeeId').readOnly = true;
-                document.getElementById('formTitle').innerText = 'Agregar Usuario';
-                document.getElementById('submitBtn').innerText = 'Guardar Usuario';
-                this.classList.add('d-none');
-
-                // Reset form action
-                document.getElementById('userFormEl').action = '/admin/users/add';
-            });
-            
-            // Password logic for new users
-            document.getElementById('userFormEl').addEventListener('submit', function(e) {
-                const isEditing = document.getElementById('userId').value !== '';
-                const pwdField = document.getElementById('userPassword');
-                
-                if (!isEditing && pwdField.value.trim() === '') {
-                    e.preventDefault();
-                    alert('Por favor, ingresa una contraseña para el nuevo usuario.');
+                    if (formDiv.style.display === 'none') {
+                        formDiv.style.display = 'flex';
+                        formDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        toggleBtn.innerHTML = '<i class="fas fa-minus me-2"></i>Ocultar Formulario';
+                    } else {
+                        formDiv.style.display = 'none';
+                        toggleBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Añadir Usuario';
+                        cancelEdit();
+                    }
                 }
-            });
-        </script>
+                
+                function cancelEdit() {
+                    document.getElementById('userFormEl').reset();
+                    document.getElementById('userFormEl').action = '/admin/users/add';
+                    document.getElementById('userId').value = '';
+                    document.getElementById('userPassword').required = true;
+                    document.getElementById('userPassword').placeholder = 'Contraseña';
+                    document.getElementById('formTitle').innerText = 'Añadir Nuevo Usuario';
+                    document.getElementById('submitBtn').innerText = 'Guardar Usuario';
+                    document.getElementById('employeeFields').style.display = 'none';
+                    document.getElementById('employeeSelectContainer').style.display = 'none';
+                    document.getElementById('cancelEditBtn').style.display = 'none';
+                    document.getElementById('closeFormBtn').style.display = 'inline-block';
+                }
+                
+                function editUser(id, name, email, role, employeeId) {
+                    // Show form if hidden
+                    const formDiv = document.getElementById('userForm');
+                    if (formDiv.style.display === 'none') toggleUserForm();
+                
+                    // Populate basic fields
+                    document.getElementById('userId').value = id;
+                    document.getElementById('userName').value = name;
+                    document.getElementById('userEmail').value = email;
+                    document.getElementById('userRole').value = role;
+                    document.getElementById('userPassword').required = false;
+                    document.getElementById('userPassword').placeholder = '(Dejar en blanco para no cambiar)';
+                
+                    // Handle employee fields
+                    const employeeFields = document.getElementById('employeeFields');
+                    if (role === 'ADMIN' || role === 'EMPLOYEE') {
+                        employeeFields.style.display = 'flex';
+                        document.getElementById('employeeSelectContainer').style.display = 'block';
+                        document.getElementById('employeeId').value = employeeId && employeeId !== 'null' ? employeeId : '';
+                
+                        const details = employeeDetails[employeeId];
+                        if (details) {
+                            document.getElementById('empPosition').value = details.position;
+                            document.getElementById('empDepartment').value = details.department;
+                            document.getElementById('empSalary').value = details.salary;
+                            document.getElementById('empBranch').value = details.branchId;
+                            document.getElementById('empDescription').value = details.description;
+                        } else {
+                            // Clear fields if no details found
+                            document.getElementById('empPosition').value = '';
+                            document.getElementById('empDepartment').value = '';
+                            document.getElementById('empSalary').value = '';
+                            document.getElementById('empBranch').value = '';
+                            document.getElementById('empDescription').value = '';
+                        }
+                    } else {
+                        employeeFields.style.display = 'none';
+                        document.getElementById('employeeSelectContainer').style.display = 'none';
+                    }
+                
+                    // Change UI state
+                    document.getElementById('formTitle').innerText = 'Actualizar Usuario';
+                    document.getElementById('submitBtn').innerText = 'Actualizar Usuario';
+                    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+                    document.getElementById('closeFormBtn').style.display = 'none';
+                
+                    // Change form action
+                    document.getElementById('userFormEl').action = '/admin/users/edit';
+                
+                    // Scroll to form
+                    document.getElementById('userForm').scrollIntoView({ behavior: 'smooth' });
+                }
+                
+                // Password logic for new users
+                document.getElementById('userFormEl').addEventListener('submit', function (e) {
+                    const isEditing = document.getElementById('userId').value !== '';
+                    const pwdField = document.getElementById('userPassword');
+                
+                    if (!isEditing && pwdField.value.trim() === '') {
+                        e.preventDefault();
+                        alert('Por favor, ingresa una contraseña para el nuevo usuario.');
+                    }
+                });
+                
+                // --- Dynamic Filtering Logic ---
+                
+                const roleColors = ['#722f37', '#2a9d8f', '#264653', '#e76f51', '#f4a261', '#8ab17d'];
+                function getColorForRole(roleName) {
+                    if (roleName === 'ALL') return 'var(--cafe-claro)';
+                    let hash = 0;
+                    for (let i = 0; i < roleName.length; i++) {
+                        hash = roleName.charCodeAt(i) + ((hash << 5) - hash);
+                    }
+                    const colorIndex = Math.abs(hash) % roleColors.length;
+                    return roleColors[colorIndex];
+                }
+                
+                // Apply initial colors to pills
+                document.querySelectorAll('.role-filter-btn').forEach(btn => {
+                    const role = btn.getAttribute('data-role');
+                    if (role !== 'ALL') {
+                        btn.style.backgroundColor = getColorForRole(role);
+                    }
+                });
+                
+                const roleButtons = document.querySelectorAll('.role-filter-btn');
+                let activeRoles = new Set(['ALL']);
+                
+                roleButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const role = btn.getAttribute('data-role');
+                
+                        if (role === 'ALL') {
+                            activeRoles.clear();
+                            activeRoles.add('ALL');
+                        } else {
+                            if (activeRoles.has('ALL')) activeRoles.delete('ALL');
+                
+                            if (activeRoles.has(role)) {
+                                activeRoles.delete(role);
+                            } else {
+                                activeRoles.add(role);
+                            }
+                
+                            if (activeRoles.size === 0) activeRoles.add('ALL');
+                        }
+                
+                        // Update UI state
+                        roleButtons.forEach(b => {
+                            const bRole = b.getAttribute('data-role');
+                            if (activeRoles.has(bRole)) {
+                                b.classList.add('active');
+                                b.style.opacity = '1';
+                                b.style.border = '2px solid var(--dorado)';
+                                b.style.backgroundColor = getColorForRole(bRole);
+                                b.style.color = bRole === 'ALL' ? 'var(--cafe-oscuro)' : 'white';
+                                b.style.fontWeight = 'bold';
+                            } else {
+                                b.classList.remove('active');
+                                b.style.opacity = '0.6';
+                                b.style.border = '2px solid transparent';
+                                b.style.fontWeight = 'normal';
+                            }
+                        });
+                
+                        // Filter table rows
+                        const rows = document.querySelectorAll('table tbody tr');
+                        rows.forEach(row => {
+                            const roleBadge = row.querySelector('td .badge');
+                            if (!roleBadge) return;
+                            const rowRole = roleBadge.textContent.trim();
+                
+                            if (activeRoles.has('ALL') || activeRoles.has(rowRole)) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                    });
+                });
+            </script>
 
-        <hr class="my-5" style="border-color: var(--dorado); opacity: 0.3;">
-
+            <hr class="my-5" style="border-color: var(--dorado); opacity: 0.3;">
+        </main>
         {{> fragments/footer}}
-
-</body>
-
+    </body>
 </html>
