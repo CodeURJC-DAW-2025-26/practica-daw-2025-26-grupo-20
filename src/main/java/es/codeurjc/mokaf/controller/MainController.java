@@ -1,27 +1,44 @@
 package es.codeurjc.mokaf.controller;
 
+import es.codeurjc.mokaf.model.User;
+import es.codeurjc.mokaf.service.OrdersService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-public class MainController { // Controller for fragments
+public class MainController {
 
-    // @Autowired
-    // @Qualifier("mysqlBranchService")
-    // private BranchService branchService;
+    private final OrdersService ordersService;
 
-    @GetMapping("/cart")
-    public String showCart(Model model) {
-        model.addAttribute("title", "Carrito de Compra - Mokaf");
-        model.addAttribute("currentPage", "cart");
-        model.addAttribute("subtotal", "0.00€");
-        model.addAttribute("shipping", "0.00€");
-        model.addAttribute("tax", "0.00€");
-        model.addAttribute("total", "0.00€");
-        return "cart";
+    public MainController(OrdersService ordersService) {
+        this.ordersService = ordersService;
     }
 
-    // Contact handled by ContactController
+
+    @PostMapping("/cart/checkout")
+    public String checkout(Authentication authentication, RedirectAttributes redirectAttributes) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof User) {
+            User user = (User) principal;
+            boolean success = ordersService.processCheckout(user.getId());
+            if (success) {
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Pedido completado con éxito. Se te ha enviado la factura al correo.");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "No se pudo procesar tu pedido. Tu carrito está vacío.");
+            }
+        }
+
+        return "redirect:/orders";
+    }
 
 }

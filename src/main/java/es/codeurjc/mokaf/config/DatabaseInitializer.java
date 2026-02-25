@@ -20,18 +20,22 @@ import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.model.Branch;
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.Employee;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.OrderItem;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
+import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.repository.AllergenRepository;
 import es.codeurjc.mokaf.repository.BranchRepository;
 import es.codeurjc.mokaf.repository.ImageRepository;
+import es.codeurjc.mokaf.repository.EmployeeRepository;
 import es.codeurjc.mokaf.repository.OrderRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
+import es.codeurjc.mokaf.repository.FaqRepository;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
@@ -42,7 +46,9 @@ public class DatabaseInitializer implements ApplicationRunner {
     private final ReviewRepository reviewRepository;
     private final AllergenRepository allergenRepository;
     private final BranchRepository branchRepository;
+    private final EmployeeRepository employeeRepository;
     private final OrderRepository orderRepository;
+    private final FaqRepository faqRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DatabaseInitializer(ProductRepository productRepository,
@@ -51,7 +57,9 @@ public class DatabaseInitializer implements ApplicationRunner {
             ReviewRepository reviewRepository,
             AllergenRepository allergenRepository,
             BranchRepository branchRepository,
+            EmployeeRepository employeeRepository,
             OrderRepository orderRepository,
+            FaqRepository faqRepository,
             PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
@@ -59,7 +67,9 @@ public class DatabaseInitializer implements ApplicationRunner {
         this.reviewRepository = reviewRepository;
         this.allergenRepository = allergenRepository;
         this.branchRepository = branchRepository;
+        this.employeeRepository = employeeRepository;
         this.orderRepository = orderRepository;
+        this.faqRepository = faqRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -72,6 +82,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         // robusto.
         orderRepository.deleteAll();
         reviewRepository.deleteAll();
+        userRepository.deleteAll(); // Delete users BEFORE employees and products
 
         // Si Product tiene relación 1-1/1-n con Image con cascade, puedes no borrar
         // imageRepository.
@@ -80,27 +91,48 @@ public class DatabaseInitializer implements ApplicationRunner {
         imageRepository.deleteAll();
 
         allergenRepository.deleteAll();
+        employeeRepository.deleteAll();
         branchRepository.deleteAll();
-        userRepository.deleteAll();
+        faqRepository.deleteAll();
 
-        // 2) USUARIOS
+        // 2) SUCURSALES Y EMPLEADOS (Usuarios dependen de empleados por employee_id)
+        createBranches();
+        createEmployees();
+
+        // 3) USUARIOS
         createUsers();
 
-        // 3) PRODUCTOS + IMÁGENES
+        // 3) PRODUCT + IMAGES
         seedProducts();
 
-        // 4) REVIEWS (depende de users y products)
+        // 4) REVIEWS
         createReviews();
 
-        // 5) ALÉRGENOS + SUCURSALES + ASIGNACIÓN
+        // 5) allergens + Branches + Products
         createAllergens();
-        createBranches();
         updateProductsWithAllergens();
 
-        // 6) PEDIDOS Y CARRITOS
+        // 6) Orders and carts
         createOrders();
 
+        // 7) FAQS
+        createFaqs();
+
         System.out.println(">>> DB seeded OK");
+    }
+
+    private void createFaqs() {
+        Faq faq1 = new Faq("¿Hacen envíos a domicilio?",
+                "Sí, realizamos envíos a través de Glovo y Uber Eats en un radio de 5km de nuestras sucursales.");
+        Faq faq2 = new Faq("¿Tienen opciones sin gluten?",
+                "Contamos con una variedad de opciones sin gluten, aunque advertimos de la posible contaminación cruzada en nuestra cocina.");
+        Faq faq3 = new Faq("¿Puedo reservar una mesa?",
+                "Aceptamos reservas de mesa con una antelación mínima de 24 horas contactando a nuestra sucursal correspondiente o mediante nuestro formulario de contacto.");
+        Faq faq4 = new Faq("¿Venden granos de café?",
+                "Sí, vendemos nuestros propios blends de café de especialidad de orígenes seleccionados recién tostados.");
+
+        faqRepository.saveAll(Arrays.asList(faq1, faq2, faq3, faq4));
+        System.out.println(">>> FAQs created: 4 FAQs seeded");
     }
 
     private void seedProducts() throws Exception {
@@ -235,41 +267,103 @@ public class DatabaseInitializer implements ApplicationRunner {
     }
 
     private void createReviews() {
-        List<User> users = userRepository.findAll();
-        List<Product> products = productRepository.findAll();
-        if (users.isEmpty() || products.isEmpty())
-            return;
+    List<User> users = userRepository.findAll();
+    List<Product> products = productRepository.findAll();
+    if (users.isEmpty() || products.isEmpty())
+        return;
 
-        int[] stars = { 5, 4, 5, 4, 5, 3 };
-        String[] texts = {
-                "Café excelente, aromático y bien equilibrado.",
-                "Muy buen servicio y presentación impecable.",
-                "El capuccino estaba espectacular, repetiré.",
-                "Buena relación calidad-precio. Recomendable.",
-                "Postres muy ricos, especialmente la red velvet.",
-                "Correcto, aunque lo prefiero un poco más intenso."
-        };
-
-        int created = 0;
-        for (int i = 0; i < users.size(); i++) {
-            User u = users.get(i);
-            // Si no quieres admins reseñando:
-            // if (u.getRole() == User.Role.ADMIN) continue;
-
-            Product p = products.get(i % products.size());
-
-            Review r = new Review();
-            r.setUser(u);
-            r.setProduct(p);
-            r.setStars(stars[i % stars.length]);
-            r.setText(texts[i % texts.length]);
-
-            reviewRepository.save(r);
-            created++;
-        }
-
-        System.out.println(">>> Reviews created: " + created);
+    // Filter only customers (no admins)
+    List<User> customers = users.stream()
+            .filter(u -> u.getRole() == User.Role.CUSTOMER)
+            .toList();
+    
+    if (customers.isEmpty()) {
+        System.out.println(">>> No customers found for reviews");
+        return;
     }
+
+    System.out.println(">>> Creating reviews for different products...");
+    
+    // Define reviews for specific products - CONTENT IN SPANISH FOR USERS
+    // Format: [productName, stars, reviewText]
+    List<Object[]> reviewData = Arrays.asList(
+        // HOT COFFEES
+        new Object[]{"Expreso", 5, "Café perfecto, fuerte y aromático. ¡Así me gusta!"},
+        new Object[]{"Expreso", 4, "Buena intensidad, quizás un poco fuerte para mi gusto."},
+        new Object[]{"Expreso", 5, "El mejor expreso de la zona, la crema es perfecta."},
+        new Object[]{"Capuccino", 5, "Cremoso y delicioso, la espuma es perfecta."},
+        new Object[]{"Capuccino", 4, "Muy buen capuccino, ¿quizás un poco más de chocolate?"},
+        new Object[]{"Capuccino", 5, "Mi capuccino favorito, siempre consistente."},
+        new Object[]{"Latte", 5, "Suave y cremoso, simplemente perfecto."},
+        new Object[]{"Latte", 4, "Buen latte, temperatura ideal."},
+        new Object[]{"Americano", 3, "Bueno pero un poco aguado para mi gusto."},
+        
+        // COLD COFFEES
+        new Object[]{"Iced Latte", 5, "Refrescante y fuerte, ¡perfecto para el verano!"},
+        new Object[]{"Iced Latte", 4, "Muy bueno, quizás un poco más de hielo."},
+        new Object[]{"Frappe", 5, "El mejor frappe que he probado, ¡cremoso y delicioso!"},
+        new Object[]{"Frappe", 5, "¡Muy refrescante, me encanta!"},
+        new Object[]{"Iced Vietnamese Coffe", 5, "Sabor auténtico, dulce y fuerte."},
+        new Object[]{"Iced Vietnamese Coffe", 4, "Bueno pero demasiado dulce para mí."},
+        
+        // DESSERTS
+        new Object[]{"Croissants", 5, "Hojaldrado y mantecoso, ¡como en París!"},
+        new Object[]{"Croissants", 4, "Muy buenos croissants, frescos cada día."},
+        new Object[]{"Croissants", 5, "¡Los mejores croissants de la ciudad!"},
+        new Object[]{"Chocolate Carrot Cake", 5, "Jugoso y chocolatoso, ¡increíble!"},
+        new Object[]{"Chocolate Carrot Cake", 5, "Mi tarta favorita, siempre fresca."},
+        new Object[]{"Red Velvet Cupcake", 5, "Red velvet perfecto, frosting cremoso."},
+        new Object[]{"Red Velvet Cupcake", 4, "Bueno pero un poco seco."},
+        new Object[]{"Vanilla Cupcake", 4, "Vainilla clásica, muy bueno."},
+        new Object[]{"Strawberry Cake", 5, "Fresas frescas, ligero y delicioso."},
+        new Object[]{"Chocolate Cupcake", 5, "Sabor a chocolate intenso, ¡espectacular!"},
+        new Object[]{"Orange Cake", 4, "Agradable sabor cítrico, muy refrescante."},
+        
+        // NON-COFFEE
+        new Object[]{"Chai Tea Latte", 5, "Especias perfectas, muy aromático."},
+        new Object[]{"Chai Tea Latte", 4, "Buen chai, podría ser más especiado."},
+        new Object[]{"Hot Chocolate", 5, "Rico y cremoso, perfecto para días fríos."},
+        new Object[]{"Hot Chocolate", 5, "¡El mejor chocolate caliente!"},
+        new Object[]{"Matcha Latte", 4, "Buen matcha, suave y cremoso."},
+        
+        // BLENDED
+        new Object[]{"Frapuccino", 5, "Café mezclado perfecto, ¡no demasiado dulce!"},
+        new Object[]{"Chocolate Coffee Blend", 5, "Combinación increíble de café y chocolate."},
+        new Object[]{"Hazelnut Coffee Shake", 5, "Me encanta el sabor a avellana, equilibrio perfecto."}
+    );
+
+    int created = 0;
+    Random random = new Random(42); // Fixed seed for reproducibility
+
+    // Create reviews distributing among customers
+    for (Object[] data : reviewData) {
+        String productName = (String) data[0];
+        int stars = (int) data[1];
+        String text = (String) data[2];
+        
+        // Find the product
+        Product product = findProductByName(products, productName);
+        if (product == null) {
+            System.out.println(">>> Product not found: " + productName);
+            continue;
+        }
+        
+        // Select random customer
+        User customer = customers.get(random.nextInt(customers.size()));
+        
+        // Create and save review
+        Review review = new Review();
+        review.setUser(customer);
+        review.setProduct(product);
+        review.setStars(stars);
+        review.setText(text);
+        
+        reviewRepository.save(review);
+        created++;
+    }
+
+}
+
 
     private void createAllergens() {
         List<String> allergenNames = Arrays.asList(
@@ -294,6 +388,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Paseo de Gracia 85, 08008 Barcelona\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        barcelona.setPurchaseDiscountPercent(BigDecimal.valueOf(10));
         branchRepository.save(barcelona);
 
         Branch madrid = new Branch();
@@ -306,6 +401,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Gran Vía 42, 28013 Madrid\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        madrid.setPurchaseDiscountPercent(BigDecimal.valueOf(15));
         branchRepository.save(madrid);
 
         Branch mostoles = new Branch();
@@ -318,6 +414,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Calle Dos de Mayo 15, 28935 Móstoles\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        mostoles.setPurchaseDiscountPercent(BigDecimal.valueOf(25));
         branchRepository.save(mostoles);
 
         Branch santander = new Branch();
@@ -331,9 +428,65 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Paseo de Pereda 28, 39004 Santander\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        santander.setPurchaseDiscountPercent(BigDecimal.valueOf(10));
         branchRepository.save(santander);
 
         System.out.println(">>> Branches created: 4 branches");
+    }
+
+    private void createEmployees() {
+        List<Branch> branches = branchRepository.findAll();
+        if (branches.isEmpty())
+            return;
+
+        Branch madrid = branches.stream().filter(b -> b.getName().contains("Madrid")).findFirst()
+                .orElse(branches.get(0));
+        Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
+                .orElse(branches.get(0));
+
+        // Administradores (Referenciados en createUsers)
+        Employee admin1 = new Employee("EMP-001", "Administrador", "Principal", "Administrador del Sistema",
+                "Direccion",
+                new BigDecimal("4000.00"), madrid,
+                "Gestor general de la plataforma Mokaf.", "admin@mokaf.com",
+                "../images/Profile/default.png");
+
+        Employee admin2 = new Employee("EMP-002", "María", "González", "Supervisora", "Direccion",
+                new BigDecimal("3200.00"), madrid,
+                "Supervisora de operaciones y atención al cliente.", "maria.admin@mokaf.com",
+                "../images/Profile/default.png");
+
+        // Equipo Público
+        Employee elinee = new Employee("EMP-003", "Elinee", "Freites", "Fundadora & Master Roaster",
+                "Atencion al cliente",
+                new BigDecimal("3500.00"), madrid,
+                "Visionaria detrás de cada blend exclusivo de Mokaf.", "elinee@mokaf.com",
+                "../images/Profile/elinee.png");
+
+        Employee jordi = new Employee("EMP-004", "Jordi", "Guix", "Barista Principal", "Atencion al cliente",
+                new BigDecimal("2500.00"),
+                barcelona,
+                "El artista que convierte el cafe en lienzo.", "jordi@mokaf.com", "../images/Profile/jordi.png");
+
+        Employee alexandra = new Employee("EMP-005", "Alexandra", "Cararus", "Gerente de Experiencia",
+                "Atencion al cliente",
+                new BigDecimal("2800.00"), madrid,
+                "Asegurando que cada visita sea inolvidable.", "alexandra@mokaf.com",
+                "../images/Profile/alexandra.png");
+
+        Employee guillermo = new Employee("EMP-006", "Guillermo", "Velázquez", "Director de Tecnología",
+                "Atencion al cliente",
+                new BigDecimal("3200.00"), barcelona,
+                "Innovando para llevar la experiencia Mokaf al mundo digital.", "guillermo@mokaf.com",
+                "../images/Profile/guillermo.png");
+
+        Employee gonzalo = new Employee("EMP-007", "Gonzalo", "Pérez", "Estratega de Negocio", "Atencion al cliente",
+                new BigDecimal("3100.00"), madrid,
+                "Expandiendo horizontes y buscando nuevas oportunidades.", "gonzalo@mokaf.com",
+                "../images/Profile/Gonzalo.png");
+
+        employeeRepository.saveAll(Arrays.asList(admin1, admin2, elinee, jordi, alexandra, guillermo, gonzalo));
+        System.out.println(">>> Employees created: 7 real members seeded (including admins)");
     }
 
     private void updateProductsWithAllergens() {
@@ -454,7 +607,7 @@ public class DatabaseInitializer implements ApplicationRunner {
 
     private void createOrders() {
         List<User> customers = userRepository.findAll().stream()
-                .filter(u -> u.getRole() == User.Role.CUSTOMER)
+                .filter(user -> user.getRole() == User.Role.CUSTOMER)
                 .toList();
 
         List<Branch> branches = branchRepository.findAll();
@@ -465,78 +618,92 @@ public class DatabaseInitializer implements ApplicationRunner {
             return;
         }
 
-        Random random = new Random();
+        // Categorize products by type for easy access
+        List<Product> hotCoffees = products.stream()
+                .filter(p -> p.getCategory() == Category.HOT)
+                .toList();
 
-        // Past orders
-        for (User customer : customers) {
-            int numOrders = 2 + random.nextInt(2); // 2-3
+        List<Product> coldCoffees = products.stream()
+                .filter(p -> p.getCategory() == Category.COLD)
+                .toList();
 
-            for (int i = 0; i < numOrders; i++) {
-                Branch branch = branches.get(random.nextInt(branches.size()));
+        List<Product> desserts = products.stream()
+                .filter(p -> p.getCategory() == Category.DESSERTS)
+                .toList();
 
-                Order order = new Order();
-                order.setUser(customer);
-                order.setBranch(branch);
+        List<Product> nonCoffee = products.stream()
+                .filter(p -> p.getCategory() == Category.NON_COFFEE)
+                .toList();
 
-                if (random.nextDouble() < 0.8) {
-                    order.setStatus(Order.Status.PAID);
-                    order.setPaidAt(LocalDateTime.now().minusDays(random.nextInt(30)));
-                } else {
-                    order.setStatus(Order.Status.CANCELLED);
-                }
+        List<Product> blended = products.stream()
+                .filter(p -> p.getCategory() == Category.BLENDED)
+                .toList();
 
-                int numItems = 2 + random.nextInt(4); // 2-5
-                BigDecimal subtotal = BigDecimal.ZERO;
+        System.out.println(">>> Creating orders with specific quantities...");
+        int orderCounter = 0;
 
-                for (int j = 0; j < numItems; j++) {
-                    Product product = products.get(random.nextInt(products.size()));
-                    int quantity = 1 + random.nextInt(3);
+        // ============ HOT COFFEES: 13 units ============
+        orderCounter = createCategoryOrders(customers, branches, hotCoffees, 13, orderCounter, "HOT COFFEES");
 
-                    OrderItem item = new OrderItem();
-                    item.setProduct(product);
-                    item.setQuantity(quantity);
-                    item.setUnitPrice(product.getPriceBase());
-                    item.setFinalUnitPrice(product.getPriceBase());
+        // ============ COLD COFFEES: 24 units ============
+        orderCounter = createCategoryOrders(customers, branches, coldCoffees, 24, orderCounter, "COLD COFFEES");
 
-                    BigDecimal lineTotal = product.getPriceBase().multiply(BigDecimal.valueOf(quantity));
-                    item.setLineTotal(lineTotal);
+        // ============ DESSERTS: 14 units with variety ============
+        orderCounter = createDessertOrders(customers, branches, desserts, orderCounter);
 
-                    order.addItem(item);
-                    subtotal = subtotal.add(lineTotal);
-                }
+        // ============ NON-COFFEE: 10 units ============
+        orderCounter = createCategoryOrders(customers, branches, nonCoffee, 10, orderCounter, "NON-COFFEE");
 
-                order.setSubtotalAmount(subtotal);
+        // ============ BLENDED: 8 units ============
+        orderCounter = createCategoryOrders(customers, branches, blended, 8, orderCounter, "BLENDED");
 
-                BigDecimal discountPercent = BigDecimal.ZERO; // si quieres, random aquí
-                order.setDiscountPercent(discountPercent);
+        // ============ Create one active cart ============
+        createActiveCart(customers, branches, products);
 
-                BigDecimal discountAmount = subtotal.multiply(discountPercent).divide(BigDecimal.valueOf(100));
-                order.setDiscountAmount(discountAmount);
+        long orderCount = orderRepository.count();
+        System.out.println(">>> Orders created: " + orderCount + " orders (including active carts)");
+    }
 
-                order.setTotalAmount(subtotal.subtract(discountAmount));
-
-                orderRepository.save(order);
-            }
+    /**
+     * Creates orders to achieve a specific total quantity of products from a
+     * category
+     * 
+     * @return updated order counter
+     */
+    private int createCategoryOrders(List<User> customers, List<Branch> branches,
+            List<Product> products, int targetQuantity,
+            int startOrderIndex, String categoryName) {
+        if (products.isEmpty()) {
+            System.out.println(">>> No products available for category: " + categoryName);
+            return startOrderIndex;
         }
 
-        // Active carts (0-1 por cliente)
-        for (User customer : customers) {
-            if (!random.nextBoolean())
-                continue;
+        int remainingQuantity = targetQuantity;
+        int orderIndex = startOrderIndex;
+        Random random = new Random(42 + orderIndex); // Different seed for variety but still deterministic
 
-            Branch branch = branches.get(random.nextInt(branches.size()));
+        while (remainingQuantity > 0) {
+            // Select customer and branch cyclically
+            User customer = customers.get(orderIndex % customers.size());
+            Branch branch = branches.get(orderIndex % branches.size());
 
-            Order cart = new Order();
-            cart.setUser(customer);
-            cart.setBranch(branch);
-            cart.setStatus(Order.Status.CART);
+            // Create order
+            Order order = new Order();
+            order.setUser(customer);
+            order.setBranch(branch);
+            order.setStatus(Order.Status.PAID);
+            order.setPaidAt(LocalDateTime.now().minusDays(orderIndex * 2)); // Spread over time
 
-            int numItems = 1 + random.nextInt(3);
             BigDecimal subtotal = BigDecimal.ZERO;
+            int itemsInThisOrder = 0;
 
-            for (int j = 0; j < numItems; j++) {
+            // Add items to this order (max 3 items per order)
+            while (remainingQuantity > 0 && itemsInThisOrder < 3) {
+                // Select random product from the category
                 Product product = products.get(random.nextInt(products.size()));
-                int quantity = 1 + random.nextInt(2);
+
+                // Determine quantity for this item (1-3 units, but not exceeding remaining)
+                int quantity = Math.min(1 + random.nextInt(3), remainingQuantity);
 
                 OrderItem item = new OrderItem();
                 item.setProduct(product);
@@ -544,22 +711,157 @@ public class DatabaseInitializer implements ApplicationRunner {
                 item.setUnitPrice(product.getPriceBase());
                 item.setFinalUnitPrice(product.getPriceBase());
 
-                BigDecimal lineTotal = product.getPriceBase().multiply(BigDecimal.valueOf(quantity));
+                BigDecimal lineTotal = product.getPriceBase()
+                        .multiply(BigDecimal.valueOf(quantity));
                 item.setLineTotal(lineTotal);
 
-                cart.addItem(item);
+                order.addItem(item);
                 subtotal = subtotal.add(lineTotal);
+
+                remainingQuantity -= quantity;
+                itemsInThisOrder++;
             }
 
-            cart.setSubtotalAmount(subtotal);
-            cart.setDiscountPercent(BigDecimal.ZERO);
-            cart.setDiscountAmount(BigDecimal.ZERO);
-            cart.setTotalAmount(subtotal);
+            if (itemsInThisOrder > 0) {
+                order.setSubtotalAmount(subtotal);
+                order.setDiscountPercent(BigDecimal.ZERO);
+                order.setDiscountAmount(BigDecimal.ZERO);
+                order.setTotalAmount(subtotal);
 
-            orderRepository.save(cart);
+                orderRepository.save(order);
+            }
+
+            orderIndex++;
         }
 
-        System.out.println(">>> Orders created: " + orderRepository.count() + " (including carts)");
+        System.out.println(">>> Created orders for " + targetQuantity + " " + categoryName + " units");
+        return orderIndex;
+    }
+
+    /**
+     * Creates specific dessert orders with variety: cakes, croissants, cupcakes
+     * 
+     * @return updated order counter
+     */
+    private int createDessertOrders(List<User> customers, List<Branch> branches,
+            List<Product> desserts, int startOrderIndex) {
+        if (desserts.isEmpty()) {
+            System.out.println(">>> No desserts available");
+            return startOrderIndex;
+        }
+
+        // Map specific desserts by name (with fallbacks)
+        Product croissants = findProductByName(desserts, "Croissants");
+        Product chocolateCake = findProductByName(desserts, "Chocolate Carrot Cake");
+        Product redVelvet = findProductByName(desserts, "Red Velvet Cupcake");
+        Product vanillaCupcake = findProductByName(desserts, "Vanilla Cupcake");
+        Product strawberryCake = findProductByName(desserts, "Strawberry Cake");
+        Product chocolateCupcake = findProductByName(desserts, "Chocolate Cupcake");
+        Product orangeCake = findProductByName(desserts, "Orange Cake");
+
+        int orderIndex = startOrderIndex;
+
+        // 4 Croissants (2 orders of 2 units each)
+        orderIndex = createSingleItemOrder(customers, branches, croissants, 2, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, croissants, 2, orderIndex++);
+
+        // 2 Chocolate Cakes (1 order of 2 units)
+        orderIndex = createSingleItemOrder(customers, branches, chocolateCake, 2, orderIndex++);
+
+        // 2 Red Velvet Cupcakes
+        orderIndex = createSingleItemOrder(customers, branches, redVelvet, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, redVelvet, 1, orderIndex++);
+
+        // 2 Vanilla Cupcakes
+        orderIndex = createSingleItemOrder(customers, branches, vanillaCupcake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, vanillaCupcake, 1, orderIndex++);
+
+        // 2 Strawberry Cakes
+        orderIndex = createSingleItemOrder(customers, branches, strawberryCake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, strawberryCake, 1, orderIndex++);
+
+        // 2 Chocolate Cupcakes
+        orderIndex = createSingleItemOrder(customers, branches, chocolateCupcake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, chocolateCupcake, 1, orderIndex++);
+
+        // 2 Orange Cakes
+        orderIndex = createSingleItemOrder(customers, branches, orangeCake, 1, orderIndex++);
+        orderIndex = createSingleItemOrder(customers, branches, orangeCake, 1, orderIndex++);
+
+        System.out.println(
+                ">>> Created specific dessert orders: 4 croissants, 2 chocolate cakes, 2 red velvet, 2 vanilla, 2 strawberry, 2 chocolate cupcakes, 2 orange cakes");
+        return orderIndex;
+    }
+
+    /**
+     * Helper method to create an order with a single item
+     * 
+     * @return updated order counter
+     */
+    private int createSingleItemOrder(List<User> customers, List<Branch> branches,
+            Product product, int quantity, int orderIndex) {
+        if (product == null)
+            return orderIndex;
+
+        User customer = customers.get(orderIndex % customers.size());
+        Branch branch = branches.get(orderIndex % branches.size());
+
+        Order order = new Order();
+        order.setUser(customer);
+        order.setBranch(branch);
+        order.setStatus(Order.Status.PAID);
+        order.setPaidAt(LocalDateTime.now().minusDays(orderIndex * 3));
+
+        OrderItem item = new OrderItem();
+        item.setProduct(product);
+        item.setQuantity(quantity);
+        item.setUnitPrice(product.getPriceBase());
+        item.setFinalUnitPrice(product.getPriceBase());
+
+        BigDecimal lineTotal = product.getPriceBase()
+                .multiply(BigDecimal.valueOf(quantity));
+        item.setLineTotal(lineTotal);
+
+        order.addItem(item);
+
+        order.setSubtotalAmount(lineTotal);
+        order.setDiscountPercent(BigDecimal.ZERO);
+        order.setDiscountAmount(BigDecimal.ZERO);
+        order.setTotalAmount(lineTotal);
+
+        orderRepository.save(order);
+
+        return orderIndex + 1;
+    }
+
+    private void createActiveCart(List<User> customers, List<Branch> branches, List<Product> products) {
+        if (customers.isEmpty() || branches.isEmpty() || products.isEmpty()) {
+            return;
+        }
+
+        Order cart = new Order();
+        cart.setUser(customers.get(0)); // First customer
+        cart.setBranch(branches.get(2)); // Móstoles branch
+        cart.setStatus(Order.Status.CART);
+
+        BigDecimal subtotal = BigDecimal.ZERO;
+
+        cart.setSubtotalAmount(subtotal);
+        cart.setDiscountPercent(BigDecimal.ZERO);
+        cart.setDiscountAmount(BigDecimal.ZERO);
+        cart.setTotalAmount(subtotal);
+
+        orderRepository.save(cart);
+    }
+
+    /**
+     * Helper method to find a product by name in a list
+     */
+    private Product findProductByName(List<Product> products, String name) {
+        return products.stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     private Allergen findAllergenByName(List<Allergen> allergens, String name) {

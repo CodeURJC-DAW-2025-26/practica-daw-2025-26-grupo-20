@@ -1,0 +1,44 @@
+        <!-- Recommended Products Section -->
+        {{#recommendedItems.0}}
+        <section class="recommended-section mb-5">
+            <div class="recommended-header">
+                <h3><i class="fas fa-star text-warning me-2"></i>Recomendados para ti</h3>
+                <p class="text-muted">Basado en las preferencias de nuestros clientes</p>
+            </div>
+            
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-2">
+                {{#recommendedItems}}
+                <a class="product-link text-decoration-none text-dark" href="/product/{{id}}">
+                    <div class="col">
+                        <div class="card h-100 recommended-card">
+                            {{#image}}
+                            <img src="/images/{{id}}" class="card-img-top" alt="{{name}}"
+                                 onerror="this.src='/images/placeholder.jpg'">
+                            {{/image}}
+                            {{^image}}
+                            <img src="/images/placeholder.jpg" class="card-img-top" alt="{{name}}">
+                            {{/image}}
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{name}}</h5>
+                                <div class="price-action-wrapper mt-auto">
+                                    <span class="price-tag">{{priceBase}}€</span>
+                                    <form action="/cart/add" method="POST" class="d-inline">
+                                        <input type="hidden" name="productId" value="{{id}}">
+                                        <input type="hidden" name="qty" value="1">
+                                        {{#user}}
+                                        <button type="submit" class="btn btn-sm btn-recommended-cart"
+                                                onclick="event.stopPropagation();">
+                                            <i class="fas fa-cart-plus me-1"></i> Añadir
+                                        </button>
+                                        {{/user}}
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {{/recommendedItems}}
+            </div>
+        </section>
+        {{/recommendedItems.0}}

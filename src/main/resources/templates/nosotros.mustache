@@ -99,51 +99,17 @@
         <section class="team-section text-center">
             <h2 class="text-center mb-5">Conoce al Equipo</h2>
             <div class="row justify-content-center">
+                {{#team}}
                 <div class="col-md-4 col-lg-3 team-member">
                     <div class="member-img-container">
-                        <img src="../images/Profile/elinee.png"
-                            alt="Elinee Freites" class="member-img">
+                        <img src="{{profileImageUrl}}"
+                            alt="{{firstName}} {{lastName}}" class="member-img">
                     </div>
-                    <h4>Elinee Freites</h4>
-                    <p class="member-role">Fundadora & Master Roaster</p>
-                    <p class="small text-muted">Visionaria detrás de cada blend exclusivo de Mokaf.</p>
+                    <h4>{{firstName}} {{lastName}}</h4>
+                    <p class="member-role">{{position}}</p>
+                    <p class="small text-muted">{{description}}</p>
                 </div>
-                <div class="col-md-4 col-lg-3 team-member">
-                    <div class="member-img-container">
-                        <img src="../images/Profile/jordi.png"
-                            alt="Jordi Guix" class="member-img">
-                    </div>
-                    <h4>Jordi Guix</h4>
-                    <p class="member-role">Barista Principal</p>
-                    <p class="small text-muted">El artista que convierte el cafe en lienzo.</p>
-                </div>
-                <div class="col-md-4 col-lg-3 team-member">
-                    <div class="member-img-container">
-                        <img src="../images/Profile/alexandra.png"
-                            alt="Alexandra Cararus" class="member-img">
-                    </div>
-                    <h4>Alexandra Cararus</h4>
-                    <p class="member-role">Gerente de Experiencia</p>
-                    <p class="small text-muted">Asegurando que cada visita sea inolvidable.</p>
-                </div>
-                <div class="col-md-4 col-lg-3 team-member">
-                    <div class="member-img-container">
-                        <img src="../images/Profile/guillermo.png"
-                            alt="Guillermo Velázquez" class="member-img">
-                    </div>
-                    <h4>Guillermo Velázquez</h4>
-                    <p class="member-role">Director de Tecnología</p>
-                    <p class="small text-muted">Innovando para llevar la experiencia Mokaf al mundo digital.</p>
-                </div>
-                <div class="col-md-4 col-lg-3 team-member">
-                    <div class="member-img-container">
-                        <img src="../images/Profile/Gonzalo.png"
-                            alt="Gonzalo Pérez" class="member-img">
-                    </div>
-                    <h4>Gonzalo Pérez</h4>
-                    <p class="member-role">Estratega de Negocio</p>
-                    <p class="small text-muted">Expandiendo horizontes y buscando nuevas oportunidades.</p>
-                </div>
+                {{/team}}
             </div>
         </section>
 
