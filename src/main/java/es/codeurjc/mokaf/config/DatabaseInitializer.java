@@ -263,7 +263,32 @@ public class DatabaseInitializer implements ApplicationRunner {
         user4.setRole(User.Role.CUSTOMER);
         userRepository.save(user4);
 
-        System.out.println(">>> Users created: 2 ADMINS + 4 CUSTOMERS");
+        // Additional employees as users
+        User emp1 = new User("Elinee Freites", "elinee@mokaf.com", passwordEncoder.encode("elinee123"),
+                User.Role.EMPLOYEE);
+        emp1.setEmployeeId("EMP-003");
+        userRepository.save(emp1);
+
+        User emp2 = new User("Jordi Guix", "jordi@mokaf.com", passwordEncoder.encode("jordi123"), User.Role.EMPLOYEE);
+        emp2.setEmployeeId("EMP-004");
+        userRepository.save(emp2);
+
+        User emp3 = new User("Alexandra Cararus", "alexandra@mokaf.com", passwordEncoder.encode("alex123"),
+                User.Role.EMPLOYEE);
+        emp3.setEmployeeId("EMP-005");
+        userRepository.save(emp3);
+
+        User emp4 = new User("Guillermo Velázquez", "guillermo@mokaf.com", passwordEncoder.encode("guille123"),
+                User.Role.EMPLOYEE);
+        emp4.setEmployeeId("EMP-006");
+        userRepository.save(emp4);
+
+        User emp5 = new User("Gonzalo Pérez", "gonzalo@mokaf.com", passwordEncoder.encode("gonza123"),
+                User.Role.EMPLOYEE);
+        emp5.setEmployeeId("EMP-007");
+        userRepository.save(emp5);
+
+        System.out.println(">>> Users created: 2 ADMINS + 4 CUSTOMERS + 5 EMPLOYEES");
     }
 
     private void createReviews() {
@@ -436,9 +461,9 @@ public class DatabaseInitializer implements ApplicationRunner {
             return;
 
         Branch madrid = branches.stream().filter(b -> b.getName().contains("Madrid")).findFirst()
-                .orElse(branches.get(0));
+                .orElseGet(() -> branches.isEmpty() ? null : branches.get(0));
         Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
-                .orElse(branches.get(0));
+                .orElseGet(() -> branches.isEmpty() ? null : branches.get(0));
 
         // Administradores (Referenciados en createUsers)
         Employee admin1 = new Employee("EMP-001", "Administrador", "Principal", "Administrador del Sistema",

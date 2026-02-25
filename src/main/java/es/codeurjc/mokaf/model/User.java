@@ -30,7 +30,7 @@ import jakarta.persistence.Table;
 public class User implements UserDetails {
 
     public enum Role {
-        CUSTOMER, ADMIN
+        CUSTOMER, ADMIN, EMPLOYEE
     }
 
     @Id
