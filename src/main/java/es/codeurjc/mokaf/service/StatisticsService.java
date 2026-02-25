@@ -1,8 +1,12 @@
 package es.codeurjc.mokaf.service;
 
+import es.codeurjc.mokaf.model.Branch;
+import es.codeurjc.mokaf.model.Review;
+import es.codeurjc.mokaf.repository.BranchRepository; // IMPORTANT: Add this import
 import es.codeurjc.mokaf.repository.StatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import es.codeurjc.mokaf.repository.ReviewRepository;
 
 import java.util.*;
 
@@ -11,8 +15,17 @@ public class StatisticsService {
 
     @Autowired
     private StatisticsRepository statisticsRepository;
+    
+    @Autowired
+    private ReviewRepository reviewRepository;
+    
+    @Autowired
+    private BranchRepository branchRepository; // ADD THIS - was missing
 
-    // Chart 1
+    /**
+     * Get the best selling product of the current month (by units sold)
+     * @return Map with product details including image path
+     */
     public Map<String, Object> getBestSellingProductCurrentMonth() {
         List<Object[]> results = statisticsRepository.findBestSellingProductCurrentMonth();
 
@@ -30,7 +43,7 @@ public class StatisticsService {
 
         Object[] row = results.get(0);
         Map<String, Object> product = new HashMap<>();
-        Long productId = ((Number) row[0]).longValue(); // ID del producto
+        Long productId = ((Number) row[0]).longValue(); // Product ID
         product.put("id", productId);
         product.put("name", row[1]);
         product.put("category", row[2]);
@@ -40,7 +53,7 @@ public class StatisticsService {
         product.put("totalAmount", amount);
         product.put("totalAmountFormatted", String.format("%.2f", amount));
 
-        // Usar el ID para generar la ruta de la imagen
+        // Use ID to generate image path
         product.put("imagePath", "/images/" + productId);
 
         product.put("exists", true);
@@ -48,7 +61,68 @@ public class StatisticsService {
         return product;
     }
 
-    // Chart 2
+    /**
+     * Get the top rated product from the last month (by average stars, minimum 3 reviews)
+     * @return Map with product details including recent reviews
+     */
+    public Map<String, Object> getTopRatedProductLastMonth() {
+        List<Object[]> results = statisticsRepository.findTopRatedProductLastMonth();
+
+        if (results == null || results.isEmpty()) {
+            Map<String, Object> empty = new HashMap<>();
+            empty.put("name", "Sin datos");
+            empty.put("category", "N/A");
+            empty.put("averageRating", 0.0);
+            empty.put("averageRatingFormatted", "0.0");
+            empty.put("reviewCount", 0);
+            empty.put("imagePath", "/images/default-product.png");
+            empty.put("exists", false);
+            empty.put("recentReviews", new ArrayList<>()); // Empty list
+            return empty;
+        }
+
+        Object[] row = results.get(0);
+        Map<String, Object> product = new HashMap<>();
+        Long productId = ((Number) row[0]).longValue(); // Product ID
+        product.put("id", productId);
+        product.put("name", row[1]);
+        product.put("category", row[2]);
+
+        double avgRating = ((Number) row[3]).doubleValue();
+        product.put("averageRating", avgRating);
+        product.put("averageRatingFormatted", String.format("%.1f", avgRating));
+        product.put("reviewCount", ((Number) row[4]).longValue());
+
+        // Get 3 most recent reviews for this product
+        List<Review> recentReviews = reviewRepository.findTop3ByProductIdOrderByCreatedAtDesc(productId);
+
+        // Convert reviews to a simple format for Mustache
+        List<Map<String, Object>> reviewList = new ArrayList<>();
+        for (Review review : recentReviews) {
+            Map<String, Object> reviewMap = new HashMap<>();
+            reviewMap.put("stars", review.getStars());
+            reviewMap.put("text", review.getText());
+            reviewMap.put("userName", review.getUser().getName());
+            reviewMap.put("createdAt",
+                    review.getCreatedAt() != null
+                            ? java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy").format(review.getCreatedAt())
+                            : "");
+            reviewList.add(reviewMap);
+        }
+        product.put("recentReviews", reviewList);
+
+        // Use ID to generate image path
+        product.put("imagePath", "/images/" + productId);
+
+        product.put("exists", true);
+
+        return product;
+    }
+
+    /**
+     * Get the top selling category from the last 3 months
+     * @return Map with category details
+     */
     public Map<String, Object> getTopCategoryLast3Months() {
         List<Object[]> results = statisticsRepository.findTopCategoryLast3Months();
 
@@ -63,7 +137,7 @@ public class StatisticsService {
             return empty;
         }
 
-        // Category best seller
+        // Category best seller (first in the list)
         Object[] row = results.get(0);
         Map<String, Object> category = new HashMap<>();
         category.put("category", row[0]);
@@ -78,7 +152,10 @@ public class StatisticsService {
         return category;
     }
 
-    // Last Three monts categories
+    /**
+     * Get all categories with their sales data from the last 3 months
+     * @return List of category maps with units, amount, percentage and color
+     */
     public List<Map<String, Object>> getAllCategoriesLast3Months() {
         List<Object[]> results = statisticsRepository.findTopCategoryLast3Months();
         List<Map<String, Object>> categories = new ArrayList<>();
@@ -87,7 +164,7 @@ public class StatisticsService {
             return categories;
         }
 
-        // Colors
+        // Colors for categories
         Map<String, String> categoryColors = new HashMap<>();
         categoryColors.put("HOT", "#ff6b6b");
         categoryColors.put("COLD", "#4dabf7");
@@ -95,7 +172,7 @@ public class StatisticsService {
         categoryColors.put("DESSERTS", "#ff8787");
         categoryColors.put("NON_COFFEE", "#69db7e");
 
-        // Calculate total amount
+        // Calculate total amount for percentages
         double totalAmount = 0;
         for (Object[] row : results) {
             totalAmount += ((Number) row[2]).doubleValue();
@@ -121,7 +198,10 @@ public class StatisticsService {
         return categories;
     }
 
-    // Chart 3
+    /**
+     * Get the top performing branch (by revenue)
+     * @return Map with branch details including description and discount
+     */
     public Map<String, Object> getTopBranch() {
         List<Object[]> results = statisticsRepository.findTopBranch();
 
@@ -133,13 +213,16 @@ public class StatisticsService {
             empty.put("totalRevenue", 0.0);
             empty.put("totalRevenueFormatted", "0.00");
             empty.put("avgOrderValue", "0.00");
+            empty.put("description", "");
+            empty.put("discountPercent", 0);
             empty.put("exists", false);
             return empty;
         }
 
         Object[] row = results.get(0);
         Map<String, Object> branch = new HashMap<>();
-        branch.put("name", row[0]);
+        String branchName = (String) row[0];
+        branch.put("name", branchName);
         branch.put("totalOrders", ((Number) row[1]).longValue());
         branch.put("totalUnits", ((Number) row[2]).longValue());
 
@@ -149,11 +232,26 @@ public class StatisticsService {
 
         double avgOrder = ((Number) row[4]).doubleValue();
         branch.put("avgOrderValue", String.format("%.2f", avgOrder));
+        
+        // Find the branch in the repository to get description and discount
+        Branch branchEntity = branchRepository.findByName(branchName).orElse(null);
+        if (branchEntity != null) {
+            branch.put("description", branchEntity.getDescription());
+            branch.put("discountPercent", branchEntity.getPurchaseDiscountPercent());
+        } else {
+            branch.put("description", "Sucursal destacada por su excelente rendimiento y servicio.");
+            branch.put("discountPercent", 15); // Default discount
+        }
+        
         branch.put("exists", true);
 
         return branch;
     }
 
+    /**
+     * Get all branches with their sales data
+     * @return List of branch maps with revenue, units, orders and percentage
+     */
     public List<Map<String, Object>> getAllBranches() {
         List<Object[]> results = statisticsRepository.findAllBranchesSales();
         List<Map<String, Object>> branches = new ArrayList<>();
@@ -162,11 +260,11 @@ public class StatisticsService {
             return branches;
         }
 
-        // Asign color to branches
+        // Assign colors to branches
         String[] colors = { "#4263eb", "#9775fa", "#ff8787", "#69db7e", "#ffd43b", "#ff6b6b" };
         int colorIndex = 0;
 
-        // Primero calcular el total de ingresos (manejando nulls)
+        // Calculate total revenue first (handling nulls)
         double totalRevenue = 0;
         for (Object[] row : results) {
             Number revenue = (Number) row[3];
@@ -177,18 +275,18 @@ public class StatisticsService {
         for (Object[] row : results) {
             Map<String, Object> branch = new LinkedHashMap<>();
 
-            // name of branch
+            // Branch name
             branch.put("name", row[0] != null ? row[0] : "Sin nombre");
 
-            // Total of orders
+            // Total orders (may be null)
             Number orders = (Number) row[1];
             branch.put("orders", orders != null ? orders.longValue() : 0L);
 
-            // Units
+            // Units sold (may be null)
             Number units = (Number) row[2];
             branch.put("units", units != null ? units.longValue() : 0L);
 
-            // Total gained
+            // Total revenue (may be null)
             Number revenue = (Number) row[3];
             double revenueValue = revenue != null ? revenue.doubleValue() : 0.0;
 
@@ -199,7 +297,7 @@ public class StatisticsService {
             double percentage = totalRevenue > 0 ? (revenueValue / totalRevenue) * 100 : 0;
             branch.put("percentage", Math.round(percentage));
 
-            // Asign color
+            // Assign color
             branch.put("color", colors[colorIndex % colors.length]);
             colorIndex++;
 
@@ -209,25 +307,34 @@ public class StatisticsService {
         return branches;
     }
 
-    // getting all charts
+    /**
+     * Main method to get all chart data for the statistics page
+     * @return Map containing all statistics data
+     */
     public Map<String, Object> getChartStatistics() {
         Map<String, Object> stats = new HashMap<>();
 
         // Most sold product
         stats.put("bestProduct", getBestSellingProductCurrentMonth());
 
+        // Top rated product (by stars)
+        stats.put("topRatedProduct", getTopRatedProductLastMonth());
+
         // Categories
         stats.put("topCategory", getTopCategoryLast3Months());
         stats.put("allCategories", getAllCategoriesLast3Months());
 
-        // branches
+        // Branches
         stats.put("topBranch", getTopBranch());
         stats.put("allBranches", getAllBranches());
 
         return stats;
     }
 
-    // Getting all categories
+    /**
+     * Get all product categories for filtering
+     * @return List of category names
+     */
     public List<String> getAllProductCategories() {
         return statisticsRepository.findAllProductCategories();
     }

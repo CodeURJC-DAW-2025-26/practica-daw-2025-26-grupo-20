@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/general.css">
     <link rel="stylesheet" href="/css/footer.css">
-    <!-- Añadir Chart.js -->
+    <!-- Add Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Estadísticas | Mokaf</title>
     <style>
-        /* Estilos específicos para estadísticas */
+        /* Specific styles for statistics page */
         :root {
             --cafe-oscuro: #3A2A1D;
             --cafe-medio: #5D4037;
@@ -393,7 +393,7 @@
             }
         }
 
-        /* Animaciones */
+        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -415,49 +415,85 @@
             <h1 class="stats-title">☕ Estadísticas Mokaf</h1>
 
             <div class="stats-grid">
-                <!-- Card 1: Producto estrella del mes con imagen -->
+                <!-- Card 1: Top rated product (by stars) -->
                 <div class="stats-card">
                     <h2>
-                        <span>🏆</span>
-                        Producto Estrella del Mes
+                        <span>⭐</span>
+                        Producto Mejor Valorado
                     </h2>
                     
-                    {{#hasBestProduct}}
+                    {{#hasTopRatedProduct}}
                     <div class="product-spotlight">
                         <div class="product-image-frame">
-                            {{#bestProduct.imagePath}}
-                                <img src="{{bestProduct.imagePath}}" alt="{{bestProduct.name}}">
-                            {{/bestProduct.imagePath}}
-                            {{^bestProduct.imagePath}}
-                                <div class="product-image-placeholder">☕</div>
-                            {{/bestProduct.imagePath}}
+                            {{#topRatedProduct.imagePath}}
+                                <img src="{{topRatedProduct.imagePath}}" alt="{{topRatedProduct.name}}">
+                            {{/topRatedProduct.imagePath}}
+                            {{^topRatedProduct.imagePath}}
+                                <div class="product-image-placeholder">⭐</div>
+                            {{/topRatedProduct.imagePath}}
                         </div>
                         <div class="product-details">
-                            <div class="product-name">{{bestProduct.name}}</div>
-                            <span class="product-category">{{bestProduct.category}}</span>
+                            <div class="product-name">{{topRatedProduct.name}}</div>
+                            <span class="product-category">{{topRatedProduct.category}}</span>
                         </div>
                     </div>
 
-                    <div class="kpi-grid">
+                    <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr);">
                         <div class="kpi-item">
-                            <div class="kpi-label">Unidades Vendidas</div>
-                            <div class="kpi-value">{{bestProduct.totalUnits}} <span class="kpi-unit">uds</span></div>
+                            <div class="kpi-label">Valoración Media</div>
+                            <div class="kpi-value">{{topRatedProduct.averageRatingFormatted}} 
+                                <span class="kpi-unit">⭐</span>
+                            </div>
                         </div>
                         <div class="kpi-item">
-                            <div class="kpi-label">Ingresos Generados</div>
-                            <div class="kpi-value">{{bestProduct.totalAmountFormatted}} <span class="kpi-unit">€</span></div>
+                            <div class="kpi-label">Nº de Reseñas</div>
+                            <div class="kpi-value">{{topRatedProduct.reviewCount}}</div>
                         </div>
                     </div>
-                    {{/hasBestProduct}}
+
+                    <!-- Recent reviews section - ULTRA COMPACT VERSION -->
+                    {{#topRatedProduct.recentReviews.size}}
+                    <div style="margin-top: 1rem; border-top: 1px solid rgba(198, 168, 125, 0.15); padding-top: 0.8rem;">
+                        <h5 style="color: var(--dorado); font-size: 0.85rem; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <i class="fas fa-comment" style="margin-right: 0.4rem;"></i>Reseñas recientes
+                        </h5>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            {{#topRatedProduct.recentReviews}}
+                            <div style="background: rgba(0, 0, 0, 0.15); border-radius: 6px; padding: 0.5rem 0.7rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: var(--dorado); font-size: 0.75rem; font-weight: 500;">
+                                            {{userName}}
+                                        </span>
+                                        <span style="color: gold; font-size: 0.65rem;">
+                                            {{#stars}}⭐{{/stars}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <p style="color: var(--beige); font-size: 0.75rem; margin: 0; line-height: 1.2; opacity: 0.9;">
+                                    "{{text}}"
+                                </p>
+                                <div style="text-align: right; color: var(--gris-claro); font-size: 0.55rem; margin-top: 0.15rem; opacity: 0.6;">
+                                    {{createdAt}}
+                                </div>
+                            </div>
+                            {{/topRatedProduct.recentReviews}}
+                        </div>
+                    </div>
+                    {{/topRatedProduct.recentReviews.size}}
+                    <!-- END Recent reviews section -->
                     
-                    {{^hasBestProduct}}
+                    {{/hasTopRatedProduct}}
+                    
+                    {{^hasTopRatedProduct}}
                     <div class="no-data">
-                        <p>📭 No hay datos de ventas para este mes</p>
+                        <p>📭 No hay suficientes reseñas este mes</p>
                     </div>
-                    {{/hasBestProduct}}
+                    {{/hasTopRatedProduct}}
                 </div>
 
-                <!-- Card 2: Categorías -->
+                <!-- Card 2: Categories -->
                 <div class="stats-card">
                     <h2>
                         <span>📊</span>
@@ -506,37 +542,75 @@
                     {{/hasTopCategory}}
                 </div>
 
-                <!-- Card 3: Sucursal destacada -->
-                <div class="stats-card">
+                <!-- Card 3: Top branch -->
+                <div class="stats-card" style="display: flex; flex-direction: column; height: 100%;">
                     <h2>
                         <span>📍</span>
                         Sucursal Destacada
                     </h2>
                     
                     {{#hasTopBranch}}
-                    <div style="text-align: center; margin-bottom: 1.5rem;">
-                        <span class="badge-primary">{{topBranch.name}}</span>
+                    <!-- Branch name -->
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <span style="color: var(--dorado); font-size: 1.4rem; font-weight: 500; display: block;">{{topBranch.name}}</span>
                     </div>
 
-                    <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
-                        <div class="kpi-item">
-                            <div class="kpi-label">Pedidos</div>
-                            <div class="kpi-value">{{topBranch.totalOrders}}</div>
+                    <!-- KPIs - Pedidos and Unidades -->
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 1rem; background: rgba(0, 0, 0, 0.15); border-radius: 10px; padding: 0.8rem;">
+                        <div style="text-align: center;">
+                            <div style="color: var(--gris-claro); font-size: 0.8rem; text-transform: uppercase;">Pedidos</div>
+                            <div style="color: var(--dorado); font-size: 2rem; font-weight: 700; line-height: 1.2;">{{topBranch.totalOrders}}</div>
                         </div>
-                        <div class="kpi-item">
-                            <div class="kpi-label">Unidades</div>
-                            <div class="kpi-value">{{topBranch.totalUnits}}</div>
-                        </div>
-                        <div class="kpi-item">
-                            <div class="kpi-label">Ingresos</div>
-                            <div class="kpi-value">{{topBranch.totalRevenueFormatted}} <span class="kpi-unit">€</span></div>
+                        <div style="text-align: center;">
+                            <div style="color: var(--gris-claro); font-size: 0.8rem; text-transform: uppercase;">Unidades</div>
+                            <div style="color: var(--dorado); font-size: 2rem; font-weight: 700; line-height: 1.2;">{{topBranch.totalUnits}}</div>
                         </div>
                     </div>
 
-                    <div class="summary-row">
-                        <span class="summary-label">Valor medio por pedido</span>
-                        <span class="summary-value">{{topBranch.avgOrderValue}} €</span>
+                    <!-- Coupon and revenue in two columns -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <!-- Discount coupon -->
+                        <div style="background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro)); border-radius: 12px; padding: 0.8rem; border: 2px dashed var(--dorado); position: relative; overflow: hidden; text-align: center;">
+                            <div style="position: absolute; top: -15px; left: -15px; width: 50px; height: 50px; border-radius: 50%; background: rgba(198, 168, 125, 0.2);"></div>
+                            <div style="position: absolute; bottom: -15px; right: -15px; width: 50px; height: 50px; border-radius: 50%; background: rgba(198, 168, 125, 0.15);"></div>
+                            <div style="position: relative; z-index: 1;">
+                                <span style="color: var(--dorado); font-size: 0.7rem; text-transform: uppercase; display: block; margin-bottom: 0.2rem;">Cupón</span>
+                                <span style="color: var(--blanco); font-size: 2rem; font-weight: 700;">{{topBranch.discountPercent}}%</span>
+                                <span style="background: var(--dorado); color: var(--negro); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.6rem; font-weight: bold; display: inline-block; margin-left: 0.3rem;">EXC</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Revenue -->
+                        <div style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 0.8rem; text-align: center; border: 1px solid rgba(198, 168, 125, 0.3); display: flex; flex-direction: column; justify-content: center;">
+                            <span style="color: var(--gris-claro); font-size: 0.7rem; text-transform: uppercase; display: block;">Ingresos</span>
+                            <span style="color: var(--dorado); font-size: 1.6rem; font-weight: 700;">{{topBranch.totalRevenueFormatted}}€</span>
+                            <span style="color: var(--gris-claro); font-size: 0.65rem;">{{topBranch.avgOrderValue}} €/pedido</span>
+                        </div>
                     </div>
+
+                    <!-- Description - takes remaining space, scroll only when needed -->
+                    <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 1rem; border: 1px solid rgba(198, 168, 125, 0.2); flex: 1; display: flex; flex-direction: column; min-height: 0; /* Important for flex child scrolling */">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-store" style="color: var(--dorado); font-size: 1rem;"></i>
+                            <span style="color: var(--dorado); font-size: 0.9rem; font-weight: 500;">Sobre esta sucursal</span>
+                        </div>
+                        
+                        <!-- Scrollable description - larger text, fills space, scrolls only when needed -->
+                        <div style="color: var(--beige); font-size: 0.9rem; line-height: 1.5; overflow-y: auto; flex: 1; padding-right: 0.3rem; scrollbar-width: thin; scrollbar-color: var(--dorado) rgba(0,0,0,0.2);">
+                            {{#topBranch.description}}
+                                {{topBranch.description}}
+                            {{/topBranch.description}}
+                            {{^topBranch.description}}
+                                <p style="color: var(--gris-claro); font-style: italic; margin: 0;">Sin descripción disponible para esta sucursal.</p>
+                            {{/topBranch.description}}
+                        </div>
+                        
+                        <!-- Decorative coffee cups at bottom (only visible if description is short) -->
+                        <div style="text-align: right; font-size: 0.6rem; color: rgba(198, 168, 125, 0.3); margin-top: 0.3rem;">
+                            <i class="fas fa-coffee"></i> <i class="fas fa-coffee"></i> <i class="fas fa-coffee"></i>
+                        </div>
+                    </div>
+                    
                     {{/hasTopBranch}}
                     
                     {{^hasTopBranch}}
@@ -545,9 +619,8 @@
                     </div>
                     {{/hasTopBranch}}
                 </div>
-            </div>
 
-            <!-- Card 4: Ranking de sucursales -->
+            <!-- Card 4: Branches ranking -->
             <div class="stats-card" style="margin-top: 1.5rem;">
                 <h2>
                     <span>📈</span>
@@ -591,13 +664,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Configuración global de Chart.js
+            // Global Chart.js configuration
             Chart.defaults.color = '#FFFFFF';
             Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
             {{#hasTopCategory}}
             {{#allCategories.size}}
-            // Datos para categorías
+            // Categories data
             const categoryNames = [
                 {{#allCategories}}'{{category}}',{{/allCategories}}
             ];
@@ -608,9 +681,9 @@
                 {{#allCategories}}'{{color}}',{{/allCategories}}
             ];
 
-            // Solo crear el gráfico si hay datos
+            // Only create chart if there is data
             if (categoryNames.length > 0) {
-                // Gráfico circular de categorías
+                // Categories pie chart
                 const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
                 new Chart(pieCtx, {
                     type: 'doughnut',
@@ -661,7 +734,7 @@
             {{/hasTopCategory}}
 
             {{#allBranches.size}}
-            // Gráfico de todas las sucursales
+            // All branches chart
             const branchNames = [
                 {{#allBranches}}'{{name}}',{{/allBranches}}
             ];
