@@ -47,8 +47,7 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
             "ORDER BY totalUnits DESC", nativeQuery = true)
     List<Object[]> findTopCategoryLast3Months();
 
-    // ==================== GRÁFICO 3: Sucursal que más ha vendido
-    // ====================
+    // Chart 3
     @Query(value = "SELECT " +
             "b.name AS branchName, " +
             "COUNT(DISTINCT o.id) AS totalOrders, " +

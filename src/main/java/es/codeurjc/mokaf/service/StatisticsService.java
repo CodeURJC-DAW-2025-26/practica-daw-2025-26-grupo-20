@@ -12,7 +12,7 @@ public class StatisticsService {
     @Autowired
     private StatisticsRepository statisticsRepository;
 
-    // Chart 1 - Producto más vendido del mes
+    // Chart 1
     public Map<String, Object> getBestSellingProductCurrentMonth() {
         List<Object[]> results = statisticsRepository.findBestSellingProductCurrentMonth();
 
@@ -48,7 +48,7 @@ public class StatisticsService {
         return product;
     }
 
-    // Chart 2 - Categoría más vendida (últimos 3 meses)
+    // Chart 2
     public Map<String, Object> getTopCategoryLast3Months() {
         List<Object[]> results = statisticsRepository.findTopCategoryLast3Months();
 
@@ -63,7 +63,7 @@ public class StatisticsService {
             return empty;
         }
 
-        // La categoría más vendida (primera de la lista)
+        // Category best seller
         Object[] row = results.get(0);
         Map<String, Object> category = new HashMap<>();
         category.put("category", row[0]);
@@ -78,7 +78,7 @@ public class StatisticsService {
         return category;
     }
 
-    // Todas las categorías con sus ventas (últimos 3 meses)
+    // Last Three monts categories
     public List<Map<String, Object>> getAllCategoriesLast3Months() {
         List<Object[]> results = statisticsRepository.findTopCategoryLast3Months();
         List<Map<String, Object>> categories = new ArrayList<>();
@@ -87,7 +87,7 @@ public class StatisticsService {
             return categories;
         }
 
-        // Colores para categorías
+        // Colors
         Map<String, String> categoryColors = new HashMap<>();
         categoryColors.put("HOT", "#ff6b6b");
         categoryColors.put("COLD", "#4dabf7");
@@ -95,13 +95,13 @@ public class StatisticsService {
         categoryColors.put("DESSERTS", "#ff8787");
         categoryColors.put("NON_COFFEE", "#69db7e");
 
-        // Calcular total de ingresos para porcentajes
+        // Calculate total amount
         double totalAmount = 0;
         for (Object[] row : results) {
             totalAmount += ((Number) row[2]).doubleValue();
         }
 
-        // Procesar cada categoría
+        // Process every category
         for (Object[] row : results) {
             Map<String, Object> cat = new LinkedHashMap<>();
             cat.put("category", row[0]);
@@ -121,7 +121,7 @@ public class StatisticsService {
         return categories;
     }
 
-    // Chart 3 - Sucursal con más ventas
+    // Chart 3
     public Map<String, Object> getTopBranch() {
         List<Object[]> results = statisticsRepository.findTopBranch();
 
@@ -154,7 +154,6 @@ public class StatisticsService {
         return branch;
     }
 
-    // Todas las sucursales con sus ventas
     public List<Map<String, Object>> getAllBranches() {
         List<Object[]> results = statisticsRepository.findAllBranchesSales();
         List<Map<String, Object>> branches = new ArrayList<>();
@@ -163,7 +162,7 @@ public class StatisticsService {
             return branches;
         }
 
-        // Asignar color para las sucursales
+        // Asign color to branches
         String[] colors = { "#4263eb", "#9775fa", "#ff8787", "#69db7e", "#ffd43b", "#ff6b6b" };
         int colorIndex = 0;
 
@@ -174,33 +173,33 @@ public class StatisticsService {
             totalRevenue += revenue != null ? revenue.doubleValue() : 0.0;
         }
 
-        // Procesar cada sucursal
+        // Process every branch
         for (Object[] row : results) {
             Map<String, Object> branch = new LinkedHashMap<>();
 
-            // Nombre de la sucursal
+            // name of branch
             branch.put("name", row[0] != null ? row[0] : "Sin nombre");
 
-            // Total de pedidos (puede ser null)
+            // Total of orders
             Number orders = (Number) row[1];
             branch.put("orders", orders != null ? orders.longValue() : 0L);
 
-            // Total de unidades (puede ser null)
+            // Units
             Number units = (Number) row[2];
             branch.put("units", units != null ? units.longValue() : 0L);
 
-            // Total de ingresos - ¡PUEDE SER NULL!
+            // Total gained
             Number revenue = (Number) row[3];
             double revenueValue = revenue != null ? revenue.doubleValue() : 0.0;
 
             branch.put("revenue", revenueValue);
             branch.put("revenueFormatted", String.format("%.2f", revenueValue));
 
-            // Calcular porcentaje
+            // Calculate percentage
             double percentage = totalRevenue > 0 ? (revenueValue / totalRevenue) * 100 : 0;
             branch.put("percentage", Math.round(percentage));
 
-            // Asignar color
+            // Asign color
             branch.put("color", colors[colorIndex % colors.length]);
             colorIndex++;
 
@@ -210,25 +209,25 @@ public class StatisticsService {
         return branches;
     }
 
-    // Método principal que obtiene todas las estadísticas para los gráficos
+    // getting all charts
     public Map<String, Object> getChartStatistics() {
         Map<String, Object> stats = new HashMap<>();
 
-        // Producto más vendido
+        // Most sold product
         stats.put("bestProduct", getBestSellingProductCurrentMonth());
 
-        // Categorías
+        // Categories
         stats.put("topCategory", getTopCategoryLast3Months());
         stats.put("allCategories", getAllCategoriesLast3Months());
 
-        // Sucursales
+        // branches
         stats.put("topBranch", getTopBranch());
         stats.put("allBranches", getAllBranches());
 
         return stats;
     }
 
-    // Obtener todas las categorías de productos (para filtros)
+    // Getting all categories
     public List<String> getAllProductCategories() {
         return statisticsRepository.findAllProductCategories();
     }

@@ -86,18 +86,18 @@ public class DatabaseInitializer implements ApplicationRunner {
         // 2) USUARIOS
         createUsers();
 
-        // 3) PRODUCTOS + IMÁGENES
+        // 3) PRODUCT + IMAGES
         seedProducts();
 
-        // 4) REVIEWS (depende de users y products)
+        // 4) REVIEWS
         createReviews();
 
-        // 5) ALÉRGENOS + SUCURSALES + ASIGNACIÓN
+        // 5) allergens + Branches + Products
         createAllergens();
         createBranches();
         updateProductsWithAllergens();
 
-        // 6) PEDIDOS Y CARRITOS
+        // 6) Orders and carts
         createOrders();
 
         System.out.println(">>> DB seeded OK");

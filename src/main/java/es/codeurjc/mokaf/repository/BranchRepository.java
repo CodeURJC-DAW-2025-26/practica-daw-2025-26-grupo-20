@@ -11,7 +11,7 @@ import es.codeurjc.mokaf.model.Branch;
 public interface BranchRepository extends JpaRepository<Branch, Long> {
    
     @Query("SELECT b FROM Branch b ORDER BY b.id ASC")
-    Optional<Branch> findFirstBranch(); //Necesary for addnig at cart
+    Optional<Branch> findFirstBranch();
 
     @Query("SELECT b FROM Branch b ORDER BY b.id ASC")
     List<Branch> findAllBranchesOrdered();
