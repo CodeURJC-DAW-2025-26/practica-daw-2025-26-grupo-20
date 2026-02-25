@@ -53,10 +53,12 @@
                             <form action="/cart/add" method="POST" class="d-inline">
                                 <input type="hidden" name="productId" value="{{id}}">
                                 <input type="hidden" name="qty" value="1">
+                                {{#user}}
                                 <button type="submit" class="btn btn-sm btn-recommended-cart"
                                         onclick="event.stopPropagation();">
                                     <i class="fas fa-cart-plus me-1"></i> Añadir
                                 </button>
+                                {{/user}}
                             </form>
                         </div>
                     </div>
