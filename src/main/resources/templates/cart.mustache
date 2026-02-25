@@ -360,6 +360,65 @@
     };
 
     /**
+     * Remove item
+     */
+    window.removeItem = async function(itemId) {
+        console.log(`🗑️ Eliminando item ${itemId}`);
+        
+        const button = event?.target.closest('button');
+        const originalHtml = button?.innerHTML;
+        
+        if (button) {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+        }
+        
+        try {
+            const response = await fetch('/cart/remove', {
+                method: 'POST',
+                headers: getFetchHeaders(),
+                body: new URLSearchParams({
+                    itemId: itemId
+                })
+            });
+            
+            const data = await response.json();
+            console.log('📥 Respuesta al eliminar:', data);
+            
+            if (data.success) {
+                // Animate removal before reloading items
+                const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+                if (itemElement) {
+                    itemElement.style.transition = 'opacity 0.3s ease';
+                    itemElement.style.opacity = '0';
+                    setTimeout(async () => {
+                        await loadCartItems();
+                    }, 300);
+                } else {
+                    await loadCartItems();
+                }
+                
+                updateCartCounter(data.cartCount);
+                showNotification('✓ Producto eliminado', 'success');
+            } else {
+                showNotification('✗ Error al eliminar producto', 'error');
+                if (button) {
+                    button.innerHTML = originalHtml;
+                    button.disabled = false;
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ Error:', error);
+            showNotification('✗ Error de conexión', 'error');
+            if (button) {
+                button.innerHTML = originalHtml;
+                button.disabled = false;
+            }
+        }
+    };
+
+    /**
      * Process Checkout
      */
     window.processCheckout = async function(event) {
