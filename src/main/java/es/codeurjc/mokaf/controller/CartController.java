@@ -82,7 +82,7 @@ public class CartController {
 
             // Add to cart
             Long branchId = getDefaultBranchId(session);
-            OrderItem item = cartService.addToCart(user.getId(), productId, quantity, branchId);
+            cartService.addToCart(user.getId(), productId, quantity, branchId);
 
             // Get updated cart info
             CartService.CartSummary summary = cartService.getCartSummary(user.getId());
