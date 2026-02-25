@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 public class ProductController {
 
@@ -35,14 +34,16 @@ public class ProductController {
         model.addAttribute("currentPage", "product");
         return "product";
     }
+
     @PostMapping("/product/{id}/reviews")
     public String createReview(@PathVariable Long id,
-                               @RequestParam int stars,
-                               @RequestParam String text,
-                               @AuthenticationPrincipal User currentUser,
-                               RedirectAttributes ra) {
+            @RequestParam int stars,
+            @RequestParam String text,
+            @AuthenticationPrincipal User currentUser,
+            RedirectAttributes ra) {
 
-        if (currentUser == null) return "redirect:/login";
+        if (currentUser == null)
+            return "redirect:/login";
 
         try {
             reviewService.createReview(id, currentUser, stars, text);
@@ -56,11 +57,12 @@ public class ProductController {
 
     @PostMapping("/product/{productId}/reviews/{reviewId}/delete")
     public String deleteReview(@PathVariable Long productId,
-                               @PathVariable Long reviewId,
-                               @AuthenticationPrincipal User currentUser,
-                               RedirectAttributes ra) {
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal User currentUser,
+            RedirectAttributes ra) {
 
-        if (currentUser == null) return "redirect:/login";
+        if (currentUser == null)
+            return "redirect:/login";
 
         try {
             reviewService.deleteReview(productId, reviewId, currentUser);
@@ -72,5 +74,3 @@ public class ProductController {
         return "redirect:/product/" + productId + "#reviews";
     }
 }
-    
-

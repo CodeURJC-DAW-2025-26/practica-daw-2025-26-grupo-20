@@ -111,8 +111,17 @@
 }
 
 @keyframes twinkle {
-    0%, 100% { opacity: 0.4; transform: scale(0.9); }
-    50% { opacity: 1; transform: scale(1.1); }
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: scale(0.9);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
 }
 
 .recommended-grid {
@@ -146,7 +155,7 @@
     transform: translateY(-8px);
     border-color: var(--dorado);
     box-shadow: 0 12px 30px rgba(198, 168, 125, 0.15),
-                0 4px 10px rgba(0, 0, 0, 0.3);
+        0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .recommended-badge {
@@ -237,4 +246,39 @@
     color: var(--cafe-oscuro);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(198, 168, 125, 0.35);
+}
+
+/* ===== Allergens ===== */
+.product-allergens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-bottom: 0.8rem;
+}
+
+.product-allergens:empty {
+    display: none;
+    margin: 0;
+}
+
+.allergen-badge {
+    background-color: rgba(198, 168, 125, 0.15);
+    color: var(--dorado);
+    border: 1px solid rgba(198, 168, 125, 0.4);
+    border-radius: 12px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.allergen-badge:hover {
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+}
+
+.recommended-info .product-allergens {
+    justify-content: center;
 }

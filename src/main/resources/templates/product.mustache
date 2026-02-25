@@ -34,6 +34,12 @@
 
                         <div class="product-top">
                             <span class="product-category">{{product.category}}</span>
+                            <!-- Allergens -->
+                            <div class="product-allergens">
+                                {{#product.allergens}}
+                                <span class="allergen-badge">{{name}}</span>
+                                {{/product.allergens}}
+                            </div>
                         </div>
 
                         <h1 class="product-title">{{product.name}}</h1>
