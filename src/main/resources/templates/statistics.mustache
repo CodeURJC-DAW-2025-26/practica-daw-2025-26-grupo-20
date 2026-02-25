@@ -238,6 +238,7 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
+            width: 100%;
         }
 
         .branch-card {
@@ -336,23 +337,21 @@
 
         .back-button {
             display: inline-block;
-            margin-top: 2.5rem;
-            padding: 1rem 2.5rem;
             background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
             color: var(--blanco);
             text-decoration: none;
-            border-radius: 12px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
             font-weight: 500;
-            letter-spacing: 1px;
-            transition: all 0.3s;
+            font-size: 0.9rem;
             border: 1px solid var(--dorado);
-            box-shadow: 0 5px 15px var(--sombra);
+            transition: all 0.3s ease;
         }
 
         .back-button:hover {
             background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-medio));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px var(--sombra);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             color: var(--dorado);
         }
 
@@ -360,6 +359,14 @@
             display: flex;
             justify-content: center;
             margin-top: 2rem;
+            padding-top: 1rem;
+        }
+
+        /* Full width card for branches ranking */
+        .full-width-card {
+            grid-column: 1 / -1;
+            width: 100%;
+            margin-top: 1.5rem;
         }
 
         @media (max-width: 768px) {
@@ -589,7 +596,7 @@
                     </div>
 
                     <!-- Description - takes remaining space, scroll only when needed -->
-                    <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 1rem; border: 1px solid rgba(198, 168, 125, 0.2); flex: 1; display: flex; flex-direction: column; min-height: 0; /* Important for flex child scrolling */">
+                    <div style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 1rem; border: 1px solid rgba(198, 168, 125, 0.2); flex: 1; display: flex; flex-direction: column; min-height: 0;">
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                             <i class="fas fa-store" style="color: var(--dorado); font-size: 1rem;"></i>
                             <span style="color: var(--dorado); font-size: 0.9rem; font-weight: 500;">Sobre esta sucursal</span>
@@ -605,7 +612,7 @@
                             {{/topBranch.description}}
                         </div>
                         
-                        <!-- Decorative coffee cups at bottom (only visible if description is short) -->
+                        <!-- Decorative coffee cups at bottom -->
                         <div style="text-align: right; font-size: 0.6rem; color: rgba(198, 168, 125, 0.3); margin-top: 0.3rem;">
                             <i class="fas fa-coffee"></i> <i class="fas fa-coffee"></i> <i class="fas fa-coffee"></i>
                         </div>
@@ -619,20 +626,23 @@
                     </div>
                     {{/hasTopBranch}}
                 </div>
+            </div>
 
-            <!-- Card 4: Branches ranking -->
-            <div class="stats-card" style="margin-top: 1.5rem;">
+            <!-- Card 4: Branches ranking - FULL WIDTH -->
+            <div class="stats-card full-width-card">
                 <h2>
                     <span>📈</span>
                     Ranking de Sucursales
                 </h2>
                 
                 {{#allBranches.size}}
-                <div class="chart-container" style="height: 300px;">
+                <!-- Chart container -->
+                <div class="chart-container" style="height: 300px; width: 100%;">
                     <canvas id="allBranchesChart"></canvas>
                 </div>
 
-                <div class="branches-grid">
+                <!-- Branches grid - full width -->
+                <div class="branches-grid" style="width: 100%;">
                     {{#allBranches}}
                     <div class="branch-card">
                         <div class="branch-color" style="background-color: {{color}};"></div>
@@ -656,6 +666,7 @@
                 {{/allBranches.size}}
             </div>
 
+            <!-- Back button - at the bottom -->
             <div class="stats-footer">
                 <a href="/" class="back-button">← Volver al Inicio</a>
             </div>
