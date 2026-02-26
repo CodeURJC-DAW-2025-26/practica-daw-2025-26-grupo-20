@@ -6,8 +6,6 @@ import es.codeurjc.mokaf.service.OrdersService;
 import es.codeurjc.mokaf.service.UserService;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -33,8 +31,8 @@ public class OrdersController {
 
     @GetMapping("/orders")
     public String showOrders(Authentication authentication,
-                             Model model,
-                             @RequestParam(defaultValue = "0") int page) {
+            Model model,
+            @RequestParam(defaultValue = "0") int page) {
 
         User user = getCurrentUser(authentication);
         if (user == null) {

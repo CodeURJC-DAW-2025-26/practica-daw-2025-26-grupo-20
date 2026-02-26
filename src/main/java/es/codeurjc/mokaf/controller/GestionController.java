@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.service.ProductService;
+import es.codeurjc.mokaf.repository.AllergenRepository;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import javax.sql.rowset.serial.SerialBlob;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Controller
 public class GestionController {
@@ -25,68 +27,139 @@ public class GestionController {
     @Qualifier("applicationProductService")
     private ProductService productService;
 
-    @GetMapping("/gestion_menu")
+    @Autowired
+    private AllergenRepository allergenRepository;
+
+    @GetMapping("/admin/gestion_menu")
     public String showGestion(Model model) {
         model.addAttribute("title", "Gestión de Menú");
         model.addAttribute("items", productService.getAllProducts());
+        model.addAttribute("allergens", allergenRepository.findAll());
         model.addAttribute("currentPage", "gestion");
-        return "gestion_menu";
+
+        List<java.util.Map<String, String>> categories = new java.util.ArrayList<>();
+        categories.add(java.util.Map.of("value", "HOT", "displayName", "Calientes"));
+        categories.add(java.util.Map.of("value", "COLD", "displayName", "Fríos"));
+        categories.add(java.util.Map.of("value", "BLENDED", "displayName", "Mezclados"));
+        categories.add(java.util.Map.of("value", "DESSERTS", "displayName", "Postres"));
+        categories.add(java.util.Map.of("value", "NON_COFFEE", "displayName", "Sin Café"));
+        model.addAttribute("categories", categories);
+
+        return "admin/gestion_menu";
     }
 
-    @PostMapping("/gestion_menu/add")
+    @PostMapping("/admin/gestion_menu/add")
     public String addProduct(
             @RequestParam String name,
             @RequestParam String description,
             @RequestParam String price,
-            @RequestParam String image,
+            @RequestParam("image") org.springframework.web.multipart.MultipartFile imageFile,
+            @RequestParam(required = false) List<Long> allergenIds,
             @RequestParam String category) throws Exception {
+
+        // Validations
+        if (name.trim().isEmpty() || description.trim().isEmpty() || category.trim().isEmpty()) {
+            return "redirect:/admin/gestion_menu?error=Campos requeridos vacíos";
+        }
 
         // Convert price to BigDecimal
         String priceValue = price.replace("€", "").trim();
-        BigDecimal priceBase = new BigDecimal(priceValue);
+        BigDecimal priceBase;
+        try {
+            priceBase = new BigDecimal(priceValue);
+            if (priceBase.compareTo(BigDecimal.ZERO) < 0) {
+                return "redirect:/admin/gestion_menu?error=El precio no puede ser negativo";
+            }
+        } catch (NumberFormatException e) {
+            return "redirect:/admin/gestion_menu?error=Precio inválido";
+        }
 
         // Convert category string to enum
         Category categoryEnum = Category.valueOf(category.toUpperCase());
 
         // Convert image file to Blob
-        byte[] imageData = Files.readAllBytes(Paths.get(image));
-        Image imageObj = new Image(new SerialBlob(imageData));
+        if (imageFile.isEmpty()) {
+            return "redirect:/admin/gestion_menu?error=La imagen es obligatoria";
+        }
+        byte[] imageData = imageFile.getBytes();
+        Image imageObj = new Image(new javax.sql.rowset.serial.SerialBlob(imageData));
 
         Product newProduct = new Product(name, description, imageObj, priceBase, categoryEnum);
+
+        Set<Allergen> allergenSet = new HashSet<>();
+        if (allergenIds != null) {
+            for (Long aId : allergenIds) {
+                allergenRepository.findById(aId).ifPresent(allergenSet::add);
+            }
+        }
+        newProduct.setAllergens(allergenSet);
+
         productService.addProduct(newProduct);
 
-        return "redirect:/gestion_menu";
+        return "redirect:/admin/gestion_menu";
     }
 
-    @PostMapping("/gestion_menu/edit")
+    @PostMapping("/admin/gestion_menu/edit")
     public String editProduct(
             @RequestParam Long id,
             @RequestParam String name,
             @RequestParam String description,
             @RequestParam String price,
-            @RequestParam String image,
+            @RequestParam("image") org.springframework.web.multipart.MultipartFile imageFile,
+            @RequestParam(required = false) List<Long> allergenIds,
             @RequestParam String category) throws Exception {
+
+        // Validations
+        if (name.trim().isEmpty() || description.trim().isEmpty() || category.trim().isEmpty()) {
+            return "redirect:/admin/gestion_menu?error=Campos requeridos vacíos";
+        }
 
         // Convert price to BigDecimal
         String priceValue = price.replace("€", "").trim();
-        BigDecimal priceBase = new BigDecimal(priceValue);
+        BigDecimal priceBase;
+        try {
+            priceBase = new BigDecimal(priceValue);
+            if (priceBase.compareTo(BigDecimal.ZERO) < 0) {
+                return "redirect:/admin/gestion_menu?error=El precio no puede ser negativo";
+            }
+        } catch (NumberFormatException e) {
+            return "redirect:/admin/gestion_menu?error=Precio inválido";
+        }
 
         // Convert category string to enum
         Category categoryEnum = Category.valueOf(category.toUpperCase());
 
-        // Convert image file to Blob
-        byte[] imageData = Files.readAllBytes(Paths.get(image));
-        Image imageObj = new Image(new SerialBlob(imageData));
+        // Fetch existing product to preserve image if new one is empty
+        Product existingProduct = productService.getProductById(id);
+        if (existingProduct == null) {
+            return "redirect:/admin/gestion_menu?error=Producto no encontrado";
+        }
+        Image imageObj = existingProduct.getImage();
+
+        // Convert new image file to Blob if provided
+        if (!imageFile.isEmpty()) {
+            byte[] imageData = imageFile.getBytes();
+            imageObj = new Image(new javax.sql.rowset.serial.SerialBlob(imageData));
+        }
 
         Product updatedProduct = new Product(name, description, imageObj, priceBase, categoryEnum);
+
+        Set<Allergen> allergenSet = new HashSet<>();
+        if (allergenIds != null) {
+            for (Long aId : allergenIds) {
+                allergenRepository.findById(aId).ifPresent(allergenSet::add);
+            }
+        }
+        updatedProduct.setAllergens(allergenSet);
+
         productService.updateProduct(id, updatedProduct);
 
-        return "redirect:/gestion_menu";
+        return "redirect:/admin/gestion_menu";
     }
 
-    @PostMapping("/gestion_menu/delete/{id}")
+    @PostMapping("/admin/gestion_menu/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return "redirect:/gestion_menu";
+        return "redirect:/admin/gestion_menu";
     }
 }

@@ -52,8 +52,10 @@ public class SecurityConfig {
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
                                 .csrf(csrf -> csrf
+                                                .ignoringRequestMatchers("/cart/**")
                                                 .ignoringRequestMatchers("/api/**"))
 
+                                                
                                 .securityContext(context -> context
                                                 .securityContextRepository(securityContextRepository())
                                                 .requireExplicitSave(false) // Automatically save security context
@@ -64,12 +66,13 @@ public class SecurityConfig {
                                                                 "/favicon.ico")
                                                 .permitAll()
                                                 .requestMatchers("/", "/index", "/menu", "/nosotros",
-                                                                "/sucursales", "/contact", "/login", "/register")
+                                                                "/branches", "/contact", "/login", "/register")
                                                 .permitAll()
                                                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
                                                                 "/statistics/**", "/gestion_menu", "/profiles/images/**")
                                                 .hasRole("ADMIN")
-                                                .requestMatchers("/profile", "/profile/**", "/cart", "/orders")
+                                                .requestMatchers("/profile", "/profile/**", "/cart", "/cart/**",
+                                                                "/orders")
                                                 .authenticated()
                                                 .anyRequest().permitAll())
 

@@ -30,7 +30,7 @@ import jakarta.persistence.Table;
 public class User implements UserDetails {
 
     public enum Role {
-        CUSTOMER, ADMIN
+        CUSTOMER, ADMIN, EMPLOYEE
     }
 
     @Id
@@ -46,7 +46,7 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name = "employee_id", unique = true, length = 50)
+    @Column(name = "employee_id", unique = true, length = 50, updatable = false)
     private String employeeId;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

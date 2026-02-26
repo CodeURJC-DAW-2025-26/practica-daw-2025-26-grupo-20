@@ -20,18 +20,22 @@ import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.model.Branch;
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.Employee;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.OrderItem;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
+import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.repository.AllergenRepository;
 import es.codeurjc.mokaf.repository.BranchRepository;
 import es.codeurjc.mokaf.repository.ImageRepository;
+import es.codeurjc.mokaf.repository.EmployeeRepository;
 import es.codeurjc.mokaf.repository.OrderRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
+import es.codeurjc.mokaf.repository.FaqRepository;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
@@ -42,7 +46,9 @@ public class DatabaseInitializer implements ApplicationRunner {
     private final ReviewRepository reviewRepository;
     private final AllergenRepository allergenRepository;
     private final BranchRepository branchRepository;
+    private final EmployeeRepository employeeRepository;
     private final OrderRepository orderRepository;
+    private final FaqRepository faqRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DatabaseInitializer(ProductRepository productRepository,
@@ -51,7 +57,9 @@ public class DatabaseInitializer implements ApplicationRunner {
             ReviewRepository reviewRepository,
             AllergenRepository allergenRepository,
             BranchRepository branchRepository,
+            EmployeeRepository employeeRepository,
             OrderRepository orderRepository,
+            FaqRepository faqRepository,
             PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
         this.imageRepository = imageRepository;
@@ -59,7 +67,9 @@ public class DatabaseInitializer implements ApplicationRunner {
         this.reviewRepository = reviewRepository;
         this.allergenRepository = allergenRepository;
         this.branchRepository = branchRepository;
+        this.employeeRepository = employeeRepository;
         this.orderRepository = orderRepository;
+        this.faqRepository = faqRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -72,6 +82,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         // robusto.
         orderRepository.deleteAll();
         reviewRepository.deleteAll();
+        userRepository.deleteAll(); // Delete users BEFORE employees and products
 
         // Si Product tiene relación 1-1/1-n con Image con cascade, puedes no borrar
         // imageRepository.
@@ -80,27 +91,48 @@ public class DatabaseInitializer implements ApplicationRunner {
         imageRepository.deleteAll();
 
         allergenRepository.deleteAll();
+        employeeRepository.deleteAll();
         branchRepository.deleteAll();
-        userRepository.deleteAll();
+        faqRepository.deleteAll();
 
-        // 2) USUARIOS
+        // 2) SUCURSALES Y EMPLEADOS (Usuarios dependen de empleados por employee_id)
+        createBranches();
+        createEmployees();
+
+        // 3) USUARIOS
         createUsers();
 
-        // 3) PRODUCTOS + IMÁGENES
+        // 3) PRODUCT + IMAGES
         seedProducts();
 
-        // 4) REVIEWS (depende de users y products)
+        // 4) REVIEWS
         createReviews();
 
-        // 5) ALÉRGENOS + SUCURSALES + ASIGNACIÓN
+        // 5) allergens + Branches + Products
         createAllergens();
-        createBranches();
         updateProductsWithAllergens();
 
-        // 6) PEDIDOS Y CARRITOS
+        // 6) Orders and carts
         createOrders();
 
+        // 7) FAQS
+        createFaqs();
+
         System.out.println(">>> DB seeded OK");
+    }
+
+    private void createFaqs() {
+        Faq faq1 = new Faq("¿Hacen envíos a domicilio?",
+                "Sí, realizamos envíos a través de Glovo y Uber Eats en un radio de 5km de nuestras sucursales.");
+        Faq faq2 = new Faq("¿Tienen opciones sin gluten?",
+                "Contamos con una variedad de opciones sin gluten, aunque advertimos de la posible contaminación cruzada en nuestra cocina.");
+        Faq faq3 = new Faq("¿Puedo reservar una mesa?",
+                "Aceptamos reservas de mesa con una antelación mínima de 24 horas contactando a nuestra sucursal correspondiente o mediante nuestro formulario de contacto.");
+        Faq faq4 = new Faq("¿Venden granos de café?",
+                "Sí, vendemos nuestros propios blends de café de especialidad de orígenes seleccionados recién tostados.");
+
+        faqRepository.saveAll(Arrays.asList(faq1, faq2, faq3, faq4));
+        System.out.println(">>> FAQs created: 4 FAQs seeded");
     }
 
     private void seedProducts() throws Exception {
@@ -231,7 +263,32 @@ public class DatabaseInitializer implements ApplicationRunner {
         user4.setRole(User.Role.CUSTOMER);
         userRepository.save(user4);
 
-        System.out.println(">>> Users created: 2 ADMINS + 4 CUSTOMERS");
+        // Additional employees as users
+        User emp1 = new User("Elinee Freites", "elinee@mokaf.com", passwordEncoder.encode("elinee123"),
+                User.Role.EMPLOYEE);
+        emp1.setEmployeeId("EMP-003");
+        userRepository.save(emp1);
+
+        User emp2 = new User("Jordi Guix", "jordi@mokaf.com", passwordEncoder.encode("jordi123"), User.Role.EMPLOYEE);
+        emp2.setEmployeeId("EMP-004");
+        userRepository.save(emp2);
+
+        User emp3 = new User("Alexandra Cararus", "alexandra@mokaf.com", passwordEncoder.encode("alex123"),
+                User.Role.EMPLOYEE);
+        emp3.setEmployeeId("EMP-005");
+        userRepository.save(emp3);
+
+        User emp4 = new User("Guillermo Velázquez", "guillermo@mokaf.com", passwordEncoder.encode("guille123"),
+                User.Role.EMPLOYEE);
+        emp4.setEmployeeId("EMP-006");
+        userRepository.save(emp4);
+
+        User emp5 = new User("Gonzalo Pérez", "gonzalo@mokaf.com", passwordEncoder.encode("gonza123"),
+                User.Role.EMPLOYEE);
+        emp5.setEmployeeId("EMP-007");
+        userRepository.save(emp5);
+
+        System.out.println(">>> Users created: 2 ADMINS + 4 CUSTOMERS + 5 EMPLOYEES");
     }
 
     private void createReviews() {
@@ -240,35 +297,93 @@ public class DatabaseInitializer implements ApplicationRunner {
         if (users.isEmpty() || products.isEmpty())
             return;
 
-        int[] stars = { 5, 4, 5, 4, 5, 3 };
-        String[] texts = {
-                "Café excelente, aromático y bien equilibrado.",
-                "Muy buen servicio y presentación impecable.",
-                "El capuccino estaba espectacular, repetiré.",
-                "Buena relación calidad-precio. Recomendable.",
-                "Postres muy ricos, especialmente la red velvet.",
-                "Correcto, aunque lo prefiero un poco más intenso."
-        };
+        // Filter only customers (no admins)
+        List<User> customers = users.stream()
+                .filter(u -> u.getRole() == User.Role.CUSTOMER)
+                .toList();
 
-        int created = 0;
-        for (int i = 0; i < users.size(); i++) {
-            User u = users.get(i);
-            // Si no quieres admins reseñando:
-            // if (u.getRole() == User.Role.ADMIN) continue;
-
-            Product p = products.get(i % products.size());
-
-            Review r = new Review();
-            r.setUser(u);
-            r.setProduct(p);
-            r.setStars(stars[i % stars.length]);
-            r.setText(texts[i % texts.length]);
-
-            reviewRepository.save(r);
-            created++;
+        if (customers.isEmpty()) {
+            System.out.println(">>> No customers found for reviews");
+            return;
         }
 
-        System.out.println(">>> Reviews created: " + created);
+        System.out.println(">>> Creating reviews for different products...");
+
+        // Define reviews for specific products - CONTENT IN SPANISH FOR USERS
+        // Format: [productName, stars, reviewText]
+        List<Object[]> reviewData = Arrays.asList(
+                // HOT COFFEES
+                new Object[] { "Expreso", 5, "Café perfecto, fuerte y aromático. ¡Así me gusta!" },
+                new Object[] { "Expreso", 4, "Buena intensidad, quizás un poco fuerte para mi gusto." },
+                new Object[] { "Expreso", 5, "El mejor expreso de la zona, la crema es perfecta." },
+                new Object[] { "Capuccino", 5, "Cremoso y delicioso, la espuma es perfecta." },
+                new Object[] { "Capuccino", 4, "Muy buen capuccino, ¿quizás un poco más de chocolate?" },
+                new Object[] { "Capuccino", 5, "Mi capuccino favorito, siempre consistente." },
+                new Object[] { "Latte", 5, "Suave y cremoso, simplemente perfecto." },
+                new Object[] { "Latte", 4, "Buen latte, temperatura ideal." },
+                new Object[] { "Americano", 3, "Bueno pero un poco aguado para mi gusto." },
+
+                // COLD COFFEES
+                new Object[] { "Iced Latte", 5, "Refrescante y fuerte, ¡perfecto para el verano!" },
+                new Object[] { "Iced Latte", 4, "Muy bueno, quizás un poco más de hielo." },
+                new Object[] { "Frappe", 5, "El mejor frappe que he probado, ¡cremoso y delicioso!" },
+                new Object[] { "Frappe", 5, "¡Muy refrescante, me encanta!" },
+                new Object[] { "Iced Vietnamese Coffe", 5, "Sabor auténtico, dulce y fuerte." },
+                new Object[] { "Iced Vietnamese Coffe", 4, "Bueno pero demasiado dulce para mí." },
+
+                // DESSERTS
+                new Object[] { "Croissants", 5, "Hojaldrado y mantecoso, ¡como en París!" },
+                new Object[] { "Croissants", 4, "Muy buenos croissants, frescos cada día." },
+                new Object[] { "Croissants", 5, "¡Los mejores croissants de la ciudad!" },
+                new Object[] { "Chocolate Carrot Cake", 5, "Jugoso y chocolatoso, ¡increíble!" },
+                new Object[] { "Chocolate Carrot Cake", 5, "Mi tarta favorita, siempre fresca." },
+                new Object[] { "Red Velvet Cupcake", 5, "Red velvet perfecto, frosting cremoso." },
+                new Object[] { "Red Velvet Cupcake", 4, "Bueno pero un poco seco." },
+                new Object[] { "Vanilla Cupcake", 4, "Vainilla clásica, muy bueno." },
+                new Object[] { "Strawberry Cake", 5, "Fresas frescas, ligero y delicioso." },
+                new Object[] { "Chocolate Cupcake", 5, "Sabor a chocolate intenso, ¡espectacular!" },
+                new Object[] { "Orange Cake", 4, "Agradable sabor cítrico, muy refrescante." },
+
+                // NON-COFFEE
+                new Object[] { "Chai Tea Latte", 5, "Especias perfectas, muy aromático." },
+                new Object[] { "Chai Tea Latte", 4, "Buen chai, podría ser más especiado." },
+                new Object[] { "Hot Chocolate", 5, "Rico y cremoso, perfecto para días fríos." },
+                new Object[] { "Hot Chocolate", 5, "¡El mejor chocolate caliente!" },
+                new Object[] { "Matcha Latte", 4, "Buen matcha, suave y cremoso." },
+
+                // BLENDED
+                new Object[] { "Frapuccino", 5, "Café mezclado perfecto, ¡no demasiado dulce!" },
+                new Object[] { "Chocolate Coffee Blend", 5, "Combinación increíble de café y chocolate." },
+                new Object[] { "Hazelnut Coffee Shake", 5, "Me encanta el sabor a avellana, equilibrio perfecto." });
+
+        Random random = new Random(42); // Fixed seed for reproducibility
+
+        // Create reviews distributing among customers
+        for (Object[] data : reviewData) {
+            String productName = (String) data[0];
+            int stars = (int) data[1];
+            String text = (String) data[2];
+
+            // Find the product
+            Product product = findProductByName(products, productName);
+            if (product == null) {
+                System.out.println(">>> Product not found: " + productName);
+                continue;
+            }
+
+            // Select random customer
+            User customer = customers.get(random.nextInt(customers.size()));
+
+            // Create and save review
+            Review review = new Review();
+            review.setUser(customer);
+            review.setProduct(product);
+            review.setStars(stars);
+            review.setText(text);
+
+            reviewRepository.save(review);
+        }
+
     }
 
     private void createAllergens() {
@@ -294,6 +409,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Paseo de Gracia 85, 08008 Barcelona\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        barcelona.setPurchaseDiscountPercent(BigDecimal.valueOf(10));
         branchRepository.save(barcelona);
 
         Branch madrid = new Branch();
@@ -306,6 +422,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Gran Vía 42, 28013 Madrid\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        madrid.setPurchaseDiscountPercent(BigDecimal.valueOf(15));
         branchRepository.save(madrid);
 
         Branch mostoles = new Branch();
@@ -318,6 +435,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Calle Dos de Mayo 15, 28935 Móstoles\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        mostoles.setPurchaseDiscountPercent(BigDecimal.valueOf(25));
         branchRepository.save(mostoles);
 
         Branch santander = new Branch();
@@ -331,9 +449,65 @@ public class DatabaseInitializer implements ApplicationRunner {
                         "Paseo de Pereda 28, 39004 Santander\n\n" +
                         "Horario\n" +
                         "Lunes a Domingo: 10:00 - 20:00\n\n");
+        santander.setPurchaseDiscountPercent(BigDecimal.valueOf(10));
         branchRepository.save(santander);
 
         System.out.println(">>> Branches created: 4 branches");
+    }
+
+    private void createEmployees() {
+        List<Branch> branches = branchRepository.findAll();
+        if (branches.isEmpty())
+            return;
+
+        Branch madrid = branches.stream().filter(b -> b.getName().contains("Madrid")).findFirst()
+                .orElseGet(() -> branches.isEmpty() ? null : branches.get(0));
+        Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
+                .orElseGet(() -> branches.isEmpty() ? null : branches.get(0));
+
+        // Administradores (Referenciados en createUsers)
+        Employee admin1 = new Employee("EMP-001", "Administrador", "Principal", "Administrador del Sistema",
+                "Direccion",
+                new BigDecimal("4000.00"), madrid,
+                "Gestor general de la plataforma Mokaf.", "admin@mokaf.com",
+                "../images/Profile/default.png");
+
+        Employee admin2 = new Employee("EMP-002", "María", "González", "Supervisora", "Direccion",
+                new BigDecimal("3200.00"), madrid,
+                "Supervisora de operaciones y atención al cliente.", "maria.admin@mokaf.com",
+                "../images/Profile/default.png");
+
+        // Equipo Público
+        Employee elinee = new Employee("EMP-003", "Elinee", "Freites", "Fundadora & Master Roaster",
+                "Atencion al cliente",
+                new BigDecimal("3500.00"), madrid,
+                "Visionaria detrás de cada blend exclusivo de Mokaf.", "elinee@mokaf.com",
+                "../images/Profile/elinee.png");
+
+        Employee jordi = new Employee("EMP-004", "Jordi", "Guix", "Barista Principal", "Atencion al cliente",
+                new BigDecimal("2500.00"),
+                barcelona,
+                "El artista que convierte el cafe en lienzo.", "jordi@mokaf.com", "../images/Profile/jordi.png");
+
+        Employee alexandra = new Employee("EMP-005", "Alexandra", "Cararus", "Gerente de Experiencia",
+                "Atencion al cliente",
+                new BigDecimal("2800.00"), madrid,
+                "Asegurando que cada visita sea inolvidable.", "alexandra@mokaf.com",
+                "../images/Profile/alexandra.png");
+
+        Employee guillermo = new Employee("EMP-006", "Guillermo", "Velázquez", "Director de Tecnología",
+                "Atencion al cliente",
+                new BigDecimal("3200.00"), barcelona,
+                "Innovando para llevar la experiencia Mokaf al mundo digital.", "guillermo@mokaf.com",
+                "../images/Profile/guillermo.png");
+
+        Employee gonzalo = new Employee("EMP-007", "Gonzalo", "Pérez", "Estratega de Negocio", "Atencion al cliente",
+                new BigDecimal("3100.00"), madrid,
+                "Expandiendo horizontes y buscando nuevas oportunidades.", "gonzalo@mokaf.com",
+                "../images/Profile/Gonzalo.png");
+
+        employeeRepository.saveAll(Arrays.asList(admin1, admin2, elinee, jordi, alexandra, guillermo, gonzalo));
+        System.out.println(">>> Employees created: 7 real members seeded (including admins)");
     }
 
     private void updateProductsWithAllergens() {
@@ -681,9 +855,6 @@ public class DatabaseInitializer implements ApplicationRunner {
         return orderIndex + 1;
     }
 
-    /**
-     * Creates the active shopping cart
-     */
     private void createActiveCart(List<User> customers, List<Branch> branches, List<Product> products) {
         if (customers.isEmpty() || branches.isEmpty() || products.isEmpty()) {
             return;
@@ -694,31 +865,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         cart.setBranch(branches.get(2)); // Móstoles branch
         cart.setStatus(Order.Status.CART);
 
-        // Add 3 different items to cart for variety
-        int[] productIndices = { 0, 2, 5 }; // Different products: Expreso, Frappe, Croissants
-        int[] quantities = { 2, 1, 3 }; // Different quantities
-
         BigDecimal subtotal = BigDecimal.ZERO;
-
-        for (int j = 0; j < productIndices.length; j++) {
-            if (productIndices[j] < products.size()) {
-                Product product = products.get(productIndices[j]);
-                int quantity = quantities[j];
-
-                OrderItem item = new OrderItem();
-                item.setProduct(product);
-                item.setQuantity(quantity);
-                item.setUnitPrice(product.getPriceBase());
-                item.setFinalUnitPrice(product.getPriceBase());
-
-                BigDecimal lineTotal = product.getPriceBase()
-                        .multiply(BigDecimal.valueOf(quantity));
-                item.setLineTotal(lineTotal);
-
-                cart.addItem(item);
-                subtotal = subtotal.add(lineTotal);
-            }
-        }
 
         cart.setSubtotalAmount(subtotal);
         cart.setDiscountPercent(BigDecimal.ZERO);
@@ -726,7 +873,6 @@ public class DatabaseInitializer implements ApplicationRunner {
         cart.setTotalAmount(subtotal);
 
         orderRepository.save(cart);
-        System.out.println(">>> Active cart created with 3 different items");
     }
 
     /**
