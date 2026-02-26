@@ -71,22 +71,22 @@
                                                 <span class="price-tag">
                                                     {{priceBase}}€
                                                 </span>
-                                                <form
-                                                    action="/cart/add"
-                                                    method="POST"
-                                                    class="d-inline ajax-cart-form"
-                                                >
-                                                    <input
-                                                        type="hidden"
-                                                        name="productId"
-                                                        value="{{id}}"
+                                                {{#user}}
+                                                    <form
+                                                        action="/cart/add"
+                                                        method="POST"
+                                                        class="d-inline ajax-cart-form"
                                                     >
-                                                    <input
-                                                        type="hidden"
-                                                        name="qty"
-                                                        value="1"
-                                                    >
-                                                    {{#user}}
+                                                        <input
+                                                            type="hidden"
+                                                            name="productId"
+                                                            value="{{id}}"
+                                                        >
+                                                        <input
+                                                            type="hidden"
+                                                            name="qty"
+                                                            value="1"
+                                                        >
                                                         <button
                                                             type="submit"
                                                             class="btn btn-sm btn-recommended-cart"
@@ -96,8 +96,8 @@
                                                                 class="fas fa-cart-plus me-1"
                                                             ></i> Añadir
                                                         </button>
-                                                    {{/user}}
-                                                </form>
+                                                    </form>
+                                                {{/user}}
                                             </div>
                                         </div>
                                     </div>
@@ -159,82 +159,32 @@
                 </div>
             </div>
 
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="spinner-container d-none mb-4">
+                <div class="spiral-spinner">
+                </div>
+                <p class="mt-2 text-muted">Cargando productos...</p>
+            </div>
+
             <!-- Menu Items Grid -->
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                {{#items}}
-                    <div class="col menu-item" data-category="{{category}}">
-                        <a class="product-link" href="/product/{{id}}">
-                            <div class="card h-100 menu-card">
-                                {{#image}}
-                                    <img
-                                        src="/images/{{id}}"
-                                        class="card-img-top"
-                                        alt="{{name}}"
-                                        onerror="this.src='https://via.placeholder.com/300x200?text={{name}}'"
-                                    >
-                                {{/image}}
-                                {{^image}}
-                                    <img
-                                        src="https://via.placeholder.com/300x200?text={{name}}"
-                                        class="card-img-top"
-                                        alt="{{name}}"
-                                    >
-                                {{/image}}
+            <div
+                id="menu-items-container"
+                class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+            >
+                {{> fragments/menu_items_fragment}}
+            </div>
 
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">{{name}}</h5>
-                                    <p class="card-text">{{description}}</p>
-
-                                    <!-- Hidden allergens elements for Javascript filtering logic -->
-                                    <div
-                                        class="d-none allergens-data-container"
-                                    >
-                                        {{#allergens}}
-                                            <span
-                                                class="allergen-badge"
-                                                data-allergen="{{name}}"
-                                            ></span>
-                                        {{/allergens}}
-                                    </div>
-
-                                    <div
-                                        class="mt-auto d-flex justify-content-between align-items-center"
-                                    >
-                                        <p class="card-price fw-bold mb-0">
-                                            {{priceBase}}€
-                                        </p>
-
-                                        <form
-                                            action="/cart/add"
-                                            method="POST"
-                                            class="d-inline ajax-cart-form"
-                                        >
-                                            <input
-                                                type="hidden"
-                                                name="productId"
-                                                value="{{id}}"
-                                            >
-                                            <input
-                                                type="hidden"
-                                                name="qty"
-                                                value="1"
-                                            >
-                                            <button
-                                                type="submit"
-                                                class="btn btn-sm btn-outline-primary btn-add-cart"
-                                                onclick="event.stopPropagation();"
-                                            >
-                                                <i
-                                                    class="fas fa-cart-plus me-1"
-                                                ></i> Añadir
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                {{/items}}
+            <!-- Load More Button -->
+            <div
+                class="text-center mt-5 {{^hasMore}}d-none{{/hasMore}}"
+                id="load-more-container"
+            >
+                <button
+                    id="load-more-btn"
+                    class="btn btn-lg btn-outline-primary px-5"
+                >
+                    <i class="fas fa-plus me-2"></i> Cargar más
+                </button>
             </div>
         </main>
 
@@ -271,14 +221,13 @@
                 const excludedAllergens = new Set();
             
                 function applyFilters() {
-                    menuItems.forEach(item => {
-                        const itemCat = item.getAttribute('data-category');
+                    const currentMenuItems = document.querySelectorAll('.menu-item');
+                    currentMenuItems.forEach(item => {
                         const itemAllergens = Array.from(item.querySelectorAll('.allergen-badge')).map(badge => badge.getAttribute('data-allergen'));
             
-                        const matchesCategory = (currentCategory === 'all' || itemCat === currentCategory);
                         const hasExcludedAllergen = itemAllergens.some(allergen => excludedAllergens.has(allergen));
             
-                        if (matchesCategory && !hasExcludedAllergen) {
+                        if (!hasExcludedAllergen) {
                             item.style.display = '';
                         } else {
                             item.style.display = 'none';
@@ -293,7 +242,40 @@
                         btn.classList.add('active');
             
                         currentCategory = btn.getAttribute('data-category');
-                        applyFilters();
+            
+                        // Reset pagination and container
+                        currentPage = 0;
+                        menuContainer.innerHTML = '';
+                        loadMoreContainer.classList.remove('d-none');
+            
+                        // Show spinner and load from server
+                        const spinner = document.getElementById('loading-spinner');
+                        spinner.classList.remove('d-none');
+            
+                        fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
+                            .then(response => response.text())
+                            .then(html => {
+                                spinner.classList.add('d-none');
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
+            
+                                const hasMoreDataInput = tempDiv.querySelector('#hasMoreData');
+                                const hasMore = hasMoreDataInput ? hasMoreDataInput.value === 'true' : false;
+                                if (hasMoreDataInput) hasMoreDataInput.remove();
+            
+                                const newItems = tempDiv.querySelectorAll('.menu-item');
+                                newItems.forEach(item => menuContainer.appendChild(item));
+            
+                                currentPage++;
+                                if (!hasMore) loadMoreContainer.classList.add('d-none');
+            
+                                if (typeof initCart === 'function') initCart();
+                                applyFilters();
+                            })
+                            .catch(error => {
+                                spinner.classList.add('d-none');
+                                console.error('Error loading items:', error);
+                            });
                     });
                 });
             
@@ -340,6 +322,74 @@
             
                 // Initial check
                 checkHash();
+            
+                // AJAX Pagination Logic
+                let currentPage = 1;
+                const loadMoreBtn = document.getElementById('load-more-btn');
+                const loadMoreContainer = document.getElementById('load-more-container');
+                const menuContainer = document.getElementById('menu-items-container');
+            
+                if (loadMoreBtn) {
+                    loadMoreBtn.addEventListener('click', function () {
+                        const originalHtml = loadMoreBtn.innerHTML;
+                        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Cargando...';
+                        loadMoreBtn.disabled = true;
+            
+                        const spinner = document.getElementById('loading-spinner');
+                        spinner.classList.remove('d-none');
+            
+                        fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
+                            .then(response => response.text())
+                            .then(html => {
+                                spinner.classList.add('d-none');
+                                // Create a temporary element to parse the HTML
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
+            
+                                // Check if there is more data
+                                const hasMoreDataInput = tempDiv.querySelector('#hasMoreData');
+                                const hasMore = hasMoreDataInput ? hasMoreDataInput.value === 'true' : false;
+            
+                                // Remove the hidden input from tempDiv before appending
+                                if (hasMoreDataInput) hasMoreDataInput.remove();
+            
+                                // Append new items to the container
+                                const newItems = tempDiv.querySelectorAll('.menu-item');
+                                newItems.forEach(item => {
+                                    menuContainer.appendChild(item);
+            
+                                    // Apply colors to new allergen badges if needed
+                                    // Actually, we don't need to re-apply unless they are visible, 
+                                    // but we should re-initialize filters and cart
+                                });
+            
+                                // Update state
+                                currentPage++;
+                                if (!hasMore) {
+                                    loadMoreContainer.classList.add('d-none');
+                                }
+            
+                                // Re-initialize cart for new elements
+                                if (typeof initCart === 'function') {
+                                    initCart();
+                                }
+            
+                                // Re-apply current filters to new items
+                                applyFilters();
+            
+                                // Restore button
+                                loadMoreBtn.innerHTML = originalHtml;
+                                loadMoreBtn.disabled = false;
+                            })
+                            .catch(error => {
+                                spinner.classList.add('d-none');
+                                console.error('Error loading more items:', error);
+                                loadMoreBtn.innerHTML = originalHtml;
+                                loadMoreBtn.disabled = false;
+                                alert('Error al cargar más productos. Inténtalo de nuevo.');
+                            });
+                    });
+                }
             
                 // Listen for hash changes
                 window.addEventListener('hashchange', checkHash);

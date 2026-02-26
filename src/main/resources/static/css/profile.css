@@ -10,18 +10,21 @@
     width: 95%;
     margin: 0 auto;
     padding: 0 15px;
-    padding-bottom: 3rem;        /* MÁS MARGEN CON EL FOOTER */
+    padding-bottom: 3rem;
+    /* MÁS MARGEN CON EL FOOTER */
 }
 
 .profile-container h2 {
     color: #C6A87D;
     font-weight: 300;
     letter-spacing: 2px;
-    margin-top: 1.5rem;          /* BAJAR EL TÍTULO DEL HEADER */
+    margin-top: 1.5rem;
+    /* BAJAR EL TÍTULO DEL HEADER */
     margin-bottom: 2rem;
     position: relative;
     padding-bottom: 15px;
-    text-align: center;          /* CENTRAR EL TÍTULO */
+    text-align: center;
+    /* CENTRAR EL TÍTULO */
     width: 100%;
 }
 
@@ -103,7 +106,7 @@
 }
 
 .profile-email {
-    color: #D7CCC8;
+    color: #C6A87D;
     font-size: 0.85rem;
     margin-bottom: 0.3rem;
     word-break: break-word;
@@ -227,6 +230,10 @@
     margin-bottom: 1rem;
 }
 
+.profile-form-card small {
+    color: #C6A87D;
+}
+
 .profile-form-card .form-label {
     color: #D7CCC8;
     margin-bottom: 6px;
@@ -310,7 +317,8 @@
    -------------------------------------------------------------------------- */
 .delete-account-section {
     margin-top: 1rem;
-    margin-bottom: 2rem;         /* MÁS MARGEN INFERIOR */
+    margin-bottom: 2rem;
+    /* MÁS MARGEN INFERIOR */
     display: flex;
     justify-content: center;
 }
@@ -374,7 +382,7 @@
     .profile-container {
         max-width: 1600px;
     }
-    
+
     .profile-container .col-lg-4 {
         flex: 0 0 25%;
         max-width: 320px;
@@ -395,7 +403,7 @@
         padding: 0 20px;
         padding-bottom: 3rem;
     }
-    
+
     .profile-container .col-lg-4,
     .profile-container .col-lg-6 {
         flex: 0 0 100%;
@@ -410,12 +418,12 @@
         padding: 0 15px;
         padding-bottom: 2rem;
     }
-    
+
     .profile-avatar-card,
     .profile-form-card {
         padding: 1rem;
     }
-    
+
     .delete-account-section {
         margin-bottom: 1.5rem;
     }
