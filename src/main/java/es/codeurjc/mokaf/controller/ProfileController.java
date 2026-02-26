@@ -24,11 +24,6 @@ import es.codeurjc.mokaf.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
-import javax.sql.rowset.serial.SerialBlob;
-import es.codeurjc.mokaf.model.Image;
 
 @Controller
 public class ProfileController {
@@ -131,6 +126,7 @@ public class ProfileController {
 
         return "profileADMIN";
     }
+
     @PostMapping("/profile/update")
     public String updateProfile(@RequestParam String name,
             @RequestParam String email,
@@ -167,8 +163,7 @@ public class ProfileController {
             try {
                 Image newImage = imageService.updateImage(
                         user.getImage() != null ? user.getImage().getId() : null,
-                        imageFile
-                );
+                        imageFile);
                 if (newImage != null) {
                     user.setImage(newImage);
                     newImageId = newImage.getId();
@@ -183,7 +178,6 @@ public class ProfileController {
         User savedUser = userService.save(user);
         System.out.println(">>> Usuario guardado. ID: " + savedUser.getId());
 
-       
         final String emailToReload = email;
 
         java.util.Optional<User> userOpt = userService.findByEmail(emailToReload);
@@ -235,81 +229,6 @@ public class ProfileController {
             return "redirect:/profileADMIN?error=email_exists";
         }
 
-    @PostMapping("/profile/update")
-    public String updateProfile(Authentication authentication,
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) MultipartFile image) throws Exception {
-
-        User user = getCurrentUser(authentication);
-        if (user == null)
-            return "redirect:/login";
-
-        // Update basic info
-        user.setName(name);
-        user.setEmail(email);
-
-        if (password != null && !password.isEmpty()) {
-            user.setPasswordHash(passwordEncoder.encode(password));
-        }
-
-        if (image != null && !image.isEmpty()) {
-            Image img = new Image();
-            img.setImageFile(new SerialBlob(image.getBytes()));
-            user.setImage(img);
-        }
-
-        userService.save(user);
-        return "redirect:/profile?updated=true";
-    }
-
-    @PostMapping("/profileADMIN/update")
-    public String updateProfileAdmin(Authentication authentication,
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) MultipartFile image) throws Exception {
-
-        User user = getCurrentUser(authentication);
-        if (user == null)
-            return "redirect:/login";
-        if (user.getRole() != User.Role.ADMIN)
-            return "redirect:/profile";
-
-        user.setName(name);
-        user.setEmail(email);
-
-        if (password != null && !password.isEmpty()) {
-            user.setPasswordHash(passwordEncoder.encode(password));
-        }
-
-        if (image != null && !image.isEmpty()) {
-            Image img = new Image();
-            img.setImageFile(new SerialBlob(image.getBytes()));
-            user.setImage(img);
-        }
-
-        userService.save(user);
-        return "redirect:/profileADMIN?updated=true";
-    }
-
-    @PostMapping("/profile/delete")
-    public String deleteProfile(Authentication authentication) {
-        User user = getCurrentUser(authentication);
-        if (user != null) {
-            userService.delete(user);
-        }
-        return "redirect:/logout";
-    }
-
-    @PostMapping("/profileADMIN/delete")
-    public String deleteProfileAdmin(Authentication authentication) {
-        User user = getCurrentUser(authentication);
-        if (user != null && user.getRole() == User.Role.ADMIN) {
-            userService.delete(user);
-        }
-        return "redirect:/logout";
         if (employeeId != null && !employeeId.isEmpty()) {
             user.setEmployeeId(employeeId);
         }
@@ -320,8 +239,7 @@ public class ProfileController {
                 System.out.println("Uploading admin image: " + imageFile.getOriginalFilename());
                 Image newImage = imageService.updateImage(
                         user.getImage() != null ? user.getImage().getId() : null,
-                        imageFile
-                );
+                        imageFile);
                 if (newImage != null) {
                     user.setImage(newImage);
                     System.out.println("Admin image saved with ID: " + newImage.getId());
@@ -334,7 +252,8 @@ public class ProfileController {
         }
 
         User savedUser = userService.save(user);
-        System.out.println("Admin user saved. Image ID: " + (savedUser.getImage() != null ? savedUser.getImage().getId() : "NULL"));
+        System.out.println("Admin user saved. Image ID: "
+                + (savedUser.getImage() != null ? savedUser.getImage().getId() : "NULL"));
 
         // IMPORTANTE: Actualizar el Authentication con los nuevos datos
         updateAuthentication(savedUser, request, response);
@@ -350,8 +269,7 @@ public class ProfileController {
         UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
                 updatedUser,
                 null,
-                updatedUser.getAuthorities()
-        );
+                updatedUser.getAuthorities());
 
         newAuth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
