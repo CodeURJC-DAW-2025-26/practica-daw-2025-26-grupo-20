@@ -33,30 +33,39 @@ public class CsrfModelInterceptor implements HandlerInterceptor {
                 System.out.println("CSRF token added");
             }
             
-            // Add user to model for header display
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println("Authentication from SecurityContextHolder: " + authentication);
-            
-            if (authentication != null && authentication.isAuthenticated() 
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
+            // Add user to model for header display ONLY if not already present
+            // This prevents overwriting the user loaded by controllers (with fresh image)
+            if (!modelAndView.getModel().containsKey("user")) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                System.out.println("Authentication from SecurityContextHolder: " + authentication);
                 
-                Object principal = authentication.getPrincipal();
-                System.out.println("Principal type: " + principal.getClass().getName());
-                
-                if (principal instanceof User) {
-                    User user = (User) principal;
-                    modelAndView.addObject("user", user);
-                    System.out.println("User added to model: " + user.getEmail());
+                if (authentication != null && authentication.isAuthenticated() 
+                    && !"anonymousUser".equals(authentication.getPrincipal())) {
                     
-                    if (user.getRole() == User.Role.ADMIN) {
-                        modelAndView.addObject("isAdmin", true);
-                        System.out.println("isAdmin flag added");
+                    Object principal = authentication.getPrincipal();
+                    System.out.println("Principal type: " + principal.getClass().getName());
+                    
+                    if (principal instanceof User) {
+                        User user = (User) principal;
+                        modelAndView.addObject("user", user);
+                        System.out.println("User added to model: " + user.getEmail() + 
+                                         " | Image: " + (user.getImage() != null ? user.getImage().getId() : "NULL"));
+                        
+                        if (user.getRole() == User.Role.ADMIN) {
+                            modelAndView.addObject("isAdmin", true);
+                            System.out.println("isAdmin flag added");
+                        }
+                    } else {
+                        System.out.println("Principal is not User instance: " + principal);
                     }
                 } else {
-                    System.out.println("Principal is not User instance: " + principal);
+                    System.out.println("No authenticated user found");
                 }
             } else {
-                System.out.println("No authenticated user found");
+                System.out.println("User already in model (set by controller), skipping interceptor");
+                User existingUser = (User) modelAndView.getModel().get("user");
+                System.out.println("Existing user in model: " + existingUser.getEmail() + 
+                                 " | Image: " + (existingUser.getImage() != null ? existingUser.getImage().getId() : "NULL"));
             }
             System.out.println("========================\n");
         }

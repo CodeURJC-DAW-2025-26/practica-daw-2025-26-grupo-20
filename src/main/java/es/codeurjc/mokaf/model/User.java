@@ -49,6 +49,7 @@ public class User implements UserDetails {
     @Column(name = "employee_id", unique = true, length = 50, updatable = false)
     private String employeeId;
 
+    // CAMBIO CLAVE: EAGER en lugar de EAGER (ya lo tenías) pero asegurando que no sea LAZY
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id", unique = true)
     private Image image;
