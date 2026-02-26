@@ -111,31 +111,12 @@
     </div>
 
     <!-- Category Filter -->
-    <div class="category-nav mb-4">
-        <h6 class="text-muted mb-3" style="color: var(--dorado) !important;">Filtrar por Categoría:</h6>
+    <div class="category-nav mb-5">
         <div class="d-flex justify-content-start flex-wrap gap-2">
             <button class="btn btn-category active" data-category="all">Todos</button>
             {{#categories}}
             <button class="btn btn-category" data-category="{{value}}">{{displayName}}</button>
             {{/categories}}
-        </div>
-    </div>
-
-    <!-- Allergen Filter (Exclusion) -->
-    <div class="allergen-filter-nav mb-5">
-        <h6 class="text-muted mb-3" style="color: var(--dorado) !important;">Ocultar productos que contengan:</h6>
-        <div class="d-flex justify-content-start flex-wrap gap-2">
-            {{#allergens}}
-            <button class="badge rounded-pill allergen-filter-btn text-white" 
-                    data-allergen="{{name}}"
-                    title="Click para excluir productos con {{name}}"
-                    style="border: 2px solid transparent; opacity: 0.6; cursor: pointer; transition: all 0.2s; font-size: 0.9em; padding: 8px 15px;">
-                {{name}}
-            </button>
-            {{/allergens}}
-            {{^allergens}}
-                <span class="text-muted mt-1"><small>No hay alérgenos registrados.</small></span>
-            {{/allergens}}
         </div>
     </div>
 
@@ -198,56 +179,22 @@
         if (defaultCategoryBtn) defaultCategoryBtn.classList.add('active');
 
         const filterBtns = document.querySelectorAll('.btn-category');
-        const allergenFilterBtns = document.querySelectorAll('.allergen-filter-btn');
         const rows = document.querySelectorAll('tbody tr[data-category]');
 
-        let currentCategory = 'all';
-        const excludedAllergens = new Set();
-
-        function applyFilters() {
-            rows.forEach(row => {
-                const rowCategory = row.getAttribute('data-category');
-                const rowAllergens = Array.from(row.querySelectorAll('.allergen-badge')).map(badge => badge.getAttribute('data-allergen'));
-                
-                const matchesCategory = (currentCategory === 'all' || rowCategory === currentCategory);
-                const hasExcludedAllergen = rowAllergens.some(allergen => excludedAllergens.has(allergen));
-
-                if (matchesCategory && !hasExcludedAllergen) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        // JS Categorías
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentCategory = btn.getAttribute('data-category');
-                applyFilters();
-            });
-        });
 
-        // JS Alérgenos (modo exclusión)
-        allergenFilterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const allergen = btn.getAttribute('data-allergen');
-                if (excludedAllergens.has(allergen)) {
-                    excludedAllergens.delete(allergen);
-                    btn.style.opacity = '0.6';
-                    btn.style.transform = 'scale(1)';
-                    btn.style.border = '2px solid transparent';
-                    btn.innerHTML = btn.getAttribute('data-allergen');
-                } else {
-                    excludedAllergens.add(allergen);
-                    btn.style.opacity = '1';
-                    btn.style.transform = 'scale(1.05)';
-                    btn.style.border = '2px solid var(--marron-oscuro)';
-                    btn.innerHTML = `<i class="fas fa-ban me-1"></i> ${btn.getAttribute('data-allergen')}`;
-                }
-                applyFilters();
+                const selected = btn.getAttribute('data-category');
+
+                rows.forEach(row => {
+                    if (selected === 'all' || row.getAttribute('data-category') === selected) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
             });
         });
 
@@ -273,13 +220,6 @@
         document.querySelectorAll('.allergen-pill').forEach(pill => {
             const allergenName = pill.getAttribute('data-allergen');
             pill.style.backgroundColor = getColorForAllergen(allergenName);
-        });
-
-        // Aplicar color a botones (filtros de tabla)
-        document.querySelectorAll('.allergen-filter-btn').forEach(btn => {
-            const allergenName = btn.getAttribute('data-allergen');
-            btn.style.backgroundColor = getColorForAllergen(allergenName);
-            btn.style.color = '#ffffff';
         });
 
         // Color por categoría
