@@ -27,11 +27,23 @@ public class MenuController {
     }
 
     @GetMapping("/menu")
-    public String showMenu(Model model, Authentication authentication) {
+    public String showMenu(Model model, Authentication authentication,
+            @RequestParam(required = false) String category) {
         model.addAttribute("title", "Menú");
 
-        // Initial load: page 0, size 6
-        Page<Product> productPage = productRepository.findAll(PageRequest.of(0, 6));
+        Page<Product> productPage;
+        if (category != null && !category.isEmpty() && !category.equalsIgnoreCase("all")) {
+            try {
+                Category cat = Category.valueOf(category.toUpperCase());
+                productPage = productRepository.findByCategory(cat, PageRequest.of(0, 6));
+                model.addAttribute("selectedCategory", category);
+            } catch (IllegalArgumentException e) {
+                productPage = productRepository.findAll(PageRequest.of(0, 6));
+            }
+        } else {
+            productPage = productRepository.findAll(PageRequest.of(0, 6));
+        }
+
         model.addAttribute("items", productPage.getContent());
         model.addAttribute("hasMore", productPage.hasNext());
 
@@ -51,8 +63,21 @@ public class MenuController {
     }
 
     @GetMapping("/api/menu")
-    public String getMenuItems(Model model, @RequestParam(defaultValue = "0") int page, Authentication authentication) {
-        Page<Product> productPage = productRepository.findAll(PageRequest.of(page, 6));
+    public String getMenuItems(Model model, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String category, Authentication authentication) {
+
+        Page<Product> productPage;
+        if (category != null && !category.isEmpty() && !category.equalsIgnoreCase("all")) {
+            try {
+                Category cat = Category.valueOf(category.toUpperCase());
+                productPage = productRepository.findByCategory(cat, PageRequest.of(page, 6));
+            } catch (IllegalArgumentException e) {
+                productPage = productRepository.findAll(PageRequest.of(page, 6));
+            }
+        } else {
+            productPage = productRepository.findAll(PageRequest.of(page, 6));
+        }
+
         model.addAttribute("items", productPage.getContent());
         model.addAttribute("hasMore", productPage.hasNext());
 

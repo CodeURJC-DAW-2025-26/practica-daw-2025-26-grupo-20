@@ -159,6 +159,13 @@
                 </div>
             </div>
 
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="spinner-container d-none mb-4">
+                <div class="spiral-spinner">
+                </div>
+                <p class="mt-2 text-muted">Cargando productos...</p>
+            </div>
+
             <!-- Menu Items Grid -->
             <div
                 id="menu-items-container"
@@ -216,13 +223,11 @@
                 function applyFilters() {
                     const currentMenuItems = document.querySelectorAll('.menu-item');
                     currentMenuItems.forEach(item => {
-                        const itemCat = item.getAttribute('data-category');
                         const itemAllergens = Array.from(item.querySelectorAll('.allergen-badge')).map(badge => badge.getAttribute('data-allergen'));
             
-                        const matchesCategory = (currentCategory === 'all' || itemCat === currentCategory);
                         const hasExcludedAllergen = itemAllergens.some(allergen => excludedAllergens.has(allergen));
             
-                        if (matchesCategory && !hasExcludedAllergen) {
+                        if (!hasExcludedAllergen) {
                             item.style.display = '';
                         } else {
                             item.style.display = 'none';
@@ -237,7 +242,40 @@
                         btn.classList.add('active');
             
                         currentCategory = btn.getAttribute('data-category');
-                        applyFilters();
+            
+                        // Reset pagination and container
+                        currentPage = 0;
+                        menuContainer.innerHTML = '';
+                        loadMoreContainer.classList.remove('d-none');
+            
+                        // Show spinner and load from server
+                        const spinner = document.getElementById('loading-spinner');
+                        spinner.classList.remove('d-none');
+            
+                        fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
+                            .then(response => response.text())
+                            .then(html => {
+                                spinner.classList.add('d-none');
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = html;
+            
+                                const hasMoreDataInput = tempDiv.querySelector('#hasMoreData');
+                                const hasMore = hasMoreDataInput ? hasMoreDataInput.value === 'true' : false;
+                                if (hasMoreDataInput) hasMoreDataInput.remove();
+            
+                                const newItems = tempDiv.querySelectorAll('.menu-item');
+                                newItems.forEach(item => menuContainer.appendChild(item));
+            
+                                currentPage++;
+                                if (!hasMore) loadMoreContainer.classList.add('d-none');
+            
+                                if (typeof initCart === 'function') initCart();
+                                applyFilters();
+                            })
+                            .catch(error => {
+                                spinner.classList.add('d-none');
+                                console.error('Error loading items:', error);
+                            });
                     });
                 });
             
@@ -297,9 +335,13 @@
                         loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Cargando...';
                         loadMoreBtn.disabled = true;
             
-                        fetch(`/api/menu?page=${currentPage}`)
+                        const spinner = document.getElementById('loading-spinner');
+                        spinner.classList.remove('d-none');
+            
+                        fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
                             .then(response => response.text())
                             .then(html => {
+                                spinner.classList.add('d-none');
                                 // Create a temporary element to parse the HTML
                                 const tempDiv = document.createElement('div');
                                 tempDiv.innerHTML = html;
@@ -340,6 +382,7 @@
                                 loadMoreBtn.disabled = false;
                             })
                             .catch(error => {
+                                spinner.classList.add('d-none');
                                 console.error('Error loading more items:', error);
                                 loadMoreBtn.innerHTML = originalHtml;
                                 loadMoreBtn.disabled = false;
