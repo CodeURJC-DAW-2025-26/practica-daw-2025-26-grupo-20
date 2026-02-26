@@ -198,6 +198,75 @@ async function refreshCartCount() {
     }
 }
 
+/**
+ * Handle "Add to Cart" form submission via AJAX
+ * @param {Event} event - The submit event
+ */
+async function handleAddToCart(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const form = event.currentTarget; // El form que disparó el evento
+    const button = form.querySelector('button[type="submit"]');
+    const productName = getProductName(form.closest('.card, .product-shell, .menu-item') || form);
+
+    const formData = new FormData(form);
+    const productId = formData.get('productId');
+    const quantity = formData.get('qty') || 1;
+
+    // Set button loading state
+    setButtonLoading(button, true);
+
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: getFetchHeaders(),
+            body: new URLSearchParams({
+                productId: productId,
+                qty: quantity
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Success
+            showNotification(`✓ ${productName} añadido al carrito!`, 'success');
+            updateCartCounter(data.cartCount);
+            animateCartIcon();
+        } else {
+            // Error from server
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            } else {
+                showNotification(`✗ ${data.message}`, 'error');
+            }
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('✗ Error de conexión. Intenta de nuevo.', 'error');
+
+    } finally {
+        // Reset button
+        setButtonLoading(button, false);
+    }
+}
+
+/**
+ * Initialize all "Add to Cart" AJAX forms
+ * @param {string} selector - CSS selector for forms
+ */
+function initCart(selector = '.ajax-cart-form') {
+    document.querySelectorAll(selector).forEach(form => {
+        // Prevent duplicate listeners
+        if (form.dataset.ajaxInitialized) return;
+
+        form.addEventListener('submit', handleAddToCart);
+        form.dataset.ajaxInitialized = 'true';
+    });
+}
+
 // ==================== STYLES ====================
 
 // Add styles if they don't exist
