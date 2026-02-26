@@ -6,10 +6,14 @@
    CONTENEDOR PRINCIPAL - SIN MÁRGENES EXCESIVOS
    -------------------------------------------------------------------------- */
 .admin-container {
-    max-width: 1400px;          /* Más ancho para aprovechar pantalla */
-    width: 95%;                  /* Casi todo el ancho disponible */
-    margin: 0 auto;              /* Centrado */
-    padding: 0 15px;             /* Padding reducido */
+    max-width: 1400px;
+    /* Más ancho para aprovechar pantalla */
+    width: 95%;
+    /* Casi todo el ancho disponible */
+    margin: 0 auto;
+    /* Centrado */
+    padding: 0 15px;
+    /* Padding reducido */
     padding-bottom: 3rem;
 }
 
@@ -18,11 +22,13 @@
     font-weight: 300;
     letter-spacing: 2px;
     margin-bottom: 2rem;
-     margin-top: 1.5rem; 
+    margin-top: 1.5rem;
     position: relative;
     padding-bottom: 15px;
-    text-align: center;          /* CENTRAR EL TÍTULO */
-    width: 100%;                 /* ASEGURAR QUE OCUPA TODO EL ANCHO */
+    text-align: center;
+    /* CENTRAR EL TÍTULO */
+    width: 100%;
+    /* ASEGURAR QUE OCUPA TODO EL ANCHO */
 }
 
 .admin-container h2:after {
@@ -42,19 +48,25 @@
 .admin-container .row {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -10px;             /* Reducir gutter */
+    margin: 0 -10px;
+    /* Reducir gutter */
 }
 
 .admin-container .col-lg-4 {
-    padding: 0 10px;             /* Reducir padding lateral */
-    flex: 0 0 30%;               /* 30% en lugar de 33.33% */
-    max-width: 350px;            /* Ancho máximo fijo */
+    padding: 0 10px;
+    /* Reducir padding lateral */
+    flex: 0 0 30%;
+    /* 30% en lugar de 33.33% */
+    max-width: 350px;
+    /* Ancho máximo fijo */
 }
 
 .admin-container .col-lg-6 {
     padding: 0 10px;
-    flex: 1;                     /* Ocupa el resto del espacio */
-    max-width: none;             /* Sin límite de ancho */
+    flex: 1;
+    /* Ocupa el resto del espacio */
+    max-width: none;
+    /* Sin límite de ancho */
 }
 
 /* --------------------------------------------------------------------------
@@ -63,7 +75,8 @@
 .admin-avatar-card {
     background-color: rgba(26, 26, 26, 0.85);
     border-radius: 15px;
-    padding: 1.5rem;             /* Reducido de 2rem */
+    padding: 1.5rem;
+    /* Reducido de 2rem */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 2px solid #dc3545;
     text-align: center;
@@ -79,12 +92,14 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 1rem;         /* Reducido */
+    margin-bottom: 1rem;
+    /* Reducido */
 }
 
 /* FOTO DE PERFIL */
 .admin-avatar-wrapper {
-    width: 120px;                /* Reducido de 140px */
+    width: 120px;
+    /* Reducido de 140px */
     height: 120px;
     margin: 0 auto 1rem;
     border-radius: 50%;
@@ -103,26 +118,30 @@
 }
 
 .admin-avatar-placeholder {
-    font-size: 3.5rem;           /* Reducido */
+    font-size: 3.5rem;
+    /* Reducido */
     color: #dc3545;
 }
 
 .admin-avatar-placeholder i {
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .admin-username {
     color: #C6A87D;
-    font-size: 1.2rem;           /* Reducido */
+    font-size: 1.2rem;
+    /* Reducido */
     font-weight: 600;
     margin-bottom: 0.3rem;
 }
 
 .admin-email {
-    color: #D7CCC8;
-    font-size: 0.85rem;          /* Reducido */
+    color: #C6A87D;
+    font-size: 0.85rem;
+    /* Reducido */
     margin-bottom: 0.3rem;
-    word-break: break-word;      /* Evitar desbordamiento */
+    word-break: break-word;
+    /* Evitar desbordamiento */
 }
 
 .admin-role-text {
@@ -144,17 +163,21 @@
 .admin-quick-actions {
     background-color: rgba(26, 26, 26, 0.6);
     border-radius: 15px;
-    padding: 1.25rem;            /* Reducido */
+    padding: 1.25rem;
+    /* Reducido */
     border: 1px solid rgba(220, 53, 69, 0.3);
-    margin-top: 1rem;            /* Reducido */
+    margin-top: 1rem;
+    /* Reducido */
 }
 
 .admin-quick-title {
     color: #C6A87D;
-    font-size: 0.9rem;           /* Reducido */
+    font-size: 0.9rem;
+    /* Reducido */
     font-weight: 400;
     text-align: center;
-    margin-bottom: 0.75rem;      /* Reducido */
+    margin-bottom: 0.75rem;
+    /* Reducido */
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -163,19 +186,23 @@
 .btn-admin-quick {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Alineado a la izquierda */
+    justify-content: flex-start;
+    /* Alineado a la izquierda */
     gap: 10px;
     width: 100%;
     background: #dc3545;
     border: 2px solid #dc3545;
     color: white;
-    padding: 10px 14px;          /* Reducido */
+    padding: 10px 14px;
+    /* Reducido */
     border-radius: 8px;
-    margin-bottom: 8px;          /* Reducido */
+    margin-bottom: 8px;
+    /* Reducido */
     text-decoration: none;
     transition: all 0.3s;
     font-weight: 500;
-    font-size: 0.9rem;           /* Tamaño de fuente reducido */
+    font-size: 0.9rem;
+    /* Tamaño de fuente reducido */
 }
 
 .btn-admin-quick:last-child {
@@ -183,7 +210,8 @@
 }
 
 .btn-admin-quick i {
-    font-size: 1rem;             /* Reducido */
+    font-size: 1rem;
+    /* Reducido */
     color: white;
     width: 20px;
     text-align: center;
@@ -225,7 +253,8 @@
 .admin-form-card {
     background-color: rgba(26, 26, 26, 0.85);
     border-radius: 15px;
-    padding: 1.5rem;             /* Reducido */
+    padding: 1.5rem;
+    /* Reducido */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 2px solid #dc3545;
     height: 100%;
@@ -233,11 +262,13 @@
 
 .admin-form-title {
     color: #dc3545;
-    font-size: 1.1rem;           /* Reducido */
+    font-size: 1.1rem;
+    /* Reducido */
     font-weight: 400;
     margin-bottom: 0.4rem;
     position: relative;
-    padding-bottom: 8px;         /* Reducido */
+    padding-bottom: 8px;
+    /* Reducido */
 }
 
 .admin-form-title:after {
@@ -252,23 +283,33 @@
 
 .admin-form-subtitle {
     color: #8B6B61;
-    font-size: 0.85rem;          /* Reducido */
-    margin-bottom: 1rem;         /* Reducido */
+    font-size: 0.85rem;
+    /* Reducido */
+    margin-bottom: 1rem;
+    /* Reducido */
+}
+
+.admin-form-card small {
+    color: #C6A87D;
 }
 
 .admin-form-card .form-label {
     color: #D7CCC8;
-    margin-bottom: 6px;          /* Reducido */
-    font-size: 0.85rem;          /* Reducido */
+    margin-bottom: 6px;
+    /* Reducido */
+    font-size: 0.85rem;
+    /* Reducido */
 }
 
 .admin-form-card .form-control {
     background-color: rgba(255, 255, 255, 0.08);
     border: 1px solid #5D4037;
     color: #D7CCC8;
-    padding: 10px 12px;          /* Reducido */
+    padding: 10px 12px;
+    /* Reducido */
     border-radius: 4px;
-    font-size: 0.9rem;           /* Reducido */
+    font-size: 0.9rem;
+    /* Reducido */
 }
 
 .admin-form-card .form-control:focus {
@@ -295,10 +336,13 @@
 /* Botones del formulario */
 .admin-actions {
     display: flex;
-    gap: 10px;                   /* Reducido */
+    gap: 10px;
+    /* Reducido */
     justify-content: flex-end;
-    margin-top: 1rem;            /* Reducido */
-    padding-top: 1rem;           /* Reducido */
+    margin-top: 1rem;
+    /* Reducido */
+    padding-top: 1rem;
+    /* Reducido */
     border-top: 1px solid rgba(198, 168, 125, 0.2);
 }
 
@@ -306,10 +350,12 @@
     background: #dc3545;
     border: none;
     color: white;
-    padding: 10px 24px;          /* Reducido */
+    padding: 10px 24px;
+    /* Reducido */
     border-radius: 4px;
     font-weight: 500;
-    font-size: 0.9rem;           /* Reducido */
+    font-size: 0.9rem;
+    /* Reducido */
     transition: all 0.3s;
 }
 
@@ -322,9 +368,11 @@
 .btn-cancel {
     border-color: #5D4037;
     color: #D7CCC8;
-    padding: 10px 20px;          /* Reducido */
+    padding: 10px 20px;
+    /* Reducido */
     border-radius: 4px;
-    font-size: 0.9rem;           /* Reducido */
+    font-size: 0.9rem;
+    /* Reducido */
     transition: all 0.3s;
 }
 
@@ -338,17 +386,20 @@
    BOTÓN ELIMINAR CUENTA
    -------------------------------------------------------------------------- */
 .admin-external-buttons {
-    margin-top: 1rem;            /* Reducido */
+    margin-top: 1rem;
+    /* Reducido */
 }
 
 .btn-admin-delete {
     background: linear-gradient(to right, #dc3545, #c82333);
     border: none;
     color: white;
-    padding: 12px 20px;          /* Reducido */
+    padding: 12px 20px;
+    /* Reducido */
     border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;           /* Reducido */
+    font-size: 0.9rem;
+    /* Reducido */
     letter-spacing: 0.5px;
     transition: all 0.3s;
     display: flex;
@@ -398,11 +449,13 @@
    -------------------------------------------------------------------------- */
 @media (min-width: 1400px) {
     .admin-container {
-        max-width: 1600px;       /* Más ancho en pantallas muy grandes */
+        max-width: 1600px;
+        /* Más ancho en pantallas muy grandes */
     }
-    
+
     .admin-container .col-lg-4 {
-        flex: 0 0 25%;           /* Columna izquierda más estrecha */
+        flex: 0 0 25%;
+        /* Columna izquierda más estrecha */
         max-width: 320px;
     }
 }
@@ -420,7 +473,7 @@
         width: 100%;
         padding: 0 20px;
     }
-    
+
     .admin-container .col-lg-4,
     .admin-container .col-lg-6 {
         flex: 0 0 100%;
@@ -434,7 +487,7 @@
     .admin-container {
         padding: 0 15px;
     }
-    
+
     .admin-avatar-card,
     .admin-form-card {
         padding: 1rem;
