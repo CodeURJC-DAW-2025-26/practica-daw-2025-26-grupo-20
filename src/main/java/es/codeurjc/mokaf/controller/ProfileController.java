@@ -12,12 +12,20 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
+import javax.sql.rowset.serial.SerialBlob;
+import es.codeurjc.mokaf.model.Image;
 
 @Controller
 public class ProfileController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/profile")
     public String profile(Authentication authentication,
@@ -107,7 +115,81 @@ public class ProfileController {
         return "profileADMIN";
     }
 
-    // ... resto de métodos igual ...
+    @PostMapping("/profile/update")
+    public String updateProfile(Authentication authentication,
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam(required = false) String password,
+            @RequestParam(required = false) MultipartFile image) throws Exception {
+
+        User user = getCurrentUser(authentication);
+        if (user == null)
+            return "redirect:/login";
+
+        user.setName(name);
+        user.setEmail(email);
+
+        if (password != null && !password.isEmpty()) {
+            user.setPasswordHash(passwordEncoder.encode(password));
+        }
+
+        if (image != null && !image.isEmpty()) {
+            Image img = new Image();
+            img.setImageFile(new SerialBlob(image.getBytes()));
+            user.setImage(img);
+        }
+
+        userService.save(user);
+        return "redirect:/profile?updated=true";
+    }
+
+    @PostMapping("/profileADMIN/update")
+    public String updateProfileAdmin(Authentication authentication,
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam(required = false) String password,
+            @RequestParam(required = false) MultipartFile image) throws Exception {
+
+        User user = getCurrentUser(authentication);
+        if (user == null)
+            return "redirect:/login";
+        if (user.getRole() != User.Role.ADMIN)
+            return "redirect:/profile";
+
+        user.setName(name);
+        user.setEmail(email);
+
+        if (password != null && !password.isEmpty()) {
+            user.setPasswordHash(passwordEncoder.encode(password));
+        }
+
+        if (image != null && !image.isEmpty()) {
+            Image img = new Image();
+            img.setImageFile(new SerialBlob(image.getBytes()));
+            user.setImage(img);
+        }
+
+        userService.save(user);
+        return "redirect:/profileADMIN?updated=true";
+    }
+
+    @PostMapping("/profile/delete")
+    public String deleteProfile(Authentication authentication) {
+        User user = getCurrentUser(authentication);
+        if (user != null) {
+            userService.delete(user);
+        }
+        return "redirect:/logout";
+    }
+
+    @PostMapping("/profileADMIN/delete")
+    public String deleteProfileAdmin(Authentication authentication) {
+        User user = getCurrentUser(authentication);
+        if (user != null && user.getRole() == User.Role.ADMIN) {
+            userService.delete(user);
+        }
+        return "redirect:/logout";
+    }
 
     private User getCurrentUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
