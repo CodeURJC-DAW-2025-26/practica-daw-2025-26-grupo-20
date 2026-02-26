@@ -30,6 +30,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -40,9 +44,5 @@ public class UserService implements UserDetailsService {
 
     public void delete(User user) {
         userRepository.delete(user);
-    }
-
-    public Object findById(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

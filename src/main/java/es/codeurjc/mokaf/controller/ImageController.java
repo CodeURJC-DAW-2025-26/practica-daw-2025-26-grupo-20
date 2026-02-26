@@ -27,7 +27,7 @@ public class ImageController {
     @Autowired
     private UserService userService;
 
-    // Devuelve solo imágenes NO asociadas a perfiles
+    // Returns images NOT associated with profiles (product images, etc.)
     @GetMapping("/images/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
         
@@ -46,13 +46,25 @@ public class ImageController {
         }
     }
 
-    // Devuelve solo imágenes asociadas a perfiles
+    // Returns images associated with profiles - only accessible by the owner
     @GetMapping("/profiles/images/{id}")
     public ResponseEntity<byte[]> getImageProfile(Authentication authentication, @PathVariable Long id) {
+        // Get current user from authentication or security context
         User user = getCurrentUser(authentication);
-        if (user == null || user.getImage() == null || !user.getImage().getId().equals(id)) {
+        
+        if (user == null) {
+            System.out.println("Access denied to profile image " + id + ": No authenticated user");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        
+        // Check if the user owns this image
+        if (user.getImage() == null || !user.getImage().getId().equals(id)) {
+            System.out.println("Access denied to profile image " + id + ": User " + user.getEmail() + 
+                             " does not own this image. User's image ID: " + 
+                             (user.getImage() != null ? user.getImage().getId() : "NULL"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
         Image image = imageService.findById(id).orElse(null);
         if (image == null) {
             return ResponseEntity.notFound().build();

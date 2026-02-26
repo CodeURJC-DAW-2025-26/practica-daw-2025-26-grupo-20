@@ -23,12 +23,6 @@ import es.codeurjc.mokaf.service.ImageService;
 import es.codeurjc.mokaf.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
-import javax.sql.rowset.serial.SerialBlob;
-import es.codeurjc.mokaf.model.Image;
 
 @Controller
 public class ProfileController {
@@ -45,49 +39,31 @@ public class ProfileController {
     @GetMapping("/profile")
     public String profile(Authentication authentication,
             @RequestParam(value = "updated", required = false) String updated,
+            @RequestParam(value = "error", required = false) String error,
             Model model,
             HttpServletRequest request) {
 
-        System.out.println("\n>>> PROFILE REQUEST <<<");
-
-        // Debug session
-        HttpSession session = request.getSession(false);
-        System.out.println("Session: " + (session != null ? session.getId() : "NULL"));
-        if (session != null) {
-            System.out.println("Session attributes: ");
-            java.util.Enumeration<String> attrs = session.getAttributeNames();
-            while (attrs.hasMoreElements()) {
-                String attr = attrs.nextElement();
-                System.out.println("  - " + attr + ": " + session.getAttribute(attr));
-            }
-        }
-
-        // Debug authentication
-        System.out.println("Authentication param: " + authentication);
-        System.out.println("SecurityContextHolder: " + SecurityContextHolder.getContext().getAuthentication());
-
         User user = getCurrentUser(authentication);
-
         if (user == null) {
             return "redirect:/login";
         }
 
-        System.out.println("User found: " + user.getEmail() + " | Role: " + user.getRole());
-
+        // Si es admin, redirigir a su perfil
         if (user.getRole() == User.Role.ADMIN) {
             return "redirect:/profileADMIN";
+        }
+
+        // Recargar usuario desde BBDD para tener datos frescos (incluyendo imagen)
+        user = userService.findByEmail(user.getEmail()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
         }
 
         model.addAttribute("user", user);
         if (updated != null)
             model.addAttribute("updated", true);
-        model.addAttribute("title", "My Profile - Mokaf");
-
-        System.out.println("Rendering profile page");
-        System.out.println("<<< END PROFILE >>>\n");
-        if (updated != null) {
-            model.addAttribute("updated", true);
-        }
+        if (error != null)
+            model.addAttribute("error", error);
         model.addAttribute("title", "My Profile - Mokaf");
 
         return "profile";
@@ -96,155 +72,53 @@ public class ProfileController {
     @GetMapping("/profileADMIN")
     public String profileAdmin(Authentication authentication,
             @RequestParam(value = "updated", required = false) String updated,
+            @RequestParam(value = "error", required = false) String error,
             Model model,
             HttpServletRequest request) {
 
-        System.out.println("\n>>> PROFILE_ADMIN REQUEST <<<");
-
-        HttpSession session = request.getSession(false);
-        System.out.println("Session: " + (session != null ? session.getId() : "NULL"));
-        System.out.println("Authentication: " + authentication);
-
         User user = getCurrentUser(authentication);
-
         if (user == null) {
             return "redirect:/login";
         }
-
-        System.out.println("User: " + user.getEmail() + " | Role: " + user.getRole());
 
         if (user.getRole() != User.Role.ADMIN) {
             return "redirect:/profile";
         }
 
+        // Recargar usuario desde BBDD para tener datos frescos
+        user = userService.findByEmail(user.getEmail()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         model.addAttribute("user", user);
         if (updated != null)
             model.addAttribute("updated", true);
-        model.addAttribute("title", "Admin Profile - Mokaf");
-
-        System.out.println("Rendering profileADMIN page");
-        System.out.println("<<< END PROFILE_ADMIN >>>\n");
-        if (updated != null) {
-            model.addAttribute("updated", true);
-        }
+        if (error != null)
+            model.addAttribute("error", error);
         model.addAttribute("title", "Admin Profile - Mokaf");
 
         return "profileADMIN";
     }
-    @PostMapping("/profile/update")
-    public String updateProfile(@RequestParam String name,
-            @RequestParam String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(value = "image", required = false) MultipartFile imageFile,
-            Authentication authentication,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-
-        User authUser = getCurrentUser(authentication);
-        if (authUser == null || authUser.getRole() != User.Role.CUSTOMER) {
-            return "redirect:/login";
-        }
-
-        User user = userService.findByEmail(authUser.getEmail()).orElse(null);
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        if (!email.equals(user.getEmail()) && userService.existsByEmail(email)) {
-            return "redirect:/profile?error=email_exists";
-        }
-
-        user.setName(name);
-        user.setEmail(email);
-
-        if (password != null && !password.isEmpty()) {
-            user.setPasswordHash(passwordEncoder.encode(password));
-        }
-
-        Long newImageId = null;
-
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                Image newImage = imageService.updateImage(
-                        user.getImage() != null ? user.getImage().getId() : null,
-                        imageFile
-                );
-                if (newImage != null) {
-                    user.setImage(newImage);
-                    newImageId = newImage.getId();
-                    System.out.println(">>> Nueva imagen asignada con ID: " + newImageId);
-                }
-            } catch (IOException e) {
-                return "redirect:/profile?error=image_upload_failed";
-            }
-        }
-
-        // Guardar usuario
-        User savedUser = userService.save(user);
-        System.out.println(">>> Usuario guardado. ID: " + savedUser.getId());
-
-       
-        final String emailToReload = email;
-
-        java.util.Optional<User> userOpt = userService.findByEmail(emailToReload);
-        User refreshedUser;
-
-        if (userOpt.isPresent()) {
-            refreshedUser = userOpt.get();
-            System.out.println(">>> Usuario recargado correctamente");
-        } else {
-            refreshedUser = savedUser; // Fallback al objeto guardado
-            System.out.println(">>> WARNING: No se pudo recargar, usando savedUser");
-        }
-
-        // Inicializar imagen si existe
-        if (refreshedUser.getImage() != null) {
-            refreshedUser.getImage().getId(); // Touch para inicializar
-            System.out.println(">>> Imagen inicializada. ID: " + refreshedUser.getImage().getId());
-        }
-
-        // Actualizar autenticación
-        updateAuthentication(refreshedUser, request, response);
-
-        return "redirect:/profile?updated=true";
-    }
-
-    @PostMapping("/profileADMIN/update")
-    public String updateAdminProfile(@RequestParam String name,
-            @RequestParam String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) String employeeId,
-            @RequestParam(value = "image", required = false) MultipartFile imageFile,
-            Authentication authentication,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-
-        // Get user from authentication
-        User authUser = getCurrentUser(authentication);
-        if (authUser == null || authUser.getRole() != User.Role.ADMIN) {
-            return "redirect:/login";
-        }
-
-        // RELOAD user from database to ensure it's attached to current session
-        User user = userService.findByEmail(authUser.getEmail()).orElse(null);
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        if (!email.equals(user.getEmail()) && userService.existsByEmail(email)) {
-            return "redirect:/profileADMIN?error=email_exists";
-        }
 
     @PostMapping("/profile/update")
     public String updateProfile(Authentication authentication,
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam(required = false) String password,
-            @RequestParam(required = false) MultipartFile image) throws Exception {
+            @RequestParam(required = false) MultipartFile image,
+            HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
         User user = getCurrentUser(authentication);
         if (user == null)
             return "redirect:/login";
+
+        // RELOAD user from database to ensure we have the latest data
+        user = userService.findByEmail(user.getEmail()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         // Update basic info
         user.setName(name);
@@ -254,13 +128,37 @@ public class ProfileController {
             user.setPasswordHash(passwordEncoder.encode(password));
         }
 
+        // Update image if provided
         if (image != null && !image.isEmpty()) {
-            Image img = new Image();
-            img.setImageFile(new SerialBlob(image.getBytes()));
-            user.setImage(img);
+            try {
+                System.out.println("Uploading user image: " + image.getOriginalFilename());
+                Image newImage = imageService.updateImage(
+                        user.getImage() != null ? user.getImage().getId() : null,
+                        image
+                );
+                if (newImage != null) {
+                    user.setImage(newImage);
+                    System.out.println("User image saved with ID: " + newImage.getId());
+                }
+            } catch (IOException e) {
+                System.out.println("Error uploading image: " + e.getMessage());
+                e.printStackTrace();
+                return "redirect:/profile?error=image_upload_failed";
+            }
         }
 
-        userService.save(user);
+        User savedUser = userService.save(user);
+        System.out.println("User saved. Image ID: " + (savedUser.getImage() != null ? savedUser.getImage().getId() : "NULL"));
+
+        // IMPORTANT: Reload user from DB to ensure we have the complete object with image
+        User refreshedUser = userService.findById(savedUser.getId())
+                .orElseThrow(() -> new RuntimeException("User not found after save"));
+        
+        System.out.println("Refreshed user image ID: " + (refreshedUser.getImage() != null ? refreshedUser.getImage().getId() : "NULL"));
+
+        // Update authentication with refreshed user
+        updateAuthentication(refreshedUser, request, response);
+
         return "redirect:/profile?updated=true";
     }
 
@@ -269,13 +167,21 @@ public class ProfileController {
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam(required = false) String password,
-            @RequestParam(required = false) MultipartFile image) throws Exception {
+            @RequestParam(required = false) MultipartFile image,
+            HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
         User user = getCurrentUser(authentication);
         if (user == null)
             return "redirect:/login";
         if (user.getRole() != User.Role.ADMIN)
             return "redirect:/profile";
+
+        // RELOAD user from database
+        user = userService.findByEmail(user.getEmail()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         user.setName(name);
         user.setEmail(email);
@@ -284,43 +190,13 @@ public class ProfileController {
             user.setPasswordHash(passwordEncoder.encode(password));
         }
 
-        if (image != null && !image.isEmpty()) {
-            Image img = new Image();
-            img.setImageFile(new SerialBlob(image.getBytes()));
-            user.setImage(img);
-        }
-
-        userService.save(user);
-        return "redirect:/profileADMIN?updated=true";
-    }
-
-    @PostMapping("/profile/delete")
-    public String deleteProfile(Authentication authentication) {
-        User user = getCurrentUser(authentication);
-        if (user != null) {
-            userService.delete(user);
-        }
-        return "redirect:/logout";
-    }
-
-    @PostMapping("/profileADMIN/delete")
-    public String deleteProfileAdmin(Authentication authentication) {
-        User user = getCurrentUser(authentication);
-        if (user != null && user.getRole() == User.Role.ADMIN) {
-            userService.delete(user);
-        }
-        return "redirect:/logout";
-        if (employeeId != null && !employeeId.isEmpty()) {
-            user.setEmployeeId(employeeId);
-        }
-
         // Update image if provided
-        if (imageFile != null && !imageFile.isEmpty()) {
+        if (image != null && !image.isEmpty()) {
             try {
-                System.out.println("Uploading admin image: " + imageFile.getOriginalFilename());
+                System.out.println("Uploading admin image: " + image.getOriginalFilename());
                 Image newImage = imageService.updateImage(
                         user.getImage() != null ? user.getImage().getId() : null,
-                        imageFile
+                        image
                 );
                 if (newImage != null) {
                     user.setImage(newImage);
@@ -334,10 +210,15 @@ public class ProfileController {
         }
 
         User savedUser = userService.save(user);
-        System.out.println("Admin user saved. Image ID: " + (savedUser.getImage() != null ? savedUser.getImage().getId() : "NULL"));
+        
+        // IMPORTANT: Reload user from DB to ensure we have the complete object with image
+        User refreshedUser = userService.findById(savedUser.getId())
+                .orElseThrow(() -> new RuntimeException("User not found after save"));
+        
+        System.out.println("Refreshed admin user image ID: " + (refreshedUser.getImage() != null ? refreshedUser.getImage().getId() : "NULL"));
 
-        // IMPORTANTE: Actualizar el Authentication con los nuevos datos
-        updateAuthentication(savedUser, request, response);
+        // Update authentication with refreshed user
+        updateAuthentication(refreshedUser, request, response);
 
         return "redirect:/profileADMIN?updated=true";
     }
@@ -359,9 +240,13 @@ public class ProfileController {
         SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         // Save to session
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
+        request.getSession(true).setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext()
+        );
+        
+        System.out.println("Authentication updated for user: " + updatedUser.getEmail() + 
+                          " with image ID: " + (updatedUser.getImage() != null ? updatedUser.getImage().getId() : "NULL"));
     }
 
     @PostMapping("/profile/delete")

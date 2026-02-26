@@ -116,6 +116,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Validation API -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,6 +1,6 @@
 package es.codeurjc.mokaf.service;
 
-import java.io.IOException;  // VERIFICA QUE ESTE IMPORT ESTÉ PRESENTE
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import es.codeurjc.mokaf.model.Image;
-import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.repository.ImageRepository;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Service
 public class ImageService {
@@ -77,17 +74,5 @@ public class ImageService {
 
     public Optional<Image> findByIdWithUser(Long id) {
         return imageRepository.findById(id);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
