@@ -22,7 +22,7 @@ public class LoginController {
             @RequestParam(value = "registered", required = false) String registered,
             @RequestParam(value = "deleted", required = false) String deleted,
             Model model) {
-        
+
         if (error != null) {
             model.addAttribute("errorMessage", "Incorrect email or password");
         }
@@ -35,7 +35,7 @@ public class LoginController {
         if (deleted != null) {
             model.addAttribute("deletedMessage", "Your account has been deleted.");
         }
-        
+
         model.addAttribute("title", "Login - Mokaf");
         model.addAttribute("currentPage", "login");
         return "login";

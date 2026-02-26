@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class ImageController {
     // Devuelve solo imágenes NO asociadas a perfiles
     @GetMapping("/images/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
-        
+
         Image image = imageService.findById(id).orElse(null);
         if (image == null) {
             return ResponseEntity.notFound().build();
@@ -50,23 +51,29 @@ public class ImageController {
     @GetMapping("/profiles/images/{id}")
     public ResponseEntity<byte[]> getImageProfile(Authentication authentication, @PathVariable Long id) {
         User user = getCurrentUser(authentication);
-        if (user == null || user.getImage() == null || !user.getImage().getId().equals(id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        // Permite el acceso si el usuario es ADMIN o si es el dueño de la imagen
+        boolean isOwner = user != null && user.getImage() != null && user.getImage().getId().equals(id);
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("No tienes permiso para ver esta imagen de perfil");
         }
         Image image = imageService.findById(id).orElse(null);
         if (image == null) {
             return ResponseEntity.notFound().build();
         }
-        
+
         try {
             int blobLength = (int) image.getImageFile().length();
             byte[] imageBytes = image.getImageFile().getBytes(1, blobLength);
-            
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_PNG);
-            
+
             return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-            
+
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
