@@ -1,435 +1,541 @@
 <!DOCTYPE html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mokaf - {{product.name}}</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mokaf - {{product.name}}</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/product.css">
+    </head>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="/css/general.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/product.css">
-</head>
-
-<body class="body-content">
-
-    {{> fragments/header}}
-    <main class="container my-5 product-page">
-        <!-- Ficha -->
-        <div class="product-shell">
-            <div class="row g-4 align-items-stretch">
-
-                <div class="col-lg-6">
-                    <div class="product-image-wrap">
-                        <img src="/images/{{product.image.id}}" class="product-image" alt="{{product.name}}"
-                             onerror="this.src='https://via.placeholder.com/900x700?text=Producto'">
+    <body class="body-content">
+        {{> fragments/header}}
+        <main class="container my-5 product-page">
+            <!-- Ficha -->
+            <div class="product-shell">
+                <div class="row g-4 align-items-stretch">
+                    <div class="col-lg-6">
+                        <div class="product-image-wrap">
+                            <img
+                                src="/images/{{product.image.id}}"
+                                class="product-image"
+                                alt="{{product.name}}"
+                                onerror="this.src='https://via.placeholder.com/900x700?text=Producto'"
+                            >
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-lg-6">
-                    <div class="product-info">
-
-                        <div class="product-top">
-                            <span class="product-category">{{product.category}}</span>
-                            <!-- Allergens -->
-                            <div class="product-allergens">
-                                {{#product.allergens}}
-                                <span class="allergen-badge">{{name}}</span>
-                                {{/product.allergens}}
-                            </div>
-                        </div>
-
-                        <h1 class="product-title">{{product.name}}</h1>
-                        <p class="product-subtitle">{{product.description}}</p>
-
-                        <div class="product-price-row">
-                            <div class="product-price">{{product.priceBase}}€</div>
-                        </div>
-
-                        <hr class="product-divider">
-
-                        <div class="product-actions">
-                            <div class="qty-control">
-                                <button class="qty-btn" type="button" aria-label="Restar" id="qtyMinus">−</button>
-                                <input class="qty-input" type="number" value="1" min="1" id="qtyInput">
-                                <button class="qty-btn" type="button" aria-label="Sumar" id="qtyPlus">+</button>
-                            </div>
-
-                            {{#user}}
-                            <form action="/cart/add" method="post" style="display:inline;">
-                                <input type="hidden" name="productId" value="{{product.id}}">
-                                <input type="hidden" name="qty" id="qtyHidden" value="1">
-                                <button class="btn btn-product-primary" type="submit" onclick="event.stopPropagation();">
-                                    <i class="fas fa-cart-plus me-2"></i>Añadir
-                                </button>
-                            </form>
-                            {{/user}}
-
-                            <form action="/favorites/toggle" method="post" style="display:inline;">
-                                <input type="hidden" name="productId" value="{{product.id}}">
-                                <button class="btn btn-product-secondary" type="submit">
-                                    <i class="far fa-heart me-2"></i>Favorito
-                                </button>
-                            </form>
-                        </div>
-
-                        <div class="product-meta">
-                            <div class="meta-item"><i class="fas fa-truck"></i><span>Entrega 24/48h</span></div>
-                            <div class="meta-item"><i class="fas fa-shield-alt"></i><span>Pago seguro</span></div>
-                            <div class="meta-item"><i class="fas fa-undo"></i><span>14 días</span></div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Secciones -->
-        <section class="product-section mt-4">
-            <h3 class="section-title">Descripción</h3>
-            <p class="section-text">
-                {{product.description}}
-            </p>
-        </section>
-
-        <section class="product-section">
-            <h3 class="section-title">Detalles</h3>
-            <ul class="details-list">
-                <li><strong>Categoría:</strong> {{product.category}}</li>
-                <li><strong>Precio:</strong> {{product.priceBase}}€</li>
-            </ul>
-        </section>
-
-        <!-- Reseñas -->
-        <section class="product-section" id="reviews>
-            <h3 class="section-title">Reseñas</h3>
-
-            <div id="reviewsList">
-                {{#product.reviews}}
-                    <div class="review-card">
-                        <div class="review-head">
-                            <div class="review-user">
-                                <div class="avatar">•</div>
-                                <div>
-                                    <div class="review-name">{{user.name}}</div>
-                                    <div class="review-date">{{createdAt}}</div>
+                    <div class="col-lg-6">
+                        <div class="product-info">
+                            <div class="product-top">
+                                <span class="product-category">
+                                    {{product.category}}
+                                </span>
+                                <!-- Allergens -->
+                                <div class="product-allergens">
+                                    {{#product.allergens}}
+                                        <span class="allergen-badge">
+                                            {{name}}
+                                        </span>
+                                    {{/product.allergens}}
                                 </div>
                             </div>
-                            <div class="review-stars">
-                                <span>★ {{stars}}/5</span>
+
+                            <h1 class="product-title">{{product.name}}</h1>
+                            <p class="product-subtitle">
+                                {{product.description}}
+                            </p>
+
+                            <div class="product-price-row">
+                                <div class="product-price">
+                                    {{product.priceBase}}€
+                                </div>
+                            </div>
+
+                            <hr class="product-divider">
+                            <div class="product-actions">
+                                <div class="qty-control">
+                                    <button
+                                        class="qty-btn"
+                                        type="button"
+                                        aria-label="Restar"
+                                        id="qtyMinus"
+                                    >
+                                        −
+                                    </button>
+                                    <input
+                                        class="qty-input"
+                                        type="number"
+                                        value="1"
+                                        min="1"
+                                        id="qtyInput"
+                                    >
+                                    <button
+                                        class="qty-btn"
+                                        type="button"
+                                        aria-label="Sumar"
+                                        id="qtyPlus"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+
+                                {{#user}}
+                                    <form
+                                        action="/cart/add"
+                                        method="post"
+                                        style="display:inline;"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="productId"
+                                            value="{{product.id}}"
+                                        >
+                                        <input
+                                            type="hidden"
+                                            name="qty"
+                                            id="qtyHidden"
+                                            value="1"
+                                        >
+                                        <button
+                                            class="btn btn-product-primary"
+                                            type="submit"
+                                            onclick="event.stopPropagation();"
+                                        >
+                                            <i class="fas fa-cart-plus me-2"></i>Añadir
+                                        </button>
+                                    </form>
+                                {{/user}}
+
+                                <form
+                                    action="/favorites/toggle"
+                                    method="post"
+                                    style="display:inline;"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="productId"
+                                        value="{{product.id}}"
+                                    >
+                                    <button
+                                        class="btn btn-product-secondary"
+                                        type="submit"
+                                    >
+                                        <i class="far fa-heart me-2"></i>Favorito
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="product-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Entrega 24/48h</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Pago seguro</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-undo"></i>
+                                    <span>14 días</span>
+                                </div>
                             </div>
                         </div>
-                        <p class="review-text">{{text}}</p>
-                        {{#isAdmin}}
-                        <form action="/product/{{product.id}}/reviews/{{id}}/delete" method="post" style="display:inline;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secciones -->
+            <section class="product-section mt-4">
+                <h3 class="section-title">Descripción</h3>
+                <p class="section-text">{{product.description}}</p>
+            </section>
+
+            <section class="product-section">
+                <h3 class="section-title">Detalles</h3>
+                <ul class="details-list">
+                    <li><strong>Categoría:</strong> {{product.category}}</li>
+                    <li><strong>Precio:</strong> {{product.priceBase}}€</li>
+                </ul>
+            </section>
+
+            <!-- Reseñas -->
+            <section class="product-section" id="reviews">
+                <h3 class="section-title">Reseñas</h3>
+
+                <div id="reviewsList">
+                    {{#product.reviews}}
+                        <div class="review-card">
+                            <div class="review-head">
+                                <div class="review-user">
+                                    <div class="avatar">•</div>
+                                    <div>
+                                        <div class="review-name">
+                                            {{user.name}}
+                                        </div>
+                                        <div class="review-date">
+                                            {{createdAt}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="review-stars">
+                                    <span>★ {{stars}}/5</span>
+                                </div>
+                            </div>
+                            <p class="review-text">{{text}}</p>
+                            {{#isAdmin}}
+                                <form
+                                    action="/product/{{product.id}}/reviews/{{id}}/delete"
+                                    method="post"
+                                    style="display:inline;"
+                                >
+                                    {{#_csrf}}
+                                        <input
+                                            type="hidden"
+                                            name="{{parameterName}}"
+                                            value="{{token}}"
+                                        >
+                                    {{/_csrf}}
+                                    <button
+                                        class="btn btn-sm btn-outline-danger"
+                                        type="submit"
+                                        onclick="return confirm('¿Eliminar reseña?');"
+                                    >
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            {{/isAdmin}}
+                        </div>
+                    {{/product.reviews}}
+
+                    {{^product.reviews}}
+                        <p class="section-text">
+                            Aún no hay reseñas para este producto.
+                        </p>
+                    {{/product.reviews}}
+                </div>
+                {{#reviewSuccess}}
+                    <div class="alert alert-success mt-3">
+                        {{reviewSuccess}}
+                    </div>
+                {{/reviewSuccess}}
+
+                {{#reviewError}}
+                    <div class="alert alert-danger mt-3">{{reviewError}}</div>
+                {{/reviewError}}
+
+                {{#user}}
+                    <div class="mt-3">
+                        <h4 class="section-title">Escribe una reseña</h4>
+
+                        <form
+                            action="/product/{{product.id}}/reviews"
+                            method="post"
+                        >
                             {{#_csrf}}
-                            <input type="hidden" name="{{parameterName}}" value="{{token}}">
+                                <input
+                                    type="hidden"
+                                    name="{{parameterName}}"
+                                    value="{{token}}"
+                                >
                             {{/_csrf}}
-                            <button class="btn btn-sm btn-outline-danger" type="submit"
-                                    onclick="return confirm('¿Eliminar reseña?');">
-                                <i class="fas fa-trash"></i> Eliminar
+
+                            <div class="mb-3">
+                                <label class="form-label">Puntuación</label>
+                                <select
+                                    name="stars"
+                                    class="form-select"
+                                    required
+                                >
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Comentario</label>
+                                <textarea
+                                    name="text"
+                                    class="form-control"
+                                    rows="4"
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <button
+                                class="btn btn-product-primary"
+                                type="submit"
+                            >
+                                Enviar reseña
                             </button>
                         </form>
-                        {{/isAdmin}}
                     </div>
-                {{/product.reviews}}
+                {{/user}}
 
-                {{^product.reviews}}
-                    <p class="section-text">Aún no hay reseñas para este producto.</p>
-                {{/product.reviews}}
-            </div>
-            {{#reviewSuccess}}
-            <div class="alert alert-success mt-3">{{reviewSuccess}}</div>
-            {{/reviewSuccess}}
+                {{^user}}
+                    <p class="section-text mt-3">
+                        Inicia sesión para escribir una reseña.
+                    </p>
+                {{/user}}
+            </section>
+        </main>
 
-            {{#reviewError}}
-            <div class="alert alert-danger mt-3">{{reviewError}}</div>
-            {{/reviewError}}
+        {{> fragments/footer}}
 
-            {{#user}}
-            <div class="mt-3">
-                <h4 class="section-title">Escribe una reseña</h4>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        ></script>
 
-                <form action="/product/{{product.id}}/reviews" method="post">
-                    {{#_csrf}}
-                    <input type="hidden" name="{{parameterName}}" value="{{token}}">
-                    {{/_csrf}}
-
-                    <div class="mb-3">
-                        <label class="form-label">Puntuación</label>
-                        <select name="stars" class="form-select" required>
-                            <option value="5">5</option>
-                            <option value="4">4</option>
-                            <option value="3">3</option>
-                            <option value="2">2</option>
-                            <option value="1">1</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Comentario</label>
-                        <textarea name="text" class="form-control" rows="4" required></textarea>
-                    </div>
-
-                    <button class="btn btn-product-primary" type="submit">Enviar reseña</button>
-                </form>
-            </div>
-            {{/user}}
-
-            {{^user}}
-            <p class="section-text mt-3">Inicia sesión para escribir una reseña.</p>
-            {{/user}}
-        </section>
-
-    </main>
-
-    {{> fragments/footer}}
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        (function qtyControl() {
-            const minus = document.getElementById("qtyMinus");
-            const plus = document.getElementById("qtyPlus");
-            const input = document.getElementById("qtyInput");
-            const hidden = document.getElementById("qtyHidden");
-
-            if (!minus || !plus || !input || !hidden) return;
-
-            function sync() {
-                let v = parseInt(input.value || "1", 10);
-                if (isNaN(v) || v < 1) v = 1;
-                input.value = v;
-                hidden.value = v;
-            }
-
-            minus.addEventListener("click", () => {
-                input.value = (parseInt(input.value || "1", 10) - 1);
-                sync();
-            });
-
-            plus.addEventListener("click", () => {
-                input.value = (parseInt(input.value || "1", 10) + 1);
-                sync();
-            });
-
-            input.addEventListener("change", sync);
-            sync();
-        })();
-    </script>
-
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Get the add to cart button
-    const addToCartForm = document.querySelector('form[action="/cart/add"]');
-    
-    if (addToCartForm) {
-        addToCartForm.addEventListener('submit', handleAddToCart);
-    }
-    
-    /**
-     * Add to cart button management
-     */
-    async function handleAddToCart(event) {
-        
-        event.preventDefault();
-        event.stopPropagation();
-        
-        const form = event.target;
-        const button = form.querySelector('button[type="submit"]');
-        const productName = "{{product.name}}"; // Get product name from template
-        
-        const formData = new FormData(form);
-        const productId = formData.get('productId');
-        const quantity = formData.get('qty') || 1;
-        
-        const originalButtonHtml = button.innerHTML;
-        
-        // Set button loading state
-        setButtonLoading(button, true);
-        
-        try {
-            const response = await fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    productId: productId,
-                    qty: quantity
-                })
-            });
+        <script>
+            (function qtyControl() {
+                const minus = document.getElementById("qtyMinus");
+                const plus = document.getElementById("qtyPlus");
+                const input = document.getElementById("qtyInput");
+                const hidden = document.getElementById("qtyHidden");
             
-            const data = await response.json();
+                if (!minus || !plus || !input || !hidden) return;
             
-            if (data.success) {
-                // Success
-                showNotification(`✓ ${productName} añadido al carrito!`, 'success');
-                updateCartCounter(data.cartCount);
-                animateCartIcon();
-            } else {
-                // Error from server
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                } else {
-                    showNotification(`✗ ${data.message}`, 'error');
+                function sync() {
+                    let v = parseInt(input.value || "1", 10);
+                    if (isNaN(v) || v < 1) v = 1;
+                    input.value = v;
+                    hidden.value = v;
                 }
-            }
             
-        } catch (error) {
-            console.error('Error:', error);
-            showNotification('✗ Error de conexión. Intenta de nuevo.', 'error');
+                minus.addEventListener("click", () => {
+                    input.value = (parseInt(input.value || "1", 10) - 1);
+                    sync();
+                });
             
-        } finally {
-            // Reset button
-            setButtonLoading(button, false, originalButtonHtml);
-        }
-    }
-    
-    /**
-     * Set button loading state
-     */
-    function setButtonLoading(button, isLoading, originalHtml = '') {
-        if (isLoading) {
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
-        } else {
-            button.disabled = false;
-            button.innerHTML = originalHtml || '<i class="fas fa-cart-plus me-2"></i>Añadir';
-        }
-    }
-    
-    /**
-     * Show notification
-     */
-    function showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `cart-notification ${type}`;
-        notification.innerHTML = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => notification.classList.add('show'), 10);
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-    
-    /**
-     * Update cart counter
-     */
-    function updateCartCounter(count) {
-        const cartBadge = document.querySelector('.cart-badge, .cart-count');
-        if (cartBadge) {
-            cartBadge.textContent = count;
-            if (count === 0) {
-                cartBadge.style.display = 'none';
-            } else {
-                cartBadge.style.display = 'inline';
+                plus.addEventListener("click", () => {
+                    input.value = (parseInt(input.value || "1", 10) + 1);
+                    sync();
+                });
+            
+                input.addEventListener("change", sync);
+                sync();
+            })();
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+            
+                // Get the add to cart button
+                const addToCartForm = document.querySelector('form[action="/cart/add"]');
+            
+                if (addToCartForm) {
+                    addToCartForm.addEventListener('submit', handleAddToCart);
+                }
+            
+                /**
+                 * Add to cart button management
+                 */
+                async function handleAddToCart(event) {
+            
+                    event.preventDefault();
+                    event.stopPropagation();
+            
+                    const form = event.target;
+                    const button = form.querySelector('button[type="submit"]');
+                    const productName = "{{product.name}}"; // Get product name from template
+            
+                    const formData = new FormData(form);
+                    const productId = formData.get('productId');
+                    const quantity = formData.get('qty') || 1;
+            
+                    const originalButtonHtml = button.innerHTML;
+            
+                    // Set button loading state
+                    setButtonLoading(button, true);
+            
+                    try {
+                        const response = await fetch('/cart/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams({
+                                productId: productId,
+                                qty: quantity
+                            })
+                        });
+            
+                        const data = await response.json();
+            
+                        if (data.success) {
+                            // Success
+                            showNotification(`✓ ${productName} añadido al carrito!`, 'success');
+                            updateCartCounter(data.cartCount);
+                            animateCartIcon();
+                        } else {
+                            // Error from server
+                            if (data.redirect) {
+                                window.location.href = data.redirect;
+                            } else {
+                                showNotification(`✗ ${data.message}`, 'error');
+                            }
+                        }
+            
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showNotification('✗ Error de conexión. Intenta de nuevo.', 'error');
+            
+                    } finally {
+                        // Reset button
+                        setButtonLoading(button, false, originalButtonHtml);
+                    }
+                }
+            
+                /**
+                 * Set button loading state
+                 */
+                function setButtonLoading(button, isLoading, originalHtml = '') {
+                    if (isLoading) {
+                        button.disabled = true;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+                    } else {
+                        button.disabled = false;
+                        button.innerHTML = originalHtml || '<i class="fas fa-cart-plus me-2"></i>Añadir';
+                    }
+                }
+            
+                /**
+                 * Show notification
+                 */
+                function showNotification(message, type) {
+                    const notification = document.createElement('div');
+                    notification.className = `cart-notification ${type}`;
+                    notification.innerHTML = message;
+                    document.body.appendChild(notification);
+            
+                    setTimeout(() => notification.classList.add('show'), 10);
+            
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 300);
+                    }, 3000);
+                }
+            
+                /**
+                 * Update cart counter
+                 */
+                function updateCartCounter(count) {
+                    const cartBadge = document.querySelector('.cart-badge, .cart-count');
+                    if (cartBadge) {
+                        cartBadge.textContent = count;
+                        if (count === 0) {
+                            cartBadge.style.display = 'none';
+                        } else {
+                            cartBadge.style.display = 'inline';
+                        }
+                    }
+            
+                    // Dispatch event for header to update
+                    const event = new CustomEvent('cartUpdated', { detail: { count: count } });
+                    window.dispatchEvent(event);
+                }
+            
+                /**
+                 * Animate cart icon
+                 */
+                function animateCartIcon() {
+                    const cartIcon = document.querySelector('.cart-icon, .fa-shopping-cart');
+                    if (cartIcon) {
+                        cartIcon.classList.add('cart-bounce');
+                        setTimeout(() => cartIcon.classList.remove('cart-bounce'), 500);
+                    }
+                }
+            
+                /**
+                 * Get fetch headers
+                 */
+                function getFetchHeaders() {
+                    const headers = {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    };
+            
+                    // Add CSRF token if exists
+                    const csrfInput = document.querySelector('input[name="_csrf"]');
+                    if (csrfInput) {
+                        headers['X-CSRF-TOKEN'] = csrfInput.value;
+                    }
+            
+                    return headers;
+                }
+            });
+        </script>
+
+        <!-- Add the same styles if not already present -->
+        <style>
+            .cart-notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: white;
+                color: #333;
+                border-radius: 50px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                transform: translateX(120%);
+                transition: transform 0.3s ease;
+                z-index: 9999;
+                font-weight: 500;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                max-width: 300px;
             }
-        }
-        
-        // Dispatch event for header to update
-        const event = new CustomEvent('cartUpdated', { detail: { count: count } });
-        window.dispatchEvent(event);
-    }
-    
-    /**
-     * Animate cart icon
-     */
-    function animateCartIcon() {
-        const cartIcon = document.querySelector('.cart-icon, .fa-shopping-cart');
-        if (cartIcon) {
-            cartIcon.classList.add('cart-bounce');
-            setTimeout(() => cartIcon.classList.remove('cart-bounce'), 500);
-        }
-    }
-    
-    /**
-     * Get fetch headers
-     */
-    function getFetchHeaders() {
-        const headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        };
-        
-        // Add CSRF token if exists
-        const csrfInput = document.querySelector('input[name="_csrf"]');
-        if (csrfInput) {
-            headers['X-CSRF-TOKEN'] = csrfInput.value;
-        }
-        
-        return headers;
-    }
-});
-</script>
 
-<!-- Add the same styles if not already present -->
-<style>
-.cart-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    background: white;
-    color: #333;
-    border-radius: 50px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    transform: translateX(120%);
-    transition: transform 0.3s ease;
-    z-index: 9999;
-    font-weight: 500;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    max-width: 300px;
-}
+            .cart-notification.show {
+                transform: translateX(0);
+            }
 
-.cart-notification.show {
-    transform: translateX(0);
-}
+            .cart-notification.success {
+                background: #4CAF50;
+                color: white;
+            }
 
-.cart-notification.success {
-    background: #4CAF50;
-    color: white;
-}
+            .cart-notification.error {
+                background: #f44336;
+                color: white;
+            }
 
-.cart-notification.error {
-    background: #f44336;
-    color: white;
-}
+            .cart-bounce {
+                animation: cartBounce 0.5s ease;
+            }
 
-.cart-bounce {
-    animation: cartBounce 0.5s ease;
-}
+            @keyframes cartBounce {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.3); color: #4CAF50; }
+            }
 
-@keyframes cartBounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); color: #4CAF50; }
-}
+            .fa-spinner {
+                animation: spin 1s linear infinite;
+            }
 
-.fa-spinner {
-    animation: spin 1s linear infinite;
-}
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-</style>
-
-</body>
-
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        </style>
+    </body>
 </html>
