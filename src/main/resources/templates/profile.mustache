@@ -33,9 +33,7 @@
                     <div class="profile-avatar-section">
                         <div class="profile-avatar-wrapper">
                             {{#user.image}}
-                            <img src="/api/images/{{user.image.id}}" 
-                                 class="profile-avatar" 
-                                 alt="Avatar de {{user.name}}">
+                            <img src="/profiles/images/{{user.image.id}}" class="profile-avatar" alt="Avatar de {{user.name}}">
                             {{/user.image}}
                             {{^user.image}}
                             <img src="https://via.placeholder.com/150?text=👤" 
@@ -74,7 +72,7 @@
                     <h4 class="profile-form-title">Configuración de la Cuenta</h4>
                     <p class="profile-form-subtitle">Actualiza tus datos personales</p>
                     
-                    <form action="/profile/update" method="post">
+                    <form action="/profile/update" method="post" enctype="multipart/form-data">
                         {{#_csrf}}
                         <input type="hidden" name="{{_csrf.parameterName}}" value="{{_csrf.token}}"/>
                         {{/_csrf}}
@@ -109,7 +107,8 @@
                         <div class="mb-3">
                             <label class="form-label">Foto de perfil (PNG)</label>
                             <input type="file" class="form-control" name="image"
-                                   accept="image/png">
+                                   accept="image/png,image/jpeg,image/jpg">
+                            <small class="text-muted">Formatos permitidos: PNG, JPG, JPEG</small>
                         </div>
 
                         <div class="profile-actions">
@@ -132,7 +131,7 @@
                 </div>
             </div>
         </div>
-    </main>
+                        </main>
 
     {{> fragments/footer}}
 

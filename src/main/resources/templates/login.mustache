@@ -64,6 +64,17 @@
                             <label for="loginPassword" class="form-label">Contraseña</label>
                             <input type="password" class="form-control" id="loginPassword" 
                                    name="password" placeholder="Tu contraseña" required>
+                                <small class="text-muted">Debe contener letras y números</small>
+                            </div>
+                            <script>
+                            document.querySelector('form[action="/login"]').addEventListener('submit', function(e) {
+                                const pwd = document.getElementById('loginPassword').value;
+                                if (!/^.*(?=.*[a-zA-Z])(?=.*\d).*$/.test(pwd)) {
+                                    e.preventDefault();
+                                    alert('La contraseña debe contener letras y números.');
+                                }
+                            });
+                            </script>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
@@ -92,6 +103,17 @@
                             <input type="password" class="form-control" id="registerPassword" 
                                    name="password" placeholder="Mín. 4 caracteres" 
                                    minlength="4" required>
+                                <small class="text-muted">Debe contener letras y números</small>
+                            </div>
+                            <script>
+                            document.querySelector('form[action="/register"]').addEventListener('submit', function(e) {
+                                const pwd = document.getElementById('registerPassword').value;
+                                if (!/^.*(?=.*[a-zA-Z])(?=.*\d).*$/.test(pwd)) {
+                                    e.preventDefault();
+                                    alert('La contraseña debe contener letras y números.');
+                                }
+                            });
+                            </script>
                         </div>
                         <button type="submit" class="btn btn-success w-100">Registrarse</button>
                     </form>
