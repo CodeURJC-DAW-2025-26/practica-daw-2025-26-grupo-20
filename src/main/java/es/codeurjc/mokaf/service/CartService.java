@@ -19,17 +19,20 @@ public class CartService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
+    private final OrderEmailService orderEmailService;
 
     public CartService(OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             ProductRepository productRepository,
             UserRepository userRepository,
-            BranchRepository branchRepository) {
+            BranchRepository branchRepository,
+            OrderEmailService orderEmailService) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.branchRepository = branchRepository;
+        this.orderEmailService = orderEmailService;
     }
 
     /**
@@ -421,6 +424,14 @@ public class CartService {
         // Saving order in repo
         Order paidOrder = orderRepository.save(cart);
         System.out.println("✅ Orden pagada guardada con ID: " + paidOrder.getId());
+
+        // Generate PDF and send confirmation email
+        try {
+            orderEmailService.sendOrderConfirmationWithPdf(paidOrder);
+            System.out.println("📧 Correo de confirmación enviado para orden: " + paidOrder.getId());
+        } catch (Exception e) {
+            System.err.println("❌ Error al enviar el correo de confirmación: " + e.getMessage());
+        }
 
         List<Branch> branches = branchRepository.findAll();
         if (branches.isEmpty()) {

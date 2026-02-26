@@ -37,7 +37,8 @@ public class OrderPdfService {
 
             // Order Header
             document.add(new Paragraph("Pedido #: " + order.getId(), headerFont));
-            document.add(new Paragraph("Cliente: " + order.getUser().getName() + " (" + order.getUser().getEmail() + ")", normalFont));
+            document.add(new Paragraph(
+                    "Cliente: " + order.getUser().getName() + " (" + order.getUser().getEmail() + ")", normalFont));
             document.add(new Paragraph("Fecha: " + order.getPaidAt(), normalFont));
             document.add(new Paragraph("Sucursal: " + order.getBranch().getName(), normalFont));
             document.add(new Paragraph(" "));
@@ -45,23 +46,31 @@ public class OrderPdfService {
             // Items Table
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
-            table.setWidths(new float[]{4f, 2f, 2f, 2f});
+            table.setWidths(new float[] { 4f, 2f, 2f, 2f });
 
             // Table Headers
             PdfPCell cell = new PdfPCell(new Phrase("Producto", headerFont));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBackgroundColor(com.itextpdf.text.BaseColor.LIGHT_GRAY);
+            cell.setPadding(5);
             table.addCell(cell);
-            
+
             cell = new PdfPCell(new Phrase("Precio", headerFont));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBackgroundColor(com.itextpdf.text.BaseColor.LIGHT_GRAY);
+            cell.setPadding(5);
             table.addCell(cell);
-            
+
             cell = new PdfPCell(new Phrase("Cantidad", headerFont));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBackgroundColor(com.itextpdf.text.BaseColor.LIGHT_GRAY);
+            cell.setPadding(5);
             table.addCell(cell);
-            
+
             cell = new PdfPCell(new Phrase("Total", headerFont));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBackgroundColor(com.itextpdf.text.BaseColor.LIGHT_GRAY);
+            cell.setPadding(5);
             table.addCell(cell);
 
             // Table Rows
