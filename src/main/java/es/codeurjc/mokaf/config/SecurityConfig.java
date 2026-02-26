@@ -55,12 +55,11 @@ public class SecurityConfig {
                                                 .ignoringRequestMatchers("/cart/**")
                                                 .ignoringRequestMatchers("/api/**"))
 
-                                                
                                 .securityContext(context -> context
                                                 .securityContextRepository(securityContextRepository())
                                                 .requireExplicitSave(false) // Automatically save security context
                                 )
-                                
+
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
                                                                 "/favicon.ico")
@@ -69,10 +68,10 @@ public class SecurityConfig {
                                                                 "/branches", "/contact", "/login", "/register")
                                                 .permitAll()
                                                 .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
-                                                                "/statistics/**", "/gestion_menu", "/profiles/images/**")
+                                                                "/statistics/**", "/gestion_menu")
                                                 .hasRole("ADMIN")
                                                 .requestMatchers("/profile", "/profile/**", "/cart", "/cart/**",
-                                                                "/orders")
+                                                                "/orders", "/profiles/images/**")
                                                 .authenticated()
                                                 .anyRequest().permitAll())
 
