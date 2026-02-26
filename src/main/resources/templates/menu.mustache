@@ -320,6 +320,29 @@
             
                 // Initialize AJAX cart
                 initCart();
+            
+                // Deep linking: apply filter based on hash
+                function checkHash() {
+                    const hash = window.location.hash.substring(1);
+                    if (hash) {
+                        const targetBtn = document.querySelector(`.btn-category[data-category="${hash}"]`);
+                        if (targetBtn) {
+                            filterBtns.forEach(b => b.classList.remove('active'));
+                            targetBtn.classList.add('active');
+                            currentCategory = hash;
+                            applyFilters();
+            
+                            // Scroll to menu container if hash is present
+                            document.querySelector('.menu-container').scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                }
+            
+                // Initial check
+                checkHash();
+            
+                // Listen for hash changes
+                window.addEventListener('hashchange', checkHash);
             });
         </script>
     </body>
