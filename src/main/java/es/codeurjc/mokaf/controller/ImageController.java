@@ -1,31 +1,96 @@
 package es.codeurjc.mokaf.controller;
 
-import es.codeurjc.mokaf.model.Image;
-import es.codeurjc.mokaf.repository.ImageRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import java.sql.SQLException;
 
-import java.sql.Blob;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import es.codeurjc.mokaf.model.Image;
+import es.codeurjc.mokaf.model.User;
+import es.codeurjc.mokaf.service.ImageService;
+import es.codeurjc.mokaf.service.UserService;
 
 @RestController
 public class ImageController {
 
-    private final ImageRepository imageRepository;
+    @Autowired
+    private ImageService imageService;
 
-    public ImageController(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
+    @Autowired
+    private UserService userService;
+
+    // Devuelve solo imágenes NO asociadas a perfiles
+    @GetMapping("/images/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
+        
+        Image image = imageService.findById(id).orElse(null);
+        if (image == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            int blobLength = (int) image.getImageFile().length();
+            byte[] imageBytes = image.getImageFile().getBytes(1, blobLength);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @GetMapping("/images/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws Exception {
-        Image img = imageRepository.findById(id).orElseThrow();
+    // Devuelve solo imágenes asociadas a perfiles
+    @GetMapping("/profiles/images/{id}")
+    public ResponseEntity<byte[]> getImageProfile(Authentication authentication, @PathVariable Long id) {
+        User user = getCurrentUser(authentication);
+        if (user == null || user.getImage() == null || !user.getImage().getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        Image image = imageService.findById(id).orElse(null);
+        if (image == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        try {
+            int blobLength = (int) image.getImageFile().length();
+            byte[] imageBytes = image.getImageFile().getBytes(1, blobLength);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+            
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+            
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-        Blob blob = img.getImageFile();
-        byte[] bytes = blob.getBytes(1, (int) blob.length());
+    private User getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return null;
+            }
+        }
 
-        // Como tu entidad Image no guarda contentType, asumimos PNG (si son PNG en static)
-        return ResponseEntity.ok()
-                .header("Content-Type", "image/png")
-                .body(bytes);
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof User) {
+            return (User) principal;
+        }
+
+        if (principal instanceof String) {
+            String email = (String) principal;
+            return userService.findByEmail(email).orElse(null);
+        }
+
+        return null;
     }
 }
