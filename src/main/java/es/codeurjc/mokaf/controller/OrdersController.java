@@ -39,15 +39,15 @@ public class OrdersController {
             return "redirect:/login";
         }
 
-        int pageSize = 3; // Pedidos por página
+        int pageSize = 3; // order for page
         Page<Order> ordersPage;
 
         if (user.getRole() == User.Role.ADMIN) {
-            // Admin ve todas las órdenes
+            // Admin see all orders
             ordersPage = ordersService.getPaidOrders(page, pageSize);
             model.addAttribute("isAdmin", true);
         } else {
-            // Usuario normal ve solo sus órdenes
+            // User only see their own orders
             ordersPage = ordersService.getPaidOrdersByUser(user.getId(), page, pageSize);
             model.addAttribute("isAdmin", false);
         }
@@ -56,7 +56,7 @@ public class OrdersController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", ordersPage.getTotalPages());
 
-        // Variables para paginación
+        // Vars for pagination
         boolean hasPrev = page > 0;
         boolean hasNext = page < ordersPage.getTotalPages() - 1;
 
@@ -65,12 +65,12 @@ public class OrdersController {
         model.addAttribute("prevPage", page - 1);
         model.addAttribute("nextPage", page + 1);
 
-        // Construir lista de páginas para Mustache
+        // Building list of pages with mustache
         List<Map<String, Object>> pages = new ArrayList<>();
         for (int i = 0; i < ordersPage.getTotalPages(); i++) {
             Map<String, Object> p = new HashMap<>();
             p.put("number", i);
-            p.put("numberPlusOne", i + 1); // Mostrar página empezando en 1
+            p.put("numberPlusOne", i + 1); // showing page starting with 1
             p.put("isCurrent", i == page);
             pages.add(p);
         }

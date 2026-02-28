@@ -91,7 +91,7 @@ public class MainController {
 
     @Autowired
     private FaqRepository faqRepository;
-    
+
     @Autowired
     private ContactEmailService contactEmailService;
 
@@ -134,13 +134,13 @@ public class MainController {
             for (org.springframework.validation.FieldError error : bindingResult.getFieldErrors()) {
                 model.addAttribute(error.getField() + "Error", error.getDefaultMessage());
             }
-            return "contact"; // Retorna a la página con errores
+            return "contact"; // return page with errors
         }
 
-        // Si es válido, enviamos el email
+        // if it's valid we send the email
         contactEmailService.sendContactEmail(contactRequest);
 
-        // Agregamos bandera de éxito y creamos un form vacío
+       
         model.addAttribute("success", true);
         model.addAttribute("contactRequest", new ContactRequest());
 

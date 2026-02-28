@@ -23,7 +23,6 @@ public class DebugFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String uri = httpRequest.getRequestURI();
         
-        // Solo debug en URLs de login y profile
         if (uri.contains("login") || uri.contains("profile") || uri.equals("/")) {
             System.out.println("\n========== DEBUG FILTER ==========");
             System.out.println("URL: " + uri);

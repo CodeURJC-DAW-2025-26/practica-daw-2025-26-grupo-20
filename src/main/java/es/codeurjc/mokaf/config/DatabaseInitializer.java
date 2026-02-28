@@ -77,16 +77,13 @@ public class DatabaseInitializer implements ApplicationRunner {
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
 
-        // 1) BORRADO (hijos -> padres) para evitar violaciones de FK
-        // Si tienes cascades bien configurados, podrías simplificar, pero así es
-        // robusto.
+        // 1) ERASE (sons -> father) to protect fk
         orderRepository.deleteAll();
         reviewRepository.deleteAll();
         userRepository.deleteAll(); // Delete users BEFORE employees and products
 
-        // Si Product tiene relación 1-1/1-n con Image con cascade, puedes no borrar
+        // if Product has 1-1/1-n relation with Image and cascade, you cant erase
         // imageRepository.
-        // Pero como lo haces explícito, lo dejamos.
         productRepository.deleteAll();
         imageRepository.deleteAll();
 
@@ -95,11 +92,11 @@ public class DatabaseInitializer implements ApplicationRunner {
         branchRepository.deleteAll();
         faqRepository.deleteAll();
 
-        // 2) SUCURSALES Y EMPLEADOS (Usuarios dependen de empleados por employee_id)
+        // 2) BRANCHES AND EMPLOYESS
         createBranches();
         createEmployees();
 
-        // 3) USUARIOS
+        // 3) USERS
         createUsers();
 
         // 3) PRODUCT + IMAGES
@@ -309,11 +306,11 @@ public class DatabaseInitializer implements ApplicationRunner {
 
         System.out.println(">>> Creating reviews for different products...");
 
-        // ===== DEMO PAGINACIÓN: 10 reviews para 1 producto (Expreso) =====
+        // ===== DEMO PAGINATION: 10 reviews for 1 product (Expreso) =====
         Product expreso = findProductByName(products, "Expreso");
         if (expreso != null) {
 
-            // usa usuarios existentes y excluye admins para que sea “realista”
+            // use valid users and exclude admins
             List<User> reviewers = users.stream()
                     .filter(u -> u.getRole() != User.Role.ADMIN)
                     .toList();
@@ -505,7 +502,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
                 .orElseGet(() -> branches.isEmpty() ? null : branches.get(0));
 
-        // Administradores (Referenciados en createUsers)
+        // Administrators
         Employee admin1 = new Employee("EMP-001", "Administrador", "Principal", "Administrador del Sistema",
                 "Direccion",
                 new BigDecimal("4000.00"), madrid,

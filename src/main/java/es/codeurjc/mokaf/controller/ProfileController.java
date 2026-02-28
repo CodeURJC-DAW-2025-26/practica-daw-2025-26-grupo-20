@@ -174,7 +174,7 @@ public class ProfileController {
             }
         }
 
-        // Guardar usuario
+        // Save user
         User savedUser = userService.save(user);
         System.out.println(">>> Usuario guardado. ID: " + savedUser.getId());
 
@@ -191,13 +191,13 @@ public class ProfileController {
             System.out.println(">>> WARNING: No se pudo recargar, usando savedUser");
         }
 
-        // Inicializar imagen si existe
+        // Init image if exists
         if (refreshedUser.getImage() != null) {
-            refreshedUser.getImage().getId(); // Touch para inicializar
+            refreshedUser.getImage().getId(); // Touch for init
             System.out.println(">>> Imagen inicializada. ID: " + refreshedUser.getImage().getId());
         }
 
-        // Actualizar autenticación
+        // update auth
         updateAuthentication(refreshedUser, request, response);
 
         return "redirect:/profile?updated=true";
@@ -255,7 +255,7 @@ public class ProfileController {
         System.out.println("Admin user saved. Image ID: "
                 + (savedUser.getImage() != null ? savedUser.getImage().getId() : "NULL"));
 
-        // IMPORTANTE: Actualizar el Authentication con los nuevos datos
+        // Update auth with new data
         updateAuthentication(savedUser, request, response);
 
         return "redirect:/profileADMIN?updated=true";

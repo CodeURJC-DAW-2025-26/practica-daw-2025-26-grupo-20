@@ -26,16 +26,16 @@ public class OrderEmailService {
 
     public void sendOrderConfirmationWithPdf(Order order) {
         try {
-            // Generar PDF
+            // Generate pdf
             byte[] pdfBytes = orderPdfService.generateOrderPdf(order);
 
-            // Crear email
+            // Create email
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setFrom(fromEmail);
             helper.setTo(order.getUser().getEmail());
-            // En copia a nosotros
+            // i copy to us
             helper.setCc(fromEmail);
             helper.setSubject("Confirmación de Pedido - Mokaf #" + order.getId());
 
@@ -49,10 +49,10 @@ public class OrderEmailService {
 
             helper.setText(text, false);
 
-            // Adjuntar el PDF
+            // Add PDF
             helper.addAttachment("Factura_Mokaf_" + order.getId() + ".pdf", new ByteArrayResource(pdfBytes));
 
-            // Enviar email
+            // send email
             emailSender.send(message);
         } catch (MessagingException e) {
             System.err.println("Error enviando el email de la orden: " + e.getMessage());

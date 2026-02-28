@@ -28,7 +28,7 @@ public class ImageController {
     @Autowired
     private UserService userService;
 
-    // Devuelve solo imágenes NO asociadas a perfiles
+    // Return only images not associated to profile
     @GetMapping("/images/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
 
@@ -47,12 +47,12 @@ public class ImageController {
         }
     }
 
-    // Devuelve solo imágenes asociadas a perfiles
+    // Return only images associated with profiles
     @GetMapping("/profiles/images/{id}")
     public ResponseEntity<byte[]> getImageProfile(Authentication authentication, @PathVariable Long id) {
         User user = getCurrentUser(authentication);
 
-        // Permite el acceso si el usuario es ADMIN o si es el dueño de la imagen
+        //Allow access only if it's owner or admin
         boolean isOwner = user != null && user.getImage() != null && user.getImage().getId().equals(id);
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));

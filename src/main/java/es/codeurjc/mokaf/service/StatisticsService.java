@@ -20,7 +20,7 @@ public class StatisticsService {
     private ReviewRepository reviewRepository;
     
     @Autowired
-    private BranchRepository branchRepository; // ADD THIS - was missing
+    private BranchRepository branchRepository;
 
     /**
      * Get the best selling product of the current month (by units sold)

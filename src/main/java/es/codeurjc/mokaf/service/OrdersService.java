@@ -18,13 +18,13 @@ public class OrdersService {
         this.orderEmailService = orderEmailService;
     }
 
-    // Todas las órdenes pagadas (para admin)
+    // all payed orders only for admin
     public Page<Order> getPaidOrders(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return orderRepository.findByStatusOrderByIdDesc(Order.Status.PAID, pageable);
     }
 
-    // Solo las órdenes de un usuario (para usuarios normales)
+    // paid orders for the actual user
     public Page<Order> getPaidOrdersByUser(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return orderRepository.findByUserIdAndStatusOrderByIdDesc(userId, Order.Status.PAID, pageable);

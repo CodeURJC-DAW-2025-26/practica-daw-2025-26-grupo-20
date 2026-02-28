@@ -23,7 +23,7 @@ public class StatisticsController {
 
         // Get data
         Map<String, Object> bestProduct = (Map<String, Object>) chartStats.get("bestProduct");
-        Map<String, Object> topRatedProduct = (Map<String, Object>) chartStats.get("topRatedProduct"); // NEW
+        Map<String, Object> topRatedProduct = (Map<String, Object>) chartStats.get("topRatedProduct");
         Map<String, Object> topCategory = (Map<String, Object>) chartStats.get("topCategory");
         List<Map<String, Object>> allCategories = (List<Map<String, Object>>) chartStats.get("allCategories");
         Map<String, Object> topBranch = (Map<String, Object>) chartStats.get("topBranch");
@@ -33,7 +33,7 @@ public class StatisticsController {
         model.addAttribute("hasBestProduct",
                 bestProduct != null && bestProduct.containsKey("exists") && (boolean) bestProduct.get("exists"));
         model.addAttribute("hasTopRatedProduct", topRatedProduct != null && topRatedProduct.containsKey("exists")
-                && (boolean) topRatedProduct.get("exists")); // NEW
+                && (boolean) topRatedProduct.get("exists"));
         model.addAttribute("hasTopCategory",
                 topCategory != null && topCategory.containsKey("exists") && (boolean) topCategory.get("exists"));
         model.addAttribute("hasTopBranch",
@@ -41,7 +41,7 @@ public class StatisticsController {
 
         // Add data
         model.addAttribute("bestProduct", bestProduct);
-        model.addAttribute("topRatedProduct", topRatedProduct); // NEW
+        model.addAttribute("topRatedProduct", topRatedProduct);
         model.addAttribute("topCategory", topCategory);
         model.addAttribute("allCategories", allCategories);
         model.addAttribute("topBranch", topBranch);

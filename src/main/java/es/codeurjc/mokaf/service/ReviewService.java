@@ -60,7 +60,6 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Page<Review> getReviewsPage(Long productId, int page, int size) {
-        // Si Review NO tiene createdAt, cambia el Sort a "id"
         return reviewRepository.findByProductId(
                 productId,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt", "id")));
