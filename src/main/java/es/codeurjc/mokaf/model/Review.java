@@ -32,6 +32,14 @@ public class Review {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Transient
+    public String getCreatedAtFormatted() {
+        if (createdAt == null) return "";
+        java.time.format.DateTimeFormatter fmt =
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return createdAt.format(fmt);
+}
+
     public Review() {}
 
     public Review(User user, Product product, int stars, String text) {
