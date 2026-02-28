@@ -15,5 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(attributePaths = { "image", "reviews", "reviews.user" })
     Optional<Product> findWithReviewsById(Long id);
 
+    @EntityGraph(attributePaths = { "image", "allergens" })
+    Optional<Product> findWithImageById(Long id);
+
     Page<Product> findByCategory(Category category, Pageable pageable);
 }

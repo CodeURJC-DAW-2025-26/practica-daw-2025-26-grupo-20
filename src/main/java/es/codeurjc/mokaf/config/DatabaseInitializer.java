@@ -309,6 +309,46 @@ public class DatabaseInitializer implements ApplicationRunner {
 
         System.out.println(">>> Creating reviews for different products...");
 
+        // ===== DEMO PAGINACIÓN: 10 reviews para 1 producto (Expreso) =====
+        Product expreso = findProductByName(products, "Expreso");
+        if (expreso != null) {
+
+            // usa usuarios existentes y excluye admins para que sea “realista”
+            List<User> reviewers = users.stream()
+                    .filter(u -> u.getRole() != User.Role.ADMIN)
+                    .toList();
+
+            if (!reviewers.isEmpty()) {
+                List<String> demoTexts = List.of(
+                        "Demo #1: Muy buen café, intenso y con buena crema.",
+                        "Demo #2: Aroma excelente, perfecto para empezar el día.",
+                        "Demo #3: Equilibrado, aunque lo prefiero un punto menos fuerte.",
+                        "Demo #4: Perfecto después de comer. Repetiré.",
+                        "Demo #5: Buena temperatura y sabor consistente.",
+                        "Demo #6: Me gustó, pero la taza era algo pequeña.",
+                        "Demo #7: De los mejores expresos que he probado aquí.",
+                        "Demo #8: Sabor potente, ideal si te gusta fuerte.",
+                        "Demo #9: Correcto, cumple sin destacar.",
+                        "Demo #10: Excelente, volvería solo por este expreso.");
+
+                int[] demoStars = { 5, 5, 4, 5, 4, 3, 5, 4, 3, 5 };
+
+                for (int i = 0; i < 10; i++) {
+                    User author = reviewers.get(i % reviewers.size());
+
+                    Review r = new Review();
+                    r.setUser(author);
+                    r.setProduct(expreso);
+                    r.setStars(demoStars[i]);
+                    r.setText(demoTexts.get(i));
+
+                    reviewRepository.save(r);
+                }
+
+                System.out.println(">>> Demo: 10 reviews creadas para Expreso");
+            }
+        }
+
         // Define reviews for specific products - CONTENT IN SPANISH FOR USERS
         // Format: [productName, stars, reviewText]
         List<Object[]> reviewData = Arrays.asList(

@@ -1,0 +1,45 @@
+{{#reviews}}
+    <div class="review-card review-item">
+        <div class="review-head">
+            <div class="review-user">
+                <div class="avatar">•</div>
+                <div>
+                    <div class="review-name">{{user.name}}</div>
+                    <div class="review-date">{{createdAtFormatted}}</div>
+                </div>
+            </div>
+            <div class="review-stars">
+                <span>★ {{stars}}/5</span>
+            </div>
+        </div>
+
+        <p class="review-text">{{text}}</p>
+
+        {{#isAdmin}}
+            <form
+                action="/product/{{productId}}/reviews/{{id}}/delete"
+                method="post"
+                style="display:inline;"
+            >
+                {{#_csrf}}
+                    <input type="hidden" name="{{parameterName}}" value="{{token}}">
+                {{/_csrf}}
+
+                <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="submit"
+                    onclick="return confirm('¿Eliminar reseña?');"
+                >
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </form>
+        {{/isAdmin}}
+    </div>
+{{/reviews}}
+
+{{^reviews}}
+    <p class="section-text">Aún no hay reseñas para este producto.</p>
+{{/reviews}}
+
+{{#hasMore}}<input type="hidden" data-has-more="true">{{/hasMore}}
+{{^hasMore}}<input type="hidden" data-has-more="false">{{/hasMore}}
