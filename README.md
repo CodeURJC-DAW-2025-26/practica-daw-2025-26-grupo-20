@@ -107,6 +107,26 @@ Un usuario registrado, podrá comprar productos, añadir productos al carrito, v
 Por último pero no menos importante, el rol de Administrador tendrá acceso a su propio perfil, gestión de productos (crear, eliminar y editar), visualizar estadísticas de las últimas ventas y tener una visión global del funcionamiento del negocio."]
 
 ### **Capturas de Pantalla y Descripción de Páginas**
+> 
+
+
+---
+
+## 🛠 **Práctica 1: Web con HTML generado en servidor y AJAX**
+
+### **Vídeo de Demostración**
+
+📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+
+> Vídeo mostrando las principales funcionalidades de la aplicación web.
+
+### **Navegación y Capturas de Pantalla**
+
+#### **Diagrama de Navegación**
+
+Solo si ha cambiado.
+
+#### **Capturas de Pantalla Actualizadas**
 
 #### **1. Página Principal / Home**
 
@@ -180,29 +200,6 @@ Por último pero no menos importante, el rol de Administrador tendrá acceso a s
 
 ![Carrito](images/Carrito.png)
 
-
-
-> 
-
-
----
-
-## 🛠 **Práctica 1: Web con HTML generado en servidor y AJAX**
-
-### **Vídeo de Demostración**
-
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
-
-> Vídeo mostrando las principales funcionalidades de la aplicación web.
-
-### **Navegación y Capturas de Pantalla**
-
-#### **Diagrama de Navegación**
-
-Solo si ha cambiado.
-
-#### **Capturas de Pantalla Actualizadas**
-
 Solo si han cambiado.
 
 ### **Instrucciones de Ejecución**
@@ -233,7 +230,7 @@ Solo si han cambiado.
 
 3. **Ejecutar la aplicación**:
    ```bash
-   mvn clear install -DSkipTest
+   mvn clean install -DSkipTest
    mvn spring-boot:run
    ```
 4. **Acceder a la aplicación**:
