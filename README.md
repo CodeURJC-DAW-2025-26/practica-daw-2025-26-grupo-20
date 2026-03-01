@@ -238,7 +238,7 @@ Solo si han cambiado.
 
 #### **Credenciales de prueba**
 
-Actualmente no hay usuarios predefinidos. Puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
+Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos utilizar la cuenta de admin; `admin@mokaf.com` , `admin123` y puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
 
 ### **Diagrama de Entidades de Base de Datos**
 
