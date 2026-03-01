@@ -170,7 +170,7 @@
                 </ul>
             </section>
 
-            <!-- Reseñas -->
+            <!-- Reviews -->
             <section class="product-section" id="reviews">
                 <h3 class="section-title">Reseñas</h3>
 
@@ -178,12 +178,12 @@
                     {{> fragments/review_items_fragment}}
                 </div>
 
-                <!-- Loading (AJAX reseñas) -->
+                <!-- Loading (AJAX reviews) -->
                 <div id="reviews-loading" class="d-none mt-3">
                     <p class="text-muted">Cargando reseñas...</p>
                 </div>
 
-                <!-- Load more reseñas -->
+                <!-- Load more reviews -->
                 <div
                     class="text-center mt-3 {{^hasMore}}d-none{{/hasMore}}"
                     id="reviews-load-more-container"
@@ -275,102 +275,104 @@
 
         <script>
             (function qtyControl() {
-                const minus = document.getElementById("qtyMinus");
-                const plus = document.getElementById("qtyPlus");
-                const input = document.getElementById("qtyInput");
-                const hidden = document.getElementById("qtyHidden");
-
-                if (!minus || !plus || !input || !hidden) return;
-
-                function sync() {
-                    let v = parseInt(input.value || "1", 10);
-                    if (isNaN(v) || v < 1) v = 1;
-                    input.value = v;
-                    hidden.value = v;
-                }
-
-                minus.addEventListener("click", () => {
-                    input.value = (parseInt(input.value || "1", 10) - 1);
-                    sync();
-                });
-
-                plus.addEventListener("click", () => {
-                    input.value = (parseInt(input.value || "1", 10) + 1);
-                    sync();
-                });
-
-                input.addEventListener("change", sync);
+              const minus = document.getElementById("qtyMinus");
+              const plus = document.getElementById("qtyPlus");
+              const input = document.getElementById("qtyInput");
+              const hidden = document.getElementById("qtyHidden");
+            
+              if (!minus || !plus || !input || !hidden) return;
+            
+              function sync() {
+                let v = parseInt(input.value || "1", 10);
+                if (isNaN(v) || v < 1) v = 1;
+                input.value = v;
+                hidden.value = v;
+              }
+            
+              minus.addEventListener("click", () => {
+                input.value = parseInt(input.value || "1", 10) - 1;
                 sync();
+              });
+            
+              plus.addEventListener("click", () => {
+                input.value = parseInt(input.value || "1", 10) + 1;
+                sync();
+              });
+            
+              input.addEventListener("change", sync);
+              sync();
             })();
-
-            document.addEventListener('DOMContentLoaded', function () {
-                // Initialize AJAX cart from cart.js
-                if (typeof initCart === 'function') {
-                    initCart();
-                }
-
-                // (Aún NO meto aquí la lógica AJAX de reseñas, como acordamos:
-                //  primero fragmento, después lógica paso a paso.)
+            
+            document.addEventListener("DOMContentLoaded", function () {
+              // Initialize AJAX cart from cart.js
+              if (typeof initCart === "function") {
+                initCart();
+              }
+            
+              // (NOT putting the AJAX reviews logic here yet, as agreed:
+              //  first fragment, then step-by-step logic.)
             });
         </script>
 
         <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof initCart === 'function') {
+            document.addEventListener("DOMContentLoaded", function () {
+              if (typeof initCart === "function") {
                 initCart();
-            }
-
-            // Reviews AJAX pagination
-            const productId = "{{product.id}}";
-            let currentReviewsPage = 1; // SSR ya cargó page=0
-
-            const btn = document.getElementById('reviews-load-more-btn');
-            const btnContainer = document.getElementById('reviews-load-more-container');
-            const list = document.getElementById('reviewsList');
-            const loading = document.getElementById('reviews-loading');
-
-            if (!btn || !btnContainer || !list) return;
-
-            btn.addEventListener('click', function () {
+              }
+            
+              // Reviews AJAX pagination
+              const productId = "{{product.id}}";
+              let currentReviewsPage = 1; // SSR already loaded page=0
+            
+              const btn = document.getElementById("reviews-load-more-btn");
+              const btnContainer = document.getElementById("reviews-load-more-container");
+              const list = document.getElementById("reviewsList");
+              const loading = document.getElementById("reviews-loading");
+            
+              if (!btn || !btnContainer || !list) return;
+            
+              btn.addEventListener("click", function () {
                 btn.disabled = true;
-                if (loading) loading.classList.remove('d-none');
-
+                if (loading) loading.classList.remove("d-none");
+            
                 fetch(`/api/product/${productId}/reviews?page=${currentReviewsPage}`)
-                    .then(r => {
-                        if (!r.ok) throw new Error('HTTP ' + r.status);
-                        return r.text();
-                    })
-                    .then(html => {
-                        const temp = document.createElement('div');
-                        temp.innerHTML = html;
-
-                        // Lee hasMore del fragmento
-                        const hasMoreEl = temp.querySelector('[data-has-more]');
-                        const hasMore = hasMoreEl ? hasMoreEl.getAttribute('data-has-more') === 'true' : false;
-                        if (hasMoreEl) hasMoreEl.remove();
-
-                        // Inserta nuevas reseñas
-                        const newItems = temp.querySelectorAll('.review-item');
-                        newItems.forEach(el => list.appendChild(el));
-
-                        currentReviewsPage++;
-
-                        if (!hasMore) {
-                            btnContainer.classList.add('d-none');
-                        }
-
-                        // Si el fragmento trae forms nuevos (admin delete), el CSRF ya va en HTML.
-                    })
-                    .catch(err => {
-                        console.error('Error loading more reviews:', err);
-                        alert('Error al cargar más reseñas. Inténtalo de nuevo.');
-                    })
-                    .finally(() => {
-                        if (loading) loading.classList.add('d-none');
-                        btn.disabled = false;
-                    });
+                  .then((r) => {
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    return r.text();
+                  })
+                  .then((html) => {
+                    const temp = document.createElement("div");
+                    temp.innerHTML = html;
+            
+                    // Read hasMore from fragment
+                    const hasMoreEl = temp.querySelector("[data-has-more]");
+                    const hasMore = hasMoreEl
+                      ? hasMoreEl.getAttribute("data-has-more") === "true"
+                      : false;
+                    if (hasMoreEl) hasMoreEl.remove();
+            
+                    // Insert new reviews
+                    const newItems = temp.querySelectorAll(".review-item");
+                    newItems.forEach((el) => list.appendChild(el));
+            
+                    currentReviewsPage++;
+            
+                    if (!hasMore) {
+                      btnContainer.classList.add("d-none");
+                    }
+            
+                    // If the fragment contains new forms (admin delete), the CSRF token is already in the HTML.
+                  })
+                  .catch((err) => {
+                    console.error("Error loading more reviews:", err);
+                    alert("Error al cargar más reseñas. Inténtalo de nuevo.");
+                  })
+                  .finally(() => {
+                    if (loading) loading.classList.add("d-none");
+                    btn.disabled = false;
+                  });
+              });
             });
-        });
         </script>
     </body>
 </html>

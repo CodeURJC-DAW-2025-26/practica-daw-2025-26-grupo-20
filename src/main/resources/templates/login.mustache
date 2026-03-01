@@ -20,7 +20,7 @@
             <section class="container login-container my-5">
                 <h2 class="text-center">Login o Registro</h2>
 
-                <!-- Mensajes -->
+                <!-- Messages -->
                 {{#errorMessage}}
                     <div
                         class="alert alert-danger alert-dismissible fade show"
@@ -133,7 +133,7 @@
                         </div>
                     </div>
 
-                    <!-- REGISTRO -->
+                    <!-- REGISTRATION -->
                     <div class="col-md-6">
                         <div class="auth-card p-4 h-100">
                             <h4 class="mb-4">Registro</h4>
@@ -223,21 +223,23 @@
         <script>
             const passwordRegex = /^.*(?=.*[a-zA-Z])(?=.*\d).*$/;
             
-            document.getElementById('loginForm').addEventListener('submit', function (e) {
-                const pwd = document.getElementById('loginPassword').value;
-                if (!passwordRegex.test(pwd)) {
-                    e.preventDefault();
-                    alert('La contraseña debe contener letras y números.');
-                }
+            document.getElementById("loginForm").addEventListener("submit", function (e) {
+              const pwd = document.getElementById("loginPassword").value;
+              if (!passwordRegex.test(pwd)) {
+                e.preventDefault();
+                alert("La contraseña debe contener letras y números.");
+              }
             });
             
-            document.getElementById('registerForm').addEventListener('submit', function (e) {
-                const pwd = document.getElementById('registerPassword').value;
+            document
+              .getElementById("registerForm")
+              .addEventListener("submit", function (e) {
+                const pwd = document.getElementById("registerPassword").value;
                 if (!passwordRegex.test(pwd)) {
-                    e.preventDefault();
-                    alert('La contraseña debe contener letras y números.');
+                  e.preventDefault();
+                  alert("La contraseña debe contener letras y números.");
                 }
-            });
+              });
         </script>
     </body>
 </html>

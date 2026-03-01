@@ -73,72 +73,70 @@
     </div>
 </header>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Actualizar contador al cargar la página
-        updateCartCount();
+    document.addEventListener("DOMContentLoaded", function () {
+      // Update counter on page load
+      updateCartCount();
     
-        // Update Counter
-        window.addEventListener('cartUpdated', function (event) {
-            if (event.detail && event.detail.count !== undefined) {
-                updateCartCounterDisplay(event.detail.count);
-            }
-        });
+      // Update Counter
+      window.addEventListener("cartUpdated", function (event) {
+        if (event.detail && event.detail.count !== undefined) {
+          updateCartCounterDisplay(event.detail.count);
+        }
+      });
     });
     
     async function updateCartCount() {
-        try {
-            const response = await fetch('/cart/count');
-            const data = await response.json();
+      try {
+        const response = await fetch("/cart/count");
+        const data = await response.json();
     
-            if (data.success) {
-                updateCartCounterDisplay(data.count);
-            }
-        } catch (error) {
-            console.error('Error al actualizar contador:', error);
+        if (data.success) {
+          updateCartCounterDisplay(data.count);
         }
+      } catch (error) {
+        console.error("Error al actualizar contador:", error);
+      }
     }
     
-    
     function updateCartCounterDisplay(count) {
-        const counter = document.getElementById('cartCounter');
-        if (counter) {
-            counter.textContent = count;
-            counter.style.display = count > 0 ? 'inline-block' : 'none';
+      const counter = document.getElementById("cartCounter");
+      if (counter) {
+        counter.textContent = count;
+        counter.style.display = count > 0 ? "inline-block" : "none";
     
-            // Animación sutil cuando cambia
-            counter.classList.add('counter-pulse');
-            setTimeout(() => {
-                counter.classList.remove('counter-pulse');
-            }, 500);
-        }
+        // Subtle animation on change
+        counter.classList.add("counter-pulse");
+        setTimeout(() => {
+          counter.classList.remove("counter-pulse");
+        }, 500);
+      }
     }
 </script>
 
 <style>
     .cart-counter {
-        transition: all 0.3s ease;
+      transition: all 0.3s ease;
     }
     
     .counter-pulse {
-        animation: pulse 0.5s ease;
+      animation: pulse 0.5s ease;
     }
     
     @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        background-color: #dc3545;
+      }
     
-        0%,
-        100% {
-            transform: scale(1);
-            background-color: #dc3545;
-        }
-    
-        50% {
-            transform: scale(1.2);
-            background-color: #28a745;
-        }
+      50% {
+        transform: scale(1.2);
+        background-color: #28a745;
+      }
     }
     
     .btn-header .badge {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
     }
 </style>
