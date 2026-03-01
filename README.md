@@ -16,8 +16,6 @@
 
 ### **Descripción del Tema**
 
-### **Descripción del Tema**
-
 Mokaf es una aplicación web diseñada para una cafetería de especialidad. Permite a los usuarios consultar la carta de cafés, bebidas frías, postres y más. Los usuarios pueden registrarse para acceder a funcionalidades personalizadas, mientras que los administradores tienen herramientas para gestionar el catálogo de productos y visualizar estadísticas de ventas.
 
 ### **Entidades**
@@ -320,7 +318,7 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 |  1  | [Statistics and Branch fixed](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/22d30f9fe0580916bd537d7f085c1e985298cf67) | [StatisticsService](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/22d30f9fe0580916bd537d7f085c1e985298cf67#diff-30af0402e948daf26c29b0546234c002186891fa15400407f17a163ab88924b8) |
 |  2  | [Cart impementation, braches discount and order create after paying.](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/30388e7e660e40436359d457fec96c0bad20c3d2) | [CartService](src/main/java/es/codeurjc/mokaf/service/CartService.java) |
 |  3  | [Better Stats](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/cfb96db25a2603b589a9ef1e24367af25ec3568e) | [StatisticsService](src/main/java/es/codeurjc/mokaf/service/StatisticsService.java) |
-|  4  | [Descripción commit 4](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/0cc7f0c77ecc76b62c942df4333a79a69b950930) | [branches](src/main/resources/templates/branches.mustache) |
+|  4  | [DatabaseInit Changes and deleting Branch attribute](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/bd5d4b30c2a33163b50f9c2f74401f96f8489068) | [DatabaseInitializer](src/main/java/es/codeurjc/mokaf/config/DatabaseInitializer.java) |
 |  5  | [Fixing controllers and paths](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/aeb02f7c3b67da06d9a0ff7fbfd9d947ee3ff4bb) | [MainController](src/main/java/es/codeurjc/mokaf/controller/MainController.java) |
 
 ---
