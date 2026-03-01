@@ -125,28 +125,38 @@ Solo si han cambiado.
 ### **Instrucciones de Ejecución**
 
 #### **Requisitos Previos**
-- **Java**: versión 21 o superior
-- **Maven**: versión 3.8 o superior
-- **MySQL**: versión 8.0 o superior
-- **Git**: para clonar el repositorio
+- **Java**: version 21 or higher.
+- **Maven**: version 4.0 or higher.
+- **MySQL**: version 8.0 or higher.
+- **Git**: For cloning the repository
+- **Spring Boot Dependencies**: Ensure that all necessary dependencies are included in the pom.xml file for the application.
 
 #### **Pasos para ejecutar la aplicación**
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/[usuario]/[nombre-repositorio].git
-   cd [nombre-repositorio]
+   git clone https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20.git
+   cd practica-daw-2025-26-grupo-20
+   ```
+3. **Ejecutar MySQL workbench**:
+   Abrir MySQL workbench y crear un schema con el nombre mokaf_db, para poder ver la base de datos. Ver que en el `application.properties`.
+   ```bash
+   spring.datasource.url=jdbc:mysql://localhost:3306/mokaf_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Madrid
+   spring.datasource.username=root
+   spring.datasource.password=1234
    ```
 
-3. **Ejecutar la aplicación**:
+4. **Ejecutar la aplicación**:
    ```bash
+   mvn clear install -DSkipTest
    mvn spring-boot:run
    ```
-4. **Acceder a la aplicación**:
-   Abre tu navegador y ve a `http://localhost:8080`.
+5. **Acceder a la aplicación**:
+   Abre tu navegador y ve a `http://localhost:8443`.
 
 #### **Credenciales de prueba**
-Actualmente no hay usuarios predefinidos. Puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
+Actualmente Contamos con varios usuarios en DatabaseInitialzer;
+de admin puedes probar en el login; de nombre admin@mokaf.com , de contraseña admin123. y para usuario te puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
 
 ### **Diagrama de Entidades de Base de Datos**
 
