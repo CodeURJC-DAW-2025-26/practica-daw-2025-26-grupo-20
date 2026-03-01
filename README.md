@@ -119,6 +119,12 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 
 ![Diagrama de Navegación](./src/main/resources/static/images/Screen_nav.png)
 
+> [Descripción del flujo de navegación: "Los usuarios no autenticados, al igual que cualquier rol, pueden acceder a la página de inicio, ver el menú de productos disponibles, consultar las distintas sucursales, visitar la sección de Nosotros, la página de contacto, acceder al login y registro, y visualizar las páginas de errores."]
+
+> [Un usuario registrado podrá comprar productos, añadir productos al carrito, verificar el resumen de su pedido, acceder a su perfil, consultar su historial de pedidos y gestionar sus datos personales.]
+
+> [Por último, pero no menos importante, el rol de Administrador tendrá acceso a su propio perfil, un panel de administración con gestión de productos (crear, editar y eliminar), gestión de usuarios (visualizar listado, editar información y eliminar usuarios), visualización de todos los pedidos realizados en la plataforma con su estado y detalles, y un apartado de estadísticas para tener una visión global del funcionamiento del negocio."]
+
 #### **Capturas de Pantalla Actualizadas**
 
 #### **1. Página Principal / Home**
