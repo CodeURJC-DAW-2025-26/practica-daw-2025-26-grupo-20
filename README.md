@@ -301,8 +301,9 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 - Implementación de la seguridad de la aplicación.
 - Implementación de la sesión de los usuarios.
-- Implementación de los perfiles de usuario y administrador
-- Persolanización y actualizacion de los perfiles.
+- Implementación de los perfiles de usuario y administrador.
+- Personalización y actualizacion de los perfiles.
+- Implementación de la seguridad de las imágenes privadas.
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
