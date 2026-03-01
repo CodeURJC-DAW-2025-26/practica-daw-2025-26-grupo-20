@@ -308,8 +308,8 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 | :-: | :----------------------------------: | :-----------------------: |
 |  1  | [Seguridad de los usuarios y sus imagenes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/841905dcd28c98bd737f2cb46cacca2a2bb6916e#diff-1b3e30b52d60a14864bdd58685318226b6fcf8ac4120bec12ca014926e610997) | [ImageSeervice.java](src/main/java/es/codeurjc/mokaf/service/ImageService.java) |
 |  2  | [Creación de la sesiones permanentes por usuario](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/cb90e1ea4dd58b6deb247d4b53e15ed943b29fd6) | [AuthController](src/main/java/es/codeurjc/mokaf/controller/AuthController.java) |
-|  3  | [Configuración de csrf y un debuger]([URL_commit_3](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/2c70cfe6bd1ce0996295946bb0c970c631a09bc8) | [CsrfModelInterceptor](src/main/java/es/codeurjc/mokaf/config/CsrfModelInterceptor.java) |
-|  4  | [Configuración de seguridad](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3ca6c89b7b72b52028f4cd5ea15f78f97077588e)) | [SecurityConfig](src/main/java/es/codeurjc/mokaf/config/SecurityConfig.java) |
+|  3  | [Configuración de csrf y un debuger](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/2c70cfe6bd1ce0996295946bb0c970c631a09bc8) | [CsrfModelInterceptor](src/main/java/es/codeurjc/mokaf/config/CsrfModelInterceptor.java) |
+|  4  | [Configuración de seguridad](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3ca6c89b7b72b52028f4cd5ea15f78f97077588e) | [SecurityConfig](src/main/java/es/codeurjc/mokaf/config/SecurityConfig.java) |
 |  5  | [Profile save changes and images for users](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/f20e83f0224173910d58e9793b4690e2c7a7b80e) | [ProfileController](src/main/java/es/codeurjc/mokaf/controller/ProfileController.java) |
 
 ---
