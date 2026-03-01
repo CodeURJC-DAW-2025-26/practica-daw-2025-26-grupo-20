@@ -847,153 +847,72 @@
         </div>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Global Chart.js configuration
-                Chart.defaults.color = '#FFFFFF';
-                Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-            
-                { { #hasTopCategory } }
-                { { #allCategories.size } }
-                // Categories data
-                const categoryNames = [
-                    {{ #allCategories}}'{{category}}', {{/ allCategories}}
-                                    ];
+        document.addEventListener('DOMContentLoaded', function () {
+            Chart.defaults.color = '#FFFFFF';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+            {{#hasTopCategory}}
+            {{#allCategories.size}}
+            const categoryNames = [
+            {{#allCategories}}'{{category}}',{{/allCategories}}
+            ];
             const categoryUnits = [
-                {{ #allCategories}}{ { units } }, { {/allCategories } }
-                                    ];
+            {{#allCategories}}{{units}},{{/allCategories}}
+            ];
             const categoryColors = [
-                {{ #allCategories}}'{{color}}', {{/allCategories }}
-                                    ];
-            
-            // Only create chart if there is data
+            {{#allCategories}}'{{color}}',{{/allCategories}}
+            ];
+
             if (categoryNames.length > 0) {
-                // Categories pie chart
-                const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
-                new Chart(pieCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: categoryNames,
-                        datasets: [{
-                            data: categoryUnits,
-                            backgroundColor: categoryColors,
-                            borderColor: 'var(--negro)',
-                            borderWidth: 2,
-                            hoverOffset: 8
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '65%',
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: '#FFFFFF',
-                                    font: { size: 11, weight: '300' },
-                                    padding: 15
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(26, 26, 26, 0.95)',
-                                titleColor: '#C6A87D',
-                                bodyColor: '#FFFFFF',
-                                borderColor: '#C6A87D',
-                                borderWidth: 1,
-                                callbacks: {
-                                    label: function (context) {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                        const percentage = Math.round((value / total) * 100);
-                                        return `${label}: ${value} uds (${percentage}%)`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
+            const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                labels: categoryNames,
+                datasets: [{
+                    data: categoryUnits,
+                    backgroundColor: categoryColors,
+                    borderColor: 'var(--negro)',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
+            });
             }
-            { {/allCategories.size } }
-            { {/hasTopCategory } }
-            
-            { { #allBranches.size } }
-            // All branches chart
+            {{/allCategories.size}}
+            {{/hasTopCategory}}
+
+            {{#allBranches.size}}
             const branchNames = [
-                {{ #allBranches}}'{{name}}', {{/allBranches }}
-                                    ];
+            {{#allBranches}}'{{name}}',{{/allBranches}}
+            ];
             const branchRevenues = [
-                {{ #allBranches}}{ { revenue } }, { {/allBranches } }
-                                    ];
+            {{#allBranches}}{{revenue}},{{/allBranches}}
+            ];
             const branchColors = [
-                {{ #allBranches}}'{{color}}', {{/allBranches }}
-                                    ];
-            
+            {{#allBranches}}'{{color}}',{{/allBranches}}
+            ];
+
             if (branchNames.length > 0) {
-                const allBranchesCtx = document.getElementById('allBranchesChart').getContext('2d');
-                new Chart(allBranchesCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: branchNames,
-                        datasets: [
-                            {
-                                label: 'Ingresos (€)',
-                                data: branchRevenues,
-                                backgroundColor: branchColors,
-                                borderRadius: 8,
-                                borderSkipped: false,
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(26, 26, 26, 0.95)',
-                                titleColor: '#C6A87D',
-                                bodyColor: '#FFFFFF',
-                                borderColor: '#C6A87D',
-                                borderWidth: 1,
-                                callbacks: {
-                                    label: function (context) {
-                                        return `Ingresos: ${context.raw}€`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.05)',
-                                    drawBorder: false
-                                },
-                                ticks: {
-                                    color: '#FFFFFF',
-                                    callback: function (value) {
-                                        return value + '€';
-                                    }
-                                }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: {
-                                    color: '#FFFFFF',
-                                    maxRotation: 45,
-                                    minRotation: 45,
-                                    font: { size: 11 }
-                                }
-                            }
-                        }
-                    }
-                });
+            const allBranchesCtx = document.getElementById('allBranchesChart').getContext('2d');
+            new Chart(allBranchesCtx, {
+                type: 'bar',
+                data: {
+                labels: branchNames,
+                datasets: [{
+                    label: 'Ingresos (€)',
+                    data: branchRevenues,
+                    backgroundColor: branchColors,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
             }
-            { {/allBranches.size } }
-                                });
+            {{/allBranches.size}}
+        });
         </script>
 
         {{> fragments/footer}}

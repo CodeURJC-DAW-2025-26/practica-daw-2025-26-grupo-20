@@ -565,7 +565,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                                 "Asegurando que cada visita sea inolvidable.", "alexandra@mokaf.com",
                                 "../images/Profile/alexandra.png");
 
-                Employee guillermo = new Employee("EMP-006", "Guillermo", "Velázquez", "Director de Tecnología",
+                Employee guillermo = new Employee("EMP-006", "Guillermo", "Blazquez", "Director de Tecnología",
                                 "Atencion al cliente", new BigDecimal("3200.00"), barcelona,
                                 "Innovando para llevar la experiencia Mokaf al mundo digital.", "guillermo@mokaf.com",
                                 "../images/Profile/guillermo.png");
