@@ -29,7 +29,7 @@ public class GestionController {
     private ProductService productService;
 
     @Autowired
-    private  AllergenService allergenService;
+    private AllergenService allergenService;
 
     @GetMapping("/admin/gestion_menu")
     public String showGestion(Model model) {
@@ -143,7 +143,12 @@ public class GestionController {
             imageObj = new Image(new javax.sql.rowset.serial.SerialBlob(imageData));
         }
 
-        Product updatedProduct = new Product(name, description, imageObj, priceBase, categoryEnum);
+        // Update existing product fields
+        existingProduct.setName(name);
+        existingProduct.setDescription(description);
+        existingProduct.setPriceBase(priceBase);
+        existingProduct.setCategory(categoryEnum);
+        existingProduct.setImage(imageObj);
 
         Set<Allergen> allergenSet = new HashSet<>();
         if (allergenIds != null) {
@@ -151,9 +156,9 @@ public class GestionController {
                 allergenService.findById(aId).ifPresent(allergenSet::add);
             }
         }
-        updatedProduct.setAllergens(allergenSet);
+        existingProduct.setAllergens(allergenSet);
 
-        productService.updateProduct(id, updatedProduct);
+        productService.updateProduct(id, existingProduct);
 
         return "redirect:/admin/gestion_menu";
     }
