@@ -65,8 +65,8 @@ public class MainController {
 
     //Us
 
-     @GetMapping("/nosotros")
-    public String nosotros(Model model) {
+    @GetMapping("/about_us")
+    public String about_us(Model model) {
         // Fetch team from DB
         model.addAttribute("team", employeeRepository.findByDepartment("Atencion al cliente"));
         return "about_us";
@@ -77,7 +77,7 @@ public class MainController {
     @Autowired
     private BranchRepository branchRepository;
     
-     @GetMapping("/branches")
+    @GetMapping("/branches")
     public String branches ( Model model) {
 
         List<Branch> branches = branchRepository.findAll();
