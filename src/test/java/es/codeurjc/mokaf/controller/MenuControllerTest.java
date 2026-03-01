@@ -8,10 +8,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import static org.mockito.ArgumentMatchers.any;
+import es.codeurjc.mokaf.service.ProductService;
+import es.codeurjc.mokaf.repository.AllergenRepository;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -30,6 +37,12 @@ class MenuControllerTest {
     @MockitoBean
     private ProductRepository productRepository;
 
+    @MockitoBean
+    private AllergenRepository allergenRepository;
+
+    @MockitoBean(name = "applicationProductService")
+    private ProductService productService;
+
     @Test
     @WithMockUser
     void testShowMenu() throws Exception {
@@ -38,8 +51,10 @@ class MenuControllerTest {
         Product p2 = new Product("Latte", "Desc", null, new BigDecimal("3.5"), Category.HOT);
         p2.setId(2L);
         List<Product> products = Arrays.asList(p1, p2);
+        Page<Product> pagedProducts = new PageImpl<>(products);
 
-        when(productRepository.findAll()).thenReturn(products);
+        when(productRepository.findAll(any(PageRequest.class))).thenReturn(pagedProducts);
+        when(allergenRepository.findAll()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/menu"))
                 .andExpect(status().isOk())

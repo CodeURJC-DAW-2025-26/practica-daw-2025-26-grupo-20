@@ -71,11 +71,12 @@
                                                 <span class="price-tag">
                                                     {{priceBase}}€
                                                 </span>
-                                                {{#user}}
+                                                {{#isLogged}}
                                                     <form
                                                         action="/cart/add"
-                                                        method="POST"
-                                                        class="d-inline ajax-cart-form"
+                                                        method="post"
+                                                        style="display:inline;"
+                                                        class="ajax-cart-form"
                                                     >
                                                         <input
                                                             type="hidden"
@@ -85,19 +86,20 @@
                                                         <input
                                                             type="hidden"
                                                             name="qty"
+                                                            class="qty-hidden"
                                                             value="1"
                                                         >
                                                         <button
+                                                            class="btn btn-recommended-cart"
                                                             type="submit"
-                                                            class="btn btn-sm btn-recommended-cart"
                                                             onclick="event.stopPropagation();"
                                                         >
                                                             <i
-                                                                class="fas fa-cart-plus me-1"
-                                                            ></i> Añadir
+                                                                class="fas fa-cart-plus me-2"
+                                                            ></i>Añadir
                                                         </button>
                                                     </form>
-                                                {{/user}}
+                                                {{/isLogged}}
                                             </div>
                                         </div>
                                     </div>
@@ -195,204 +197,224 @@
         ></script>
         <script src="/js/cart.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Function to get a consistent color for each allergen
-                const colors = ['#e63946', '#f4a261', '#2a9d8f', '#264653', '#e76f51', '#8ab17d'];
-                function getColorForAllergen(allergenName) {
-                    let hash = 0;
-                    for (let i = 0; i < allergenName.length; i++) {
-                        hash = allergenName.charCodeAt(i) + ((hash << 5) - hash);
-                    }
-                    const colorIndex = Math.abs(hash) % colors.length;
-                    return colors[colorIndex];
+            document.addEventListener("DOMContentLoaded", function () {
+              // Function to get a consistent color for each allergen
+              const colors = [
+                "#e63946",
+                "#f4a261",
+                "#2a9d8f",
+                "#264653",
+                "#e76f51",
+                "#8ab17d",
+              ];
+              function getColorForAllergen(allergenName) {
+                let hash = 0;
+                for (let i = 0; i < allergenName.length; i++) {
+                  hash = allergenName.charCodeAt(i) + ((hash << 5) - hash);
                 }
+                const colorIndex = Math.abs(hash) % colors.length;
+                return colors[colorIndex];
+              }
             
-                // Apply colors to allergen filter buttons on load
-                document.querySelectorAll('.allergen-filter-btn').forEach(btn => {
-                    const allergenName = btn.getAttribute('data-allergen');
-                    btn.style.backgroundColor = getColorForAllergen(allergenName);
+              // Apply colors to allergen filter buttons on load
+              document.querySelectorAll(".allergen-filter-btn").forEach((btn) => {
+                const allergenName = btn.getAttribute("data-allergen");
+                btn.style.backgroundColor = getColorForAllergen(allergenName);
+              });
+            
+              const filterBtns = document.querySelectorAll(".btn-category");
+              const allergenFilterBtns = document.querySelectorAll(".allergen-filter-btn");
+              const menuItems = document.querySelectorAll(".menu-item");
+            
+              let currentCategory = "all";
+              const excludedAllergens = new Set();
+            
+              function applyFilters() {
+                const currentMenuItems = document.querySelectorAll(".menu-item");
+                currentMenuItems.forEach((item) => {
+                  const itemAllergens = Array.from(
+                    item.querySelectorAll(".allergen-badge"),
+                  ).map((badge) => badge.getAttribute("data-allergen"));
+            
+                  const hasExcludedAllergen = itemAllergens.some((allergen) =>
+                    excludedAllergens.has(allergen),
+                  );
+            
+                  if (!hasExcludedAllergen) {
+                    item.style.display = "";
+                  } else {
+                    item.style.display = "none";
+                  }
                 });
+              }
             
-                const filterBtns = document.querySelectorAll('.btn-category');
-                const allergenFilterBtns = document.querySelectorAll('.allergen-filter-btn');
-                const menuItems = document.querySelectorAll('.menu-item');
+              // Category filter functionality
+              filterBtns.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  filterBtns.forEach((b) => b.classList.remove("active"));
+                  btn.classList.add("active");
             
-                let currentCategory = 'all';
-                const excludedAllergens = new Set();
+                  currentCategory = btn.getAttribute("data-category");
             
-                function applyFilters() {
-                    const currentMenuItems = document.querySelectorAll('.menu-item');
-                    currentMenuItems.forEach(item => {
-                        const itemAllergens = Array.from(item.querySelectorAll('.allergen-badge')).map(badge => badge.getAttribute('data-allergen'));
+                  // Reset pagination and container
+                  currentPage = 0;
+                  menuContainer.innerHTML = "";
+                  loadMoreContainer.classList.remove("d-none");
             
-                        const hasExcludedAllergen = itemAllergens.some(allergen => excludedAllergens.has(allergen));
+                  // Show spinner and load from server
+                  const spinner = document.getElementById("loading-spinner");
+                  spinner.classList.remove("d-none");
             
-                        if (!hasExcludedAllergen) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                }
+                  fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
+                    .then((response) => response.text())
+                    .then((html) => {
+                      spinner.classList.add("d-none");
+                      const tempDiv = document.createElement("div");
+                      tempDiv.innerHTML = html;
             
-                // Category filter functionality
-                filterBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        filterBtns.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
+                      const hasMoreDataInput = tempDiv.querySelector("#hasMoreData");
+                      const hasMore = hasMoreDataInput
+                        ? hasMoreDataInput.value === "true"
+                        : false;
+                      if (hasMoreDataInput) hasMoreDataInput.remove();
             
-                        currentCategory = btn.getAttribute('data-category');
+                      const newItems = tempDiv.querySelectorAll(".menu-item");
+                      newItems.forEach((item) => menuContainer.appendChild(item));
             
-                        // Reset pagination and container
-                        currentPage = 0;
-                        menuContainer.innerHTML = '';
-                        loadMoreContainer.classList.remove('d-none');
+                      currentPage++;
+                      if (!hasMore) loadMoreContainer.classList.add("d-none");
             
-                        // Show spinner and load from server
-                        const spinner = document.getElementById('loading-spinner');
-                        spinner.classList.remove('d-none');
-            
-                        fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
-                            .then(response => response.text())
-                            .then(html => {
-                                spinner.classList.add('d-none');
-                                const tempDiv = document.createElement('div');
-                                tempDiv.innerHTML = html;
-            
-                                const hasMoreDataInput = tempDiv.querySelector('#hasMoreData');
-                                const hasMore = hasMoreDataInput ? hasMoreDataInput.value === 'true' : false;
-                                if (hasMoreDataInput) hasMoreDataInput.remove();
-            
-                                const newItems = tempDiv.querySelectorAll('.menu-item');
-                                newItems.forEach(item => menuContainer.appendChild(item));
-            
-                                currentPage++;
-                                if (!hasMore) loadMoreContainer.classList.add('d-none');
-            
-                                if (typeof initCart === 'function') initCart();
-                                applyFilters();
-                            })
-                            .catch(error => {
-                                spinner.classList.add('d-none');
-                                console.error('Error loading items:', error);
-                            });
-                    });
-                });
-            
-                // Allergen filter functionality
-                allergenFilterBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const allergen = btn.getAttribute('data-allergen');
-                        if (excludedAllergens.has(allergen)) {
-                            excludedAllergens.delete(allergen);
-                            btn.style.opacity = '0.6';
-                            btn.style.transform = 'scale(1)';
-                            btn.style.border = '2px solid transparent';
-                            btn.innerHTML = btn.getAttribute('data-allergen');
-                        } else {
-                            excludedAllergens.add(allergen);
-                            btn.style.opacity = '1';
-                            btn.style.transform = 'scale(1.05)';
-                            btn.style.border = '2px solid var(--marron-oscuro)';
-                            btn.innerHTML = `<i class="fas fa-ban me-1"></i> ${btn.getAttribute('data-allergen')}`;
-                        }
-                        applyFilters();
+                      if (typeof initCart === "function") initCart();
+                      applyFilters();
+                    })
+                    .catch((error) => {
+                      spinner.classList.add("d-none");
+                      console.error("Error loading items:", error);
                     });
                 });
+              });
             
-                // Initialize AJAX cart
-                initCart();
+              // Allergen filter functionality
+              allergenFilterBtns.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  const allergen = btn.getAttribute("data-allergen");
+                  if (excludedAllergens.has(allergen)) {
+                    excludedAllergens.delete(allergen);
+                    btn.style.opacity = "0.6";
+                    btn.style.transform = "scale(1)";
+                    btn.style.border = "2px solid transparent";
+                    btn.innerHTML = btn.getAttribute("data-allergen");
+                  } else {
+                    excludedAllergens.add(allergen);
+                    btn.style.opacity = "1";
+                    btn.style.transform = "scale(1.05)";
+                    btn.style.border = "2px solid var(--marron-oscuro)";
+                    btn.innerHTML = `<i class="fas fa-ban me-1"></i> ${btn.getAttribute("data-allergen")}`;
+                  }
+                  applyFilters();
+                });
+              });
             
-                // Deep linking: apply filter based on hash
-                function checkHash() {
-                    const hash = window.location.hash.substring(1);
-                    if (hash) {
-                        const targetBtn = document.querySelector(`.btn-category[data-category="${hash}"]`);
-                        if (targetBtn) {
-                            filterBtns.forEach(b => b.classList.remove('active'));
-                            targetBtn.classList.add('active');
-                            currentCategory = hash;
-                            applyFilters();
+              // Initialize AJAX cart
+              initCart();
             
-                            // Scroll to menu container if hash is present
-                            document.querySelector('.menu-container').scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
+              // Deep linking: apply filter based on hash
+              function checkHash() {
+                const hash = window.location.hash.substring(1);
+                if (hash) {
+                  const targetBtn = document.querySelector(
+                    `.btn-category[data-category="${hash}"]`,
+                  );
+                  if (targetBtn) {
+                    filterBtns.forEach((b) => b.classList.remove("active"));
+                    targetBtn.classList.add("active");
+                    currentCategory = hash;
+                    applyFilters();
+            
+                    // Scroll to menu container if hash is present
+                    document
+                      .querySelector(".menu-container")
+                      .scrollIntoView({ behavior: "smooth" });
+                  }
                 }
+              }
             
-                // Initial check
-                checkHash();
+              // Initial check
+              checkHash();
             
-                // AJAX Pagination Logic
-                let currentPage = 1;
-                const loadMoreBtn = document.getElementById('load-more-btn');
-                const loadMoreContainer = document.getElementById('load-more-container');
-                const menuContainer = document.getElementById('menu-items-container');
+              // AJAX Pagination Logic
+              let currentPage = 1;
+              const loadMoreBtn = document.getElementById("load-more-btn");
+              const loadMoreContainer = document.getElementById("load-more-container");
+              const menuContainer = document.getElementById("menu-items-container");
             
-                if (loadMoreBtn) {
-                    loadMoreBtn.addEventListener('click', function () {
-                        const originalHtml = loadMoreBtn.innerHTML;
-                        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Cargando...';
-                        loadMoreBtn.disabled = true;
+              if (loadMoreBtn) {
+                loadMoreBtn.addEventListener("click", function () {
+                  const originalHtml = loadMoreBtn.innerHTML;
+                  loadMoreBtn.innerHTML =
+                    '<i class="fas fa-spinner fa-spin me-2"></i> Cargando...';
+                  loadMoreBtn.disabled = true;
             
-                        const spinner = document.getElementById('loading-spinner');
-                        spinner.classList.remove('d-none');
+                  const spinner = document.getElementById("loading-spinner");
+                  spinner.classList.remove("d-none");
             
-                        fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
-                            .then(response => response.text())
-                            .then(html => {
-                                spinner.classList.add('d-none');
-                                // Create a temporary element to parse the HTML
-                                const tempDiv = document.createElement('div');
-                                tempDiv.innerHTML = html;
+                  fetch(`/api/menu?page=${currentPage}&category=${currentCategory}`)
+                    .then((response) => response.text())
+                    .then((html) => {
+                      spinner.classList.add("d-none");
+                      // Create a temporary element to parse the HTML
+                      const tempDiv = document.createElement("div");
+                      tempDiv.innerHTML = html;
             
-                                // Check if there is more data
-                                const hasMoreDataInput = tempDiv.querySelector('#hasMoreData');
-                                const hasMore = hasMoreDataInput ? hasMoreDataInput.value === 'true' : false;
+                      // Check if there is more data
+                      const hasMoreDataInput = tempDiv.querySelector("#hasMoreData");
+                      const hasMore = hasMoreDataInput
+                        ? hasMoreDataInput.value === "true"
+                        : false;
             
-                                // Remove the hidden input from tempDiv before appending
-                                if (hasMoreDataInput) hasMoreDataInput.remove();
+                      // Remove the hidden input from tempDiv before appending
+                      if (hasMoreDataInput) hasMoreDataInput.remove();
             
-                                // Append new items to the container
-                                const newItems = tempDiv.querySelectorAll('.menu-item');
-                                newItems.forEach(item => {
-                                    menuContainer.appendChild(item);
+                      // Append new items to the container
+                      const newItems = tempDiv.querySelectorAll(".menu-item");
+                      newItems.forEach((item) => {
+                        menuContainer.appendChild(item);
             
-                                    // Apply colors to new allergen badges if needed
-                                    // Actually, we don't need to re-apply unless they are visible, 
-                                    // but we should re-initialize filters and cart
-                                });
+                        // Apply colors to new allergen badges if needed
+                        // Actually, we don't need to re-apply unless they are visible,
+                        // but we should re-initialize filters and cart
+                      });
             
-                                // Update state
-                                currentPage++;
-                                if (!hasMore) {
-                                    loadMoreContainer.classList.add('d-none');
-                                }
+                      // Update state
+                      currentPage++;
+                      if (!hasMore) {
+                        loadMoreContainer.classList.add("d-none");
+                      }
             
-                                // Re-initialize cart for new elements
-                                if (typeof initCart === 'function') {
-                                    initCart();
-                                }
+                      // Re-initialize cart for new elements
+                      if (typeof initCart === "function") {
+                        initCart();
+                      }
             
-                                // Re-apply current filters to new items
-                                applyFilters();
+                      // Re-apply current filters to new items
+                      applyFilters();
             
-                                // Restore button
-                                loadMoreBtn.innerHTML = originalHtml;
-                                loadMoreBtn.disabled = false;
-                            })
-                            .catch(error => {
-                                spinner.classList.add('d-none');
-                                console.error('Error loading more items:', error);
-                                loadMoreBtn.innerHTML = originalHtml;
-                                loadMoreBtn.disabled = false;
-                                alert('Error al cargar más productos. Inténtalo de nuevo.');
-                            });
+                      // Restore button
+                      loadMoreBtn.innerHTML = originalHtml;
+                      loadMoreBtn.disabled = false;
+                    })
+                    .catch((error) => {
+                      spinner.classList.add("d-none");
+                      console.error("Error loading more items:", error);
+                      loadMoreBtn.innerHTML = originalHtml;
+                      loadMoreBtn.disabled = false;
+                      alert("Error al cargar más productos. Inténtalo de nuevo.");
                     });
-                }
+                });
+              }
             
-                // Listen for hash changes
-                window.addEventListener('hashchange', checkHash);
+              // Listen for hash changes
+              window.addEventListener("hashchange", checkHash);
             });
         </script>
     </body>

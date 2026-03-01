@@ -5,6 +5,8 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.AllergenRepository;
+import es.codeurjc.mokaf.service.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,11 +21,14 @@ public class MenuController {
 
     private final ProductRepository productRepository;
     private final AllergenRepository allergenRepository;
+    private final ProductService productService;
 
     public MenuController(ProductRepository productRepository,
-            AllergenRepository allergenRepository) {
+            AllergenRepository allergenRepository,
+            @Qualifier("applicationProductService") ProductService productService) {
         this.productRepository = productRepository;
         this.allergenRepository = allergenRepository;
+        this.productService = productService;
     }
 
     @GetMapping("/menu")
@@ -57,6 +62,19 @@ public class MenuController {
             boolean isAdmin = user.getRole() == User.Role.ADMIN;
             model.addAttribute("user", user);
             model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("isLogged", true);
+
+            int recommendedLimit = 4;
+            model.addAttribute("recommendedItems",
+                    productService.getRecommendedProducts(user.getId(), recommendedLimit));
+            model.addAttribute("recommendedTitle", "Recomendados para ti");
+            model.addAttribute("recommendedSubtitle", "Basados en tus últimos pedidos");
+        } else {
+            int recommendedLimit = 4;
+            model.addAttribute("recommendedItems",
+                    productService.getBestSellingProducts(recommendedLimit));
+            model.addAttribute("recommendedTitle", "Los más vendidos");
+            model.addAttribute("recommendedSubtitle", "Basados en las preferencias de nuestros clientes");
         }
 
         return "menu";
@@ -85,6 +103,7 @@ public class MenuController {
                 authentication.getPrincipal() instanceof User) {
             User user = (User) authentication.getPrincipal();
             model.addAttribute("user", user);
+            model.addAttribute("isLogged", true);
         }
 
         return "fragments/menu_items_fragment";

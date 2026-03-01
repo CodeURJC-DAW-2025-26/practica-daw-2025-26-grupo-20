@@ -37,27 +37,33 @@
                     >
                         <p class="card-price fw-bold mb-0">{{priceBase}}€</p>
 
-                        {{#user}}
+                        {{#isLogged}}
                             <form
                                 action="/cart/add"
-                                method="POST"
-                                class="d-inline ajax-cart-form"
+                                method="post"
+                                style="display:inline;"
+                                class="ajax-cart-form"
                             >
                                 <input
                                     type="hidden"
                                     name="productId"
                                     value="{{id}}"
                                 >
-                                <input type="hidden" name="qty" value="1">
+                                <input
+                                    type="hidden"
+                                    name="qty"
+                                    class="qty-hidden"
+                                    value="1"
+                                >
                                 <button
+                                    class="btn btn-recommended-cart"
                                     type="submit"
-                                    class="btn btn-sm btn-outline-primary btn-add-cart"
                                     onclick="event.stopPropagation();"
                                 >
-                                    <i class="fas fa-cart-plus me-1"></i> Añadir
+                                    <i class="fas fa-cart-plus me-2"></i>Añadir
                                 </button>
                             </form>
-                        {{/user}}
+                        {{/isLogged}}
                     </div>
                 </div>
             </div>

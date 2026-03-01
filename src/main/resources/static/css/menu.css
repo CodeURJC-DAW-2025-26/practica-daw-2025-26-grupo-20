@@ -34,9 +34,12 @@
 }
 
 .card-title,
-.card-text,
-.card-price {
+.card-text {
     color: var(--cafe-claro);
+}
+
+.card-price {
+    color: var(--dorado);
 }
 
 .btn-add-cart {
@@ -246,6 +249,21 @@
     color: var(--cafe-oscuro);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(198, 168, 125, 0.35);
+}
+
+/* Price + button row inside recommended cards */
+.price-action-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.price-tag {
+    color: var(--dorado);
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
 /* ===== Allergens ===== */
