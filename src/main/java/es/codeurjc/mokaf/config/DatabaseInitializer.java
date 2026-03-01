@@ -19,23 +19,23 @@ import org.springframework.transaction.annotation.Transactional;
 import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.model.Branch;
 import es.codeurjc.mokaf.model.Category;
-import es.codeurjc.mokaf.model.Image;
 import es.codeurjc.mokaf.model.Employee;
+import es.codeurjc.mokaf.model.Faq;
+import es.codeurjc.mokaf.model.Image;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.OrderItem;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
-import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.repository.AllergenRepository;
 import es.codeurjc.mokaf.repository.BranchRepository;
-import es.codeurjc.mokaf.repository.ImageRepository;
 import es.codeurjc.mokaf.repository.EmployeeRepository;
+import es.codeurjc.mokaf.repository.FaqRepository;
+import es.codeurjc.mokaf.repository.ImageRepository;
 import es.codeurjc.mokaf.repository.OrderRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
-import es.codeurjc.mokaf.repository.FaqRepository;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
@@ -275,7 +275,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         emp3.setEmployeeId("EMP-005");
         userRepository.save(emp3);
 
-        User emp4 = new User("Guillermo Velázquez", "guillermo@mokaf.com", passwordEncoder.encode("guille123"),
+        User emp4 = new User("Guillermo Blázquez", "guillermo@mokaf.com", passwordEncoder.encode("guille123"),
                 User.Role.EMPLOYEE);
         emp4.setEmployeeId("EMP-006");
         userRepository.save(emp4);
