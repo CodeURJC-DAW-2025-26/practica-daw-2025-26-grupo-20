@@ -18,7 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import static org.mockito.ArgumentMatchers.any;
 import es.codeurjc.mokaf.service.ProductService;
-import es.codeurjc.mokaf.repository.AllergenRepository;
+import es.codeurjc.mokaf.service.AllergenService;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.repository.ProductRepository;
 
 @WebMvcTest(controllers = MenuController.class)
 class MenuControllerTest {
@@ -34,14 +33,11 @@ class MenuControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private ProductRepository productRepository;
-
-    @MockitoBean
-    private AllergenRepository allergenRepository;
-
     @MockitoBean(name = "applicationProductService")
     private ProductService productService;
+
+    @MockitoBean
+    private AllergenService allergenService;
 
     @Test
     @WithMockUser
@@ -53,8 +49,9 @@ class MenuControllerTest {
         List<Product> products = Arrays.asList(p1, p2);
         Page<Product> pagedProducts = new PageImpl<>(products);
 
-        when(productRepository.findAll(any(PageRequest.class))).thenReturn(pagedProducts);
-        when(allergenRepository.findAll()).thenReturn(Collections.emptyList());
+        when(productService.getProductsPage(0, 6)).thenReturn(pagedProducts);
+        when(productService.getBestSellingProducts(4)).thenReturn(products);
+        when(allergenService.getAllAllergens()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/menu"))
                 .andExpect(status().isOk())
