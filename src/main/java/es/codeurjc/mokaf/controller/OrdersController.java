@@ -5,6 +5,7 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.OrdersService;
 import es.codeurjc.mokaf.service.UserService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,13 +22,13 @@ import java.util.Map;
 @Controller
 public class OrdersController {
 
-    private final OrdersService ordersService;
-    private final UserService userService;
+    @Autowired
+    private OrdersService ordersService;
 
-    public OrdersController(OrdersService ordersService, UserService userService) {
-        this.ordersService = ordersService;
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
+
+   
 
     @GetMapping("/orders")
     public String showOrders(Authentication authentication,

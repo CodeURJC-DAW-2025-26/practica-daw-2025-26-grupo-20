@@ -6,6 +6,8 @@ import es.codeurjc.mokaf.model.OrderItem;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.CartService;
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,11 +21,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/cart")
 public class CartController {
 
-    private final CartService cartService;
-
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
+    @Autowired
+    private CartService cartService;
 
     /**
      * Show cart page
