@@ -356,11 +356,11 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 **Responsabilidades:**
 
-- Implementación del sistema de notificaciones por correo electrónico, incluyendo la generación y envío de facturas en PDF tras la confirmación de pedidos.
-- Desarrollo del algoritmo de recomendación dinámica de productos en el menú, personalizando sugerencias para usuarios registrados y filtrando por "best-sellers" para visitantes.
-- Creación de un sistema de filtrado de categorías con paginación AJAX en el servidor para optimizar el rendimiento y la experiencia de usuario.
-- Implementación de un formulario de contacto robusto con validación en el servidor y gestión de consultas vía email.
-- Refuerzo de la seguridad en el registro de usuarios mediante la validación compleja de contraseñas y formatos de correo electrónico.
+- Implementation of the email notification system, including the generation and sending of PDF invoices after order confirmation.
+- Development of the dynamic product recommendation algorithm in the menu, customizing suggestions for registered users and filtering by "best-sellers" for visitors.
+- Creation of a category filtering system with AJAX paging on the server to optimize performance and user experience.
+- Implementation of a robust contact form with server validation and email query management.
+- Strengthening security in user registration through complex validation of passwords and email formats.
 
 | Nº  | Commits                                                                                                                                                                                          | Files                                                                                                                                                                    |
 | :-: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
