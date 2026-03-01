@@ -278,17 +278,22 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - [Gonzalo Pérez Roca]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+**Responsabilidades:**
+- Implementación entidades de la base de datos y modelo Relacional.
+- Siembra de datos en la base de datos.
+- Implementación MVC de Productos y Reviews.
+- Implementación de la paginación en las Review.
+- Implementación de la Gestión de Productos(Admin).
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [Add Models and Repository. NO esta terminado](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/29236a06f9004ad097a4d356d48b31ec5376d84f) | [pom.xml](pom.xml) |
+|  2  | [Update DatabaseInitializer.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/6b98ae59f3704cb75f1479a8c83b5a140008136e) | [DatabaseInitializer.java](src/main/java/es/codeurjc/mokaf/config/DatabaseInitializer.java) |
+|  3  | [ADMIN PRODUCTS](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/64586826e78f57c1be261da3fcc40189fb9d94ad) | [GestionController]( https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/java/es/codeurjc/mokaf/controller/GestionController.java)|
+|  4  | [Add Pageable-Review- NewReviewSeed](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/54ad14c35e70740f2a52a15f3cf0a2b6fbeaed39) | [ReviewService](URL_archivo_4) |
+|  5  | [Static Reviews, present mustaches]([URL_commit_5](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/f6fb74512965c00cee0abcb61a7c76303d022d31)) | [Product.mustache](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/resources/templates/product.mustache) |
 
 ---
 
