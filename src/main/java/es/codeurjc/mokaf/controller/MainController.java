@@ -3,18 +3,11 @@ package es.codeurjc.mokaf.controller;
 import es.codeurjc.mokaf.model.Branch;
 import es.codeurjc.mokaf.model.ContactRequest;
 import es.codeurjc.mokaf.model.User;
-import es.codeurjc.mokaf.repository.BranchRepository;
-import es.codeurjc.mokaf.repository.EmployeeRepository;
-import es.codeurjc.mokaf.service.OrdersService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import es.codeurjc.mokaf.model.ContactRequest;
-import es.codeurjc.mokaf.repository.EmployeeRepository;
-import es.codeurjc.mokaf.repository.FaqRepository;
+import es.codeurjc.mokaf.service.BranchService;
 import es.codeurjc.mokaf.service.ContactEmailService;
+import es.codeurjc.mokaf.service.EmployeeService;
+import es.codeurjc.mokaf.service.FaqService;
+import es.codeurjc.mokaf.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -22,6 +15,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,13 +27,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class MainController {
 
-
     @Autowired
     private OrdersService ordersService;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeService employeeService;
 
+    @Autowired
+    private BranchService branchService;
+
+    @Autowired
+    private FaqService faqService;
+
+    @Autowired
+    private ContactEmailService contactEmailService;
+
+    // ── Checkout ────────────────────────────────────────────────────────────
 
     @PostMapping("/cart/checkout")
     public String checkout(Authentication authentication, RedirectAttributes redirectAttributes) {
@@ -63,43 +66,30 @@ public class MainController {
         return "redirect:/orders";
     }
 
-    //Us
+    // ── About Us ─────────────────────────────────────────────────────────────
 
     @GetMapping("/about_us")
     public String about_us(Model model) {
-        // Fetch team from DB
-        model.addAttribute("team", employeeRepository.findByDepartment("Atencion al cliente"));
+        model.addAttribute("team", employeeService.getEmployeesByDepartment("Atencion al cliente"));
         return "about_us";
     }
 
-    //Branches
+    // ── Branches ─────────────────────────────────────────────────────────────
 
-    @Autowired
-    private BranchRepository branchRepository;
-    
     @GetMapping("/branches")
-    public String branches ( Model model) {
-
-        List<Branch> branches = branchRepository.findAll();
+    public String branches(Model model) {
+        List<Branch> branches = branchService.getAllBranches();
         model.addAttribute("branches", branches);
-       
         return "branches";
     }
 
-
-    //Contact
-
-    @Autowired
-    private FaqRepository faqRepository;
-
-    @Autowired
-    private ContactEmailService contactEmailService;
+    // ── Contact ──────────────────────────────────────────────────────────────
 
     private void populateCommonModel(Model model) {
         model.addAttribute("title", "CONTACTANOS");
         model.addAttribute("currentPage", "contact");
-        model.addAttribute("team", employeeRepository.findByDepartment("Atención al cliente"));
-        model.addAttribute("faqs", faqRepository.findAll());
+        model.addAttribute("team", employeeService.getEmployeesByDepartment("Atención al cliente"));
+        model.addAttribute("faqs", faqService.getAllFaqs());
     }
 
     @GetMapping("/contact")
@@ -137,14 +127,12 @@ public class MainController {
             return "contact"; // return page with errors
         }
 
-        // if it's valid we send the email
+        // If valid, send the contact email
         contactEmailService.sendContactEmail(contactRequest);
 
-       
         model.addAttribute("success", true);
         model.addAttribute("contactRequest", new ContactRequest());
 
         return "contact";
     }
-
 }

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.model.User.Role;
-import es.codeurjc.mokaf.repository.UserRepository;
+import es.codeurjc.mokaf.service.BranchService;
+import es.codeurjc.mokaf.service.EmployeeService;
 import es.codeurjc.mokaf.service.UserService;
 
 @Controller
@@ -25,13 +26,10 @@ public class GestionUsersController {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeService employeeService;
 
     @Autowired
-    private es.codeurjc.mokaf.repository.EmployeeRepository employeeRepository;
-
-    @Autowired
-    private es.codeurjc.mokaf.repository.BranchRepository branchRepository;
+    private BranchService branchService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,9 +37,9 @@ public class GestionUsersController {
     @GetMapping
     public String showGestionUsuarios(Model model) {
         model.addAttribute("title", "Gestión de Usuarios");
-        model.addAttribute("users", userRepository.findAll());
-        model.addAttribute("allEmployees", employeeRepository.findAll());
-        model.addAttribute("branches", branchRepository.findAll());
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("allEmployees", employeeService.getAllEmployees());
+        model.addAttribute("branches", branchService.getAllBranches());
         model.addAttribute("availableRoles", User.Role.values());
         model.addAttribute("currentPage", "gestion");
         return "admin/gestion_usuarios";
@@ -82,10 +80,10 @@ public class GestionUsersController {
             newEmp.setProfileImageUrl("/images/Profile/default.png");
 
             if (branchId != null) {
-                branchRepository.findById(branchId).ifPresent(newEmp::setBranch);
+                branchService.getBranchById(branchId).ifPresent(newEmp::setBranch);
             }
 
-            employeeRepository.save(newEmp);
+            employeeService.save(newEmp);
             newUser.setEmployeeId(generatedId);
         }
 
@@ -107,7 +105,7 @@ public class GestionUsersController {
             @RequestParam(required = false) Long branchId,
             @RequestParam(required = false) String description) {
 
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> optionalUser = userService.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setName(name);
@@ -124,14 +122,15 @@ public class GestionUsersController {
                 es.codeurjc.mokaf.model.Employee emp;
 
                 if (targetEmployeeId == null || targetEmployeeId.isEmpty()) {
-                    // Create new employee if missing
+                    // Create new employee record if one doesn't exist yet
                     emp = new es.codeurjc.mokaf.model.Employee();
                     targetEmployeeId = "EMP-" + java.util.UUID.randomUUID().toString().substring(0, 5).toUpperCase();
                     emp.setId(targetEmployeeId);
                     user.setEmployeeId(targetEmployeeId);
                 } else {
-                    // Load existing
-                    emp = employeeRepository.findById(targetEmployeeId).orElse(new es.codeurjc.mokaf.model.Employee());
+                    // Load existing employee record
+                    emp = employeeService.getEmployeeById(targetEmployeeId)
+                            .orElse(new es.codeurjc.mokaf.model.Employee());
                     if (emp.getId() == null) {
                         emp.setId(targetEmployeeId);
                     }
@@ -152,7 +151,7 @@ public class GestionUsersController {
                     emp.setDescription(description);
 
                 if (branchId != null) {
-                    branchRepository.findById(branchId).ifPresent(emp::setBranch);
+                    branchService.getBranchById(branchId).ifPresent(emp::setBranch);
                 } else {
                     emp.setBranch(null);
                 }
@@ -161,7 +160,7 @@ public class GestionUsersController {
                     emp.setProfileImageUrl("/images/Profile/default.png");
                 }
 
-                employeeRepository.save(emp);
+                employeeService.save(emp);
                 user.setEmployeeId(targetEmployeeId);
             } else {
                 user.setEmployeeId(null);
@@ -175,7 +174,7 @@ public class GestionUsersController {
 
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> optionalUser = userService.findById(id);
         if (optionalUser.isPresent()) {
             userService.delete(optionalUser.get());
         }

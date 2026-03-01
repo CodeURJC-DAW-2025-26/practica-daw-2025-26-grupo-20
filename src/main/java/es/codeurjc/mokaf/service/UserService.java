@@ -42,7 +42,11 @@ public class UserService implements UserDetailsService {
         userRepository.delete(user);
     }
 
-    public Object findById(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public java.util.List<User> findAll() {
+        return userRepository.findAll();
     }
 }
