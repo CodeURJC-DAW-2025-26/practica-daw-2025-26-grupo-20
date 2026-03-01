@@ -34,6 +34,10 @@ public class ProductService {
                 return product.orElse(null);
         }
 
+        public Optional<Product> findWithImageById(Long id) {
+                return productRepository.findWithImageById(id);
+        }
+
         public void updateProduct(Long id, Product newProduct) {
                 if (productRepository.existsById(id)) {
                         newProduct.setId(id);

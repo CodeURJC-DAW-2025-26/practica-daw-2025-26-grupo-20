@@ -3,7 +3,7 @@ package es.codeurjc.mokaf.controller;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
-import es.codeurjc.mokaf.repository.ProductRepository;
+import es.codeurjc.mokaf.service.ProductService;
 import es.codeurjc.mokaf.service.ReviewService;
 
 import org.springframework.data.domain.Page;
@@ -18,11 +18,11 @@ public class ProductController {
 
     private static final int REVIEWS_PAGE_SIZE = 6;
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private final ReviewService reviewService;
 
-    public ProductController(ProductRepository productRepository, ReviewService reviewService) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService, ReviewService reviewService) {
+        this.productService = productService;
         this.reviewService = reviewService;
     }
 
@@ -30,9 +30,8 @@ public class ProductController {
     public String product(
             @PathVariable Long id,
             Model model,
-            @AuthenticationPrincipal User currentUser
-    ) {
-        Product p = productRepository.findWithImageById(id)
+            @AuthenticationPrincipal User currentUser) {
+        Product p = productService.findWithImageById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + id));
 
         Page<Review> reviewPage = reviewService.getReviewsPage(id, 0, REVIEWS_PAGE_SIZE);
@@ -57,9 +56,9 @@ public class ProductController {
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,
             Model model,
-            @AuthenticationPrincipal User currentUser
-    ) {
-        if (page < 0) page = 0;
+            @AuthenticationPrincipal User currentUser) {
+        if (page < 0)
+            page = 0;
 
         Page<Review> reviewPage = reviewService.getReviewsPage(id, page, REVIEWS_PAGE_SIZE);
 
