@@ -5,7 +5,10 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.AllergenRepository;
+import es.codeurjc.mokaf.service.AllergenService;
 import es.codeurjc.mokaf.service.ProductService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import org.springframework.data.domain.Page;
@@ -19,17 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class MenuController {
 
-    private final ProductRepository productRepository;
-    private final AllergenRepository allergenRepository;
-    private final ProductService productService;
-
-    public MenuController(ProductRepository productRepository,
-            AllergenRepository allergenRepository,
-            @Qualifier("applicationProductService") ProductService productService) {
-        this.productRepository = productRepository;
-        this.allergenRepository = allergenRepository;
-        this.productService = productService;
-    }
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private AllergenService allergenService;
 
     @GetMapping("/menu")
     public String showMenu(Model model, Authentication authentication,
@@ -40,20 +36,20 @@ public class MenuController {
         if (category != null && !category.isEmpty() && !category.equalsIgnoreCase("all")) {
             try {
                 Category cat = Category.valueOf(category.toUpperCase());
-                productPage = productRepository.findByCategory(cat, PageRequest.of(0, 6));
+                productPage = productService.getProductsByCategoryPage(cat, 0, 6);
                 model.addAttribute("selectedCategory", category);
             } catch (IllegalArgumentException e) {
-                productPage = productRepository.findAll(PageRequest.of(0, 6));
+                productPage = productService.getProductsPage(0, 6);
             }
         } else {
-            productPage = productRepository.findAll(PageRequest.of(0, 6));
+            productPage = productService.getProductsPage(0, 6);
         }
 
         model.addAttribute("items", productPage.getContent());
         model.addAttribute("hasMore", productPage.hasNext());
 
         model.addAttribute("categories", Category.values());
-        model.addAttribute("allergens", allergenRepository.findAll());
+        model.addAttribute("allergens", allergenService.getAllAllergens());
         model.addAttribute("currentPage", "menu");
 
         if (authentication != null && authentication.isAuthenticated() &&
@@ -88,12 +84,12 @@ public class MenuController {
         if (category != null && !category.isEmpty() && !category.equalsIgnoreCase("all")) {
             try {
                 Category cat = Category.valueOf(category.toUpperCase());
-                productPage = productRepository.findByCategory(cat, PageRequest.of(page, 6));
+                productPage = productService.getProductsByCategoryPage(cat, page, 6);
             } catch (IllegalArgumentException e) {
-                productPage = productRepository.findAll(PageRequest.of(page, 6));
+                productPage = productService.getProductsPage(page, 6);
             }
         } else {
-            productPage = productRepository.findAll(PageRequest.of(page, 6));
+            productPage = productService.getProductsPage(page, 6);
         }
 
         model.addAttribute("items", productPage.getContent());

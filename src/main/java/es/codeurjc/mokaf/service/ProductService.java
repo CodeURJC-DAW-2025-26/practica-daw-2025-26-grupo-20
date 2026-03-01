@@ -3,9 +3,11 @@ package es.codeurjc.mokaf.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.repository.OrderItemRepository;
 import es.codeurjc.mokaf.repository.ProductRepository;
@@ -83,5 +85,13 @@ public class ProductService {
                 }
 
                 return bestSellers;
+        }
+
+        public Page<Product> getProductsPage(int page, int size) {
+                return productRepository.findAll(PageRequest.of(page, size));
+        }
+
+        public Page<Product> getProductsByCategoryPage(Category category, int page, int size) {
+                return productRepository.findByCategory(category, PageRequest.of(page, size));
         }
 }
