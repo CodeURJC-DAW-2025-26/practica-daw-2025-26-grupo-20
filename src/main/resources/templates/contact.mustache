@@ -1,292 +1,486 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - Mokaf</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/general.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/contact.css">
-</head>
-<body class="body-content">
-    {{> fragments/header}}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{title}}</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/contact.css">
+    </head>
+    <body class="body-content">
+        {{> fragments/header}}
 
-    <main class="container my-5">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Contacto</li>
-            </ol>
-        </nav>
+        <main class="container my-5">
+            <div class="row">
+                <!-- Left Column - Contact Form -->
+                <div class="col-lg-7">
+                    <div class="contact-form-container">
+                        <h1 class="mb-4">
+                            <i class="fas fa-envelope me-2"></i>Contáctanos
+                        </h1>
+                        <p class="mb-4">
+                            ¿Tienes alguna pregunta, sugerencia o comentario?
+                            Estamos aquí para ayudarte. Rellena el formulario y
+                            te responderemos en menos de 24 horas.
+                        </p>
 
-        <div class="row">
-            <!-- Left Column - Contact Form -->
-            <div class="col-lg-7">
-                <div class="contact-form-container">
-                    <h1 class="mb-4"><i class="fas fa-envelope me-2"></i>Contáctanos</h1>
-                    <p class="mb-4">¿Tienes alguna pregunta, sugerencia o comentario? Estamos aquí para ayudarte. Rellena el formulario y te responderemos en menos de 24 horas.</p>
-                    
-                    <form id="contactForm" class="needs-validation" novalidate>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">Nombre *</label>
-                                <input type="text" class="form-control" id="firstName" required>
-                                <div class="invalid-feedback">
-                                    Por favor, introduce tu nombre.
+                        {{#success}}
+                            <div
+                                class="alert alert-success alert-dismissible fade show mb-4"
+                                role="alert"
+                            >
+                                <strong>¡Mensaje enviado!</strong> Gracias por
+                                contactarnos, te responderemos a la brevedad.
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                        {{/success}}
+
+                        {{#formError}}
+                            <div
+                                class="alert alert-danger alert-dismissible fade show mb-4"
+                                role="alert"
+                            >
+                                <strong>¡Atención!</strong> Por favor, corrige
+                                los errores en el formulario para poder
+                                enviarlo.
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                        {{/formError}}
+
+                        <form
+                            id="contactForm"
+                            class="needs-validation"
+                            method="POST"
+                            action="/contact"
+                        >
+                            {{#_csrf}}
+                                <input
+                                    type="hidden"
+                                    name="_csrf"
+                                    value="{{token}}"
+                                >
+                            {{/_csrf}}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label">
+                                        Nombre *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control {{#firstNameError}}is-invalid{{/firstNameError}}"
+                                        id="firstName"
+                                        name="firstName"
+                                        value="{{contactRequest.firstName}}"
+                                        required
+                                    >
+                                    {{#firstNameError}}
+                                        <div class="invalid-feedback">
+                                            {{firstNameError}}
+                                        </div>
+                                    {{/firstNameError}}
+                                    {{^firstNameError}}
+                                        <div class="invalid-feedback">
+                                            Por favor, introduce tu nombre.
+                                        </div>
+                                    {{/firstNameError}}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label">
+                                        Apellidos
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control {{#lastNameError}}is-invalid{{/lastNameError}}"
+                                        id="lastName"
+                                        name="lastName"
+                                        value="{{#contactRequest.lastName}}{{contactRequest.lastName}}{{/contactRequest.lastName}}"
+                                    >
+                                    {{#lastNameError}}
+                                        <div class="invalid-feedback">
+                                            {{lastNameError}}
+                                        </div>
+                                    {{/lastNameError}}
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Apellidos</label>
-                                <input type="text" class="form-control" id="lastName">
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="email" required>
-                                <div class="invalid-feedback">
-                                    Por favor, introduce un email válido.
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">
+                                        Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        class="form-control {{#emailError}}is-invalid{{/emailError}}"
+                                        id="email"
+                                        name="email"
+                                        value="{{#contactRequest.email}}{{contactRequest.email}}{{/contactRequest.email}}"
+                                        required
+                                    >
+                                    {{#emailError}}
+                                        <div class="invalid-feedback">
+                                            {{emailError}}
+                                        </div>
+                                    {{/emailError}}
+                                    {{^emailError}}
+                                        <div class="invalid-feedback">
+                                            Por favor, introduce un email
+                                            válido.
+                                        </div>
+                                    {{/emailError}}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">
+                                        Teléfono
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        class="form-control {{#phoneError}}is-invalid{{/phoneError}}"
+                                        id="phone"
+                                        name="phone"
+                                        value="{{#contactRequest.phone}}{{contactRequest.phone}}{{/contactRequest.phone}}"
+                                    >
+                                    {{#phoneError}}
+                                        <div class="invalid-feedback">
+                                            {{phoneError}}
+                                        </div>
+                                    {{/phoneError}}
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="phone">
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="subject" class="form-label">Asunto *</label>
-                            <select class="form-select" id="subject" required>
-                                <option value="" selected disabled>Selecciona un asunto</option>
-                                <option value="general">Consulta general</option>
-                                <option value="reservation">Reserva de mesa</option>
-                                <option value="event">Eventos y catering</option>
-                                <option value="product">Información sobre productos</option>
-                                <option value="complaint">Reclamación</option>
-                                <option value="suggestion">Sugerencia</option>
-                                <option value="employment">Trabaja con nosotros</option>
-                            </select>
-                            <div class="invalid-feedback">
-                                Por favor, selecciona un asunto.
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Mensaje *</label>
-                            <textarea class="form-control" id="message" rows="5" required placeholder="Escribe tu mensaje aquí..."></textarea>
-                            <div class="invalid-feedback">
-                                Por favor, escribe tu mensaje.
-                            </div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="newsletter">
-                                <label class="form-check-label" for="newsletter">
-                                    Deseo recibir novedades y ofertas especiales de Mokaf
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">
+                                    Asunto *
                                 </label>
+                                <select
+                                    class="form-select {{#subjectError}}is-invalid{{/subjectError}}"
+                                    id="subject"
+                                    name="subject"
+                                    required
+                                >
+                                    <option value="" selected disabled>
+                                        Selecciona un asunto
+                                    </option>
+                                    <option
+                                        value="general"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Consulta general
+                                    </option>
+                                    <option
+                                        value="reservation"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Reserva de mesa
+                                    </option>
+                                    <option
+                                        value="event"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Eventos y catering
+                                    </option>
+                                    <option
+                                        value="product"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Información sobre productos
+                                    </option>
+                                    <option
+                                        value="complaint"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Reclamación
+                                    </option>
+                                    <option
+                                        value="suggestion"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Sugerencia
+                                    </option>
+                                    <option
+                                        value="employment"
+                                        {{#contactRequest.subject}}selected{{/contactRequest.subject}}
+                                    >
+                                        Trabaja con nosotros
+                                    </option>
+                                </select>
+                                {{#subjectError}}
+                                    <div class="invalid-feedback">
+                                        {{subjectError}}
+                                    </div>
+                                {{/subjectError}}
+                                {{^subjectError}}
+                                    <div class="invalid-feedback">
+                                        Por favor, selecciona un asunto.
+                                    </div>
+                                {{/subjectError}}
                             </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-send-message w-100 py-3">
-                            <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
-                        </button>
-                    </form>
-                </div>
-            </div>
 
-            <!-- Right Column - Contact Info -->
-            <div class="col-lg-5">
-                <div class="contact-info-container">
-                    <!-- Contact Cards -->
-                    <div class="contact-card card mb-4">
-                        <div class="card-body text-center">
-                            <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
-                            <h5 class="card-title">Nuestra Ubicación</h5>
-                            <p class="card-text">
-                                Calle del Café, 123<br>
-                                28001 Madrid<br>
-                                España
-                            </p>
-                            <a href="https://maps.google.com/?q=Calle+del+Café+123+Madrid" target="_blank" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-directions me-1"></i>Ver en Maps
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-card card mb-4">
-                        <div class="card-body text-center">
-                            <i class="fas fa-clock fa-2x mb-3"></i>
-                            <h5 class="card-title">Horario de Atención</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Lunes a Viernes:</strong> 7:00 - 22:00</li>
-                                <li><strong>Sábados:</strong> 8:00 - 23:00</li>
-                                <li><strong>Domingos:</strong> 9:00 - 21:00</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-card card mb-4">
-                        <div class="card-body text-center">
-                            <i class="fas fa-phone fa-2x mb-3"></i>
-                            <h5 class="card-title">Contacto Directo</h5>
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-phone-alt me-2"></i>+34 910 123 456</li>
-                                <li><i class="fas fa-envelope me-2"></i>info@mokaf.com</li>
-                                <li><i class="fas fa-headset me-2"></i>Atención al cliente: 24/7</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Social Media -->
-                    <div class="social-media card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title mb-3">Síguenos en Redes</h5>
-                            <div class="d-flex justify-content-center gap-3">
-                                <a href="#" class="social-icon facebook">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="#" class="social-icon instagram">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="#" class="social-icon twitter">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
-                                <a href="#" class="social-icon tiktok">
-                                    <i class="fab fa-tiktok"></i>
-                                </a>
-                                <a href="#" class="social-icon whatsapp">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">
+                                    Mensaje *
+                                </label>
+                                <textarea
+                                    class="form-control {{#messageError}}is-invalid{{/messageError}}"
+                                    id="message"
+                                    name="message"
+                                    rows="5"
+                                    required
+                                    placeholder="Escribe tu mensaje aquí..."
+                                >{{#contactRequest.message}}{{contactRequest.message}}{{/contactRequest.message}}</textarea>
+                                {{#messageError}}
+                                    <div class="invalid-feedback">
+                                        {{messageError}}
+                                    </div>
+                                {{/messageError}}
+                                {{^messageError}}
+                                    <div class="invalid-feedback">
+                                        Por favor, escribe tu mensaje.
+                                    </div>
+                                {{/messageError}}
                             </div>
-                            <p class="mt-3 mb-0 small">#MokafCafe #CafeDeEspecialidad</p>
-                        </div>
-                    </div>
-                    
-                    <!-- FAQ Quick Links -->
-                    <div class="faq-links mt-4">
-                        <h6 class="mb-3"><i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes</h6>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Hacen envíos a domicilio?
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Tienen opciones sin gluten?
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Puedo reservar una mesa?
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <i class="fas fa-chevron-right me-2"></i>¿Venden granos de café?
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Map Section -->
-        <div class="map-section mt-5">
-            <h3 class="mb-4"><i class="fas fa-map-marked-alt me-2"></i>Encuéntranos</h3>
-            <div class="card">
-                <div class="card-body p-0">
-                    <!-- Google Maps Embed (placeholder) -->
-                    <div class="map-placeholder">
-                        <div class="map-overlay">
-                            <h5>Mokaf Café de Especialidad</h5>
-                            <p><i class="fas fa-map-marker-alt me-2"></i>Calle del Café, 123, Madrid</p>
-                            <p><i class="fas fa-subway me-2"></i>Metro: Sol (Líneas 1, 2, 3)</p>
-                            <p><i class="fas fa-bus me-2"></i>Autobuses: 3, 5, 9, 15, 20, 51, 52, 53</p>
-                        </div>
-                        <div class="map-image">
-                            <!-- En una implementación real, aquí iría el iframe de Google Maps -->
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <div class="text-center">
-                                    <i class="fas fa-map fa-3x mb-3"></i>
-                                    <p>Mapa de ubicación</p>
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="newsletter"
+                                        name="newsletter"
+                                        {{#contactRequest.newsletter}}checked{{/contactRequest.newsletter}}
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="newsletter"
+                                    >
+                                        Deseo recibir novedades y ofertas
+                                        especiales de Mokaf
+                                    </label>
                                 </div>
                             </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-send-message w-100 py-3"
+                            >
+                                <i class="fas fa-paper-plane me-2"></i>Enviar
+                                Mensaje
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column - Contact Info -->
+                <div class="col-lg-5">
+                    <div class="contact-info-container">
+                        <!-- Contact Cards -->
+                        <div class="contact-card card mb-4">
+                            <div class="card-body text-center">
+                                <i class="fas fa-store fa-2x mb-3 text-primary"></i>
+                                <h5 class="card-title">Nuestras Sucursales</h5>
+                                <div class="card-text mb-3">
+                                    <p>
+                                        Descubre dónde encontrarnos, nuestros
+                                        horarios de atención y cómo llegar a
+                                        cada una de nuestras cafeterías de
+                                        especialidad.
+                                    </p>
+                                </div>
+                                <a
+                                    href="/branches"
+                                    class="btn btn-primary w-100"
+                                >
+                                    <i class="fas fa-map-marked-alt me-2"></i>Ver
+                                    Sucursales
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-card card mb-4">
+                            <div class="card-body text-center">
+                                <i class="fas fa-phone fa-2x mb-3"></i>
+                                <h5 class="card-title">Contacto Directo</h5>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-phone-alt me-2"></i>+34
+                                        910 123 456
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-envelope me-2"></i>info@mokaf.com
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-headset me-2"></i>Atención
+                                        al cliente: 24/7
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="social-media card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-3">
+                                    Síguenos en Redes
+                                </h5>
+                                <div
+                                    class="d-flex justify-content-center gap-3"
+                                >
+                                    <a href="#" class="social-icon facebook">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="social-icon instagram">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="#" class="social-icon twitter">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="social-icon tiktok">
+                                        <i class="fab fa-tiktok"></i>
+                                    </a>
+                                    <a href="#" class="social-icon whatsapp">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </a>
+                                </div>
+                                <p
+                                    class="mt-3 mb-0 small"
+                                    style="color: var(--dorado);"
+                                >
+                                    #MokafCafe #CafeDeEspecialidad
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Quick Links -->
+                        <div class="faq-links mt-4">
+                            <h6 class="mb-3">
+                                <i class="fas fa-question-circle me-2"></i>Preguntas
+                                Frecuentes
+                            </h6>
+                            <div class="list-group">
+                                {{#faqs}}
+                                    <a
+                                        data-bs-toggle="collapse"
+                                        href="#collapseFaq{{id}}"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="collapseFaq{{id}}"
+                                        class="list-group-item list-group-item-action"
+                                    >
+                                        <i class="fas fa-chevron-right me-2"></i>{{question}}
+                                    </a>
+                                    <div
+                                        class="collapse"
+                                        id="collapseFaq{{id}}"
+                                    >
+                                        <div
+                                            class="list-group-item text-white"
+                                            style="border-top: none; background: transparent; padding-left: 2.5rem; padding-bottom: 1rem;"
+                                        >
+                                            {{answer}}
+                                        </div>
+                                    </div>
+                                {{/faqs}}
+                                {{^faqs}}
+                                    <span class="list-group-item">
+                                        No hay preguntas frecuentes disponibles.
+                                    </span>
+                                {{/faqs}}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Contact Team -->
-        <div class="contact-team mt-5">
-            <h3 class="mb-4"><i class="fas fa-users me-2"></i>Nuestro Equipo de Atención</h3>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="team-card card h-100">
-                        <div class="card-body text-center">
-                            <div class="team-avatar mb-3">
-                                <i class="fas fa-user-tie"></i>
+            <!-- Contact Team -->
+            <section class="team-section text-center mt-5 px-5">
+                <h3 class="mb-4">
+                    <i class="fas fa-users me-2 mb-4"></i>Nuestro Equipo de
+                    Atención
+                </h3>
+                <div class="row justify-content-center">
+                    {{#team}}
+                        <div class="col-md-4 col-lg-3 team-member mb-4">
+                            <div class="member-img-container">
+                                <img
+                                    src="{{profileImageUrl}}"
+                                    alt="{{firstName}} {{lastName}}"
+                                    class="member-img"
+                                >
                             </div>
-                            <h5 class="card-title">María López</h5>
-                            <p class="card-subtitle mb-2 text-muted">Gerente</p>
-                            <p class="card-text small">Especialista en café de origen y atención al cliente.</p>
-                            <p class="contact-email"><i class="fas fa-envelope me-1"></i>maria@mokaf.com</p>
+                            <h5 class="mt-3">{{firstName}} {{lastName}}</h5>
+                            <p class="member-role text-muted mb-1">
+                                {{position}}
+                            </p>
+                            <p class="small text-muted mb-2">{{description}}</p>
+                            <p class="contact-email small">
+                                <i class="fas fa-envelope me-1"></i>{{email}}
+                            </p>
                         </div>
-                    </div>
+                    {{/team}}
                 </div>
-                <div class="col">
-                    <div class="team-card card h-100">
-                        <div class="card-body text-center">
-                            <div class="team-avatar mb-3">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <h5 class="card-title">Carlos Ruiz</h5>
-                            <p class="card-subtitle mb-2 text-muted">Barista Jefe</p>
-                            <p class="card-text small">Campeón nacional de latte art 2023.</p>
-                            <p class="contact-email"><i class="fas fa-envelope me-1"></i>carlos@mokaf.com</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="team-card card h-100">
-                        <div class="card-body text-center">
-                            <div class="team-avatar mb-3">
-                                <i class="fas fa-user-md"></i>
-                            </div>
-                            <h5 class="card-title">Ana García</h5>
-                            <p class="card-subtitle mb-2 text-muted">Atención al Cliente</p>
-                            <p class="card-text small">Encargada de eventos y reservas grupales.</p>
-                            <p class="contact-email"><i class="fas fa-envelope me-1"></i>ana@mokaf.com</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+            </section>
+        </main>
 
-    {{> fragments/footer}}
+        {{> fragments/footer}}
 
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <!-- Success Modal -->
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-check-circle text-success me-2"></i>¡Mensaje Enviado!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle text-success me-2"></i>¡Mensaje
+                        Enviado!
+                    </h5>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                    ></button>
                 </div>
                 <div class="modal-body text-center">
                     <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
                     <h5 class="mb-3">Gracias por contactarnos</h5>
-                    <p>Hemos recibido tu mensaje correctamente. Te responderemos en un plazo máximo de 24 horas hábiles.</p>
-                    <p class="text-muted small">Número de referencia: <strong>#CON-<span id="referenceNumber">0000</span></strong></p>
+                    <p>
+                        Hemos recibido tu mensaje correctamente. Te
+                        responderemos en un plazo máximo de 24 horas hábiles.
+                    </p>
+                    <p class="text-muted small">
+                        Número de referencia:
+                        <strong>#CON-<span id="referenceNumber">0000</span></strong>
+                    </p>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal"
+                    >
+                        Continuar
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/contact.js"></script>
-</body>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        ></script>
+    </body>
 </html>

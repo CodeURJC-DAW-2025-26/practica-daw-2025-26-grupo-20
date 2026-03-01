@@ -1,21 +1,920 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadisticas - Mokaf</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/general.css">
-    <link rel="stylesheet" href="/css/footer.css">
-</head>
-<body class="body-content">
-    {{> fragments/header}}
-    <div class="statistics-image-container">
-        <img src="images/statisticsImage.png" 
-             class="statistics-image"
-             alt="Dashboard de Estadísticas Mokaf">
-    </div>
-    {{> fragments/footer}}
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <!-- Add Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Estadísticas | Mokaf</title>
+        <style>
+            /* Specific styles for statistics page */
+            :root {
+              --cafe-oscuro: #3a2a1d;
+              --cafe-medio: #5d4037;
+              --cafe-claro: #8b6b61;
+              --negro: #1a1a1a;
+              --beige: #d7ccc8;
+              --dorado: #c6a87d;
+              --blanco: #ffffff;
+              --gris-claro: #e0e0e0;
+              --sombra: rgba(0, 0, 0, 0.3);
+            }
+            
+            * {
+              color: var(--blanco);
+            }
+            
+            .stats-container {
+              max-width: 1400px;
+              margin: 4% auto;
+              padding: 2rem;
+              background: linear-gradient(
+                145deg,
+                rgba(26, 26, 26, 0.95),
+                rgba(58, 42, 29, 0.9)
+              );
+              border-radius: 25px;
+              box-shadow: 0 20px 40px var(--sombra);
+              border: 1px solid var(--dorado);
+              backdrop-filter: blur(5px);
+            }
+            
+            .stats-title {
+              color: var(--dorado);
+              margin-bottom: 2.5rem;
+              font-size: 2.8rem;
+              font-weight: 300;
+              letter-spacing: 3px;
+              text-align: center;
+              text-shadow: 2px 2px 4px var(--sombra);
+              position: relative;
+              padding-bottom: 20px;
+            }
+            
+            .stats-title:after {
+              content: "";
+              position: absolute;
+              bottom: 0;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 120px;
+              height: 2px;
+              background: linear-gradient(
+                to right,
+                transparent,
+                var(--dorado),
+                transparent
+              );
+            }
+            
+            .stats-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+              gap: 1.8rem;
+              margin-bottom: 2rem;
+            }
+            
+            .stats-card {
+              background: linear-gradient(
+                135deg,
+                rgba(26, 26, 26, 0.98),
+                rgba(58, 42, 29, 0.95)
+              );
+              border-radius: 20px;
+              padding: 1.8rem;
+              box-shadow: 0 15px 35px var(--sombra);
+              border: 1px solid rgba(198, 168, 125, 0.3);
+              transition: all 0.4s ease;
+              position: relative;
+              overflow: hidden;
+              display: flex;
+              flex-direction: column;
+            }
+            
+            .stats-card::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              height: 3px;
+              background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+            }
+            
+            .stats-card:hover {
+              transform: translateY(-8px);
+              box-shadow: 0 25px 50px var(--sombra);
+              border-color: var(--dorado);
+            }
+            
+            .stats-card h2 {
+              color: var(--dorado);
+              margin-bottom: 1.5rem;
+              font-size: 1.6rem;
+              font-weight: 400;
+              display: flex;
+              align-items: center;
+              gap: 0.8rem;
+              border-bottom: 1px solid rgba(198, 168, 125, 0.2);
+              padding-bottom: 1rem;
+            }
+            
+            .stats-card h2 i {
+              font-size: 2rem;
+            }
+            
+            .stats-card h3 {
+              color: var(--dorado);
+              font-size: 1.2rem;
+              font-weight: 400;
+              margin: 1rem 0 0.8rem 0;
+            }
+            
+            .product-spotlight {
+              display: flex;
+              gap: 2rem;
+              margin-bottom: 2rem;
+              padding: 1.2rem;
+              background: rgba(0, 0, 0, 0.3);
+              border-radius: 18px;
+              border: 1px solid rgba(198, 168, 125, 0.3);
+              align-items: center;
+            }
+            
+            .product-image-frame {
+              width: 120px;
+              height: 120px;
+              border-radius: 15px;
+              overflow: hidden;
+              border: 3px solid var(--dorado);
+              box-shadow: 0 10px 20px var(--sombra);
+              background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+            }
+            
+            .product-image-frame img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            
+            .product-image-placeholder {
+              font-size: 4rem;
+              opacity: 0.7;
+            }
+            
+            .product-details {
+              flex: 1;
+            }
+            
+            .product-name {
+              color: var(--dorado);
+              font-size: 2rem;
+              font-weight: 500;
+              margin-bottom: 0.5rem;
+              line-height: 1.2;
+            }
+            
+            .product-category {
+              display: inline-block;
+              padding: 0.3rem 1rem;
+              background: rgba(198, 168, 125, 0.15);
+              border-radius: 20px;
+              font-size: 0.9rem;
+              color: var(--beige);
+              border: 1px solid rgba(198, 168, 125, 0.3);
+            }
+            
+            .kpi-grid {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 1rem;
+              margin-top: 0.5rem;
+            }
+            
+            .kpi-item {
+              text-align: center;
+              padding: 1.2rem 0.8rem;
+              background: rgba(0, 0, 0, 0.25);
+              border-radius: 15px;
+              border: 1px solid rgba(198, 168, 125, 0.2);
+              transition: all 0.3s ease;
+            }
+            
+            .kpi-item:hover {
+              border-color: var(--dorado);
+              background: rgba(0, 0, 0, 0.35);
+            }
+            
+            .kpi-label {
+              color: var(--gris-claro);
+              font-size: 0.8rem;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              opacity: 0.8;
+              margin-bottom: 0.5rem;
+            }
+            
+            .kpi-value {
+              color: var(--dorado);
+              font-size: 1.6rem;
+              font-weight: 600;
+              line-height: 1.2;
+            }
+            
+            .kpi-unit {
+              font-size: 0.9rem;
+              color: var(--beige);
+              margin-left: 0.2rem;
+            }
+            
+            .chart-container {
+              position: relative;
+              height: 250px;
+              width: 100%;
+              margin: 1.5rem 0 0.5rem 0;
+              padding: 1rem;
+              background: rgba(0, 0, 0, 0.2);
+              border-radius: 15px;
+              border: 1px solid rgba(198, 168, 125, 0.15);
+            }
+            
+            .branches-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+              gap: 1rem;
+              margin-top: 1.5rem;
+              width: 100%;
+            }
+            
+            .branch-card {
+              display: flex;
+              align-items: center;
+              padding: 1rem;
+              background: rgba(0, 0, 0, 0.2);
+              border-radius: 12px;
+              border: 1px solid rgba(198, 168, 125, 0.15);
+              transition: all 0.3s ease;
+            }
+            
+            .branch-card:hover {
+              border-color: var(--dorado);
+              background: rgba(0, 0, 0, 0.3);
+              transform: translateX(5px);
+            }
+            
+            .branch-color {
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+              margin-right: 1rem;
+              box-shadow: 0 0 15px currentColor;
+            }
+            
+            .branch-info {
+              flex: 1;
+            }
+            
+            .branch-name {
+              font-weight: 500;
+              color: var(--blanco);
+              margin-bottom: 0.2rem;
+            }
+            
+            .branch-stats {
+              display: flex;
+              gap: 1.2rem;
+              font-size: 0.85rem;
+              color: var(--gris-claro);
+            }
+            
+            .branch-badge {
+              background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+              color: var(--blanco);
+              padding: 0.2rem 0.8rem;
+              border-radius: 20px;
+              font-size: 0.8rem;
+              border: 1px solid var(--dorado);
+              white-space: nowrap;
+            }
+            
+            .summary-row {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 0.8rem 1rem;
+              background: rgba(0, 0, 0, 0.2);
+              border-radius: 12px;
+              border: 1px solid rgba(198, 168, 125, 0.15);
+              margin: 0.5rem 0;
+            }
+            
+            .summary-label {
+              color: var(--gris-claro);
+              font-size: 0.9rem;
+            }
+            
+            .summary-value {
+              color: var(--dorado);
+              font-size: 1.2rem;
+              font-weight: 600;
+            }
+            
+            .badge-primary {
+              background: linear-gradient(135deg, var(--dorado), var(--cafe-claro));
+              color: var(--negro);
+              padding: 0.3rem 0.8rem;
+              border-radius: 20px;
+              font-size: 0.8rem;
+              font-weight: 600;
+            }
+            
+            .no-data {
+              text-align: center;
+              padding: 3rem;
+              color: var(--gris-claro);
+              opacity: 0.7;
+              font-style: italic;
+              border: 2px dashed var(--dorado);
+              border-radius: 15px;
+              background: rgba(0, 0, 0, 0.2);
+              grid-column: 1 / -1;
+            }
+            
+            .back-button {
+              display: inline-block;
+              background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
+              color: var(--blanco);
+              text-decoration: none;
+              padding: 0.6rem 1.5rem;
+              border-radius: 8px;
+              font-weight: 500;
+              font-size: 0.9rem;
+              border: 1px solid var(--dorado);
+              transition: all 0.3s ease;
+            }
+            
+            .back-button:hover {
+              background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-medio));
+              transform: translateY(-2px);
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+              color: var(--dorado);
+            }
+            
+            .stats-footer {
+              display: flex;
+              justify-content: center;
+              margin-top: 2rem;
+              padding-top: 1rem;
+            }
+            
+            /* Full width card for branches ranking */
+            .full-width-card {
+              grid-column: 1 / -1;
+              width: 100%;
+              margin-top: 1.5rem;
+            }
+            
+            @media (max-width: 768px) {
+              .stats-container {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+              }
+            
+              .stats-grid {
+                grid-template-columns: 1fr;
+              }
+            
+              .product-spotlight {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+              }
+            
+              .product-image-frame {
+                margin: 0 auto;
+              }
+            
+              .kpi-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+              }
+            
+              .branch-stats {
+                flex-direction: column;
+                gap: 0.3rem;
+              }
+            }
+            
+            /* Animations */
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: translateY(20px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            
+            .stats-card {
+              animation: fadeIn 0.6s ease-out forwards;
+            }
+            
+            .stats-card:nth-child(2) {
+              animation-delay: 0.2s;
+            }
+            .stats-card:nth-child(3) {
+              animation-delay: 0.4s;
+            }
+        </style>
+    </head>
+    <body>
+        {{> fragments/header}}
+
+        <div class="body-content">
+            <div class="stats-container">
+                <h1 class="stats-title">☕ Estadísticas Mokaf</h1>
+
+                <div class="stats-grid">
+                    <!-- Card 1: Top rated product (by stars) -->
+                    <div class="stats-card">
+                        <h2><span>⭐</span> Producto Mejor Valorado</h2>
+
+                        {{#hasTopRatedProduct}}
+                            <div class="product-spotlight">
+                                <div class="product-image-frame">
+                                    {{#topRatedProduct.imagePath}}
+                                        <img
+                                            src="{{topRatedProduct.imagePath}}"
+                                            alt="{{topRatedProduct.name}}"
+                                        >
+                                    {{/topRatedProduct.imagePath}}
+                                    {{^topRatedProduct.imagePath}}
+                                        <div class="product-image-placeholder">
+                                            ⭐
+                                        </div>
+                                    {{/topRatedProduct.imagePath}}
+                                </div>
+                                <div class="product-details">
+                                    <div class="product-name">
+                                        {{topRatedProduct.name}}
+                                    </div>
+                                    <span class="product-category">
+                                        {{topRatedProduct.category}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div
+                                class="kpi-grid"
+                                style="grid-template-columns: repeat(2, 1fr);"
+                            >
+                                <div class="kpi-item">
+                                    <div class="kpi-label">
+                                        Valoración Media
+                                    </div>
+                                    <div class="kpi-value">
+                                        {{topRatedProduct.averageRatingFormatted}}
+                                        <span class="kpi-unit">⭐</span>
+                                    </div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-label">Nº de Reseñas</div>
+                                    <div class="kpi-value">
+                                        {{topRatedProduct.reviewCount}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent reviews section - ULTRA COMPACT VERSION -->
+                            {{#topRatedProduct.recentReviews.size}}
+                                <div
+                                    style="margin-top: 1rem; border-top: 1px solid rgba(198, 168, 125, 0.15); padding-top: 0.8rem;"
+                                >
+                                    <h5
+                                        style="color: var(--dorado); font-size: 0.85rem; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;"
+                                    >
+                                        <i
+                                            class="fas fa-comment"
+                                            style="margin-right: 0.4rem;"
+                                        ></i>Reseñas recientes
+                                    </h5>
+
+                                    <div
+                                        style="display: flex; flex-direction: column; gap: 0.4rem;"
+                                    >
+                                        {{#topRatedProduct.recentReviews}}
+                                            <div
+                                                style="background: rgba(0, 0, 0, 0.15); border-radius: 6px; padding: 0.5rem 0.7rem;"
+                                            >
+                                                <div
+                                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;"
+                                                >
+                                                    <div
+                                                        style="display: flex; align-items: center; gap: 0.5rem;"
+                                                    >
+                                                        <span
+                                                            style="color: var(--dorado); font-size: 0.75rem; font-weight: 500;"
+                                                        >
+                                                            {{userName}}
+                                                        </span>
+                                                        <span
+                                                            style="color: gold; font-size: 0.65rem;"
+                                                        >
+                                                            {{#stars}}
+                                                                ⭐
+                                                            {{/stars}}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <p
+                                                    style="color: var(--beige); font-size: 0.75rem; margin: 0; line-height: 1.2; opacity: 0.9;"
+                                                >
+                                                    "{{text}}"
+                                                </p>
+                                                <div
+                                                    style="text-align: right; color: var(--gris-claro); font-size: 0.55rem; margin-top: 0.15rem; opacity: 0.6;"
+                                                >
+                                                    {{createdAt}}
+                                                </div>
+                                            </div>
+                                        {{/topRatedProduct.recentReviews}}
+                                    </div>
+                                </div>
+                            {{/topRatedProduct.recentReviews.size}}
+                            <!-- END Recent reviews section -->
+                        {{/hasTopRatedProduct}}
+
+                        {{^hasTopRatedProduct}}
+                            <div class="no-data">
+                                <p>📭 No hay suficientes reseñas este mes</p>
+                            </div>
+                        {{/hasTopRatedProduct}}
+                    </div>
+
+                    <!-- Card 2: Categories -->
+                    <div class="stats-card">
+                        <h2><span>📊</span> Ventas por Categoría</h2>
+
+                        {{#hasTopCategory}}
+                            <div
+                                class="kpi-grid"
+                                style="grid-template-columns: repeat(2, 1fr);"
+                            >
+                                <div class="kpi-item">
+                                    <div class="kpi-label">Categoría Top</div>
+                                    <div class="kpi-value">
+                                        {{topCategory.category}}
+                                    </div>
+                                </div>
+                                <div class="kpi-item">
+                                    <div class="kpi-label">Unidades</div>
+                                    <div class="kpi-value">
+                                        {{topCategory.totalUnits}}
+                                        <span class="kpi-unit">uds</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-row">
+                                <span class="summary-label">
+                                    Ingresos totales
+                                </span>
+                                <span class="summary-value">
+                                    {{topCategory.totalAmountFormatted}} €
+                                </span>
+                            </div>
+
+                            <div class="summary-row">
+                                <span class="summary-label">Pedidos</span>
+                                <span class="summary-value">
+                                    {{topCategory.orderCount}}
+                                </span>
+                            </div>
+
+                            {{#allCategories.size}}
+                                <h3>Distribución por categorías</h3>
+                                <div class="chart-container">
+                                    <canvas id="categoryPieChart"></canvas>
+                                </div>
+                            {{/allCategories.size}}
+                            {{^allCategories.size}}
+                                <div class="no-data" style="padding: 1.5rem;">
+                                    <p>
+                                        No hay datos suficientes para mostrar
+                                        gráfico
+                                    </p>
+                                </div>
+                            {{/allCategories.size}}
+                        {{/hasTopCategory}}
+
+                        {{^hasTopCategory}}
+                            <div class="no-data">
+                                <p>
+                                    📭 No hay datos de categorías en los últimos
+                                    3 meses
+                                </p>
+                            </div>
+                        {{/hasTopCategory}}
+                    </div>
+
+                    <!-- Card 3: Top branch -->
+                    <div
+                        class="stats-card"
+                        style="display: flex; flex-direction: column; height: 100%;"
+                    >
+                        <h2><span>📍</span> Sucursal Destacada</h2>
+
+                        {{#hasTopBranch}}
+                            <!-- Branch name -->
+                            <div
+                                style="text-align: center; margin-bottom: 1rem;"
+                            >
+                                <span
+                                    style="color: var(--dorado); font-size: 1.4rem; font-weight: 500; display: block;"
+                                >
+                                    {{topBranch.name}}
+                                </span>
+                            </div>
+
+                            <!-- KPIs - Orders and Units -->
+                            <div
+                                style="display: flex; justify-content: space-around; margin-bottom: 1rem; background: rgba(0, 0, 0, 0.15); border-radius: 10px; padding: 0.8rem;"
+                            >
+                                <div style="text-align: center;">
+                                    <div
+                                        style="color: var(--gris-claro); font-size: 0.8rem; text-transform: uppercase;"
+                                    >
+                                        Pedidos
+                                    </div>
+                                    <div
+                                        style="color: var(--dorado); font-size: 2rem; font-weight: 700; line-height: 1.2;"
+                                    >
+                                        {{topBranch.totalOrders}}
+                                    </div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div
+                                        style="color: var(--gris-claro); font-size: 0.8rem; text-transform: uppercase;"
+                                    >
+                                        Unidades
+                                    </div>
+                                    <div
+                                        style="color: var(--dorado); font-size: 2rem; font-weight: 700; line-height: 1.2;"
+                                    >
+                                        {{topBranch.totalUnits}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Coupon and revenue in two columns -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;"
+                            >
+                                <!-- Discount coupon -->
+                                <div
+                                    style="background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro)); border-radius: 12px; padding: 0.8rem; border: 2px dashed var(--dorado); position: relative; overflow: hidden; text-align: center;"
+                                >
+                                    <div
+                                        style="position: absolute; top: -15px; left: -15px; width: 50px; height: 50px; border-radius: 50%; background: rgba(198, 168, 125, 0.2);"
+                                    >
+                                    </div>
+                                    <div
+                                        style="position: absolute; bottom: -15px; right: -15px; width: 50px; height: 50px; border-radius: 50%; background: rgba(198, 168, 125, 0.15);"
+                                    >
+                                    </div>
+                                    <div
+                                        style="position: relative; z-index: 1;"
+                                    >
+                                        <span
+                                            style="color: var(--dorado); font-size: 0.7rem; text-transform: uppercase; display: block; margin-bottom: 0.2rem;"
+                                        >
+                                            Cupón
+                                        </span>
+                                        <span
+                                            style="color: var(--blanco); font-size: 2rem; font-weight: 700;"
+                                        >
+                                            {{topBranch.discountPercent}}%
+                                        </span>
+                                        <span
+                                            style="background: var(--dorado); color: var(--negro); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.6rem; font-weight: bold; display: inline-block; margin-left: 0.3rem;"
+                                        >
+                                            EXC
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Revenue -->
+                                <div
+                                    style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 0.8rem; text-align: center; border: 1px solid rgba(198, 168, 125, 0.3); display: flex; flex-direction: column; justify-content: center;"
+                                >
+                                    <span
+                                        style="color: var(--gris-claro); font-size: 0.7rem; text-transform: uppercase; display: block;"
+                                    >
+                                        Ingresos
+                                    </span>
+                                    <span
+                                        style="color: var(--dorado); font-size: 1.6rem; font-weight: 700;"
+                                    >
+                                        {{topBranch.totalRevenueFormatted}}€
+                                    </span>
+                                    <span
+                                        style="color: var(--gris-claro); font-size: 0.65rem;"
+                                    >
+                                        {{topBranch.avgOrderValue}} €/pedido
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Description - takes remaining space, scroll only when needed -->
+                            <div
+                                style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 1rem; border: 1px solid rgba(198, 168, 125, 0.2); flex: 1; display: flex; flex-direction: column; min-height: 0;"
+                            >
+                                <div
+                                    style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"
+                                >
+                                    <i
+                                        class="fas fa-store"
+                                        style="color: var(--dorado); font-size: 1rem;"
+                                    ></i>
+                                    <span
+                                        style="color: var(--dorado); font-size: 0.9rem; font-weight: 500;"
+                                    >
+                                        Sobre esta sucursal
+                                    </span>
+                                </div>
+
+                                <!-- Scrollable description - larger text, fills space, scrolls only when needed -->
+                                <div
+                                    style="color: var(--beige); font-size: 0.9rem; line-height: 1.5; overflow-y: auto; flex: 1; padding-right: 0.3rem; scrollbar-width: thin; scrollbar-color: var(--dorado) rgba(0,0,0,0.2);"
+                                >
+                                    {{#topBranch.description}}
+                                        {{topBranch.description}}
+                                    {{/topBranch.description}}
+                                    {{^topBranch.description}}
+                                        <p
+                                            style="color: var(--gris-claro); font-style: italic; margin: 0;"
+                                        >
+                                            Sin descripción disponible para esta
+                                            sucursal.
+                                        </p>
+                                    {{/topBranch.description}}
+                                </div>
+
+                                <!-- Decorative coffee cups at bottom -->
+                                <div
+                                    style="text-align: right; font-size: 0.6rem; color: rgba(198, 168, 125, 0.3); margin-top: 0.3rem;"
+                                >
+                                    <i class="fas fa-coffee"></i>
+                                    <i class="fas fa-coffee"></i>
+                                    <i class="fas fa-coffee"></i>
+                                </div>
+                            </div>
+                        {{/hasTopBranch}}
+
+                        {{^hasTopBranch}}
+                            <div class="no-data">
+                                <p>📭 No hay datos de sucursales</p>
+                            </div>
+                        {{/hasTopBranch}}
+                    </div>
+                </div>
+
+                <!-- Card 4: Branches ranking - FULL WIDTH -->
+                <div class="stats-card full-width-card">
+                    <h2><span>📈</span> Ranking de Sucursales</h2>
+
+                    {{#allBranches.size}}
+                        <!-- Chart container -->
+                        <div
+                            class="chart-container"
+                            style="height: 300px; width: 100%;"
+                        >
+                            <canvas id="allBranchesChart"></canvas>
+                        </div>
+
+                        <!-- Branches grid - full width -->
+                        <div class="branches-grid" style="width: 100%;">
+                            {{#allBranches}}
+                                <div class="branch-card">
+                                    <div
+                                        class="branch-color"
+                                        style="background-color: {{color}};"
+                                    >
+                                    </div>
+                                    <div class="branch-info">
+                                        <div class="branch-name">{{name}}</div>
+                                        <div class="branch-stats">
+                                            <span>📦 {{units}} uds</span>
+                                            <span>💰 {{revenueFormatted}}€</span>
+                                        </div>
+                                    </div>
+                                    <span class="branch-badge">
+                                        {{percentage}}%
+                                    </span>
+                                </div>
+                            {{/allBranches}}
+                        </div>
+                    {{/allBranches.size}}
+
+                    {{^allBranches.size}}
+                        <div class="no-data">
+                            <p>📭 No hay datos de sucursales para mostrar</p>
+                        </div>
+                    {{/allBranches.size}}
+                </div>
+
+                <!-- Back button - at the bottom -->
+                <div class="stats-footer">
+                    <a href="/" class="back-button">← Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Chart.defaults.color = '#FFFFFF';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+            {{#hasTopCategory}}
+            {{#allCategories.size}}
+            const categoryNames = [
+            {{#allCategories}}'{{category}}',{{/allCategories}}
+            ];
+            const categoryUnits = [
+            {{#allCategories}}{{units}},{{/allCategories}}
+            ];
+            const categoryColors = [
+            {{#allCategories}}'{{color}}',{{/allCategories}}
+            ];
+
+            if (categoryNames.length > 0) {
+            const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                labels: categoryNames,
+                datasets: [{
+                    data: categoryUnits,
+                    backgroundColor: categoryColors,
+                    borderColor: 'var(--negro)',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
+            });
+            }
+            {{/allCategories.size}}
+            {{/hasTopCategory}}
+
+            {{#allBranches.size}}
+            const branchNames = [
+            {{#allBranches}}'{{name}}',{{/allBranches}}
+            ];
+            const branchRevenues = [
+            {{#allBranches}}{{revenue}},{{/allBranches}}
+            ];
+            const branchColors = [
+            {{#allBranches}}'{{color}}',{{/allBranches}}
+            ];
+
+            if (branchNames.length > 0) {
+            const allBranchesCtx = document.getElementById('allBranchesChart').getContext('2d');
+            new Chart(allBranchesCtx, {
+                type: 'bar',
+                data: {
+                labels: branchNames,
+                datasets: [{
+                    label: 'Ingresos (€)',
+                    data: branchRevenues,
+                    backgroundColor: branchColors,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+            }
+            {{/allBranches.size}}
+        });
+        </script>
+
+        {{> fragments/footer}}
+    </body>
 </html>

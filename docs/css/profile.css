@@ -1,17 +1,16 @@
 /* ==========================================================================
-   PROFILE PAGE - USUARIO NORMAL
-   Usa las variables de general.css
+   PROFILE PAGE 
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    CONTENEDOR PRINCIPAL
    -------------------------------------------------------------------------- */
 .profile-container {
-    max-width: 1000px;
+    max-width: 1200px;
 }
 
 .profile-container h2 {
-    color: var(--dorado);
+    color: #C6A87D;
     font-weight: 300;
     letter-spacing: 2px;
     margin-bottom: 2rem;
@@ -27,34 +26,39 @@
     transform: translateX(-50%);
     width: 80px;
     height: 2px;
-    background: linear-gradient(to right, transparent, var(--dorado), transparent);
+    background: linear-gradient(to right, transparent, #C6A87D, transparent);
 }
 
 /* --------------------------------------------------------------------------
-   COLUMNA IZQUIERDA - AVATAR
+   TARJETA DE PERFIL
    -------------------------------------------------------------------------- */
 .profile-avatar-card {
     background-color: rgba(26, 26, 26, 0.85);
     border-radius: 15px;
-    padding: 2.5rem;
+    padding: 1.5rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--dorado);
-    height: 100%;
-}
-
-.profile-avatar-section {
+    border: 2px solid #C6A87D;
     text-align: center;
 }
 
-/* Wrapper para la imagen siempre visible */
+.profile-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* FOTO DE PERFIL */
 .profile-avatar-wrapper {
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 1.5rem;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1rem;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid var(--dorado);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 3px solid #C6A87D;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profile-avatar {
@@ -64,34 +68,101 @@
 }
 
 .profile-username {
-    color: var(--dorado);
-    font-size: 1.5rem;
+    color: #C6A87D;
+    font-size: 1.3rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
-    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
 }
 
 .profile-email {
-    color: var(--beige);
-    font-size: 0.95rem;
-    opacity: 0.8;
-    margin-bottom: 0;
+    color: #D7CCC8;
+    font-size: 0.9rem;
+    margin: 0;
 }
 
 /* --------------------------------------------------------------------------
-   COLUMNA DERECHA - FORMULARIO
+   PANEL DE ATAJOS 
+   -------------------------------------------------------------------------- */
+.user-quick-actions {
+    background-color: rgba(26, 26, 26, 0.6);    /* Fondo oscuro igual al admin */
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(198, 168, 125, 0.3); /* Borde sutil dorado */
+    margin-top: 1.5rem;
+}
+
+.user-quick-title {
+    color: #C6A87D;                               /* Título dorado */
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* BOTÓN DORADO SÓLIDO */
+.btn-user-quick {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    background: #C6A87D;                          /* Dorado sólido */
+    border: 2px solid #C6A87D;                    /* Borde dorado */
+    color: #ffffff;                               /* Texto blanco */
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-user-quick:last-child {
+    margin-bottom: 0;
+}
+
+.btn-user-quick i {
+    font-size: 1.1rem;
+    color: #ffffff;                               /* Icono blanco */
+    width: 24px;
+    text-align: center;
+}
+
+.btn-user-quick span {
+    color: #ffffff;                               /* Texto blanco */
+    font-size: 0.95rem;
+}
+
+/* HOVER: transparente con borde dorado y texto dorado */
+.btn-user-quick:hover {
+    background: transparent;
+    border-color: #C6A87D;
+    color: #C6A87D;
+    transform: translateX(5px);
+    text-decoration: none;
+}
+
+.btn-user-quick:hover i,
+.btn-user-quick:hover span {
+    color: #C6A87D;                               /* Dorado en hover */
+}
+
+/* --------------------------------------------------------------------------
+   FORMULARIO (DERECHA)
    -------------------------------------------------------------------------- */
 .profile-form-card {
     background-color: rgba(26, 26, 26, 0.85);
     border-radius: 15px;
-    padding: 2.5rem;
+    padding: 2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--dorado);
+    border: 2px solid #C6A87D;
     height: 100%;
 }
 
 .profile-form-title {
-    color: var(--dorado);
+    color: #C6A87D;
     font-size: 1.25rem;
     font-weight: 400;
     margin-bottom: 0.5rem;
@@ -106,55 +177,45 @@
     left: 0;
     width: 40px;
     height: 1px;
-    background-color: var(--dorado);
+    background-color: #C6A87D;
 }
 
 .profile-form-subtitle {
-    color: var(--beige);
+    color: #8B6B61;
     font-size: 0.9rem;
-    opacity: 0.7;
     margin-bottom: 1.5rem;
 }
 
-/* Formularios */
 .profile-form-card .form-label {
-    color: var(--beige);
+    color: #D7CCC8;
     margin-bottom: 8px;
     font-size: 0.9rem;
 }
 
 .profile-form-card .form-control {
     background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--cafe-medio);
-    color: var(--beige);
+    border: 1px solid #5D4037;
+    color: #D7CCC8;
     padding: 12px 15px;
     border-radius: 4px;
-    transition: all 0.3s;
 }
 
 .profile-form-card .form-control:focus {
     background-color: rgba(255, 255, 255, 0.12);
-    border-color: var(--dorado);
+    border-color: #C6A87D;
     box-shadow: 0 0 0 0.25rem rgba(198, 168, 125, 0.25);
-    color: var(--beige);
-}
-
-.profile-form-card .form-control::placeholder {
-    color: #9E9E9E;
+    color: #D7CCC8;
 }
 
 .profile-form-card .form-control[readonly] {
     background-color: rgba(255, 255, 255, 0.05);
     opacity: 0.6;
-    cursor: not-allowed;
 }
 
-/* --------------------------------------------------------------------------
-   BOTONES
-   -------------------------------------------------------------------------- */
+/* Botones del formulario */
 .profile-actions {
     display: flex;
-    gap: 1rem;
+    gap: 12px;
     justify-content: flex-end;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -162,26 +223,24 @@
 }
 
 .btn-save {
-    background: linear-gradient(to right, var(--cafe-medio), var(--cafe-oscuro));
+    background: #C6A87D;
     border: none;
-    color: var(--beige);
+    color: #1a1a1a;
     padding: 12px 30px;
     border-radius: 4px;
-    font-weight: 500;
-    letter-spacing: 1px;
+    font-weight: 600;
     transition: all 0.3s;
 }
 
 .btn-save:hover {
-    background: linear-gradient(to right, var(--cafe-oscuro), var(--cafe-medio));
+    background: #b89b6c;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    color: var(--dorado);
+    box-shadow: 0 4px 15px rgba(198, 168, 125, 0.4);
 }
 
 .btn-cancel {
-    border-color: var(--cafe-medio);
-    color: var(--beige);
+    border-color: #5D4037;
+    color: #D7CCC8;
     padding: 12px 25px;
     border-radius: 4px;
     transition: all 0.3s;
@@ -189,33 +248,38 @@
 
 .btn-cancel:hover {
     background-color: rgba(198, 168, 125, 0.1);
-    border-color: var(--dorado);
-    color: var(--dorado);
+    border-color: #C6A87D;
+    color: #C6A87D;
 }
 
 /* --------------------------------------------------------------------------
    BOTÓN ELIMINAR CUENTA
    -------------------------------------------------------------------------- */
 .delete-account-section {
-    margin-top: 2rem;
-    text-align: right;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
 }
 
 .btn-delete-account {
-    background: #dc3545;
+    background: linear-gradient(to right, #dc3545, #c82333);
     border: none;
     color: white;
-    padding: 14px 32px;
-    border-radius: 4px;
-    font-weight: 500;
-    letter-spacing: 1px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .btn-delete-account:hover {
-    background: #c82333;
+    background: linear-gradient(to right, #c82333, #a71d2a);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
 
 /* --------------------------------------------------------------------------
@@ -224,28 +288,48 @@
 .modal-custom {
     background-color: rgba(26, 26, 26, 0.95);
     border-radius: 15px;
-    border: 1px solid var(--dorado);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #C6A87D;
 }
 
 .modal-custom .modal-header {
-    border-bottom: 1px solid rgba(198, 168, 125, 0.2);
+    border-bottom: 1px solid rgba(198, 168, 125, 0.3);
 }
 
 .modal-custom .modal-title {
-    color: var(--dorado);
-    font-weight: 400;
+    color: #C6A87D;
 }
 
 .modal-custom .modal-body {
-    color: var(--beige);
-    padding: 1.5rem;
+    color: #D7CCC8;
 }
 
 .modal-custom .modal-footer {
-    border-top: 1px solid rgba(198, 168, 125, 0.2);
+    border-top: 1px solid rgba(198, 168, 125, 0.3);
 }
 
 .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .profile-avatar-card {
+        padding: 1.2rem;
+    }
+    
+    .profile-avatar-wrapper {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .user-quick-actions {
+        padding: 1.2rem;
+        margin-top: 1rem;
+    }
+    
+    .btn-user-quick {
+        padding: 12px 14px;
+    }
 }

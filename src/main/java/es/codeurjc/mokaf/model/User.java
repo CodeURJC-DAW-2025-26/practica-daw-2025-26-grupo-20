@@ -1,80 +1,152 @@
+// User.java
 package es.codeurjc.mokaf.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import jakarta.persistence.ElementCollection;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "MOKAF_USER")
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
+
+    public enum Role {
+        CUSTOMER, ADMIN, EMPLOYEE
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false, length = 120)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 190)
     private String email;
-    private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
-    public User() {
-    }
+    // IMPORTANTE: quito updatable=false para no cerrar puertas (si de verdad lo queréis fijo, lo volvéis a poner)
+    @Column(name = "employee_id", unique = true, length = 50, nullable = true)
+    private String employeeId;
 
-    public User(String name, String email, String password, List<String> roles) {
+    // FK real: users.employee_id -> employees.id (misma columna). Relación "read-only" (no duplica columna).
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(
+        name = "employee_id",
+        referencedColumnName = "id",
+        foreignKey = @ForeignKey(name = "fk_users_employee"),
+        insertable = false,
+        updatable = false
+    )
+    private Employee employee;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "image_id", unique = true)
+    private Image image;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+    public User() {}
+
+    public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
         this.email = email;
-        this.password = password;
-        this.roles = roles;
+        this.passwordHash = passwordHash;
+        this.role = role;
     }
 
-    public Long getId() {
-        return id;
+    // UserDetails
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public String getPassword() { return this.passwordHash; }
+
+    @Override
+    public String getUsername() { return this.email; }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() { return true; }
+
+    // Getters/setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+
+    // Navegación cómoda (solo lectura)
+    public Employee getEmployee() { return employee; }
+
+    public Image getImage() { return image; }
+    public void setImage(Image image) { this.image = image; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public List<Review> getReviews() { return reviews; }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setUser(null);
     }
 }

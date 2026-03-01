@@ -1,244 +1,701 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compra - Mokaf</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/general.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/cart.css">
-</head>
-<body class="body-content">
-    {{> fragments/header}}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Carrito de Compra - Mokaf</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/cart.css">
+    </head>
+    <body class="body-content">
+        {{> fragments/header}}
 
-    <main class="container my-5 cart-container">
-        <div class="row">
-            <!-- Left Column - Cart Items -->
-            <div class="col-lg-8 cart-items-column">
-                <h1 class="mb-4">
-                    <i class="fas fa-shopping-cart me-2"></i>Tu Carrito
-                </h1>
-                
-                <!-- Cart Empty State -->
-                <div class="cart-empty text-center py-5" id="emptyCartMessage">
-                    <i class="fas fa-coffee cart-empty-icon mb-3"></i>
-                    <h3 class="mb-3">Tu carrito está vacío</h3>
-                    <p class="mb-4">Añade algunos productos deliciosos de nuestro menú</p>
-                    <a href="/menu" class="btn btn-primary">
-                        <i class="fas fa-utensils me-2"></i>Ver Menú
-                    </a>
+        <main class="container my-5 cart-container">
+            <div class="row">
+                <!-- Left Column - Cart Items -->
+                <div class="col-lg-8 cart-items-column">
+                    <h1 class="mb-4">
+                        <i class="fas fa-shopping-cart me-2"></i>Tu Carrito
+                    </h1>
+
+                    {{#successMessage}}
+                        <div
+                            class="alert alert-success alert-dismissible fade show mb-4"
+                            role="alert"
+                        >
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{successMessage}}
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                            ></button>
+                        </div>
+                    {{/successMessage}}
+
+                    <!-- Cart Items List - Loaded dynamically with JavaScript -->
+                    <div class="cart-items" id="cartItemsContainer">
+                        <!-- Items will be loaded here via JavaScript -->
+                        <div class="text-center p-5">
+                            <div
+                                class="spinner-border text-primary"
+                                role="status"
+                            >
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3">Cargando tu carrito...</p>
+                        </div>
+                    </div>
+
+                    <!-- Continue Shopping Button -->
+                    <div class="mt-4">
+                        <a href="/menu" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Seguir
+                            Comprando
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Cart Items List -->
-                <div class="cart-items" id="cartItemsContainer" style="display: none;">
-                    <div class="cart-item card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-2 d-flex align-items-center justify-content-center p-3">
-                                <img src="/images/MenuImages/Hot/Expreso.png" class="img-fluid rounded cart-item-image" alt="Expreso">
+                <!-- Right Column - Order Summary -->
+                <div class="col-lg-4">
+                    <!-- Order Summary -->
+                    <div
+                        class="order-summary-fixed card"
+                        id="orderSummaryFixed"
+                    >
+                        <div class="card-header bg-dark text-light">
+                            <h4 class="mb-0">
+                                <i class="fas fa-receipt me-2"></i>Resumen del
+                                Pedido
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Order Details -->
+                            <div class="order-details mb-4">
+                                <div
+                                    class="d-flex justify-content-between mb-2"
+                                >
+                                    <span>Subtotal:</span>
+                                    <span id="cart-subtotal">{{subtotal}}</span>
+                                </div>
+
+                                <!-- 🔴 ADDED: Discount row -->
+                                <div
+                                    class="d-flex justify-content-between mb-2 text-success"
+                                    id="discountRow"
+                                    style="display: none;"
+                                >
+                                    <span>Descuento:</span>
+                                    <span id="discount-amount"></span>
+                                </div>
+
+                                <div
+                                    class="d-flex justify-content-between mb-3"
+                                >
+                                    <span>Impuestos:</span>
+                                    <span id="tax-amount">{{tax}}</span>
+                                </div>
+                                <hr>
+                                <div
+                                    class="d-flex justify-content-between fw-bold fs-5"
+                                >
+                                    <span>Total:</span>
+                                    <span id="cart-total">{{total}}</span>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h5 class="cart-item-title mb-1">Expreso</h5>
-                                            <p class="cart-item-category text-muted mb-2">Café Caliente</p>
-                                            <p class="cart-item-desc mb-0">Café negro fuerte y aromático.</p>
-                                        </div>
-                                        <div class="cart-item-price">2.50€</div>
+
+                            <!-- Branch Selector -->
+                            <div class="branch-selector mb-4">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-store me-2"></i>Sucursal de
+                                    recogida
+                                </h6>
+
+                                <div
+                                    class="branch-loading text-center p-3"
+                                    id="branchLoading"
+                                >
+                                    <div
+                                        class="spinner-border spinner-border-sm text-primary"
+                                        role="status"
+                                    >
+                                        <span class="visually-hidden">
+                                            Cargando...
+                                        </span>
                                     </div>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <div class="quantity-controls">
-                                            <button class="btn btn-quantity" onclick="updateQuantity('espresso', -1)">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <span class="quantity-display mx-3" id="quantity-espresso">1</span>
-                                            <button class="btn btn-quantity" onclick="updateQuantity('espresso', 1)">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                        <div>
-                                            <span class="item-subtotal me-3" id="subtotal-espresso">2.50€</span>
-                                            <button class="btn btn-remove" onclick="removeItem('espresso')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
+                                    <span class="ms-2">
+                                        Cargando sucursales...
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="branch-list"
+                                    id="branchList"
+                                    style="display: none;"
+                                >
+                                    <select
+                                        class="form-select"
+                                        id="branchSelect"
+                                        onchange="changeBranch()"
+                                    >
+                                        <option value="">
+                                            Selecciona una sucursal
+                                        </option>
+                                    </select>
+                                    <div
+                                        class="branch-info mt-2 text-muted small"
+                                        id="branchInfo"
+                                        style="display: none;"
+                                    >
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <span id="branchDescription"></span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="cart-item card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-2 d-flex align-items-center justify-content-center p-3">
-                                <img src="/images/MenuImages/Desserts/Croisants.png" class="img-fluid rounded cart-item-image" alt="Croissant">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h5 class="cart-item-title mb-1">Croissant</h5>
-                                            <p class="cart-item-category text-muted mb-2">Postre</p>
-                                            <p class="cart-item-desc mb-0">Clásico hojaldre francés.</p>
-                                        </div>
-                                        <div class="cart-item-price">2.00€</div>
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <div class="quantity-controls">
-                                            <button class="btn btn-quantity" onclick="updateQuantity('croissant', -1)">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <span class="quantity-display mx-3" id="quantity-croissant">2</span>
-                                            <button class="btn btn-quantity" onclick="updateQuantity('croissant', 1)">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                        <div>
-                                            <span class="item-subtotal me-3" id="subtotal-croissant">4.00€</span>
-                                            <button class="btn btn-remove" onclick="removeItem('croissant')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                            <!-- Payment Methods -->
+                            <div class="payment-methods mb-4">
+                                <h6 class="mb-3">Método de pago</h6>
+                                <div class="form-check mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="paymentMethod"
+                                        id="payPal"
+                                        checked
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="payPal"
+                                    >
+                                        <i class="fab fa-cc-paypal me-2"></i>PayPal
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="paymentMethod"
+                                        id="creditCard"
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="creditCard"
+                                    >
+                                        <i class="fas fa-credit-card me-2"></i>Tarjeta
+                                        de Crédito
+                                    </label>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Continue Shopping Button -->
-                <div class="mt-4">
-                    <a href="/menu" class="btn btn-outline-primary">
-                        <i class="fas fa-arrow-left me-2"></i>Seguir Comprando
-                    </a>
-                </div>
-            </div>
-
-            <!-- Right Column - Order Summary FIXED -->
-            <div class="col-lg-4">
-                <!-- Order Summary FIXED -->
-                <div class="order-summary-fixed card" id="orderSummaryFixed">
-                    <div class="card-header bg-dark text-light">
-                        <h4 class="mb-0">
-                            <i class="fas fa-receipt me-2"></i>Resumen del Pedido
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <!-- Order Details -->
-                        <div class="order-details mb-4">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal:</span>
-                                <span id="cart-subtotal">6.50€</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Envío:</span>
-                                <span id="shipping-cost">1.50€</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <span>Impuestos:</span>
-                                <span id="tax-amount">1.30€</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Total:</span>
-                                <span id="cart-total">9.30€</span>
-                            </div>
-                        </div>
-
-                        <!-- Promo Code -->
-                        <div class="promo-code mb-4">
-                            <label for="promoCode" class="form-label">Código promocional</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="promoCode" placeholder="Introduce tu código">
-                                <button class="btn btn-outline-secondary" type="button" onclick="applyPromoCode()">
-                                    Aplicar
+                            <!-- Checkout Button -->
+                            <form action="/cart/checkout" method="POST">
+                                <button
+                                    type="submit"
+                                    class="btn btn-checkout w-100 py-3"
+                                    onclick="processCheckout(event)"
+                                >
+                                    <i class="fas fa-lock me-2"></i>Proceder al
+                                    Pago
                                 </button>
-                            </div>
-                            <div class="text-success mt-2" id="promoMessage" style="display: none;">
-                                <i class="fas fa-check-circle me-1"></i>
-                                <span id="promoText"></span>
+                            </form>
+
+                            <!-- Security Info -->
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-shield-alt me-1"></i> Pago
+                                    100% seguro - Tus datos están protegidos
+                                </small>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Payment Methods -->
-                        <div class="payment-methods mb-4">
-                            <h6 class="mb-3">Método de pago</h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="payPal" checked>
-                                <label class="form-check-label" for="payPal">
-                                    <i class="fab fa-cc-paypal me-2"></i>PayPal
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard">
-                                <label class="form-check-label" for="creditCard">
-                                    <i class="fas fa-credit-card me-2"></i>Tarjeta de Crédito
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="cash">
-                                <label class="form-check-label" for="cash">
-                                    <i class="fas fa-money-bill-wave me-2"></i>Efectivo en Tienda
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Checkout Button -->
-                        <button class="btn btn-checkout w-100 py-3" onclick="processCheckout()">
-                            <i class="fas fa-lock me-2"></i>Proceder al Pago
-                        </button>
-
-                        <!-- Security Info -->
-                        <div class="text-center mt-3">
-                            <small class="text-muted">
-                                <i class="fas fa-shield-alt me-1"></i>
-                                Pago 100% seguro - Tus datos están protegidos
-                            </small>
+                    <!-- Estimated Delivery -->
+                    <div
+                        class="card mt-3 delivery-info-fixed"
+                        id="deliveryInfoFixed"
+                    >
+                        <div class="card-body">
+                            <h6 class="mb-3">
+                                <i class="fas fa-shipping-fast me-2"></i>Tiempo
+                                máximo para recogida
+                            </h6>
+                            <p class="mb-2">
+                                <i class="fas fa-clock me-2"></i>
+                                <span id="delivery-time">24 Horas</span>
+                            </p>
+                            <p class="mb-0 text-muted small">
+                                <i class="fas fa-info-circle me-1"></i>
+                                ¡Disfruta los descuentos por sucursal!
+                            </p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </main>
 
-                <!-- Estimated Delivery - FIXED -->
-                <div class="card mt-3 delivery-info-fixed" id="deliveryInfoFixed">
-                    <div class="card-body">
-                        <h6 class="mb-3">
-                            <i class="fas fa-shipping-fast me-2"></i>Entrega Estimada
-                        </h6>
-                        <p class="mb-2">
-                            <i class="fas fa-clock me-2"></i>
-                            <span id="delivery-time">25-35 minutos</span>
-                        </p>
-                        <p class="mb-0 text-muted small">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Envío gratuito en pedidos superiores a 15€
-                        </p>
-                    </div>
+        {{> fragments/footer}}
+
+        <!-- Toast Notifications -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div
+                id="successToast"
+                class="toast"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+            >
+                <div class="toast-header bg-success text-white">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong class="me-auto">Éxito</strong>
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="toast"
+                    ></button>
+                </div>
+                <div class="toast-body" id="successToastBody">
+                    Producto añadido al carrito
                 </div>
             </div>
         </div>
-    </main>
 
-    {{> fragments/footer}}
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        ></script>
+        <script src="/js/cart.js"></script>
 
-    <!-- Toast Notifications -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header bg-success text-white">
-                <i class="fas fa-check-circle me-2"></i>
-                <strong class="me-auto">Éxito</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body" id="successToastBody">
-                Producto añadido al carrito
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/cart.js"></script>
-</body>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              refreshCartCount();
+              loadCartItems();
+              loadBranches();
+            });
+            
+            /**
+             * loading items from cart
+             */
+            async function loadCartItems() {
+              console.log("🔄 Cargando items del carrito...");
+            
+              try {
+                const response = await fetch("/cart/summary");
+                const data = await response.json();
+            
+                console.log("📦 Datos recibidos:", data);
+            
+                if (data.success) {
+                  if (data.items) {
+                    data.items.forEach((item) => {
+                      if (item.lineTotal) {
+                        item.lineTotal = item.lineTotal.replace(",", ".");
+                      }
+                      if (item.unitPrice) {
+                        item.unitPrice = item.unitPrice.replace(",", ".");
+                      }
+                    });
+                  }
+            
+                  renderCartItems(data.items);
+                  updateCartSummary(data);
+                  console.log("✅ Carrito actualizado");
+                }
+              } catch (error) {
+                console.error("❌ Error:", error);
+                showNotification("✗ Error al cargar el carrito", "error");
+              }
+            }
+            
+            /**
+             * Render items
+             */
+            function renderCartItems(items) {
+              const container = document.getElementById("cartItemsContainer");
+              if (!container) return;
+            
+              if (!items || items.length === 0) {
+                container.innerHTML = `
+                            <div class="alert alert-info text-center p-5">
+                                <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                                <h4>Tu carrito está vacío</h4>
+                                <p class="mb-3">¿Listo para pedir? Explora nuestro menú</p>
+                                <a href="/menu" class="btn btn-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Ver Menú
+                                </a>
+                            </div>
+                        `;
+                return;
+              }
+            
+              let html = "";
+              items.forEach((item) => {
+                html += `
+                            <div class="cart-item card mb-3" data-item-id="${item.id}">
+                                <div class="row g-0">
+                                    <div class="col-md-2 d-flex align-items-center justify-content-center p-3">
+                                        <img src="${item.image}" class="img-fluid rounded cart-item-image" 
+                                             alt="${item.name}" 
+                                             onerror="this.src='https://via.placeholder.com/300x200?text=${encodeURIComponent(item.name)}'">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="cart-item-title mb-1">${item.name}</h5>
+                                                    <p class="cart-item-price text-muted mb-0">${item.unitPrice} c/u</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <div class="quantity-controls">
+                                                    <button class="btn btn-quantity btn-sm" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <span class="quantity-display mx-3 fw-bold">${item.quantity}</span>
+                                                    <button class="btn btn-quantity btn-sm" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <span class="item-subtotal me-3 fw-bold">${item.lineTotal}</span>
+                                                    <button class="btn btn-remove btn-sm" onclick="removeItem(${item.id})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+              });
+            
+              container.innerHTML = html;
+            }
+            
+            /**
+             * Update summary
+             */
+            function updateCartSummary(data) {
+              const subtotalEl = document.getElementById("cart-subtotal");
+              const taxEl = document.getElementById("tax-amount");
+              const totalEl = document.getElementById("cart-total");
+              const discountRow = document.getElementById("discountRow");
+              const discountAmount = document.getElementById("discount-amount");
+            
+              if (subtotalEl) subtotalEl.textContent = data.subtotal;
+              if (taxEl) taxEl.textContent = data.tax;
+              if (totalEl) totalEl.textContent = data.total;
+            
+              if (data.hasDiscount && discountRow && discountAmount) {
+                discountRow.style.display = "flex";
+                discountAmount.textContent = "-" + data.discountInfo;
+              } else if (discountRow) {
+                discountRow.style.display = "none";
+              }
+            }
+            
+            /**
+             * Update quantify
+             */
+            window.updateQuantity = async function (itemId, newQuantity) {
+              if (newQuantity < 0) return;
+            
+              console.log(`🔧 Actualizando item ${itemId} a cantidad ${newQuantity}`);
+            
+              const button = event?.target;
+              const originalHtml = button?.innerHTML;
+            
+              if (button) {
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                button.disabled = true;
+              }
+            
+              try {
+                const response = await fetch("/cart/update", {
+                  method: "POST",
+                  headers: getFetchHeaders(),
+                  body: new URLSearchParams({
+                    itemId: itemId,
+                    quantity: newQuantity,
+                  }),
+                });
+            
+                const data = await response.json();
+                console.log("📥 Respuesta:", data);
+            
+                if (data.success) {
+                  await loadCartItems();
+                  updateCartCounter(data.cartCount);
+                  showNotification("✓ Cantidad actualizada", "success");
+                } else {
+                  showNotification("✗ Error al actualizar", "error");
+                }
+              } catch (error) {
+                console.error("❌ Error:", error);
+                showNotification("✗ Error de conexión", "error");
+              } finally {
+                if (button) {
+                  button.innerHTML = originalHtml;
+                  button.disabled = false;
+                }
+              }
+            };
+            
+            /**
+             * Remove item
+             */
+            window.removeItem = async function (itemId) {
+              console.log(`🗑️ Eliminando item ${itemId}`);
+            
+              const button = event?.target.closest("button");
+              const originalHtml = button?.innerHTML;
+            
+              if (button) {
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                button.disabled = true;
+              }
+            
+              try {
+                const response = await fetch("/cart/remove", {
+                  method: "POST",
+                  headers: getFetchHeaders(),
+                  body: new URLSearchParams({
+                    itemId: itemId,
+                  }),
+                });
+            
+                const data = await response.json();
+                console.log("📥 Respuesta al eliminar:", data);
+            
+                if (data.success) {
+                  // Animate removal before reloading items
+                  const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+                  if (itemElement) {
+                    itemElement.style.transition = "opacity 0.3s ease";
+                    itemElement.style.opacity = "0";
+                    setTimeout(async () => {
+                      await loadCartItems();
+                    }, 300);
+                  } else {
+                    await loadCartItems();
+                  }
+            
+                  updateCartCounter(data.cartCount);
+                  showNotification("✓ Producto eliminado", "success");
+                } else {
+                  showNotification("✗ Error al eliminar producto", "error");
+                  if (button) {
+                    button.innerHTML = originalHtml;
+                    button.disabled = false;
+                  }
+                }
+              } catch (error) {
+                console.error("❌ Error:", error);
+                showNotification("✗ Error de conexión", "error");
+                if (button) {
+                  button.innerHTML = originalHtml;
+                  button.disabled = false;
+                }
+              }
+            };
+            
+            /**
+             * Process Checkout
+             */
+            window.processCheckout = async function (event) {
+              // Validate branch
+              const branchSelect = document.getElementById("branchSelect");
+              if (!branchSelect || !branchSelect.value) {
+                showNotification("✗ Selecciona una sucursal de recogida", "error");
+                return;
+              }
+            
+              // Getting paying method
+              const paymentMethods = document.getElementsByName("paymentMethod");
+              let selectedMethod = "";
+            
+              for (const method of paymentMethods) {
+                if (method.checked) {
+                  selectedMethod = method.id;
+                  break;
+                }
+              }
+            
+              if (!selectedMethod) {
+                showNotification("✗ Selecciona un método de pago", "error");
+                return;
+              }
+            
+              // check Items
+              const cartItems = document.querySelectorAll(".cart-item");
+              if (cartItems.length === 0) {
+                showNotification("✗ Tu carrito está vacío", "error");
+                return;
+              }
+            
+              // Diable button
+              const checkoutBtn = event?.target || document.querySelector(".btn-checkout");
+              const originalText = checkoutBtn.innerHTML;
+              checkoutBtn.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+              checkoutBtn.disabled = true;
+            
+              try {
+                //Calling backend
+                const response = await fetch("/cart/checkoutProcess", {
+                  method: "POST",
+                  headers: getFetchHeaders(),
+                  body: new URLSearchParams({
+                    paymentMethod: selectedMethod,
+                  }),
+                });
+            
+                const data = await response.json();
+            
+                if (data.success) {
+                  // Updatin counter to cero
+                  updateCartCounter(0);
+            
+                  showNotification("✓ " + data.message, "success");
+            
+                  // Redirect
+                  setTimeout(() => {
+                    window.location.href = "/cart?success=true&orderId=" + data.orderId;
+                  }, 1500);
+                } else {
+                  showNotification("✗ " + data.message, "error");
+                  checkoutBtn.innerHTML = originalText;
+                  checkoutBtn.disabled = false;
+                }
+              } catch (error) {
+                console.error("Error:", error);
+                showNotification("✗ Error de conexión", "error");
+                checkoutBtn.innerHTML = originalText;
+                checkoutBtn.disabled = false;
+              }
+            };
+            
+            /**
+             * Load Branches
+             */
+            async function loadBranches() {
+              const loadingEl = document.getElementById("branchLoading");
+              const listEl = document.getElementById("branchList");
+              const selectEl = document.getElementById("branchSelect");
+              const infoEl = document.getElementById("branchInfo");
+              const descEl = document.getElementById("branchDescription");
+            
+              try {
+                const response = await fetch("/cart/branches");
+                const data = await response.json();
+            
+                if (data.success) {
+                  loadingEl.style.display = "none";
+                  listEl.style.display = "block";
+            
+                  selectEl.innerHTML = '<option value="">Selecciona una sucursal</option>';
+            
+                  data.branches.forEach((branch) => {
+                    const option = document.createElement("option");
+                    option.value = branch.id;
+                    option.textContent = branch.name;
+                    if (branch.id === data.currentBranchId) {
+                      option.selected = true;
+                      if (branch.description) {
+                        descEl.textContent = branch.description;
+                        infoEl.style.display = "block";
+                      }
+                    }
+                    selectEl.appendChild(option);
+                  });
+                }
+              } catch (error) {
+                console.error("Error loading branches:", error);
+                loadingEl.innerHTML =
+                  '<p class="text-danger">Error al cargar sucursales</p>';
+              }
+            }
+            
+            /**
+             * Changing branch
+             */
+            window.changeBranch = async function () {
+              const selectEl = document.getElementById("branchSelect");
+              const infoEl = document.getElementById("branchInfo");
+              const descEl = document.getElementById("branchDescription");
+              const branchId = selectEl.value;
+            
+              if (!branchId) return;
+            
+              selectEl.disabled = true;
+            
+              try {
+                const response = await fetch("/cart/change-branch?branchId=" + branchId, {
+                  method: "POST",
+                  headers: getFetchHeaders(),
+                });
+            
+                const data = await response.json();
+            
+                if (data.success) {
+                  // 🔴 CORREGIDO: Verificar que los elementos existen antes de usarlos
+                  const discountRow = document.getElementById("discountRow");
+                  const discountAmount = document.getElementById("discount-amount");
+            
+                  if (data.hasDiscount) {
+                    if (discountRow) discountRow.style.display = "flex";
+                    if (discountAmount && data.discountInfo) {
+                      discountAmount.textContent = "-" + data.discountInfo;
+                    }
+                  } else {
+                    if (discountRow) discountRow.style.display = "none";
+                  }
+            
+                  // Update Branch description
+                  const branchesResponse = await fetch("/cart/branches");
+                  const branchesData = await branchesResponse.json();
+                  if (branchesData.success) {
+                    const branch = branchesData.branches.find((b) => b.id == branchId);
+                    if (branch && branch.description) {
+                      descEl.textContent = branch.description;
+                      infoEl.style.display = "block";
+                    } else {
+                      infoEl.style.display = "none";
+                    }
+                  }
+            
+                  // Update summary
+                  const subtotalEl = document.getElementById("cart-subtotal");
+                  const totalEl = document.getElementById("cart-total");
+            
+                  if (subtotalEl && data.subtotal) {
+                    subtotalEl.textContent = data.subtotal;
+                  }
+                  if (totalEl && data.total) {
+                    totalEl.textContent = data.total;
+                  }
+            
+                  showNotification("✓ Sucursal actualizada", "success");
+                } else {
+                  showNotification("✗ Error al cambiar sucursal", "error");
+                }
+              } catch (error) {
+                console.error("Error:", error);
+                showNotification("✗ Error de conexión", "error");
+              } finally {
+                selectEl.disabled = false;
+              }
+            };
+        </script>
+    </body>
 </html>

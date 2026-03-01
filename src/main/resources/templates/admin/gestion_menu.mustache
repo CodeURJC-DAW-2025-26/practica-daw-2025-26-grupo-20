@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mokaf - Gestión de Menú</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/gestion_menu.css">
+        <link rel="stylesheet" href="/css/menu.css">
+    </head>
+
+    <body class="body-content">
+        {{> fragments/header}}
+
+        <main class="container my-5 admin-container">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2>Gestión de Productos</h2>
+                <button
+                    class="btn btn-header"
+                    id="toggleFormBtn"
+                    onclick="toggleProductForm()"
+                >
+                    <i class="fas fa-plus me-2"></i>Nuevo Producto
+                </button>
+            </div>
+
+            <!-- Product Form -->
+            <div
+                id="productForm"
+                class="row justify-content-center mb-5"
+                style="display: none;"
+            >
+                <div class="col-lg-8">
+                    <h4 class="mb-4">Agregar Producto</h4>
+                    <div class="form-container">
+                        {{#error}}
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                {{error}}
+                            </div>
+                        {{/error}}
+                        <form
+                            action="/admin/gestion_menu/add"
+                            method="POST"
+                            enctype="multipart/form-data"
+                        >
+                            <input
+                                type="hidden"
+                                name="_csrf"
+                                value="{{_csrf.token}}"
+                            />
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">
+                                        Nombre del Producto
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="name"
+                                        name="name"
+                                        placeholder="Ej: Café Mokaf Especial"
+                                        required
+                                    >
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="category" class="form-label">
+                                        Categoría
+                                    </label>
+                                    <select
+                                        class="form-select"
+                                        id="category"
+                                        name="category"
+                                        required
+                                    >
+                                        <option value="" selected disabled>
+                                            Seleccionar...
+                                        </option>
+                                        {{#categories}}
+                                            <option value="{{value}}">
+                                                {{displayName}}
+                                            </option>
+                                        {{/categories}}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="price" class="form-label">
+                                        Precio (€)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        class="form-control"
+                                        id="price"
+                                        name="price"
+                                        placeholder="0.00"
+                                        required
+                                    >
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="image" class="form-label">
+                                        Imagen del Producto
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="images/*"
+                                        class="form-control"
+                                        id="image"
+                                        name="image"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="description" class="form-label">
+                                        Descripción
+                                    </label>
+                                    <textarea
+                                        class="form-control"
+                                        id="description"
+                                        name="description"
+                                        rows="3"
+                                        placeholder="Descripción breve del producto..."
+                                        required
+                                    ></textarea>
+                                </div>
+
+                                <!-- Allergens -->
+                                <div class="col-12 mt-3">
+                                    <label class="form-label">
+                                        Alérgenos (Selección múltiple)
+                                    </label>
+
+                                    <!-- Hidden Select holding the actual values for form submission -->
+                                    <select
+                                        class="d-none"
+                                        id="allergenIds"
+                                        name="allergenIds"
+                                        multiple
+                                    >
+                                        {{#allergens}}
+                                            <option value="{{id}}"></option>
+                                        {{/allergens}}
+                                    </select>
+
+                                    <!-- Visual UI for picking allergens -->
+                                    <div
+                                        class="allergen-picker d-flex flex-wrap gap-2 p-3 border rounded"
+                                        style="background-color: var(--blanco);"
+                                    >
+                                        {{#allergens}}
+                                            <span
+                                                class="badge rounded-pill allergen-pill text-white"
+                                                data-id="{{id}}"
+                                                data-allergen="{{name}}"
+                                                style="cursor: pointer; opacity: 0.5; transition: all 0.2s;"
+                                                onclick="toggleAllergen(this, '{{id}}')"
+                                            >
+                                                {{name}}
+                                            </span>
+                                        {{/allergens}}
+                                        {{^allergens}}
+                                            <p class="text-muted mb-0">
+                                                <small>No hay alérgenos registrados en el sistema.</small>
+                                            </p>
+                                        {{/allergens}}
+                                    </div>
+                                    <small
+                                        class="form-text"
+                                        style="color: var(--dorado);"
+                                    >
+                                        Haz clic en los alérgenos para añadirlos
+                                        o quitarlos del producto.
+                                    </small>
+                                </div>
+
+                                <div
+                                    class="col-12 mt-4 d-flex justify-content-end gap-2"
+                                >
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        style="color: var(--beige); border-color: var(--cafe-claro);"
+                                        onclick="document.forms[0].reset(); toggleProductForm();"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-header"
+                                    >
+                                        Guardar Producto
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="category-nav mb-5">
+                <div class="d-flex justify-content-start flex-wrap gap-2">
+                    <button class="btn btn-category active" data-category="all">
+                        Todos
+                    </button>
+                    {{#categories}}
+                        <button
+                            class="btn btn-category"
+                            data-category="{{value}}"
+                        >
+                            {{displayName}}
+                        </button>
+                    {{/categories}}
+                </div>
+            </div>
+
+            <!-- Product List -->
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 80px;">Imagen</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Alérgenos</th>
+                            <th scope="col" class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#items}}
+                            <tr data-category="{{category}}">
+                                <td>
+                                    <img
+                                        src="/images/{{image.id}}"
+                                        class="product-thumb"
+                                        alt="{{name}}"
+                                        style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"
+                                    >
+                                </td>
+                                <td>{{name}}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-category"
+                                        data-catcolor="{{category}}"
+                                    >
+                                        {{category}}
+                                    </span>
+                                </td>
+                                <td>{{priceBase}}€</td>
+                                <td>
+                                    {{#allergens}}
+                                        <span
+                                            class="badge me-1 allergen-badge text-white"
+                                            data-allergen="{{name}}"
+                                        >
+                                            {{name}}
+                                        </span>
+                                    {{/allergens}}
+                                </td>
+                                <td class="text-end">
+                                    <form
+                                        action="/admin/gestion_menu/delete/{{id}}"
+                                        method="POST"
+                                        style="display: inline;"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="_csrf"
+                                            value="{{_csrf.token}}"
+                                        />
+                                        <button
+                                            type="submit"
+                                            class="btn btn-action btn-delete"
+                                            title="Borrar"
+                                            onclick="return confirm('¿Seguro que deseas eliminar el producto {{name}}?');"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {{/items}}
+                        {{^items}}
+                            <tr>
+                                <td
+                                    colspan="6"
+                                    class="text-center py-4 text-muted"
+                                >
+                                    No hay productos en el menú.
+                                </td>
+                            </tr>
+                        {{/items}}
+                    </tbody>
+                </table>
+            </div>
+
+            <hr class="my-5" style="border-color: var(--dorado); opacity: 0.3;">
+        </main>
+
+        {{> fragments/footer}}
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              const defaultCategoryBtn = document.querySelector(
+                '.btn-category[data-category="all"]',
+              );
+              if (defaultCategoryBtn) defaultCategoryBtn.classList.add("active");
+            
+              const filterBtns = document.querySelectorAll(".btn-category");
+              const rows = document.querySelectorAll("tbody tr[data-category]");
+            
+              filterBtns.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  filterBtns.forEach((b) => b.classList.remove("active"));
+                  btn.classList.add("active");
+            
+                  const selected = btn.getAttribute("data-category");
+            
+                  rows.forEach((row) => {
+                    if (
+                      selected === "all" ||
+                      row.getAttribute("data-category") === selected
+                    ) {
+                      row.style.display = "";
+                    } else {
+                      row.style.display = "none";
+                    }
+                  });
+                });
+              });
+            
+              // Random color for allergens
+              const colors = [
+                "#e63946",
+                "#f4a261",
+                "#2a9d8f",
+                "#264653",
+                "#e76f51",
+                "#8ab17d",
+              ];
+            
+              function getColorForAllergen(allergenName) {
+                let hash = 0;
+                for (let i = 0; i < allergenName.length; i++) {
+                  hash = allergenName.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                const colorIndex = Math.abs(hash) % colors.length;
+                return colors[colorIndex];
+              }
+            
+              // Apply color to badges in the table
+              document.querySelectorAll(".allergen-badge").forEach((badge) => {
+                const allergenName = badge.getAttribute("data-allergen");
+                badge.style.backgroundColor = getColorForAllergen(allergenName);
+              });
+            
+              // Apply color to buttons (pills) in the form
+              document.querySelectorAll(".allergen-pill").forEach((pill) => {
+                const allergenName = pill.getAttribute("data-allergen");
+                pill.style.backgroundColor = getColorForAllergen(allergenName);
+              });
+            
+              // Color by category
+              const categoryColors = {
+                HOT: "#d9534f", // Red
+                COLD: "#5bc0de", // Blue
+                BLENDED: "#f0ad4e", // Orange
+                DESSERTS: "#c8a2c8", // Lilac
+                NON_COFFEE: "#5cb85c", // Green
+              };
+              document.querySelectorAll(".badge-category").forEach((badge) => {
+                const cat = badge.getAttribute("data-catcolor");
+                if (categoryColors[cat]) {
+                  badge.style.backgroundColor = categoryColors[cat];
+                  badge.style.color = "#fff";
+                } else {
+                  badge.style.backgroundColor = "var(--dorado)";
+                  badge.style.color = "var(--marron-oscuro)";
+                }
+              });
+            });
+            
+            // Function to handle visual allergen selection in the form
+            function toggleAllergen(element, id) {
+              const select = document.getElementById("allergenIds");
+              const option = select.querySelector(`option[value="${id}"]`);
+            
+              if (option.selected) {
+                // Deselect
+                option.selected = false;
+                element.style.opacity = "0.5";
+                element.style.transform = "scale(1)";
+                element.innerHTML = `${element.getAttribute("data-allergen")}`;
+              } else {
+                // Select
+                option.selected = true;
+                element.style.opacity = "1";
+                element.style.transform = "scale(1.1)";
+                element.innerHTML = `<i class="fas fa-check me-1"></i> ${element.getAttribute("data-allergen")}`;
+              }
+            }
+            
+            // Function to show/hide the product form
+            function toggleProductForm() {
+              const formDiv = document.getElementById("productForm");
+              const toggleBtn = document.getElementById("toggleFormBtn");
+            
+              if (formDiv.style.display === "none") {
+                formDiv.style.display = "flex";
+                formDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+                toggleBtn.innerHTML =
+                  '<i class="fas fa-minus me-2"></i>Ocultar agregar producto';
+              } else {
+                formDiv.style.display = "none";
+                toggleBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Nuevo Producto';
+              }
+            }
+        </script>
+
+        <!-- Bootstrap JS -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        ></script>
+    </body>
+</html>

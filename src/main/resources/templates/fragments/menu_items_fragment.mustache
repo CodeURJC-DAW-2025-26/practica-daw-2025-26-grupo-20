@@ -1,0 +1,75 @@
+{{#items}}
+    <div class="col menu-item" data-category="{{category}}">
+        <a class="product-link" href="/product/{{id}}">
+            <div class="card h-100 menu-card">
+                {{#image}}
+                    <img
+                        src="/images/{{id}}"
+                        class="card-img-top"
+                        alt="{{name}}"
+                        onerror="this.src='https://via.placeholder.com/300x200?text={{name}}'"
+                    >
+                {{/image}}
+                {{^image}}
+                    <img
+                        src="https://via.placeholder.com/300x200?text={{name}}"
+                        class="card-img-top"
+                        alt="{{name}}"
+                    >
+                {{/image}}
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{name}}</h5>
+                    <p class="card-text">{{description}}</p>
+
+                    <!-- Hidden allergens elements for Javascript filtering logic -->
+                    <div class="d-none allergens-data-container">
+                        {{#allergens}}
+                            <span
+                                class="allergen-badge"
+                                data-allergen="{{name}}"
+                            ></span>
+                        {{/allergens}}
+                    </div>
+
+                    <div
+                        class="mt-auto d-flex justify-content-between align-items-center"
+                    >
+                        <p class="card-price fw-bold mb-0">{{priceBase}}€</p>
+
+                        {{#isLogged}}
+                            <form
+                                action="/cart/add"
+                                method="post"
+                                style="display:inline;"
+                                class="ajax-cart-form"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="productId"
+                                    value="{{id}}"
+                                >
+                                <input
+                                    type="hidden"
+                                    name="qty"
+                                    class="qty-hidden"
+                                    value="1"
+                                >
+                                <button
+                                    class="btn btn-recommended-cart"
+                                    type="submit"
+                                    onclick="event.stopPropagation();"
+                                >
+                                    <i class="fas fa-cart-plus me-2"></i>Añadir
+                                </button>
+                            </form>
+                        {{/isLogged}}
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+{{/items}}
+
+{{#hasMore}}<input type="hidden" id="hasMoreData" value="true">{{/hasMore}}
+{{^hasMore}}<input type="hidden" id="hasMoreData" value="false">{{/hasMore}}

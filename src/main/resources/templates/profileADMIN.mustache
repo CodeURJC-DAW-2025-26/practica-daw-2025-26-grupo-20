@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{title}}</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        >
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        >
+        <link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/profileADMIN.css">
+    </head>
+    <body class="body-content">
+        {{> fragments/header}}
+
+        <main class="container my-5 admin-container">
+            <h2 class="text-center mb-2">Perfil de Administrador</h2>
+
+            {{#updated}}
+                <div
+                    class="alert alert-success alert-dismissible fade show"
+                    role="alert"
+                >
+                    Perfil actualizado correctamente
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+                </div>
+            {{/updated}}
+
+            <div class="row g-4 justify-content-center">
+                <!-- COLUMNA IZQUIERDA - AVATAR Y BOTONES RÁPIDOS -->
+                <div class="col-lg-4 col-md-5">
+                    <div class="admin-avatar-card">
+                        <div class="admin-avatar-section">
+                            <span class="admin-badge">Administrador</span>
+
+                            <div class="admin-avatar-wrapper">
+                                {{#user.image}}
+                                    <img
+                                        src="/profiles/images/{{user.image.id}}"
+                                        class="admin-avatar"
+                                        alt="Avatar admin"
+                                    >
+                                {{/user.image}}
+                                {{^user.image}}
+                                    <img
+                                        src="https://via.placeholder.com/150?text=👑"
+                                        class="admin-avatar"
+                                        alt="Avatar admin por defecto"
+                                    >
+                                {{/user.image}}
+                            </div>
+                            <h3 class="admin-username">{{user.name}}</h3>
+                            <p class="admin-email small">{{user.email}}</p>
+                        </div>
+
+                        <div class="admin-quick-actions mt-4">
+                            <h5 class="admin-quick-title">Panel de Control</h5>
+                            <a
+                                href="/admin/gestion_menu"
+                                class="btn btn-admin-quick"
+                            >
+                                <i class="fas fa-coffee me-2"></i>
+                                <span>Gestión de Productos</span>
+                            </a>
+                            <a
+                                href="/statistics/charts"
+                                class="btn btn-admin-quick"
+                            >
+                                <i class="fas fa-chart-bar me-2"></i>
+                                <span>Ver Estadísticas</span>
+                            </a>
+                            <a href="/admin/users" class="btn btn-admin-quick">
+                                <i class="fas fa-users me-2"></i>
+                                <span>Gestionar Usuarios</span>
+                            </a>
+                            <a href="/orders" class="btn btn-admin-quick">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                <span>Ver Pedidos</span>
+                            </a>
+
+                            <!-- LOGOUT BUTTON -->
+                            <form action="/logout" method="post" class="mt-3">
+                                {{#_csrf}}
+                                    <input
+                                        type="hidden"
+                                        name="{{_csrf.parameterName}}"
+                                        value="{{_csrf.token}}"
+                                    />
+                                {{/_csrf}}
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger w-100"
+                                >
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar
+                                    Sesión
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA - FORMULARIO -->
+                <div class="col-lg-6 col-md-7">
+                    <div class="admin-form-card">
+                        <h4 class="admin-form-title">
+                            Configuración del Administrador
+                        </h4>
+                        <p class="admin-form-subtitle">
+                            Gestiona tu cuenta de administrador
+                        </p>
+
+                        <form
+                            action="/profileADMIN/update"
+                            method="post"
+                            enctype="multipart/form-data"
+                        >
+                            {{#_csrf}}
+                                <input
+                                    type="hidden"
+                                    name="{{_csrf.parameterName}}"
+                                    value="{{_csrf.token}}"
+                                />
+                            {{/_csrf}}
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Nombre completo
+                                </label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="name"
+                                    value="{{user.name}}"
+                                    required
+                                >
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Nombre de usuario
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        value="{{user.username}}"
+                                        readonly
+                                    >
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Correo electrónico
+                                    </label>
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        name="email"
+                                        value="{{user.email}}"
+                                        required
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">ID de Empleado</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="employeeId"
+                                    value="{{#user.employeeId}}{{user.employeeId}}{{/user.employeeId}}"
+                                    placeholder="Sin ID asignado"
+                                    readonly
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Nueva contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    name="password"
+                                    placeholder="Dejar en blanco para mantener la actual"
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Foto de perfil (PNG)
+                                </label>
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    name="image"
+                                    accept="image/png,image/jpeg,image/jpg"
+                                >
+                                <small> Formatos permitidos: PNG, JPG, JPEG</small>
+                            </div>
+
+                            <div class="admin-actions">
+                                <a
+                                    href="/"
+                                    class="btn btn-outline-light btn-cancel"
+                                >
+                                    Cancelar
+                                </a>
+                                <button
+                                    type="submit"
+                                    class="btn btn-admin-save"
+                                >
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="admin-external-buttons mt-4">
+                        <button
+                            type="button"
+                            class="btn btn-admin-delete"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                        >
+                            <i class="fas fa-trash-alt me-2"></i>Eliminar cuenta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        {{> fragments/footer}}
+
+        <!-- MODAL ELIMINAR -->
+        <div
+            class="modal fade"
+            id="deleteModal"
+            tabindex="-1"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-admin-custom">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Eliminar cuenta de administrador
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <strong>Advertencia:</strong> Estás a punto de
+                            eliminar una cuenta de administrador. Esta acción no
+                            se puede deshacer y podría afectar la gestión del
+                            sistema. ¿Estás absolutamente seguro?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-outline-light"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancelar
+                        </button>
+                        <form
+                            action="/profileADMIN/delete"
+                            method="post"
+                            style="display: inline;"
+                        >
+                            {{#_csrf}}
+                                <input
+                                    type="hidden"
+                                    name="{{_csrf.parameterName}}"
+                                    value="{{_csrf.token}}"
+                                />
+                            {{/_csrf}}
+                            <button type="submit" class="btn btn-danger">
+                                Sí, eliminar definitivamente
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        ></script>
+    </body>
+</html>

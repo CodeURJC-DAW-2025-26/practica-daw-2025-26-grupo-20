@@ -1,0 +1,430 @@
+/* ==========================================================================
+   PROFILE PAGE - OPTIMIZADO PARA ESCRITORIO
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR PRINCIPAL - SIN MÁRGENES EXCESIVOS
+   -------------------------------------------------------------------------- */
+.profile-container {
+    max-width: 1400px;
+    width: 95%;
+    margin: 0 auto;
+    padding: 0 15px;
+    padding-bottom: 3rem;
+    /* MÁS MARGEN CON EL FOOTER */
+}
+
+.profile-container h2 {
+    color: #C6A87D;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-top: 1.5rem;
+    /* BAJAR EL TÍTULO DEL HEADER */
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 15px;
+    text-align: center;
+    /* CENTRAR EL TÍTULO */
+    width: 100%;
+}
+
+.profile-container h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #C6A87D, transparent);
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT DE DOS COLUMNAS - MEJOR DISTRIBUCIÓN
+   -------------------------------------------------------------------------- */
+.profile-container .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.profile-container .col-lg-4 {
+    padding: 0 10px;
+    flex: 0 0 30%;
+    max-width: 350px;
+}
+
+.profile-container .col-lg-6 {
+    padding: 0 10px;
+    flex: 1;
+    max-width: none;
+}
+
+/* --------------------------------------------------------------------------
+   TARJETA DE PERFIL (IZQUIERDA) - MÁS COMPACTA
+   -------------------------------------------------------------------------- */
+.profile-avatar-card {
+    background-color: rgba(26, 26, 26, 0.85);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #C6A87D;
+    text-align: center;
+}
+
+.profile-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* FOTO DE PERFIL */
+.profile-avatar-wrapper {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #C6A87D;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-username {
+    color: #C6A87D;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.profile-email {
+    color: #C6A87D;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+    word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   PANEL DE ATAJOS - MÁS COMPACTO
+   -------------------------------------------------------------------------- */
+.user-quick-actions {
+    background-color: rgba(26, 26, 26, 0.6);
+    border-radius: 15px;
+    padding: 1.25rem;
+    border: 1px solid rgba(198, 168, 125, 0.3);
+    margin-top: 1rem;
+}
+
+.user-quick-title {
+    color: #C6A87D;
+    font-size: 0.9rem;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* BOTÓN DORADO SÓLIDO */
+.btn-user-quick {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    background: #C6A87D;
+    border: 2px solid #C6A87D;
+    color: #ffffff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.btn-user-quick:last-child {
+    margin-bottom: 0;
+}
+
+.btn-user-quick i {
+    font-size: 1rem;
+    color: #ffffff;
+    width: 20px;
+    text-align: center;
+}
+
+.btn-user-quick span {
+    color: #ffffff;
+    font-size: 0.85rem;
+}
+
+.btn-user-quick:hover {
+    background: transparent;
+    border-color: #C6A87D;
+    color: #C6A87D;
+    transform: translateX(3px);
+    text-decoration: none;
+}
+
+.btn-user-quick:hover i,
+.btn-user-quick:hover span {
+    color: #C6A87D;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+.user-quick-actions form {
+    margin-top: 0.75rem;
+}
+
+.user-quick-actions .btn-danger {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   FORMULARIO (DERECHA) - OCUPA TODO EL ESPACIO DISPONIBLE
+   -------------------------------------------------------------------------- */
+.profile-form-card {
+    background-color: rgba(26, 26, 26, 0.85);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #C6A87D;
+    height: 100%;
+}
+
+.profile-form-title {
+    color: #C6A87D;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.profile-form-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 1px;
+    background-color: #C6A87D;
+}
+
+.profile-form-subtitle {
+    color: #8B6B61;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.profile-form-card small {
+    color: #C6A87D;
+}
+
+.profile-form-card .form-label {
+    color: #D7CCC8;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+}
+
+.profile-form-card .form-control {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid #5D4037;
+    color: #D7CCC8;
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.profile-form-card .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: #C6A87D;
+    box-shadow: 0 0 0 0.25rem rgba(198, 168, 125, 0.25);
+    color: #D7CCC8;
+}
+
+.profile-form-card .form-control[readonly] {
+    background-color: rgba(255, 255, 255, 0.05);
+    opacity: 0.6;
+}
+
+/* GRID DE DOS COLUMNAS EN FORMULARIO */
+.profile-form-card .row {
+    margin: 0 -8px;
+}
+
+.profile-form-card .col-md-6 {
+    padding: 0 8px;
+}
+
+/* Botones del formulario */
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(198, 168, 125, 0.2);
+}
+
+.btn-save {
+    background: #C6A87D;
+    border: none;
+    color: #1a1a1a;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.btn-save:hover {
+    background: #b89b6c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(198, 168, 125, 0.4);
+}
+
+.btn-cancel {
+    border-color: #5D4037;
+    color: #D7CCC8;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: rgba(198, 168, 125, 0.1);
+    border-color: #C6A87D;
+    color: #C6A87D;
+}
+
+/* --------------------------------------------------------------------------
+   BOTÓN ELIMINAR CUENTA - CON MÁS MARGEN INFERIOR
+   -------------------------------------------------------------------------- */
+.delete-account-section {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    /* MÁS MARGEN INFERIOR */
+    display: flex;
+    justify-content: center;
+}
+
+.btn-delete-account {
+    background: linear-gradient(to right, #dc3545, #c82333);
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-delete-account:hover {
+    background: linear-gradient(to right, #c82333, #a71d2a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   MODAL
+   -------------------------------------------------------------------------- */
+.modal-custom {
+    background-color: rgba(26, 26, 26, 0.95);
+    border-radius: 15px;
+    border: 2px solid #C6A87D;
+}
+
+.modal-custom .modal-header {
+    border-bottom: 1px solid rgba(198, 168, 125, 0.3);
+}
+
+.modal-custom .modal-title {
+    color: #C6A87D;
+}
+
+.modal-custom .modal-body {
+    color: #D7CCC8;
+}
+
+.modal-custom .modal-footer {
+    border-top: 1px solid rgba(198, 168, 125, 0.3);
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE - AJUSTES PARA PANTALLAS GRANDES
+   -------------------------------------------------------------------------- */
+@media (min-width: 1400px) {
+    .profile-container {
+        max-width: 1600px;
+    }
+
+    .profile-container .col-lg-4 {
+        flex: 0 0 25%;
+        max-width: 320px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .profile-container .col-lg-4 {
+        flex: 0 0 28%;
+        max-width: 300px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 991px) {
+    .profile-container {
+        width: 100%;
+        padding: 0 20px;
+        padding-bottom: 3rem;
+    }
+
+    .profile-container .col-lg-4,
+    .profile-container .col-lg-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Móviles */
+@media (max-width: 576px) {
+    .profile-container {
+        padding: 0 15px;
+        padding-bottom: 2rem;
+    }
+
+    .profile-avatar-card,
+    .profile-form-card {
+        padding: 1rem;
+    }
+
+    .delete-account-section {
+        margin-bottom: 1.5rem;
+    }
+}

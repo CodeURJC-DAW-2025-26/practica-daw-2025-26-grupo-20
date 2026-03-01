@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mokaf - Error 404</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="/css/general.css">
+  <link rel="stylesheet" href="/css/footer.css">
+</head>
+
+<body class="body-content">
+  {{> fragments/header}}
+
+  <main class="container my-5 text-center">
+    <div class="py-4">
+      <div class="display-1 fw-bold" style="color: var(--dorado);">404</div>
+      <h2 class="text-center mb-4">Página no encontrada</h2>
+      <p class="mb-4">
+        La dirección que has intentado abrir no existe o se ha movido.
+      </p>
+
+      <div class="d-flex justify-content-center gap-2 flex-wrap">
+        <a href="/" class="btn btn-header">
+          <i class="fas fa-home me-2"></i>Volver a Inicio
+        </a>
+        <a href="/menu" class="btn btn-header">
+          <i class="fas fa-utensils me-2"></i>Ir al Menú
+        </a>
+      </div>
+    </div>
+  </main>
+
+  {{>fragments/footer}}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

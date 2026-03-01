@@ -1,6 +1,6 @@
 /* Cart Page Styles */
 .cart-empty {
-    background-color: rgba(45, 35, 25, 0.9); /* Café oscuro semitransparente */
+    background-color: rgba(45, 35, 25, 0.9); /* Dark coffee, semi-transparent */
     border: 1px solid var(--cafe-claro);
     border-radius: 10px;
     color: var(--cafe-claro);
@@ -13,7 +13,7 @@
 }
 
 .cart-item {
-    background-color: rgba(60, 45, 30, 0.8); /* Café medio semitransparente */
+    background-color: rgba(60, 45, 30, 0.8); /* Medium coffee, semi-transparent */
     border: 1px solid var(--cafe-claro);
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -51,7 +51,7 @@
 }
 
 .cart-item-desc {
-    color: rgba(245, 245, 220, 0.8); /* Beige semitransparente */
+    color: rgba(245, 245, 220, 0.8); /* Semi-transparent beige */
     font-size: 0.95rem;
 }
 
@@ -121,7 +121,7 @@
 
 /* Order Summary */
 .order-summary {
-    background-color: rgba(45, 35, 25, 0.9); /* Café oscuro semitransparente */
+    background-color: rgba(45, 35, 25, 0.9); /* Dark coffee, semi-transparent */
     border: 2px solid var(--dorado);
     border-radius: 10px;
     top: 20px;
@@ -271,7 +271,7 @@
 
 /* Subtle text effects */
 .text-muted {
-    color: rgba(245, 245, 220, 0.6) !important; /* Beige semitransparente */
+    color: rgba(245, 245, 220, 0.6) !important; /* Semi-transparent beige */
 }
 
 .text-success {

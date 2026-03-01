@@ -1,14 +1,19 @@
 <header class="cafe-header">
     <div class="header-container">
         <nav class="navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-mug-hot"></i>Mokaf
             </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarContent"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -18,31 +23,120 @@
                         <a class="nav-link" href="/menu">Menú</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/nosotros">Nosotros</a>
+                        <a class="nav-link" href="/about_us">Nosotros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/sucursales">Sucursales</a>
+                        <a class="nav-link" href="/branches">Sucursales</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">Contacto</a>
                     </li>
                 </ul>
-                
-                <div class="d-flex">
-                
-                    <a href="/statistics" id="stat">
-                    <i class="fas fa-chart-bar"></i>
-                    </a>
 
-                    <a href="/login" class="btn btn-header me-2">
-                        <i class="fas fa-user me-1"></i> Mi Cuenta
-                    </a>
-                    <a href="/cart" class="btn btn-header">
-                        <i class="fas fa-shopping-cart me-1"></i> Carrito
-                        <span class="badge bg-danger ms-1">3</span>
-                    </a>
+                <div class="d-flex align-items-center">
+                    {{#user}}
+                        <!-- Logged User: My Profile button -->
+                        {{#isAdmin}}
+                            <a href="/profileADMIN" class="btn btn-header me-2">
+                                <i class="fas fa-user me-1"></i> Mi Perfil
+                            </a>
+                        {{/isAdmin}}
+                        {{^isAdmin}}
+                            <a href="/profile" class="btn btn-header me-2">
+                                <i class="fas fa-user me-1"></i> Mi Perfil
+                            </a>
+                        {{/isAdmin}}
+                    {{/user}}
+
+                    {{^user}}
+                        <!-- Unloggeg User: My Account Button (Redirect to login) -->
+                        <a href="/login" class="btn btn-header me-2">
+                            <i class="fas fa-user me-1"></i> Mi Cuenta
+                        </a>
+                    {{/user}}
+
+                    {{#user}}
+                        <a
+                            href="/cart"
+                            class="btn btn-header position-relative"
+                        >
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            <span
+                                class="badge bg-danger ms-1 cart-counter"
+                                id="cartCounter"
+                            >0</span>
+                        </a>
+                    {{/user}}
                 </div>
             </div>
         </nav>
     </div>
 </header>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Update counter on page load
+      updateCartCount();
+    
+      // Update Counter
+      window.addEventListener("cartUpdated", function (event) {
+        if (event.detail && event.detail.count !== undefined) {
+          updateCartCounterDisplay(event.detail.count);
+        }
+      });
+    });
+    
+    async function updateCartCount() {
+      try {
+        const response = await fetch("/cart/count");
+        const data = await response.json();
+    
+        if (data.success) {
+          updateCartCounterDisplay(data.count);
+        }
+      } catch (error) {
+        console.error("Error al actualizar contador:", error);
+      }
+    }
+    
+    function updateCartCounterDisplay(count) {
+      const counter = document.getElementById("cartCounter");
+      if (counter) {
+        counter.textContent = count;
+        counter.style.display = count > 0 ? "inline-block" : "none";
+    
+        // Subtle animation on change
+        counter.classList.add("counter-pulse");
+        setTimeout(() => {
+          counter.classList.remove("counter-pulse");
+        }, 500);
+      }
+    }
+</script>
+
+<style>
+    .cart-counter {
+      transition: all 0.3s ease;
+    }
+    
+    .counter-pulse {
+      animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        background-color: #dc3545;
+      }
+    
+      50% {
+        transform: scale(1.2);
+        background-color: #28a745;
+      }
+    }
+    
+    .btn-header .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+</style>
