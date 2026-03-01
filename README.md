@@ -110,11 +110,80 @@ Por último pero no menos importante, el rol de Administrador tendrá acceso a s
 
 #### **1. Página Principal / Home**
 
-![Página Principal](images/home-page.png)
+![Página Principal](images/Inicio.png)
 
-> [Descripción breve: Ej: "Página de inicio que muestra los productos destacados, categorías principales y un banner promocional. Incluye barra de navegación y acceso a registro/login para usuarios no autenticados."]
+### 2. Menu
+![Menu](images/Menu1.png)
 
-#### **AQUÍ AÑADIR EL RESTO DE PÁGINAS**
+![Menu](images/Menu2.png)
+
+![Menu](images/Menu3.png)
+
+### 3. Nosotros
+
+![Nosotros](images/Nosotros.png)
+
+### 4. Sucursales
+![Sucursales](images/Sucursales.png)
+
+### 5. Contacto
+
+![Contacto](images/Contacto.png)
+
+### 6. Login/Registro
+
+![Login](images/Login-Registro.png)
+
+### 7. Producto
+
+####  Usuario sin Login
+![Producto](images/Producto1.png)
+
+#### Usuario registrado
+![Producto](images/ProductoUser.png)
+![Producto](images/Producto2.png)
+![Producto](images/Producto3.png)
+
+
+### 8. Reseñas
+
+![Reseña](images/ReviewsAdmin.png)
+![Reseña](images/ReviewUser.png)
+
+### 9. Perfil Usuario/Administrador
+
+![Perfil](images/PerfilUser.png)
+
+![Perfil](images/PerfilAdmin.png)
+
+### 10. Gestion
+
+![Gestion](images/Gestion-User.png)
+
+![Gestion](images/Gestion-Productos.png)
+
+### 11. Estadísticas
+
+![Estadísticas](images/Estadísticas.png)
+
+### 12. Pedidos
+
+#### Historial pedidos User
+
+![Pedidos](images/Pedidos.png)
+
+#### Historico pedidos Administrador
+
+![Pedidos](images/Historico-Pedidos.png)
+
+### 13. Carrito Compra
+
+![Carrito](images/Carrito.png)
+
+
+
+> 
+
 
 ---
 
