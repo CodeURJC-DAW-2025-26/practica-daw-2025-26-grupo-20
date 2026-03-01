@@ -98,19 +98,14 @@ Indicar cuál será el algoritmo o consulta avanzada que se implementará:
 
 Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicación:
 
-![Diagrama de Navegación](/images/naviation-diagram.png)
+![Diagrama de Navegación](./images/naviation-diagram.png)
 
-> [Descripción del flujo de navegación:"Los usuarios no autenticados, al igual que a cualquier rol puede acceder a la página de inicio, ver el menú de productos disponibles, consultar las distintas sucursales, viistar la sección de Nosotros, página de contacto, acceso al login y registro y a las páginas de errores.
+> [Descripción del flujo de navegación:"Los usuarios no autenticados, al igual que a cualquier rol puede acceder a la página de inicio, ver el menú de productos disponibles, consultar las distintas sucursales, viistar la sección de Nosotros, página de contacto, acceso al login y registro y a las páginas de errores.]
 
-Un usuario registrado, podrá comprar productos, añadir productos al carrito, verificar el resúmen de su pedido, acceder al su perfil, consultar el historial de pedidos y getsión de datos personales.
+> [Un usuario registrado, podrá comprar productos, añadir productos al carrito, verificar el resúmen de su pedido, acceder al su perfil, consultar el historial de pedidos y getsión de datos personales.]
 
-Por último pero no menos importante, el rol de Administrador tendrá acceso a su propio perfil, gestión de productos (crear, eliminar y editar), visualizar estadísticas de las últimas ventas y tener una visión global del funcionamiento del negocio."]
+> [Por último pero no menos importante, el rol de Administrador tendrá acceso a su propio perfil, gestión de productos (crear, eliminar y editar), visualizar estadísticas de las últimas ventas y tener una visión global del funcionamiento del negocio."]
 
-### **Capturas de Pantalla y Descripción de Páginas**
-> 
-
-
----
 
 ## 🛠 **Práctica 1: Web con HTML generado en servidor y AJAX**
 
@@ -124,7 +119,7 @@ Por último pero no menos importante, el rol de Administrador tendrá acceso a s
 
 #### **Diagrama de Navegación**
 
-Solo si ha cambiado.
+![Diagrama de Navegación](./src/main/resources/static/images/Screen_nav.png)
 
 #### **Capturas de Pantalla Actualizadas**
 
@@ -200,7 +195,6 @@ Solo si ha cambiado.
 
 ![Carrito](images/Carrito.png)
 
-Solo si han cambiado.
 
 ### **Instrucciones de Ejecución**
 
@@ -244,17 +238,14 @@ Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos u
 
 Diagrama mostrando las entidades, sus campos y relaciones:
 
-![Diagrama Entidad-Relación](images/database-diagram.png)
-
-> [Descripción opcional: Ej: "El diagrama muestra las 4 entidades principales: Usuario, Producto, Pedido y Categoría, con sus respectivos atributos y relaciones 1:N y N:M."]
+![Diagrama Entidad-Relación](./src/main/resources/static/images/diagramER.png)
 
 ### **Diagrama de Clases y Templates**
 
 Diagrama de clases de la aplicación con diferenciación por colores o secciones:
 
-![Diagrama de Clases](images/classes-diagram.png)
+![Diagrama de Clases](./src/main/resources/static/images/MokafDiagram.drawio.png)
 
-> [Descripción opcional del diagrama y relaciones principales]
 
 ### **Participación de Miembros en la Práctica 1**
 
@@ -315,7 +306,26 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 ---
 
-#### **Alumno 4 - [Nombre Completo]**
+#### **Alumno 4 - [Elinee Nathalie Freites Muñoz]**
+
+- Implementación del carrito y compras.
+- Implementación de estadísticas de administrador.
+- Implementación de diagrama de clases y templates
+- Implementación de descuento por sucursal
+- Implementación de rating de productos mejor valorados.
+- Implementación de ganancias totales por sucursal y sucursal destacada.
+
+| Nº  |               Commits                |           Files           |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [Statistics and Branch fixed](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/22d30f9fe0580916bd537d7f085c1e985298cf67) | [StatisticsService](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/22d30f9fe0580916bd537d7f085c1e985298cf67#diff-30af0402e948daf26c29b0546234c002186891fa15400407f17a163ab88924b8) |
+|  2  | [Cart impementation, braches discount and order create after paying.](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/30388e7e660e40436359d457fec96c0bad20c3d2) | [CartService](src/main/java/es/codeurjc/mokaf/service/CartService.java) |
+|  3  | [Better Stats](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/cfb96db25a2603b589a9ef1e24367af25ec3568e) | [StatisticsService](src/main/java/es/codeurjc/mokaf/service/StatisticsService.java) |
+|  4  | [Descripción commit 4](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/0cc7f0c77ecc76b62c942df4333a79a69b950930) | [branches](src/main/resources/templates/branches.mustache) |
+|  5  | [Fixing controllers and paths](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/aeb02f7c3b67da06d9a0ff7fbfd9d947ee3ff4bb) | [MainController](src/main/java/es/codeurjc/mokaf/controller/MainController.java) |
+
+---
+
+#### **Alumno 5 - [Nombre Completo]**
 
 [Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
 
