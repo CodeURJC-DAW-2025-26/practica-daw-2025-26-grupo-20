@@ -14,7 +14,8 @@ import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.Image;
 import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.service.ProductService;
-import es.codeurjc.mokaf.repository.AllergenRepository;
+import es.codeurjc.mokaf.service.AllergenService;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -28,13 +29,13 @@ public class GestionController {
     private ProductService productService;
 
     @Autowired
-    private AllergenRepository allergenRepository;
+    private  AllergenService allergenService;
 
     @GetMapping("/admin/gestion_menu")
     public String showGestion(Model model) {
         model.addAttribute("title", "Gestión de Menú");
         model.addAttribute("items", productService.getAllProducts());
-        model.addAttribute("allergens", allergenRepository.findAll());
+        model.addAttribute("allergens", allergenService.getAllAllergens());
         model.addAttribute("currentPage", "gestion");
 
         List<java.util.Map<String, String>> categories = new java.util.ArrayList<>();
@@ -89,7 +90,7 @@ public class GestionController {
         Set<Allergen> allergenSet = new HashSet<>();
         if (allergenIds != null) {
             for (Long aId : allergenIds) {
-                allergenRepository.findById(aId).ifPresent(allergenSet::add);
+                allergenService.findById(aId).ifPresent(allergenSet::add);
             }
         }
         newProduct.setAllergens(allergenSet);
@@ -147,7 +148,7 @@ public class GestionController {
         Set<Allergen> allergenSet = new HashSet<>();
         if (allergenIds != null) {
             for (Long aId : allergenIds) {
-                allergenRepository.findById(aId).ifPresent(allergenSet::add);
+                allergenService.findById(aId).ifPresent(allergenSet::add);
             }
         }
         updatedProduct.setAllergens(allergenSet);

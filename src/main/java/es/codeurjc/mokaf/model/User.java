@@ -1,3 +1,4 @@
+// User.java
 package es.codeurjc.mokaf.model;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,8 +48,20 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name = "employee_id", unique = true, length = 50, updatable = false)
+    // IMPORTANTE: quito updatable=false para no cerrar puertas (si de verdad lo queréis fijo, lo volvéis a poner)
+    @Column(name = "employee_id", unique = true, length = 50, nullable = true)
     private String employeeId;
+
+    // FK real: users.employee_id -> employees.id (misma columna). Relación "read-only" (no duplica columna).
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(
+        name = "employee_id",
+        referencedColumnName = "id",
+        foreignKey = @ForeignKey(name = "fk_users_employee"),
+        insertable = false,
+        updatable = false
+    )
+    private Employee employee;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id", unique = true)
@@ -64,8 +78,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    public User() {
-    }
+    public User() {}
 
     public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
@@ -74,108 +87,58 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    // ==================== UserDetails Implementation ====================
-
+    // UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
     }
 
     @Override
-    public String getPassword() {
-        return this.passwordHash;
-    }
+    public String getPassword() { return this.passwordHash; }
 
     @Override
-    public String getUsername() {
-        return this.email;
-    }
+    public String getUsername() { return this.email; }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 
-    // ==================== Getters and Setters ====================
+    // Getters/setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getName() {
-        return name;
-    }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getEmployeeId() { return employeeId; }
+    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
 
-    public String getEmail() {
-        return email;
-    }
+    // Navegación cómoda (solo lectura)
+    public Employee getEmployee() { return employee; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public Image getImage() { return image; }
+    public void setImage(Image image) { this.image = image; }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
+    public List<Review> getReviews() { return reviews; }
 
     public void addReview(Review review) {
         reviews.add(review);
