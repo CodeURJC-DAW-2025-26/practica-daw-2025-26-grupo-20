@@ -6,6 +6,7 @@ import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.ProductService;
 import es.codeurjc.mokaf.service.ReviewService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,13 +19,10 @@ public class ProductController {
 
     private static final int REVIEWS_PAGE_SIZE = 6;
 
-    private final ProductService productService;
-    private final ReviewService reviewService;
-
-    public ProductController(ProductService productService, ReviewService reviewService) {
-        this.productService = productService;
-        this.reviewService = reviewService;
-    }
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/product/{id}")
     public String product(
