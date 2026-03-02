@@ -329,17 +329,22 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 ---
 
-#### **Alumno 5 - [Nombre Completo]**
+#### **Alumno 5 - [Alexandra Cararus Verdes ]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+- Implementación de sucursales.
+- Implementación de ver ordenes desde administrador y usuario.
+- Implementación de pagina Contacto.
+- Implementación de pagina Nosotros 
+- Correcion de errores.
+- Video
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [Implementation page Contact](https://github.com/CodeURJC-DAW-2025-26/daw-2025-26-project-base/commit/73de3f9cc96945554612ba09a4f54dc0ec918011) | [Archivo1](ContactController) |
+|  2  | [Abouut Us ](https://github.com/CodeURJC-DAW-2025-26/daw-2025-26-project-base/commit/0198c098c41e0ed8b5d320e3245da82c401677f6) | [Archivo2](MainController) |
+|  3  | [Page Branches](https://github.com/CodeURJC-DAW-2025-26/daw-2025-26-project-base/commit/8f9cac72e4f5e72dad6fc6a1fccb909cde8db92d) | [Archivo3](Main Controller) |
+|  4  | [Order in user and Admin](https://github.com/CodeURJC-DAW-2025-26/daw-2025-26-project-base/commit/f455c5c722b98163c4c7d3ac9d90e291b5fdff85) | [Archivo4](OrderRepository) |
+|  5  | [fix Errors](https://github.com/CodeURJC-DAW-2025-26/daw-2025-26-project-base/commit/d2aa6268b8ca909b04abaf4f6056c3953c9bb7ad) | [Archivo5](aplication.properties) |
 
 ---
 
