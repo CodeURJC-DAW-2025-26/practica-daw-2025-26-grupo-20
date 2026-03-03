@@ -1,271 +1,310 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mokaf - {{product.name}}</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mokaf - {{product.name}}</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/general.css">
-  <link rel="stylesheet" href="/css/footer.css">
-  <link rel="stylesheet" href="/css/product.css">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/product.css">
+  </head>
 
-<body class="body-content">
-  {{> fragments/header}}
+  <body class="body-content">
+    {{> fragments/header}}
 
-  <main class="container my-5 product-page">
-    <div class="product-shell">
-      <div class="row g-4 align-items-stretch">
-        <div class="col-lg-6">
-          <div class="product-image-wrap">
-            <img
-              src="/images/{{product.image.id}}"
-              class="product-image"
-              alt="{{product.name}}"
-              onerror="this.src='https://via.placeholder.com/900x700?text=Producto'"
-            >
+    <main class="container my-5 product-page">
+      <div class="product-shell">
+        <div class="row g-4 align-items-stretch">
+          <div class="col-lg-6">
+            <div class="product-image-wrap">
+              <img
+                src="{{product.imageUrl}}"
+                class="product-image"
+                alt="{{product.name}}"
+                onerror="this.src='https://via.placeholder.com/900x700?text=Producto'"
+              >
+            </div>
           </div>
-        </div>
 
-        <div class="col-lg-6">
-          <div class="product-info">
-            <div class="product-top">
-              <span class="product-category">{{product.category}}</span>
+          <div class="col-lg-6">
+            <div class="product-info">
+              <div class="product-top">
+                <span class="product-category">{{product.category}}</span>
 
-              <!-- Allergens -->
-              <div class="product-allergens">
-                {{#product.allergens}}
-                  <span class="allergen-badge">{{name}}</span>
-                {{/product.allergens}}
-              </div>
-            </div>
-
-            <h1 class="product-title">{{product.name}}</h1>
-            <p class="product-subtitle">{{product.description}}</p>
-
-            <div class="product-price-row">
-              <div class="product-price">{{product.priceBase}}€</div>
-            </div>
-
-            <hr class="product-divider">
-
-            <div class="product-actions">
-            {{#user}}
-              <div class="qty-control">
-                <button class="qty-btn" type="button" aria-label="Restar" id="qtyMinus">−</button>
-
-                <input class="qty-input" type="number" value="1" min="1" id="qtyInput">
-
-                <button class="qty-btn" type="button" aria-label="Sumar" id="qtyPlus">+</button>
+                <!-- Allergens -->
+                <div class="product-allergens">
+                  {{#product.allergens}}
+                    <span class="allergen-badge">{{name}}</span>
+                  {{/product.allergens}}
+                </div>
               </div>
 
-              
-                <form
-                  action="/cart/add"
-                  method="post"
-                  style="display:inline;"
-                  class="ajax-cart-form"
-                >
-                  <input type="hidden" name="productId" value="{{product.id}}">
-                  <input
-                    type="hidden"
-                    name="qty"
-                    id="qtyHidden"
-                    class="qty-hidden"
-                    value="1"
+              <h1 class="product-title">{{product.name}}</h1>
+              <p class="product-subtitle">{{product.description}}</p>
+
+              <div class="product-price-row">
+                <div class="product-price">{{product.priceBase}}€</div>
+              </div>
+
+              <hr class="product-divider">
+              <div class="product-actions">
+                {{#user}}
+                  <div class="qty-control">
+                    <button
+                      class="qty-btn"
+                      type="button"
+                      aria-label="Restar"
+                      id="qtyMinus"
+                    >
+                      −
+                    </button>
+
+                    <input
+                      class="qty-input"
+                      type="number"
+                      value="1"
+                      min="1"
+                      id="qtyInput"
+                    >
+                    <button
+                      class="qty-btn"
+                      type="button"
+                      aria-label="Sumar"
+                      id="qtyPlus"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <form
+                    action="/cart/add"
+                    method="post"
+                    style="display:inline;"
+                    class="ajax-cart-form"
                   >
-
-                  <button class="btn btn-product-primary" type="submit">
-                    <i class="fas fa-cart-plus me-2"></i>Añadir
-                  </button>
-                </form>
-              {{/user}}
-            </div>
-
-            <div class="product-meta">
-              <div class="meta-item">
-                <i class="fas fa-truck"></i>
-                <span>Entrega 24/48h</span>
+                    <input
+                      type="hidden"
+                      name="productId"
+                      value="{{product.id}}"
+                    >
+                    <input
+                      type="hidden"
+                      name="qty"
+                      id="qtyHidden"
+                      class="qty-hidden"
+                      value="1"
+                    >
+                    <button class="btn btn-product-primary" type="submit">
+                      <i class="fas fa-cart-plus me-2"></i>Añadir
+                    </button>
+                  </form>
+                {{/user}}
               </div>
-              <div class="meta-item">
-                <i class="fas fa-shield-alt"></i>
-                <span>Pago seguro</span>
-              </div>
-              <div class="meta-item">
-                <i class="fas fa-undo"></i>
-                <span>14 días</span>
+
+              <div class="product-meta">
+                <div class="meta-item">
+                  <i class="fas fa-truck"></i>
+                  <span>Entrega 24/48h</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Pago seguro</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-undo"></i>
+                  <span>14 días</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <section class="product-section mt-4">
-      <h3 class="section-title">Descripción</h3>
-      <p class="section-text">{{product.description}}</p>
-    </section>
+      <section class="product-section mt-4">
+        <h3 class="section-title">Descripción</h3>
+        <p class="section-text">{{product.description}}</p>
+      </section>
 
-    <section class="product-section">
-      <h3 class="section-title">Detalles</h3>
-      <ul class="details-list">
-        <li><strong>Categoría:</strong> {{product.category}}</li>
-        <li><strong>Precio:</strong> {{product.priceBase}}€</li>
-      </ul>
-    </section>
+      <section class="product-section">
+        <h3 class="section-title">Detalles</h3>
+        <ul class="details-list">
+          <li><strong>Categoría:</strong> {{product.category}}</li>
+          <li><strong>Precio:</strong> {{product.priceBase}}€</li>
+        </ul>
+      </section>
 
-    <!-- Reviews -->
-    <section class="product-section" id="reviews">
-      <h3 class="section-title">Reseñas</h3>
+      <!-- Reviews -->
+      <section class="product-section" id="reviews">
+        <h3 class="section-title">Reseñas</h3>
 
-      <div id="reviewsList">
-        {{> fragments/review_items_fragment}}
-      </div>
+        <div id="reviewsList">{{> fragments/review_items_fragment}}</div>
 
-      <div id="reviews-loading" class="d-none mt-3">
-        <p class="text-muted">Cargando reseñas...</p>
-      </div>
-
-      <div class="text-center mt-3 {{^hasMore}}d-none{{/hasMore}}" id="reviews-load-more-container">
-        <button id="reviews-load-more-btn" class="btn btn-outline-primary" type="button">
-          <i class="fas fa-plus me-2"></i> Cargar más reseñas
-        </button>
-      </div>
-
-      {{#reviewSuccess}}
-        <div class="alert alert-success mt-3">{{reviewSuccess}}</div>
-      {{/reviewSuccess}}
-
-      {{#reviewError}}
-        <div class="alert alert-danger mt-3">{{reviewError}}</div>
-      {{/reviewError}}
-
-      {{#user}}
-        <div class="mt-3">
-          <h4 class="section-title">Escribe una reseña</h4>
-
-          <form action="/product/{{product.id}}/reviews" method="post">
-            {{#_csrf}}
-              <input type="hidden" name="{{parameterName}}" value="{{token}}">
-            {{/_csrf}}
-
-            <div class="mb-3">
-              <label class="form-label">Puntuación</label>
-              <select name="stars" class="form-select" required>
-                <option value="5">5</option>
-                <option value="4">4</option>
-                <option value="3">3</option>
-                <option value="2">2</option>
-                <option value="1">1</option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Comentario</label>
-              <textarea name="text" class="form-control" rows="4" required></textarea>
-            </div>
-
-            <button class="btn btn-product-primary" type="submit">Enviar reseña</button>
-          </form>
+        <div id="reviews-loading" class="d-none mt-3">
+          <p class="text-muted">Cargando reseñas...</p>
         </div>
-      {{/user}}
 
-      {{^user}}
-        <p class="section-text mt-3">Inicia sesión para escribir una reseña.</p>
-      {{/user}}
-    </section>
-  </main>
+        <div
+          class="text-center mt-3 {{^hasMore}}d-none{{/hasMore}}"
+          id="reviews-load-more-container"
+        >
+          <button
+            id="reviews-load-more-btn"
+            class="btn btn-outline-primary"
+            type="button"
+          >
+            <i class="fas fa-plus me-2"></i> Cargar más reseñas
+          </button>
+        </div>
 
-  {{> fragments/footer}}
+        {{#reviewSuccess}}
+          <div class="alert alert-success mt-3">{{reviewSuccess}}</div>
+        {{/reviewSuccess}}
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/cart.js"></script>
+        {{#reviewError}}
+          <div class="alert alert-danger mt-3">{{reviewError}}</div>
+        {{/reviewError}}
 
-  <script>
-    (function qtyControl() {
-      const minus = document.getElementById("qtyMinus");
-      const plus = document.getElementById("qtyPlus");
-      const input = document.getElementById("qtyInput");
-      const hidden = document.getElementById("qtyHidden");
+        {{#user}}
+          <div class="mt-3">
+            <h4 class="section-title">Escribe una reseña</h4>
 
-      if (!minus || !plus || !input || !hidden) return;
+            <form action="/product/{{product.id}}/reviews" method="post">
+              {{#_csrf}}
+                <input type="hidden" name="{{parameterName}}" value="{{token}}">
+              {{/_csrf}}
 
-      function sync() {
-        let v = parseInt(input.value || "1", 10);
-        if (isNaN(v) || v < 1) v = 1;
-        input.value = v;
-        hidden.value = v;
-      }
+              <div class="mb-3">
+                <label class="form-label">Puntuación</label>
+                <select name="stars" class="form-select" required>
+                  <option value="5">5</option>
+                  <option value="4">4</option>
+                  <option value="3">3</option>
+                  <option value="2">2</option>
+                  <option value="1">1</option>
+                </select>
+              </div>
 
-      minus.addEventListener("click", () => {
-        input.value = (parseInt(input.value || "1", 10) - 1);
+              <div class="mb-3">
+                <label class="form-label">Comentario</label>
+                <textarea name="text" class="form-control" rows="4" required></textarea>
+              </div>
+
+              <button class="btn btn-product-primary" type="submit">
+                Enviar reseña
+              </button>
+            </form>
+          </div>
+        {{/user}}
+
+        {{^user}}
+          <p class="section-text mt-3">
+            Inicia sesión para escribir una reseña.
+          </p>
+        {{/user}}
+      </section>
+    </main>
+
+    {{> fragments/footer}}
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <script src="/js/cart.js"></script>
+
+    <script>
+      (function qtyControl() {
+        const minus = document.getElementById("qtyMinus");
+        const plus = document.getElementById("qtyPlus");
+        const input = document.getElementById("qtyInput");
+        const hidden = document.getElementById("qtyHidden");
+      
+        if (!minus || !plus || !input || !hidden) return;
+      
+        function sync() {
+          let v = parseInt(input.value || "1", 10);
+          if (isNaN(v) || v < 1) v = 1;
+          input.value = v;
+          hidden.value = v;
+        }
+      
+        minus.addEventListener("click", () => {
+          input.value = parseInt(input.value || "1", 10) - 1;
+          sync();
+        });
+      
+        plus.addEventListener("click", () => {
+          input.value = parseInt(input.value || "1", 10) + 1;
+          sync();
+        });
+      
+        input.addEventListener("change", sync);
         sync();
+      })();
+      
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize AJAX cart from cart.js (una sola vez)
+        if (typeof initCart === "function") {
+          initCart();
+        }
+      
+        // Reviews AJAX pagination
+        const productId = "{{product.id}}";
+        let currentReviewsPage = 1; // SSR ya cargó page=0
+      
+        const btn = document.getElementById("reviews-load-more-btn");
+        const btnContainer = document.getElementById("reviews-load-more-container");
+        const list = document.getElementById("reviewsList");
+        const loading = document.getElementById("reviews-loading");
+      
+        if (!btn || !btnContainer || !list) return;
+      
+        btn.addEventListener("click", function () {
+          btn.disabled = true;
+          if (loading) loading.classList.remove("d-none");
+      
+          fetch(`/api/product/${productId}/reviews?page=${currentReviewsPage}`)
+            .then((r) => {
+              if (!r.ok) throw new Error("HTTP " + r.status);
+              return r.text();
+            })
+            .then((html) => {
+              const temp = document.createElement("div");
+              temp.innerHTML = html;
+      
+              const hasMoreEl = temp.querySelector("[data-has-more]");
+              const hasMore = hasMoreEl
+                ? hasMoreEl.getAttribute("data-has-more") === "true"
+                : false;
+              if (hasMoreEl) hasMoreEl.remove();
+      
+              const newItems = temp.querySelectorAll(".review-item");
+              newItems.forEach((el) => list.appendChild(el));
+      
+              currentReviewsPage++;
+      
+              if (!hasMore) {
+                btnContainer.classList.add("d-none");
+              }
+            })
+            .catch((err) => {
+              console.error("Error loading more reviews:", err);
+              alert("Error al cargar más reseñas. Inténtalo de nuevo.");
+            })
+            .finally(() => {
+              if (loading) loading.classList.add("d-none");
+              btn.disabled = false;
+            });
+        });
       });
-
-      plus.addEventListener("click", () => {
-        input.value = (parseInt(input.value || "1", 10) + 1);
-        sync();
-      });
-
-      input.addEventListener("change", sync);
-      sync();
-    })();
-
-    document.addEventListener('DOMContentLoaded', function () {
-      // Initialize AJAX cart from cart.js (una sola vez)
-      if (typeof initCart === 'function') {
-        initCart();
-      }
-
-      // Reviews AJAX pagination
-      const productId = "{{product.id}}";
-      let currentReviewsPage = 1; // SSR ya cargó page=0
-
-      const btn = document.getElementById('reviews-load-more-btn');
-      const btnContainer = document.getElementById('reviews-load-more-container');
-      const list = document.getElementById('reviewsList');
-      const loading = document.getElementById('reviews-loading');
-
-      if (!btn || !btnContainer || !list) return;
-
-      btn.addEventListener('click', function () {
-        btn.disabled = true;
-        if (loading) loading.classList.remove('d-none');
-
-        fetch(`/api/product/${productId}/reviews?page=${currentReviewsPage}`)
-          .then(r => {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.text();
-          })
-          .then(html => {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-
-            const hasMoreEl = temp.querySelector('[data-has-more]');
-            const hasMore = hasMoreEl ? hasMoreEl.getAttribute('data-has-more') === 'true' : false;
-            if (hasMoreEl) hasMoreEl.remove();
-
-            const newItems = temp.querySelectorAll('.review-item');
-            newItems.forEach(el => list.appendChild(el));
-
-            currentReviewsPage++;
-
-            if (!hasMore) {
-              btnContainer.classList.add('d-none');
-            }
-          })
-          .catch(err => {
-            console.error('Error loading more reviews:', err);
-            alert('Error al cargar más reseñas. Inténtalo de nuevo.');
-          })
-          .finally(() => {
-            if (loading) loading.classList.add('d-none');
-            btn.disabled = false;
-          });
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

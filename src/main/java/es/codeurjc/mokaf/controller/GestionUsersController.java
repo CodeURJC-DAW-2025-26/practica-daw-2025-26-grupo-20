@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.model.User.Role;
 import es.codeurjc.mokaf.service.BranchService;
-import es.codeurjc.mokaf.service.EmployeeService;
 import es.codeurjc.mokaf.service.UserService;
 
 @Controller
@@ -24,9 +23,6 @@ public class GestionUsersController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EmployeeService employeeService;
 
     @Autowired
     private BranchService branchService;
@@ -38,7 +34,7 @@ public class GestionUsersController {
     public String showGestionUsuarios(Model model) {
         model.addAttribute("title", "Gestión de Usuarios");
         model.addAttribute("users", userService.findAll());
-        model.addAttribute("allEmployees", employeeService.getAllEmployees());
+        model.addAttribute("allEmployees", userService.getStaff());
         model.addAttribute("branches", branchService.getAllBranches());
         model.addAttribute("availableRoles", User.Role.values());
         model.addAttribute("currentPage", "gestion");
@@ -63,28 +59,20 @@ public class GestionUsersController {
         User newUser = new User(name, email, encodedPassword, userRole);
 
         if (userRole == Role.ADMIN || userRole == Role.EMPLOYEE) {
-            es.codeurjc.mokaf.model.Employee newEmp = new es.codeurjc.mokaf.model.Employee();
-            String generatedId = "EMP-" + java.util.UUID.randomUUID().toString().substring(0, 5).toUpperCase();
-            newEmp.setId(generatedId);
-
             String[] nameParts = name.split(" ", 2);
-            newEmp.setFirstName(nameParts[0]);
-            newEmp.setLastName(nameParts.length > 1 ? nameParts[1] : "");
-            newEmp.setEmail(email);
+            newUser.setFirstName(nameParts[0]);
+            newUser.setLastName(nameParts.length > 1 ? nameParts[1] : "");
 
-            newEmp.setPosition(position != null && !position.isEmpty() ? position
+            newUser.setPosition(position != null && !position.isEmpty() ? position
                     : (userRole == Role.ADMIN ? "Administrador del Sistema" : "Empleado Nuevo"));
-            newEmp.setDepartment(department != null && !department.isEmpty() ? department : "General");
-            newEmp.setSalary(salary != null ? salary : new java.math.BigDecimal("2000.00"));
-            newEmp.setDescription(description);
-            newEmp.setProfileImageUrl("/images/Profile/default.png");
+            newUser.setDepartment(department != null && !department.isEmpty() ? department : "General");
+            newUser.setSalary(salary != null ? salary : new java.math.BigDecimal("2000.00"));
+            newUser.setHireDate(java.time.LocalDateTime.now());
+            newUser.setDescription(description);
 
             if (branchId != null) {
-                branchService.getBranchById(branchId).ifPresent(newEmp::setBranch);
+                branchService.getBranchById(branchId).ifPresent(newUser::setBranch);
             }
-
-            employeeService.save(newEmp);
-            newUser.setEmployeeId(generatedId);
         }
 
         userService.save(newUser);
@@ -98,7 +86,6 @@ public class GestionUsersController {
             @RequestParam String email,
             @RequestParam(required = false) String password,
             @RequestParam String role,
-            @RequestParam(required = false) String employeeId,
             @RequestParam(required = false) String position,
             @RequestParam(required = false) String department,
             @RequestParam(required = false) java.math.BigDecimal salary,
@@ -118,52 +105,38 @@ public class GestionUsersController {
             }
 
             if (userRole == Role.ADMIN || userRole == Role.EMPLOYEE) {
-                String targetEmployeeId = employeeId;
-                es.codeurjc.mokaf.model.Employee emp;
-
-                if (targetEmployeeId == null || targetEmployeeId.isEmpty()) {
-                    // Create new employee record if one doesn't exist yet
-                    emp = new es.codeurjc.mokaf.model.Employee();
-                    targetEmployeeId = "EMP-" + java.util.UUID.randomUUID().toString().substring(0, 5).toUpperCase();
-                    emp.setId(targetEmployeeId);
-                    user.setEmployeeId(targetEmployeeId);
-                } else {
-                    // Load existing employee record
-                    emp = employeeService.getEmployeeById(targetEmployeeId)
-                            .orElse(new es.codeurjc.mokaf.model.Employee());
-                    if (emp.getId() == null) {
-                        emp.setId(targetEmployeeId);
-                    }
-                }
-
                 String[] nameParts = name.split(" ", 2);
-                emp.setFirstName(nameParts[0]);
-                emp.setLastName(nameParts.length > 1 ? nameParts[1] : "");
-                emp.setEmail(email);
+                user.setFirstName(nameParts[0]);
+                user.setLastName(nameParts.length > 1 ? nameParts[1] : "");
 
                 if (position != null)
-                    emp.setPosition(position);
+                    user.setPosition(position);
                 if (department != null)
-                    emp.setDepartment(department);
+                    user.setDepartment(department);
                 if (salary != null)
-                    emp.setSalary(salary);
+                    user.setSalary(salary);
                 if (description != null)
-                    emp.setDescription(description);
+                    user.setDescription(description);
 
                 if (branchId != null) {
-                    branchService.getBranchById(branchId).ifPresent(emp::setBranch);
+                    branchService.getBranchById(branchId).ifPresent(user::setBranch);
                 } else {
-                    emp.setBranch(null);
+                    user.setBranch(null);
                 }
 
-                if (emp.getProfileImageUrl() == null) {
-                    emp.setProfileImageUrl("/images/Profile/default.png");
+                if (user.getHireDate() == null) {
+                    user.setHireDate(java.time.LocalDateTime.now());
                 }
-
-                employeeService.save(emp);
-                user.setEmployeeId(targetEmployeeId);
             } else {
-                user.setEmployeeId(null);
+                // Clear employee fields if downgraded to CUSTOMER
+                user.setFirstName(null);
+                user.setLastName(null);
+                user.setPosition(null);
+                user.setDepartment(null);
+                user.setSalary(null);
+                user.setBranch(null);
+                user.setDescription(null);
+                user.setHireDate(null);
             }
 
             userService.save(user);

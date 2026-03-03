@@ -5,9 +5,9 @@ import es.codeurjc.mokaf.model.ContactRequest;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.BranchService;
 import es.codeurjc.mokaf.service.ContactEmailService;
-import es.codeurjc.mokaf.service.EmployeeService;
 import es.codeurjc.mokaf.service.FaqService;
 import es.codeurjc.mokaf.service.OrdersService;
+import es.codeurjc.mokaf.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -31,7 +31,7 @@ public class MainController {
     private OrdersService ordersService;
 
     @Autowired
-    private EmployeeService employeeService;
+    private UserService userService;
 
     @Autowired
     private BranchService branchService;
@@ -70,7 +70,7 @@ public class MainController {
 
     @GetMapping("/about_us")
     public String about_us(Model model) {
-        model.addAttribute("team", employeeService.getEmployeesByDepartment("Atencion al cliente"));
+        model.addAttribute("team", userService.getStaffByDepartment("Atencion al cliente"));
         return "about_us";
     }
 
@@ -88,7 +88,7 @@ public class MainController {
     private void populateCommonModel(Model model) {
         model.addAttribute("title", "CONTACTANOS");
         model.addAttribute("currentPage", "contact");
-        model.addAttribute("team", employeeService.getEmployeesByDepartment("Atención al cliente"));
+        model.addAttribute("team", userService.getStaffByDepartment("Atención al cliente"));
         model.addAttribute("faqs", faqService.getAllFaqs());
     }
 

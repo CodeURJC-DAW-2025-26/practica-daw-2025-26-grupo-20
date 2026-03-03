@@ -207,7 +207,6 @@ public class ProfileController {
     public String updateAdminProfile(@RequestParam String name,
             @RequestParam String email,
             @RequestParam(required = false) String password,
-            @RequestParam(required = false) String employeeId,
             @RequestParam(value = "image", required = false) MultipartFile imageFile,
             Authentication authentication,
             HttpServletRequest request,
@@ -227,10 +226,6 @@ public class ProfileController {
 
         if (!email.equals(user.getEmail()) && userService.existsByEmail(email)) {
             return "redirect:/profileADMIN?error=email_exists";
-        }
-
-        if (employeeId != null && !employeeId.isEmpty()) {
-            user.setEmployeeId(employeeId);
         }
 
         // Update image if provided

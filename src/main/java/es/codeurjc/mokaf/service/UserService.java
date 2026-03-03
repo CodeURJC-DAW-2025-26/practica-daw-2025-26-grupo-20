@@ -49,4 +49,13 @@ public class UserService implements UserDetailsService {
     public java.util.List<User> findAll() {
         return userRepository.findAll();
     }
+
+    public java.util.List<User> getStaff() {
+        return userRepository.findByRoleIn(java.util.Arrays.asList(User.Role.ADMIN, User.Role.EMPLOYEE));
+    }
+
+    public java.util.List<User> getStaffByDepartment(String department) {
+        return userRepository.findByRoleInAndDepartment(java.util.Arrays.asList(User.Role.ADMIN, User.Role.EMPLOYEE),
+                department);
+    }
 }

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.model.Branch;
 import es.codeurjc.mokaf.model.Category;
-import es.codeurjc.mokaf.model.Employee;
 import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.model.Image;
 import es.codeurjc.mokaf.model.Order;
@@ -29,7 +28,6 @@ import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.repository.AllergenRepository;
 import es.codeurjc.mokaf.repository.BranchRepository;
-import es.codeurjc.mokaf.repository.EmployeeRepository;
 import es.codeurjc.mokaf.repository.FaqRepository;
 import es.codeurjc.mokaf.repository.ImageRepository;
 import es.codeurjc.mokaf.repository.OrderRepository;
@@ -46,7 +44,6 @@ public class DatabaseInitializer implements ApplicationRunner {
         private final ReviewRepository reviewRepository;
         private final AllergenRepository allergenRepository;
         private final BranchRepository branchRepository;
-        private final EmployeeRepository employeeRepository;
         private final OrderRepository orderRepository;
         private final FaqRepository faqRepository;
         private final PasswordEncoder passwordEncoder;
@@ -58,7 +55,6 @@ public class DatabaseInitializer implements ApplicationRunner {
                         ReviewRepository reviewRepository,
                         AllergenRepository allergenRepository,
                         BranchRepository branchRepository,
-                        EmployeeRepository employeeRepository,
                         OrderRepository orderRepository,
                         FaqRepository faqRepository,
                         PasswordEncoder passwordEncoder) {
@@ -69,7 +65,6 @@ public class DatabaseInitializer implements ApplicationRunner {
                 this.reviewRepository = reviewRepository;
                 this.allergenRepository = allergenRepository;
                 this.branchRepository = branchRepository;
-                this.employeeRepository = employeeRepository;
                 this.orderRepository = orderRepository;
                 this.faqRepository = faqRepository;
                 this.passwordEncoder = passwordEncoder;
@@ -83,7 +78,6 @@ public class DatabaseInitializer implements ApplicationRunner {
                         orderRepository.deleteAll();
                         reviewRepository.deleteAll();
                         userRepository.deleteAll();
-                        employeeRepository.deleteAll();
                         branchRepository.deleteAll();
                         productRepository.deleteAll();
                         imageRepository.deleteAll();
@@ -93,17 +87,11 @@ public class DatabaseInitializer implements ApplicationRunner {
                         System.out.println(">>> Non-critical error during DB cleanup: " + e.getMessage());
                 }
 
-                // 2) BRANCHES + EMPLOYEES
+                // 2) BRANCHES
                 createBranches();
-                createEmployees();
 
-                // 3) USERS (Users reference Employee via employeeId; FK requires Employees
-                // exist first)
+                // 3) USERS (Admins and Employees are Users now)
                 createUsers();
-
-                // Optional: fail fast if any internal user points to a missing employee (useful
-                // even with FK)
-                sanityCheckUsersEmployeeIds();
 
                 // 4) PRODUCTS + IMAGES
                 seedProducts();
@@ -122,23 +110,6 @@ public class DatabaseInitializer implements ApplicationRunner {
                 createFaqs();
 
                 System.out.println(">>> DB seeded OK");
-        }
-
-        private void sanityCheckUsersEmployeeIds() {
-                List<User> internalUsers = userRepository.findAll().stream()
-                                .filter(u -> u.getRole() == User.Role.ADMIN || u.getRole() == User.Role.EMPLOYEE)
-                                .toList();
-
-                for (User u : internalUsers) {
-                        String empId = u.getEmployeeId();
-                        if (empId == null || empId.isBlank()) {
-                                throw new IllegalStateException("User interno sin employeeId: " + u.getEmail());
-                        }
-                        if (!employeeRepository.existsById(empId)) {
-                                throw new IllegalStateException("User interno con employeeId inexistente: " + empId
-                                                + " (" + u.getEmail() + ")");
-                        }
-                }
         }
 
         private void createFaqs() {
@@ -265,21 +236,7 @@ public class DatabaseInitializer implements ApplicationRunner {
         }
 
         private void createUsers() {
-                User admin1 = new User();
-                admin1.setName("Administrador Principal");
-                admin1.setEmail("admin@mokaf.com");
-                admin1.setPasswordHash(passwordEncoder.encode("admin123"));
-                admin1.setRole(User.Role.ADMIN);
-                admin1.setEmployeeId("EMP-001");
-                userRepository.save(admin1);
-
-                User admin2 = new User();
-                admin2.setName("María González");
-                admin2.setEmail("maria.admin@mokaf.com");
-                admin2.setPasswordHash(passwordEncoder.encode("maria456"));
-                admin2.setRole(User.Role.ADMIN);
-                admin2.setEmployeeId("EMP-002");
-                userRepository.save(admin2);
+                createStaffUsers();
 
                 User user1 = new User();
                 user1.setName("Carlos Rodríguez");
@@ -309,33 +266,113 @@ public class DatabaseInitializer implements ApplicationRunner {
                 user4.setRole(User.Role.CUSTOMER);
                 userRepository.save(user4);
 
-                // Employees as users
-                User emp1 = new User("Elinee Freites", "elinee@mokaf.com", passwordEncoder.encode("elinee123"),
-                                User.Role.EMPLOYEE);
-                emp1.setEmployeeId("EMP-003");
-                userRepository.save(emp1);
+                System.out.println(">>> Users created: Staff + 4 CUSTOMERS");
+        }
 
-                User emp2 = new User("Jordi Guix", "jordi@mokaf.com", passwordEncoder.encode("jordi123"),
-                                User.Role.EMPLOYEE);
-                emp2.setEmployeeId("EMP-004");
-                userRepository.save(emp2);
+        private void createStaffUsers() {
+                List<Branch> branches = branchRepository.findAll();
+                Branch madrid = branches.stream().filter(b -> b.getName().contains("Madrid")).findFirst().orElse(null);
+                Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
+                                .orElse(null);
 
-                User emp3 = new User("Alexandra Cararus", "alexandra@mokaf.com", passwordEncoder.encode("alex123"),
-                                User.Role.EMPLOYEE);
-                emp3.setEmployeeId("EMP-005");
-                userRepository.save(emp3);
+                // Admin 1
+                try {
+                        User admin1 = new User("Administrador Principal", "admin@mokaf.com",
+                                        passwordEncoder.encode("admin123"),
+                                        User.Role.ADMIN);
+                        admin1.setFirstName("Administrador");
+                        admin1.setLastName("Principal");
+                        admin1.setPosition("Administrador del Sistema");
+                        admin1.setDepartment("Direccion");
+                        admin1.setSalary(new BigDecimal("4000.00"));
+                        admin1.setBranch(madrid);
+                        admin1.setDescription("Gestor general de la plataforma Mokaf.");
+                        admin1.setImage(new Image(loadAsBlob("/static/images/Profile/default.png")));
+                        userRepository.save(admin1);
 
-                User emp4 = new User("Guillermo Velázquez", "guillermo@mokaf.com", passwordEncoder.encode("guille123"),
-                                User.Role.EMPLOYEE);
-                emp4.setEmployeeId("EMP-006");
-                userRepository.save(emp4);
+                        // Admin 2
+                        User admin2 = new User("María González", "maria.admin@mokaf.com",
+                                        passwordEncoder.encode("maria456"),
+                                        User.Role.ADMIN);
+                        admin2.setFirstName("María");
+                        admin2.setLastName("González");
+                        admin2.setPosition("Supervisora");
+                        admin2.setDepartment("Direccion");
+                        admin2.setSalary(new BigDecimal("3200.00"));
+                        admin2.setBranch(madrid);
+                        admin2.setDescription("Supervisora de operaciones y atención al cliente.");
+                        admin2.setImage(new Image(loadAsBlob("/static/images/Profile/default.png")));
+                        userRepository.save(admin2);
 
-                User emp5 = new User("Gonzalo Pérez", "gonzalo@mokaf.com", passwordEncoder.encode("gonza123"),
-                                User.Role.EMPLOYEE);
-                emp5.setEmployeeId("EMP-007");
-                userRepository.save(emp5);
+                        // Employee 1
+                        User emp1 = new User("Elinee Freites", "elinee@mokaf.com", passwordEncoder.encode("elinee123"),
+                                        User.Role.EMPLOYEE);
+                        emp1.setFirstName("Elinee");
+                        emp1.setLastName("Freites");
+                        emp1.setPosition("Fundadora & Master Roaster");
+                        emp1.setDepartment("Atencion al cliente");
+                        emp1.setSalary(new BigDecimal("3500.00"));
+                        emp1.setBranch(madrid);
+                        emp1.setDescription("Visionaria detrás de cada blend exclusivo de Mokaf.");
+                        emp1.setImage(new Image(loadAsBlob("/static/images/Profile/elinee.png")));
+                        userRepository.save(emp1);
 
-                System.out.println(">>> Users created: 2 ADMINS + 4 CUSTOMERS + 5 EMPLOYEES");
+                        // Employee 2
+                        User emp2 = new User("Jordi Guix", "jordi@mokaf.com", passwordEncoder.encode("jordi123"),
+                                        User.Role.EMPLOYEE);
+                        emp2.setFirstName("Jordi");
+                        emp2.setLastName("Guix");
+                        emp2.setPosition("Barista Principal");
+                        emp2.setDepartment("Atencion al cliente");
+                        emp2.setSalary(new BigDecimal("2500.00"));
+                        emp2.setBranch(barcelona);
+                        emp2.setDescription("El artista que convierte el cafe en lienzo.");
+                        emp2.setImage(new Image(loadAsBlob("/static/images/Profile/jordi.png")));
+                        userRepository.save(emp2);
+
+                        // Employee 3
+                        User emp3 = new User("Alexandra Cararus", "alexandra@mokaf.com",
+                                        passwordEncoder.encode("alexandra123"),
+                                        User.Role.EMPLOYEE);
+                        emp3.setFirstName("Alexandra");
+                        emp3.setLastName("Cararus");
+                        emp3.setPosition("Gerente de Experiencia");
+                        emp3.setDepartment("Atencion al cliente");
+                        emp3.setSalary(new BigDecimal("2800.00"));
+                        emp3.setBranch(madrid);
+                        emp3.setDescription("Asegurando que cada visita sea inolvidable.");
+                        emp3.setImage(new Image(loadAsBlob("/static/images/Profile/alexandra.png")));
+                        userRepository.save(emp3);
+
+                        // Employee 4
+                        User emp4 = new User("Guillermo Blazquez", "guillermo@mokaf.com",
+                                        passwordEncoder.encode("guillermo123"),
+                                        User.Role.EMPLOYEE);
+                        emp4.setFirstName("Guillermo");
+                        emp4.setLastName("Blazquez");
+                        emp4.setPosition("Director de Tecnología");
+                        emp4.setDepartment("Atencion al cliente");
+                        emp4.setSalary(new BigDecimal("3200.00"));
+                        emp4.setBranch(barcelona);
+                        emp4.setDescription("Innovando para llevar la experiencia Mokaf al mundo digital.");
+                        emp4.setImage(new Image(loadAsBlob("/static/images/Profile/guillermo.png")));
+                        userRepository.save(emp4);
+
+                        // Employee 5
+                        User emp5 = new User("Gonzalo Pérez", "gonzalo@mokaf.com", passwordEncoder.encode("gonzalo123"),
+                                        User.Role.EMPLOYEE);
+                        emp5.setFirstName("Gonzalo");
+                        emp5.setLastName("Pérez");
+                        emp5.setPosition("Estratega de Negocio");
+                        emp5.setDepartment("Atencion al cliente");
+                        emp5.setSalary(new BigDecimal("3100.00"));
+                        emp5.setBranch(madrid);
+                        emp5.setDescription("Expandiendo horizontes y buscando nuevas oportunidades.");
+                        emp5.setImage(new Image(loadAsBlob("/static/images/Profile/Gonzalo.png")));
+                        userRepository.save(emp5);
+                } catch (Exception e) {
+                        System.out.println(">>> Error seeding staff images: " + e.getMessage());
+                }
         }
 
         private void createReviews() {
@@ -525,56 +562,6 @@ public class DatabaseInitializer implements ApplicationRunner {
                 branchRepository.save(santander);
 
                 System.out.println(">>> Branches created: 4 branches");
-        }
-
-        private void createEmployees() {
-                List<Branch> branches = branchRepository.findAll();
-                if (branches.isEmpty())
-                        return;
-
-                Branch madrid = branches.stream().filter(b -> b.getName().contains("Madrid")).findFirst()
-                                .orElse(branches.get(0));
-                Branch barcelona = branches.stream().filter(b -> b.getName().contains("Barcelona")).findFirst()
-                                .orElse(branches.get(0));
-
-                Employee admin1 = new Employee("EMP-001", "Administrador", "Principal", "Administrador del Sistema",
-                                "Direccion", new BigDecimal("4000.00"), madrid,
-                                "Gestor general de la plataforma Mokaf.", "admin@mokaf.com",
-                                "../images/Profile/default.png");
-
-                Employee admin2 = new Employee("EMP-002", "María", "González", "Supervisora", "Direccion",
-                                new BigDecimal("3200.00"), madrid,
-                                "Supervisora de operaciones y atención al cliente.", "maria.admin@mokaf.com",
-                                "../images/Profile/default.png");
-
-                Employee elinee = new Employee("EMP-003", "Elinee", "Freites", "Fundadora & Master Roaster",
-                                "Atencion al cliente", new BigDecimal("3500.00"), madrid,
-                                "Visionaria detrás de cada blend exclusivo de Mokaf.", "elinee@mokaf.com",
-                                "../images/Profile/elinee.png");
-
-                Employee jordi = new Employee("EMP-004", "Jordi", "Guix", "Barista Principal", "Atencion al cliente",
-                                new BigDecimal("2500.00"), barcelona,
-                                "El artista que convierte el cafe en lienzo.", "jordi@mokaf.com",
-                                "../images/Profile/jordi.png");
-
-                Employee alexandra = new Employee("EMP-005", "Alexandra", "Cararus", "Gerente de Experiencia",
-                                "Atencion al cliente", new BigDecimal("2800.00"), madrid,
-                                "Asegurando que cada visita sea inolvidable.", "alexandra@mokaf.com",
-                                "../images/Profile/alexandra.png");
-
-                Employee guillermo = new Employee("EMP-006", "Guillermo", "Blazquez", "Director de Tecnología",
-                                "Atencion al cliente", new BigDecimal("3200.00"), barcelona,
-                                "Innovando para llevar la experiencia Mokaf al mundo digital.", "guillermo@mokaf.com",
-                                "../images/Profile/guillermo.png");
-
-                Employee gonzalo = new Employee("EMP-007", "Gonzalo", "Pérez", "Estratega de Negocio",
-                                "Atencion al cliente",
-                                new BigDecimal("3100.00"), madrid,
-                                "Expandiendo horizontes y buscando nuevas oportunidades.", "gonzalo@mokaf.com",
-                                "../images/Profile/Gonzalo.png");
-
-                employeeRepository.saveAll(Arrays.asList(admin1, admin2, elinee, jordi, alexandra, guillermo, gonzalo));
-                System.out.println(">>> Employees created: 7 real members seeded (including admins)");
         }
 
         private void updateProductsWithAllergens() {

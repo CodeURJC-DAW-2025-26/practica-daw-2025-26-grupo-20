@@ -9,16 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(
-    name = "orders",
-    indexes = {
+@Table(name = "mokaf_orders", indexes = {
         @Index(name = "idx_orders_user", columnList = "user_id"),
         @Index(name = "idx_orders_branch", columnList = "branch_id")
-    }
-)
+})
 public class Order {
 
-    public enum Status { CART, PAID, CANCELLED }
+    public enum Status {
+        CART, PAID, CANCELLED
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -60,7 +59,8 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
-    public Order() {}
+    public Order() {
+    }
 
     // Conveniencia para asegurar consistencia bidireccional
     public void addItem(OrderItem item) {
@@ -74,36 +74,85 @@ public class Order {
     }
 
     // Getters / Setters
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUser() {
+        return user;
+    }
 
-    public Branch getBranch() { return branch; }
-    public void setBranch(Branch branch) { this.branch = branch; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
+    public Branch getBranch() {
+        return branch;
+    }
 
-    public BigDecimal getSubtotalAmount() { return subtotalAmount; }
-    public void setSubtotalAmount(BigDecimal subtotalAmount) { this.subtotalAmount = subtotalAmount; }
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
 
-    public BigDecimal getDiscountPercent() { return discountPercent; }
-    public void setDiscountPercent(BigDecimal discountPercent) { this.discountPercent = discountPercent; }
+    public Status getStatus() {
+        return status;
+    }
 
-    public BigDecimal getDiscountAmount() { return discountAmount; }
-    public void setDiscountAmount(BigDecimal discountAmount) { this.discountAmount = discountAmount; }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-    public BigDecimal getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
+    public BigDecimal getSubtotalAmount() {
+        return subtotalAmount;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setSubtotalAmount(BigDecimal subtotalAmount) {
+        this.subtotalAmount = subtotalAmount;
+    }
 
-    public LocalDateTime getPaidAt() { return paidAt; }
-    public void setPaidAt(LocalDateTime paidAt) { this.paidAt = paidAt; }
+    public BigDecimal getDiscountPercent() {
+        return discountPercent;
+    }
 
-    public List<OrderItem> getItems() { return items; }
-    public void setItems(List<OrderItem> items) { this.items = items; }
+    public void setDiscountPercent(BigDecimal discountPercent) {
+        this.discountPercent = discountPercent;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getPaidAt() {
+        return paidAt;
+    }
+
+    public void setPaidAt(LocalDateTime paidAt) {
+        this.paidAt = paidAt;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
 
     @Override
     public String toString() {

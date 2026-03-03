@@ -259,7 +259,7 @@ public class CartController {
         map.put("quantity", item.getQuantity());
         map.put("unitPrice", formatPrice(item.getUnitPrice()));
         map.put("lineTotal", formatPrice(item.getLineTotal()));
-        map.put("image", "/images/" + item.getProduct().getId());
+        map.put("image", item.getProduct().getImageUrl());
         return map;
     }
 

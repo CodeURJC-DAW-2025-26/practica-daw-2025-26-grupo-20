@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 @Table(name = "products")
 public class Product {
-    public static Object Category;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -141,5 +140,12 @@ public class Product {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getImageUrl() {
+        if (image != null) {
+            return "/images/" + image.getId();
+        }
+        return "/images/placeholder.jpg";
     }
 }
