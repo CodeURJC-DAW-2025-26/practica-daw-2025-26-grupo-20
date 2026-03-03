@@ -78,25 +78,22 @@ public class DatabaseInitializer implements ApplicationRunner {
         @Override
         @Transactional
         public void run(ApplicationArguments args) throws Exception {
-
                 // 1) ERASE (children -> parents) to protect FK constraints
-                // Orders/Reviews depend on User; User depends on Employee (via employee_id FK);
-                // Employee depends on Branch.
-                orderRepository.deleteAll();
-                reviewRepository.deleteAll();
-                userRepository.deleteAll();
-                employeeRepository.deleteAll();
-                branchRepository.deleteAll();
+                try {
+                        orderRepository.deleteAll();
+                        reviewRepository.deleteAll();
+                        userRepository.deleteAll();
+                        employeeRepository.deleteAll();
+                        branchRepository.deleteAll();
+                        productRepository.deleteAll();
+                        imageRepository.deleteAll();
+                        allergenRepository.deleteAll();
+                        faqRepository.deleteAll();
+                } catch (Exception e) {
+                        System.out.println(">>> Non-critical error during DB cleanup: " + e.getMessage());
+                }
 
-                // Products depend on Image (or vice versa depending on mapping/cascade). With
-                // your current seed, safe order:
-                productRepository.deleteAll();
-                imageRepository.deleteAll();
-
-                allergenRepository.deleteAll();
-                faqRepository.deleteAll();
-
-                // 2) BRANCHES + EMPLOYEES (Employees reference Branch)
+                // 2) BRANCHES + EMPLOYEES
                 createBranches();
                 createEmployees();
 
