@@ -32,11 +32,14 @@ public class GestionController {
     private AllergenService allergenService;
 
     @GetMapping("/admin/gestion_menu")
-    public String showGestion(Model model) {
+    public String showGestion(Model model, @RequestParam(required = false) String error) {
         model.addAttribute("title", "Gestión de Menú");
         model.addAttribute("items", productService.getAllProducts());
         model.addAttribute("allergens", allergenService.getAllAllergens());
         model.addAttribute("currentPage", "gestion");
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
 
         List<java.util.Map<String, String>> categories = new java.util.ArrayList<>();
         categories.add(java.util.Map.of("value", "HOT", "displayName", "Calientes"));

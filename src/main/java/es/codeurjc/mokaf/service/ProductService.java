@@ -24,7 +24,7 @@ public class ProductService {
         }
 
         public List<Product> getAllProducts() {
-                return productRepository.findAll();
+                return productRepository.findByActiveTrue();
         }
 
         public void addProduct(Product product) {
@@ -48,7 +48,11 @@ public class ProductService {
         }
 
         public void deleteProduct(Long id) {
-                productRepository.deleteById(id);
+                Product product = getProductById(id);
+                if (product != null) {
+                        product.setActive(false);
+                        productRepository.save(product);
+                }
         }
 
         /**
@@ -78,7 +82,7 @@ public class ProductService {
 
                 // If there are no sales at all, return the first N products
                 if (bestSellers.isEmpty()) {
-                        bestSellers = productRepository.findAll()
+                        bestSellers = productRepository.findByActiveTrue()
                                         .stream()
                                         .limit(limit)
                                         .toList();
@@ -88,10 +92,10 @@ public class ProductService {
         }
 
         public Page<Product> getProductsPage(int page, int size) {
-                return productRepository.findAll(PageRequest.of(page, size));
+                return productRepository.findByActiveTrue(PageRequest.of(page, size));
         }
 
         public Page<Product> getProductsByCategoryPage(Category category, int page, int size) {
-                return productRepository.findByCategory(category, PageRequest.of(page, size));
+                return productRepository.findByActiveTrueAndCategory(category, PageRequest.of(page, size));
         }
 }

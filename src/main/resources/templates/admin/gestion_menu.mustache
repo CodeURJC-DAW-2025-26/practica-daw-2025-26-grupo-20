@@ -33,6 +33,12 @@
                 </button>
             </div>
 
+            {{#error}}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i> {{error}}
+                </div>
+            {{/error}}
+
             <!-- Product Form -->
             <div
                 id="productForm"
@@ -42,12 +48,6 @@
                 <div class="col-lg-8">
                     <h4 id="formTitle" class="mb-4">Agregar Producto</h4>
                     <div class="form-container">
-                        {{#error}}
-                            <div class="alert alert-danger" role="alert">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                {{error}}
-                            </div>
-                        {{/error}}
                         <form
                             id="productFormElement"
                             action="/admin/gestion_menu/add"

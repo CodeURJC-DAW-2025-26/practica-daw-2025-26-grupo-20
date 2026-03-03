@@ -43,6 +43,9 @@ public class Product {
     @JoinTable(name = "product_allergens", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "allergen_id"))
     private Set<Allergen> allergens = new HashSet<>();
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     // Reviews para borrar en cascada al borrar el producto
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
@@ -130,5 +133,13 @@ public class Product {
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setProduct(null);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
