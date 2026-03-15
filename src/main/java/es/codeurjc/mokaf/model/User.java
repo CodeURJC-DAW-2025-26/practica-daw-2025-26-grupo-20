@@ -18,14 +18,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "users")
@@ -48,20 +49,32 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    // IMPORTANTE: quito updatable=false para no cerrar puertas (si de verdad lo queréis fijo, lo volvéis a poner)
-    @Column(name = "employee_id", unique = true, length = 50, nullable = true)
-    private String employeeId;
+    // IMPORTANTE: quito updatable=false para no cerrar puertas (si de verdad lo
+    // queréis fijo, lo volvéis a poner)
+    @Column(name = "first_name", length = 120)
+    private String firstName;
 
-    // FK real: users.employee_id -> employees.id (misma columna). Relación "read-only" (no duplica columna).
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(
-        name = "employee_id",
-        referencedColumnName = "id",
-        foreignKey = @ForeignKey(name = "fk_users_employee"),
-        insertable = false,
-        updatable = false
-    )
-    private Employee employee;
+    @Column(name = "last_name", length = 120)
+    private String lastName;
+
+    @Column(length = 100)
+    private String position;
+
+    @Column(length = 100)
+    private String department;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal salary;
+
+    @Column(name = "hire_date")
+    private LocalDateTime hireDate;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "image_id", unique = true)
@@ -78,7 +91,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
@@ -94,51 +108,155 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() { return this.passwordHash; }
+    public String getPassword() {
+        return this.passwordHash;
+    }
 
     @Override
-    public String getUsername() { return this.email; }
+    public String getUsername() {
+        return this.email;
+    }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 
     // Getters/setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getName() {
+        return name;
+    }
 
-    public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getEmployeeId() { return employeeId; }
-    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+    public String getEmail() {
+        return email;
+    }
 
-    // Navegación cómoda (solo lectura)
-    public Employee getEmployee() { return employee; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public Image getImage() { return image; }
-    public void setImage(Image image) { this.image = image; }
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public List<Review> getReviews() { return reviews; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public void setSalary(BigDecimal salary) {
+        this.salary = salary;
+    }
+
+    public LocalDateTime getHireDate() {
+        return hireDate;
+    }
+
+    public void setHireDate(LocalDateTime hireDate) {
+        this.hireDate = hireDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
 
     public void addReview(Review review) {
         reviews.add(review);
@@ -148,5 +266,16 @@ public class User implements UserDetails {
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setUser(null);
+    }
+
+    public String getProfileImageUrl() {
+        if (image != null) {
+            return "/images/" + image.getId();
+        }
+        return "/images/Profile/default.png";
+    }
+
+    public boolean isEmployee() {
+        return role == Role.EMPLOYEE || role == Role.ADMIN;
     }
 }

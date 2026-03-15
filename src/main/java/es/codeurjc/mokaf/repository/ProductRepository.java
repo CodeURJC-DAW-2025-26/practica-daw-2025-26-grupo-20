@@ -19,4 +19,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findWithImageById(Long id);
 
     Page<Product> findByCategory(Category category, Pageable pageable);
+
+    Page<Product> findByActiveTrue(Pageable pageable);
+
+    Page<Product> findByActiveTrueAndCategory(Category category, Pageable pageable);
+
+    java.util.List<Product> findByActiveTrue();
 }

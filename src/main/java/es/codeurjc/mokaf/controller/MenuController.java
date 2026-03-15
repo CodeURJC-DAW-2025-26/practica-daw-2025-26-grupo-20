@@ -3,16 +3,12 @@ package es.codeurjc.mokaf.controller;
 import es.codeurjc.mokaf.model.Category;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.repository.ProductRepository;
-import es.codeurjc.mokaf.repository.AllergenRepository;
 import es.codeurjc.mokaf.service.AllergenService;
 import es.codeurjc.mokaf.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

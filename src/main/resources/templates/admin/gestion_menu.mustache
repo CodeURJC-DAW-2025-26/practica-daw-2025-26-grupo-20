@@ -33,6 +33,12 @@
                 </button>
             </div>
 
+            {{#error}}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i> {{error}}
+                </div>
+            {{/error}}
+
             <!-- Product Form -->
             <div
                 id="productForm"
@@ -40,19 +46,20 @@
                 style="display: none;"
             >
                 <div class="col-lg-8">
-                    <h4 class="mb-4">Agregar Producto</h4>
+                    <h4 id="formTitle" class="mb-4">Agregar Producto</h4>
                     <div class="form-container">
-                        {{#error}}
-                            <div class="alert alert-danger" role="alert">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                {{error}}
-                            </div>
-                        {{/error}}
                         <form
+                            id="productFormElement"
                             action="/admin/gestion_menu/add"
                             method="POST"
                             enctype="multipart/form-data"
                         >
+                            <input
+                                type="hidden"
+                                id="productId"
+                                name="id"
+                                value=""
+                            >
                             <input
                                 type="hidden"
                                 name="_csrf"
@@ -198,6 +205,7 @@
                                     </button>
                                     <button
                                         type="submit"
+                                        id="submitBtn"
                                         class="btn btn-header"
                                     >
                                         Guardar Producto
@@ -271,6 +279,14 @@
                                     {{/allergens}}
                                 </td>
                                 <td class="text-end">
+                                    <button
+                                        type="button"
+                                        class="btn btn-action btn-edit"
+                                        title="Editar"
+                                        onclick="prepareEditForm('{{id}}', '{{name}}', '{{description}}', '{{priceBase}}', '{{category}}', [{{#allergens}}{{id}},{{/allergens}}])"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </button>
                                     <form
                                         action="/admin/gestion_menu/delete/{{id}}"
                                         method="POST"
@@ -419,6 +435,8 @@
               const toggleBtn = document.getElementById("toggleFormBtn");
             
               if (formDiv.style.display === "none") {
+                // Reset form to "Add" mode when opening via "Nuevo Producto" button
+                resetFormToAddMode();
                 formDiv.style.display = "flex";
                 formDiv.scrollIntoView({ behavior: "smooth", block: "start" });
                 toggleBtn.innerHTML =
@@ -427,6 +445,67 @@
                 formDiv.style.display = "none";
                 toggleBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Nuevo Producto';
               }
+            }
+            
+            function resetFormToAddMode() {
+              const form = document.getElementById("productFormElement");
+              form.reset();
+              form.action = "/admin/gestion_menu/add";
+              document.getElementById("productId").value = "";
+              document.getElementById("formTitle").innerText = "Agregar Producto";
+              document.getElementById("submitBtn").innerText = "Guardar Producto";
+              document.getElementById("image").required = true;
+            
+              // Reset allergen pills
+              document.querySelectorAll(".allergen-pill").forEach((pill) => {
+                pill.style.opacity = "0.5";
+                pill.style.transform = "scale(1)";
+                pill.innerHTML = pill.getAttribute("data-allergen");
+              });
+            
+              // Reset allergen select
+              document
+                .getElementById("allergenIds")
+                .querySelectorAll("option")
+                .forEach((opt) => {
+                  opt.selected = false;
+                });
+            }
+            
+            function prepareEditForm(id, name, description, price, category, allergenIds) {
+              const formDiv = document.getElementById("productForm");
+              const form = document.getElementById("productFormElement");
+              const toggleBtn = document.getElementById("toggleFormBtn");
+            
+              // Reset first
+              resetFormToAddMode();
+            
+              // Set to edit mode
+              form.action = "/admin/gestion_menu/edit";
+              document.getElementById("productId").value = id;
+              document.getElementById("name").value = name;
+              document.getElementById("description").value = description;
+              document.getElementById("price").value = price;
+              document.getElementById("category").value = category;
+              document.getElementById("formTitle").innerText = "Editar Producto";
+              document.getElementById("submitBtn").innerText = "Actualizar Producto";
+              document.getElementById("image").required = false;
+            
+              // Select allergens
+              if (allergenIds && Array.isArray(allergenIds)) {
+                allergenIds.forEach((aId) => {
+                  const pill = document.querySelector(`.allergen-pill[data-id="${aId}"]`);
+                  if (pill) {
+                    toggleAllergen(pill, aId);
+                  }
+                });
+              }
+            
+              // Show form
+              formDiv.style.display = "flex";
+              formDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+              toggleBtn.innerHTML =
+                '<i class="fas fa-minus me-2"></i>Ocultar editar producto';
             }
         </script>
 

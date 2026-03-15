@@ -126,11 +126,26 @@ class ProductServiceTest {
 
     @Test
     void testDeleteProduct() {
-        doNothing().when(productRepository).deleteById(1L);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(sampleProduct);
 
         productService.deleteProduct(1L);
 
-        verify(productRepository).deleteById(1L);
+        assertFalse(sampleProduct.isActive());
+        verify(productRepository).save(sampleProduct);
+    }
+
+    @Test
+    void testDeleteProductWithDependencies() {
+        // Even with dependencies, soft delete should work (active = false)
+        when(orderItemRepository.existsByProductId(1L)).thenReturn(true);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(sampleProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(sampleProduct);
+
+        productService.deleteProduct(1L);
+
+        assertFalse(sampleProduct.isActive());
+        verify(productRepository).save(sampleProduct);
     }
 
     // ===== Recommendation Tests =====
@@ -184,12 +199,12 @@ class ProductServiceTest {
         // No sales yet
         when(orderItemRepository.findTopBestSellingProducts(any(PageRequest.class)))
                 .thenReturn(Collections.emptyList());
-        when(productRepository.findAll()).thenReturn(List.of(sampleProduct));
+        when(productRepository.findByActiveTrue()).thenReturn(List.of(sampleProduct));
 
         List<Product> result = productService.getBestSellingProducts(4);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(productRepository).findAll();
+        verify(productRepository).findByActiveTrue();
     }
 }

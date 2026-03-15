@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 @Table(name = "products")
 public class Product {
-    public static Object Category;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,6 +41,9 @@ public class Product {
     @ManyToMany
     @JoinTable(name = "product_allergens", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "allergen_id"))
     private Set<Allergen> allergens = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean active = true;
 
     // Reviews para borrar en cascada al borrar el producto
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -130,5 +132,20 @@ public class Product {
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setProduct(null);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getImageUrl() {
+        if (image != null) {
+            return "/images/" + image.getId();
+        }
+        return "/images/placeholder.jpg";
     }
 }
