@@ -203,7 +203,6 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 ### **Instrucciones de Ejecución**
 
 #### **Requisitos Previos**
-
 - **Java**: version 21 or higher.
 - **Maven**: version 4.0 or higher.
 - **MySQL**: version 8.0 or higher.
@@ -217,26 +216,34 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
    git clone https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20.git
    cd practica-daw-2025-26-grupo-20
    ```
-2. **Ejecutar MySQL workbench**:
+3. **Ejecutar MySQL workbench**:
    Abrir MySQL workbench y crear un schema con el nombre mokaf_db, para poder ver la base de datos. Ver que en el `application.properties`.
-
    ```bash
    spring.datasource.url=jdbc:mysql://localhost:3306/mokaf_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Madrid
    spring.datasource.username=root
    spring.datasource.password=1234
    ```
 
-3. **Ejecutar la aplicación**:
+4.1 **Ejecutar la aplicación**:
    ```bash
    mvn clean install -DSkipTest
    mvn spring-boot:run
    ```
-4. **Acceder a la aplicación**:
+4.2 **Acceder a la aplicación**:
    Abre tu navegador y ve a `http://localhost:8443`.
 
 #### **Credenciales de prueba**
 
 Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos utilizar la cuenta de admin; `admin@mokaf.com` , `admin123` y puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
+   mvn clear install -DSkipTest
+   mvn spring-boot:run
+   ```
+5. **Acceder a la aplicación**:
+   Abre tu navegador y ve a `http://localhost:8443`.
+
+#### **Credenciales de prueba**
+Actualmente Contamos con varios usuarios en DatabaseInitialzer;
+de admin puedes probar en el login; de nombre admin@mokaf.com , de contraseña admin123. y para usuario te puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
 
 ### **Diagrama de Entidades de Base de Datos**
 
