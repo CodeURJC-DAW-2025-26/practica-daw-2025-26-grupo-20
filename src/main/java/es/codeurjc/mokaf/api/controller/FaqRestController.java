@@ -1,17 +1,18 @@
 package es.codeurjc.mokaf.api.controller;
 
 import es.codeurjc.mokaf.api.dto.FaqDTO;
+import es.codeurjc.mokaf.api.mapper.FaqMapper;
 import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.service.FaqService;
+import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,14 @@ public class FaqRestController {
     @Autowired
     private FaqService faqService;
 
+    @Autowired
+    private FaqMapper faqMapper;
+
     @Operation(summary = "Get all FAQs")
     @GetMapping
     public List<FaqDTO> getFaqs() {
         return faqService.getAllFaqs().stream()
-                .map(FaqDTO::new)
+                .map(faqMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -36,47 +40,40 @@ public class FaqRestController {
             @ApiResponse(responseCode = "404", description = "FAQ not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<FaqDTO> getFaq(@PathVariable Long id) {
+    public FaqDTO getFaq(@PathVariable Long id) {
         return faqService.getFaqById(id)
-                .map(f -> ResponseEntity.ok(new FaqDTO(f)))
-                .orElse(ResponseEntity.notFound().build());
+                .map(faqMapper::toDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("FAQ with id " + id + " not found"));
     }
 
     @Operation(summary = "Create a new FAQ")
     @PostMapping
-    public ResponseEntity<FaqDTO> createFaq(@RequestBody FaqDTO faqDTO) {
-        Faq faq = new Faq();
-        faq.setQuestion(faqDTO.getQuestion());
-        faq.setAnswer(faqDTO.getAnswer());
-
+    @ResponseStatus(HttpStatus.CREATED)
+    public FaqDTO createFaq(@Valid @RequestBody FaqDTO faqDTO) {
+        Faq faq = faqMapper.toEntity(faqDTO);
         Faq savedFaq = faqService.save(faq);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedFaq.getId()).toUri();
-
-        return ResponseEntity.created(location).body(new FaqDTO(savedFaq));
+        return faqMapper.toDTO(savedFaq);
     }
 
     @Operation(summary = "Update an existing FAQ")
     @PutMapping("/{id}")
-    public ResponseEntity<FaqDTO> updateFaq(@PathVariable Long id, @RequestBody FaqDTO faqDTO) {
+    public FaqDTO updateFaq(@PathVariable Long id, @Valid @RequestBody FaqDTO faqDTO) {
         return faqService.getFaqById(id)
                 .map(faq -> {
-                    faq.setQuestion(faqDTO.getQuestion());
-                    faq.setAnswer(faqDTO.getAnswer());
+                    faqMapper.updateEntity(faq, faqDTO);
                     Faq updatedFaq = faqService.save(faq);
-                    return ResponseEntity.ok(new FaqDTO(updatedFaq));
+                    return faqMapper.toDTO(updatedFaq);
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("FAQ with id " + id + " not found"));
     }
 
     @Operation(summary = "Delete a FAQ")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFaq(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteFaq(@PathVariable Long id) {
         if (faqService.getFaqById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("FAQ with id " + id + " not found");
         }
         faqService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

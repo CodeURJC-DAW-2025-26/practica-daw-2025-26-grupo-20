@@ -1,42 +1,15 @@
 package es.codeurjc.mokaf.api.dto;
 
 import es.codeurjc.mokaf.model.Faq;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-public class FaqDTO implements es.codeurjc.mokaf.api.interfaces.FaqInterface {
-    private Long id;
-    private String question;
-    private String answer;
-
-    public FaqDTO() {
-    }
-
-    public FaqDTO(Faq faq) {
-        this.id = faq.getId();
-        this.question = faq.getQuestion();
-        this.answer = faq.getAnswer();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
+public record FaqDTO(
+    Long id,
+    @NotBlank(message = "Question is required")
+    @Size(max = 255)
+    String question,
+    @NotBlank(message = "Answer is required")
+    String answer
+) {
 }
