@@ -4,13 +4,15 @@ import es.codeurjc.mokaf.api.dto.FaqDTO;
 import es.codeurjc.mokaf.api.mapper.FaqMapper;
 import es.codeurjc.mokaf.model.Faq;
 import es.codeurjc.mokaf.service.FaqService;
+import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -26,12 +28,15 @@ public class FaqRestController {
         this.faqMapper = faqMapper;
     }
 
+    @Autowired
+    private FaqMapper faqMapper;
+
     @Operation(summary = "Get all FAQs")
     @GetMapping
     public List<FaqDTO> getFaqs() {
         return faqService.getAllFaqs().stream()
-                .map(faqMapper::toDto)
-                .toList();
+                .map(faqMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Operation(summary = "Get a FAQ by its id")
