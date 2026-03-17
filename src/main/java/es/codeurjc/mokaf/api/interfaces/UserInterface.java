@@ -2,7 +2,7 @@ package es.codeurjc.mokaf.api.interfaces;
 
 import java.time.LocalDateTime;
 
-public interface UserDTO {
+public interface UserInterface {
     Long getId();
     void setId(Long id);
     String getName();

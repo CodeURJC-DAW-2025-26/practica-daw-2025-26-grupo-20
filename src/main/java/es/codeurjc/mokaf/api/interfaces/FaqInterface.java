@@ -1,6 +1,6 @@
 package es.codeurjc.mokaf.api.interfaces;
 
-public interface FaqDTO {
+public interface FaqInterface {
     Long getId();
     void setId(Long id);
     String getQuestion();

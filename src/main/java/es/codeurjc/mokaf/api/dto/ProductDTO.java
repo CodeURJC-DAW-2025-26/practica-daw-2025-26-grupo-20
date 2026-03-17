@@ -1,14 +1,14 @@
 package es.codeurjc.mokaf.api.dto;
 
 import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.api.interfaces.AllergenDTO;
+import es.codeurjc.mokaf.api.interfaces.AllergenInterface;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProductDTO implements es.codeurjc.mokaf.api.interfaces.ProductDTO {
+public class ProductDTO implements es.codeurjc.mokaf.api.interfaces.ProductInterface {
 
     private Long id;
     private String name;
@@ -17,7 +17,7 @@ public class ProductDTO implements es.codeurjc.mokaf.api.interfaces.ProductDTO {
     private String category;
     private Long imageId;
     private LocalDateTime createdAt;
-    private List<AllergenDTO> allergens;
+    private List<AllergenInterface> allergens;
 
     public ProductDTO() {
     }
@@ -93,11 +93,11 @@ public class ProductDTO implements es.codeurjc.mokaf.api.interfaces.ProductDTO {
         this.createdAt = createdAt;
     }
 
-    public List<AllergenDTO> getAllergens() {
+    public List<AllergenInterface> getAllergens() {
         return allergens;
     }
 
-    public void setAllergens(List<AllergenDTO> allergens) {
+    public void setAllergens(List<AllergenInterface> allergens) {
         this.allergens = allergens;
     }
 }

@@ -2,7 +2,7 @@ package es.codeurjc.mokaf.api.dto;
 
 import es.codeurjc.mokaf.model.Faq;
 
-public class FaqDTO implements es.codeurjc.mokaf.api.interfaces.FaqDTO {
+public class FaqDTO implements es.codeurjc.mokaf.api.interfaces.FaqInterface {
     private Long id;
     private String question;
     private String answer;

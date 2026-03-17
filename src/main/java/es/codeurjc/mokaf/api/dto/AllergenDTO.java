@@ -2,7 +2,7 @@ package es.codeurjc.mokaf.api.dto;
 
 import es.codeurjc.mokaf.model.Allergen;
 
-public class AllergenDTO implements es.codeurjc.mokaf.api.interfaces.AllergenDTO {
+public class AllergenDTO implements es.codeurjc.mokaf.api.interfaces.AllergenInterface {
 
     private Long id;
     private String name;
