@@ -1,104 +1,98 @@
 package es.codeurjc.mokaf.api.controller;
 
-import es.codeurjc.mokaf.api.dto.ProductDTO;
-import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.service.ProductService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+import es.codeurjc.mokaf.api.dto.ProductDTO;
+import es.codeurjc.mokaf.api.dto.ProductDetailDTO;
+import es.codeurjc.mokaf.api.mapper.ProductMapper;
+import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.service.ProductService;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/products")
 public class ProductRestController {
 
     @Autowired
     private ProductService productService;
 
-    @Operation(summary = "Get all products paginated")
+    @Autowired
+    private ProductMapper productMapper;
+
     @GetMapping
     public Page<ProductDTO> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<Product> products = productService.getProductsPage(page, size);
-        return products.map(ProductDTO::new);
+        return products.map(productMapper::toProductDTO);
     }
 
-    @Operation(summary = "Get a product by its id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the product"),
-            @ApiResponse(responseCode = "404", description = "Product not found")
-    })
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
-        Product p = productService.getProductById(id);
-        return p != null ? ResponseEntity.ok(new ProductDTO(p)) : ResponseEntity.notFound().build();
+    public ProductDetailDTO getProduct(@PathVariable long id) {
+        Product product = productService.findWithImageById(id)
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + id));
+
+        return productMapper.toDTO(product);
     }
 
-    @Operation(summary = "Create a new product")
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        // Here normally DTO would be converted to entity mapped. Simplification for
-        // structure:
-        Product p = new Product();
-        p.setName(productDTO.getName());
-        p.setDescription(productDTO.getDescription());
-        p.setPriceBase(productDTO.getPriceBase());
-        // Category should ideally be mapped through enum conversion
+    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
+        Product product = new Product();
+        product.setName(productDTO.name());
+        product.setDescription(productDTO.description());
+        product.setPriceBase(productDTO.priceBase());
+
         try {
-            if (productDTO.getCategory() != null) {
-                p.setCategory(es.codeurjc.mokaf.model.Category.valueOf(productDTO.getCategory()));
+            if (productDTO.category() != null) {
+                product.setCategory(Category.valueOf(productDTO.category()));
             }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("Categoría inválida: " + productDTO.category());
         }
 
-        productService.addProduct(p);
-        Product savedProduct = p;
+        productService.addProduct(product);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedProduct.getId()).toUri();
-
-        return ResponseEntity.created(location).body(new ProductDTO(savedProduct));
+        return productMapper.toProductDTO(product);
     }
 
-    @Operation(summary = "Update an existing product")
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        Product p = productService.getProductById(id);
-        if (p == null) {
-            return ResponseEntity.notFound().build();
+    public ProductDTO updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        Product product = productService.getProductById(id);
+
+        if (product == null) {
+            throw new NoSuchElementException("Producto no encontrado: " + id);
         }
 
-        p.setName(productDTO.getName());
-        p.setDescription(productDTO.getDescription());
-        p.setPriceBase(productDTO.getPriceBase());
+        product.setName(productDTO.name());
+        product.setDescription(productDTO.description());
+        product.setPriceBase(productDTO.priceBase());
+
         try {
-            if (productDTO.getCategory() != null) {
-                p.setCategory(es.codeurjc.mokaf.model.Category.valueOf(productDTO.getCategory()));
+            if (productDTO.category() != null) {
+                product.setCategory(Category.valueOf(productDTO.category()));
             }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("Categoría inválida: " + productDTO.category());
         }
 
-        productService.addProduct(p); // addProduct also serves as update
-        return ResponseEntity.ok(new ProductDTO(p));
+        productService.addProduct(product);
+
+        return productMapper.toProductDTO(product);
     }
 
-    @Operation(summary = "Delete a product")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        if (productService.getProductById(id) == null) {
-            return ResponseEntity.notFound().build();
+    public void deleteProduct(@PathVariable Long id) {
+        Product product = productService.getProductById(id);
+
+        if (product == null) {
+            throw new NoSuchElementException("Producto no encontrado: " + id);
         }
+
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
     }
 }

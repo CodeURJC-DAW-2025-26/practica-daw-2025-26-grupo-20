@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.codeurjc.mokaf.dto.ProductDetailDTO;
-import es.codeurjc.mokaf.dto.ProductMapper;
+import es.codeurjc.mokaf.api.dto.ProductDetailDTO;
+import es.codeurjc.mokaf.api.mapper.ProductMapper;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.service.ProductService;
 

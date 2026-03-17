@@ -1,4 +1,4 @@
-package es.codeurjc.mokaf.dto;
+package es.codeurjc.mokaf.api.dto;
 
 public record ReviewDTO(
         Long id,

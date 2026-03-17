@@ -1,4 +1,4 @@
-package es.codeurjc.mokaf.dto;
+package es.codeurjc.mokaf.api.dto;
 
 public record UserBasicDTO(
         Long id,

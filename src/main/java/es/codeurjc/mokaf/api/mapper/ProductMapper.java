@@ -1,7 +1,8 @@
-package es.codeurjc.mokaf.dto;
+package es.codeurjc.mokaf.api.mapper;
 
-import es.codeurjc.mokaf.dto.AllergenDTO;
-import es.codeurjc.mokaf.dto.ProductDetailDTO;
+import es.codeurjc.mokaf.api.dto.AllergenDTO;
+import es.codeurjc.mokaf.api.dto.ProductDTO;
+import es.codeurjc.mokaf.api.dto.ProductDetailDTO;
 import es.codeurjc.mokaf.model.Allergen;
 import es.codeurjc.mokaf.model.Product;
 import org.mapstruct.Mapper;
@@ -20,16 +21,15 @@ public interface ProductMapper {
 
     List<ProductDetailDTO> toDTOs(Collection<Product> products);
 
+    @Mapping(target = "imageId", expression = "java(product.getImage() != null ? product.getImage().getId() : null)")
+    @Mapping(target = "category", expression = "java(product.getCategory() != null ? product.getCategory().name() : null)")
+    ProductDTO toProductDTO(Product product);
+
+    List<ProductDTO> toProductDTOs(Collection<Product> products);
+
     AllergenDTO toDTO(Allergen allergen);
 
     Set<AllergenDTO> toDTOs(Set<Allergen> allergens);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "image", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "reviews", ignore = true)
-    @Mapping(target = "active", ignore = true)
-    @Mapping(target = "allergens", ignore = true)
-    @Mapping(target = "category", ignore = true)
-    Product toDomain(ProductDetailDTO productDTO); //esta incommpleto
+    List<AllergenDTO> toDTOs(List<Allergen> allergens);
 }
