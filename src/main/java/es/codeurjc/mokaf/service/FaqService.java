@@ -18,4 +18,16 @@ public class FaqService {
     public List<Faq> getAllFaqs() {
         return faqRepository.findAll();
     }
+
+    public java.util.Optional<Faq> getFaqById(Long id) {
+        return faqRepository.findById(id);
+    }
+
+    public Faq save(Faq faq) {
+        return faqRepository.save(faq);
+    }
+
+    public void delete(Long id) {
+        faqRepository.deleteById(id);
+    }
 }
