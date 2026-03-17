@@ -14,14 +14,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1/faqs")
 public class FaqRestController {
 
-    @Autowired
-    private FaqService faqService;
+    private final FaqService faqService;
+    private final FaqMapper faqMapper;
+
+    public FaqRestController(FaqService faqService, FaqMapper faqMapper) {
+        this.faqService = faqService;
+        this.faqMapper = faqMapper;
+    }
 
     @Autowired
     private FaqMapper faqMapper;
@@ -41,39 +46,39 @@ public class FaqRestController {
     })
     @GetMapping("/{id}")
     public FaqDTO getFaq(@PathVariable Long id) {
-        return faqService.getFaqById(id)
-                .map(faqMapper::toDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("FAQ with id " + id + " not found"));
+        Faq faq = faqService.getFaqById(id)
+                .orElseThrow(() -> new NoSuchElementException("FAQ not found: " + id));
+
+        return faqMapper.toDto(faq);
     }
 
     @Operation(summary = "Create a new FAQ")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public FaqDTO createFaq(@Valid @RequestBody FaqDTO faqDTO) {
+    public FaqDTO createFaq(@RequestBody FaqDTO faqDTO) {
         Faq faq = faqMapper.toEntity(faqDTO);
         Faq savedFaq = faqService.save(faq);
-        return faqMapper.toDTO(savedFaq);
+        return faqMapper.toDto(savedFaq);
     }
 
     @Operation(summary = "Update an existing FAQ")
     @PutMapping("/{id}")
-    public FaqDTO updateFaq(@PathVariable Long id, @Valid @RequestBody FaqDTO faqDTO) {
-        return faqService.getFaqById(id)
-                .map(faq -> {
-                    faqMapper.updateEntity(faq, faqDTO);
-                    Faq updatedFaq = faqService.save(faq);
-                    return faqMapper.toDTO(updatedFaq);
-                })
-                .orElseThrow(() -> new ResourceNotFoundException("FAQ with id " + id + " not found"));
+    public FaqDTO updateFaq(@PathVariable Long id, @RequestBody FaqDTO faqDTO) {
+        Faq faq = faqService.getFaqById(id)
+                .orElseThrow(() -> new NoSuchElementException("FAQ not found: " + id));
+
+        faq.setQuestion(faqDTO.question());
+        faq.setAnswer(faqDTO.answer());
+
+        Faq updatedFaq = faqService.save(faq);
+        return faqMapper.toDto(updatedFaq);
     }
 
     @Operation(summary = "Delete a FAQ")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFaq(@PathVariable Long id) {
-        if (faqService.getFaqById(id).isEmpty()) {
-            throw new ResourceNotFoundException("FAQ with id " + id + " not found");
-        }
-        faqService.delete(id);
+        Faq faq = faqService.getFaqById(id)
+                .orElseThrow(() -> new NoSuchElementException("FAQ not found: " + id));
+
+        faqService.delete(faq.getId());
     }
 }

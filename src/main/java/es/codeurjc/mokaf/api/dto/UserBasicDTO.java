@@ -1,6 +1,6 @@
 package es.codeurjc.mokaf.api.dto;
 
-public record AllergenDTO(
+public record UserBasicDTO(
         Long id,
         String name) {
 }

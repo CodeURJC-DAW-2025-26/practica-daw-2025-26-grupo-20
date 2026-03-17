@@ -1,21 +1,20 @@
 package es.codeurjc.mokaf.api.controller;
 
-import es.codeurjc.mokaf.api.dto.ProductDTO;
-import es.codeurjc.mokaf.api.mapper.ProductMapper;
-import es.codeurjc.mokaf.model.Product;
-import es.codeurjc.mokaf.service.ProductService;
-import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import es.codeurjc.mokaf.api.dto.ProductDTO;
+import es.codeurjc.mokaf.api.dto.ProductDetailDTO;
+import es.codeurjc.mokaf.api.mapper.ProductMapper;
+import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Product;
+import es.codeurjc.mokaf.service.ProductService;
+
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/products")
 public class ProductRestController {
 
     @Autowired
@@ -24,59 +23,76 @@ public class ProductRestController {
     @Autowired
     private ProductMapper productMapper;
 
-    @Operation(summary = "Get all products paginated")
     @GetMapping
     public Page<ProductDTO> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Page<Product> products = productService.getProductsPage(page, size);
-        return products.map(productMapper::toDTO);
+        return products.map(productMapper::toProductDTO);
     }
 
-    @Operation(summary = "Get a product by its id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the product"),
-            @ApiResponse(responseCode = "404", description = "Product not found")
-    })
     @GetMapping("/{id}")
-    public ProductDTO getProduct(@PathVariable Long id) {
-        Product p = productService.getProductById(id);
-        if (p == null) {
-            throw new ResourceNotFoundException("Product with id " + id + " not found");
-        }
-        return productMapper.toDTO(p);
+    public ProductDetailDTO getProduct(@PathVariable long id) {
+        Product product = productService.findWithImageById(id)
+                .orElseThrow(() -> new NoSuchElementException("Producto no encontrado: " + id));
+
+        return productMapper.toDTO(product);
     }
 
-    @Operation(summary = "Create a new product")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductDTO createProduct(@Valid @RequestBody ProductDTO productDTO) {
-        Product p = productMapper.toEntity(productDTO);
-        productService.addProduct(p);
-        return productMapper.toDTO(p);
+    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
+        Product product = new Product();
+        product.setName(productDTO.name());
+        product.setDescription(productDTO.description());
+        product.setPriceBase(productDTO.priceBase());
+
+        try {
+            if (productDTO.category() != null) {
+                product.setCategory(Category.valueOf(productDTO.category()));
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Categoría inválida: " + productDTO.category());
+        }
+
+        productService.addProduct(product);
+
+        return productMapper.toProductDTO(product);
     }
 
-    @Operation(summary = "Update an existing product")
     @PutMapping("/{id}")
-    public ProductDTO updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO) {
-        Product p = productService.getProductById(id);
-        if (p == null) {
-            throw new ResourceNotFoundException("Product with id " + id + " not found");
+    public ProductDTO updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        Product product = productService.getProductById(id);
+
+        if (product == null) {
+            throw new NoSuchElementException("Producto no encontrado: " + id);
         }
 
-        productMapper.updateEntity(p, productDTO);
-        productService.addProduct(p);
-        return productMapper.toDTO(p);
+        product.setName(productDTO.name());
+        product.setDescription(productDTO.description());
+        product.setPriceBase(productDTO.priceBase());
+
+        try {
+            if (productDTO.category() != null) {
+                product.setCategory(Category.valueOf(productDTO.category()));
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Categoría inválida: " + productDTO.category());
+        }
+
+        productService.addProduct(product);
+
+        return productMapper.toProductDTO(product);
     }
 
-    @Operation(summary = "Delete a product")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Long id) {
-        if (productService.getProductById(id) == null) {
-            throw new ResourceNotFoundException("Product with id " + id + " not found");
+        Product product = productService.getProductById(id);
+
+        if (product == null) {
+            throw new NoSuchElementException("Producto no encontrado: " + id);
         }
+
         productService.deleteProduct(id);
     }
 }

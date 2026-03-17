@@ -1,17 +1,16 @@
 package es.codeurjc.mokaf.api.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
-public record ProductDTO(
+
+//DTO para las paginas de producto detallado.
+public record ProductDetailDTO(
         Long id,
         String name,
         String description,
+        String imageUrl,
         BigDecimal priceBase,
         String category,
-        Long imageId,
-        LocalDateTime createdAt,
-        List<AllergenDTO> allergens
-) {
+        Set<AllergenDTO> allergens) {
 }
