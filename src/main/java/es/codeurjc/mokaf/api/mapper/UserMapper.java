@@ -3,8 +3,9 @@ package es.codeurjc.mokaf.api.mapper;
 import es.codeurjc.mokaf.api.dto.UserDTO;
 import es.codeurjc.mokaf.model.User;
 import org.mapstruct.*;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
     @Mapping(target = "imageId", source = "image.id")
@@ -23,7 +24,7 @@ public interface UserMapper {
             try {
                 user.setRole(User.Role.valueOf(dto.role().toUpperCase().trim()));
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid role: " + dto.role() + ". Allowed: CUSTOMER, ADMIN, EMPLOYEE");
+                throw new IllegalArgumentException("Invalid role: " + dto.role() + ". Allowed: CUSTOMER, ADMIN");
             }
         }
     }

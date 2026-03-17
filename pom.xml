@@ -130,12 +130,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Map Struct-->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.6.3</version>
-        </dependency>
 
     </dependencies>
 
@@ -179,7 +173,7 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
