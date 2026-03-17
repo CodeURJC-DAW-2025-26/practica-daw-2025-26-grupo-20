@@ -1,6 +1,6 @@
 package es.codeurjc.mokaf.api.interfaces;
 
-public interface AllergenDTO {
+public interface AllergenInterface {
     Long getId();
     void setId(Long id);
     String getName();

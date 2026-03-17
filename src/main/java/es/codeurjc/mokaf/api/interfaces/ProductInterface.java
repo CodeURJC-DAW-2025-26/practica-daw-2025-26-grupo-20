@@ -3,7 +3,7 @@ package es.codeurjc.mokaf.api.interfaces;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface ProductDTO {
+public interface ProductInterface {
     Long getId();
     void setId(Long id);
     String getName();
@@ -18,6 +18,6 @@ public interface ProductDTO {
     void setImageId(Long imageId);
     java.time.LocalDateTime getCreatedAt();
     void setCreatedAt(java.time.LocalDateTime createdAt);
-    List<AllergenDTO> getAllergens();
-    void setAllergens(List<AllergenDTO> allergens);
+    List<AllergenInterface> getAllergens();
+    void setAllergens(List<AllergenInterface> allergens);
 }

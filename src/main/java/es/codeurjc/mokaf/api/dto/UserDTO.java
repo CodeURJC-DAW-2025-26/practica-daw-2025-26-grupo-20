@@ -3,7 +3,7 @@ package es.codeurjc.mokaf.api.dto;
 import es.codeurjc.mokaf.model.User;
 import java.time.LocalDateTime;
 
-public class UserDTO implements es.codeurjc.mokaf.api.interfaces.UserDTO {
+public class UserDTO implements es.codeurjc.mokaf.api.interfaces.UserInterface {
 
     private Long id;
     private String name;
