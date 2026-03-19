@@ -18,7 +18,7 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
             "p.category AS category, " +
             "SUM(oi.quantity) AS totalUnits, " +
             "SUM(oi.line_total) AS totalAmount " +
-            "FROM orders o " +
+            "FROM mokaf_orders o " +  // ← CORR
             "JOIN order_items oi ON o.id = oi.order_id " +
             "JOIN products p ON oi.product_id = p.id " +
             "WHERE o.status = 'PAID' " +
@@ -30,13 +30,13 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
             "LIMIT 1", nativeQuery = true)
     List<Object[]> findBestSellingProductCurrentMonth();
 
-    // ==================== Chart 2
+    // Chart 2 
     @Query(value = "SELECT " +
             "p.category AS category, " +
             "SUM(oi.quantity) AS totalUnits, " +
             "SUM(oi.line_total) AS totalAmount, " +
             "COUNT(DISTINCT o.id) AS orderCount " +
-            "FROM orders o " +
+            "FROM mokaf_orders o " + 
             "JOIN order_items oi ON o.id = oi.order_id " +
             "JOIN products p ON oi.product_id = p.id " +
             "WHERE o.status = 'PAID' " +
@@ -46,7 +46,7 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
             "ORDER BY totalUnits DESC", nativeQuery = true)
     List<Object[]> findTopCategoryLast3Months();
 
-    // Chart 3
+    // Chart 3 
     @Query(value = "SELECT " +
             "b.name AS branchName, " +
             "COUNT(DISTINCT o.id) AS totalOrders, " +
@@ -54,7 +54,7 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
             "SUM(o.total_amount) AS totalRevenue, " +
             "AVG(o.total_amount) AS avgOrderValue " +
             "FROM branches b " +
-            "JOIN orders o ON b.id = o.branch_id " +
+            "JOIN mokaf_orders o ON b.id = o.branch_id " +  
             "JOIN order_items oi ON o.id = oi.order_id " +
             "WHERE o.status = 'PAID' " +
             "AND o.paid_at IS NOT NULL " +
@@ -63,14 +63,14 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
             "LIMIT 1", nativeQuery = true)
     List<Object[]> findTopBranch();
 
-
+   
     @Query(value = "SELECT " +
             "b.name AS branchName, " +
             "COUNT(DISTINCT o.id) AS totalOrders, " +
             "SUM(oi.quantity) AS totalUnits, " +
             "SUM(o.total_amount) AS totalRevenue " +
             "FROM branches b " +
-            "LEFT JOIN orders o ON b.id = o.branch_id AND o.status = 'PAID' AND o.paid_at IS NOT NULL " +
+            "LEFT JOIN mokaf_orders o ON b.id = o.branch_id AND o.status = 'PAID' AND o.paid_at IS NOT NULL " +  // ← CORREGIDO
             "LEFT JOIN order_items oi ON o.id = oi.order_id " +
             "GROUP BY b.id, b.name " +
             "ORDER BY totalRevenue DESC", nativeQuery = true)
@@ -81,21 +81,19 @@ public interface StatisticsRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findByName(String name);
 
-
-    // ==================== PRODUCT WITH HIGHEST RATING (STARS) ====================
-@Query(value = "SELECT " +
-       "p.id, " +
-       "p.name, " +
-       "p.category, " +
-       "AVG(r.stars) AS averageRating, " +
-       "COUNT(r.id) AS reviewCount " +
-       "FROM products p " +
-       "JOIN reviews r ON p.id = r.product_id " +
-       "WHERE r.created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) " +
-       "GROUP BY p.id, p.name, p.category " +
-       "HAVING COUNT(r.id) >= 3 " + // Minimum 3 reviews to consider
-       "ORDER BY averageRating DESC, reviewCount DESC " +
-       "LIMIT 1", 
-       nativeQuery = true)
-List<Object[]> findTopRatedProductLastMonth();
+    // Product with highest rating
+    @Query(value = "SELECT " +
+           "p.id, " +
+           "p.name, " +
+           "p.category, " +
+           "AVG(r.stars) AS averageRating, " +
+           "COUNT(r.id) AS reviewCount " +
+           "FROM products p " +
+           "JOIN reviews r ON p.id = r.product_id " +
+           "WHERE r.created_at >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) " +
+           "GROUP BY p.id, p.name, p.category " +
+           "HAVING COUNT(r.id) >= 3 " +
+           "ORDER BY averageRating DESC, reviewCount DESC " +
+           "LIMIT 1", nativeQuery = true)
+    List<Object[]> findTopRatedProductLastMonth();
 }
