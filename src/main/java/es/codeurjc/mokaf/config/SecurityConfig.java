@@ -1,8 +1,13 @@
 package es.codeurjc.mokaf.config;
 
+import es.codeurjc.mokaf.api.security.UnauthorizedHandlerJwt;
+import es.codeurjc.mokaf.api.security.jwt.JwtRequestFilter;
+import es.codeurjc.mokaf.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -12,90 +17,147 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-import es.codeurjc.mokaf.service.UserService;
 
+/**
+ * Configuración de seguridad con dos FilterChain (tema 4.10: Web + REST):
+ *
+ *   @Order(1) apiFilterChain → /api/**  → JWT stateless
+ *   @Order(2) webFilterChain → resto    → sesión HTTP + form login
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-        @Autowired
-        private UserService userService;
+    @Autowired
+    private UserService userService;
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
+    @Autowired
+    private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
 
-        @Bean
-        public DaoAuthenticationProvider authenticationProvider() {
-                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userService);
-                authProvider.setPasswordEncoder(passwordEncoder());
-                return authProvider;
-        }
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-                return authConfig.getAuthenticationManager();
-        }
+    // ── Beans compartidos ─────────────────────────────────────────────────────
 
-        @Bean
-        public SecurityContextRepository securityContextRepository() {
-                HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
-                repo.setSpringSecurityContextKey("SPRING_SECURITY_CONTEXT");
-                return repo;
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-                http
-                                .csrf(csrf -> csrf
-                                                .ignoringRequestMatchers("/cart/**")
-                                                .ignoringRequestMatchers("/api/**"))
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
-                                .securityContext(context -> context
-                                                .securityContextRepository(securityContextRepository())
-                                                .requireExplicitSave(false) // Automatically save security context
-                                )
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**",
-                                                                "/favicon.ico")
-                                                .permitAll()
-                                                .requestMatchers("/", "/index", "/menu", "/nosotros",
-                                                                "/branches", "/contact", "/login", "/register")
-                                                .permitAll()
-                                                .requestMatchers("/admin/**", "/profileADMIN", "/profileADMIN/**",
-                                                                "/statistics/**", "/gestion_menu")
-                                                .hasRole("ADMIN")
-                                                .requestMatchers("/profile", "/profile/**", "/cart", "/cart/**",
-                                                                "/orders", "/profiles/images/**")
-                                                .authenticated()
-                                                .anyRequest().permitAll())
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+        repo.setSpringSecurityContextKey("SPRING_SECURITY_CONTEXT");
+        return repo;
+    }
 
-                                .formLogin(form -> form
-                                                .loginPage("/login")
-                                                .loginProcessingUrl("/login")
-                                                .usernameParameter("email")
-                                                .passwordParameter("password")
-                                                .defaultSuccessUrl("/redirect-after-login", true)
-                                                .failureUrl("/login?error=true")
-                                                .permitAll())
+    // ── @Order(1)  API REST → /api/** → JWT stateless ────────────────────────
 
-                                .logout(logout -> logout
-                                                .logoutUrl("/logout")
-                                                .logoutSuccessUrl("/login?logout=true")
-                                                .invalidateHttpSession(true)
-                                                .deleteCookies("JSESSIONID")
-                                                .permitAll())
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                                                .enableSessionUrlRewriting(false) // Use cookies only, not URL rewriting
-                                );
+        http
+            .securityMatcher("/api/**")
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(unauthorizedHandlerJwt))
+            .authenticationProvider(authenticationProvider())
 
-                return http.build();
-        }
+            .authorizeHttpRequests(auth -> auth
+                // Auth pública (login, refresh, logout)
+                .requestMatchers("/api/v1/auth/**").permitAll()
+
+                // Perfil propio → autenticado
+                .requestMatchers("/api/v1/users/me",
+                                 "/api/v1/users/me/**").authenticated()
+
+                // CRUD de usuarios → solo ADMIN
+                .requestMatchers(HttpMethod.GET,    "/api/v1/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,   "/api/v1/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,    "/api/v1/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
+
+                .anyRequest().permitAll())
+
+            .formLogin(form -> form.disable())
+            .csrf(csrf -> csrf.disable())
+            .httpBasic(basic -> basic.disable())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    // ── @Order(2)  Web MVC → sesión HTTP + form login ─────────────────────────
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
+
+        http
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/cart/**"))
+
+            .securityContext(ctx -> ctx
+                .securityContextRepository(securityContextRepository())
+                .requireExplicitSave(false))
+
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico")
+                    .permitAll()
+                .requestMatchers(
+                    "/", "/index", "/menu", "/nosotros",
+                    "/branches", "/contact", "/login", "/register")
+                    .permitAll()
+                .requestMatchers(
+                    "/admin/**", "/profileADMIN", "/profileADMIN/**",
+                    "/statistics/**", "/gestion_menu")
+                    .hasRole("ADMIN")
+                .requestMatchers(
+                    "/profile", "/profile/**",
+                    "/cart", "/cart/**",
+                    "/orders", "/profiles/images/**")
+                    .authenticated()
+                .anyRequest().permitAll())
+
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/redirect-after-login", true)
+                .failureUrl("/login?error=true")
+                .permitAll())
+
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll())
+
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .enableSessionUrlRewriting(false));
+
+        return http.build();
+    }
 }
