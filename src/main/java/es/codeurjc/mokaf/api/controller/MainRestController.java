@@ -3,9 +3,11 @@ package es.codeurjc.mokaf.api.controller;
 import es.codeurjc.mokaf.api.dto.BranchDTO;
 import es.codeurjc.mokaf.api.dto.ContactRequestDTO;
 import es.codeurjc.mokaf.api.dto.OrderDTO;
+import es.codeurjc.mokaf.api.dto.UserDTO;
 import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.mapper.BranchMapper;
 import es.codeurjc.mokaf.api.mapper.OrderMapper;
+import es.codeurjc.mokaf.api.mapper.UserMapper;
 import es.codeurjc.mokaf.model.ContactRequest;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.User;
@@ -35,19 +37,21 @@ public class MainRestController {
     private final ContactEmailService contactEmailService;
     private final OrderMapper orderMapper;
     private final BranchMapper branchMapper;
+    private final UserMapper userMapper;
 
     public MainRestController(OrdersService ordersService,
                               UserService userService,
                               BranchService branchService,
                               ContactEmailService contactEmailService,
                               OrderMapper orderMapper,
-                              BranchMapper branchMapper) {
+                              BranchMapper branchMapper,UserMapper userMapper) {
         this.ordersService = ordersService;
         this.userService = userService;
         this.branchService = branchService;
         this.contactEmailService = contactEmailService;
         this.orderMapper = orderMapper;
         this.branchMapper = branchMapper;
+        this.userMapper = userMapper;
     }
 
 
@@ -74,6 +78,15 @@ public class MainRestController {
         contactEmailService.sendContactEmail(request);
     }
 
+    // ── GET /api/v1/about-us ──────────────────────────────────────────────────
+    // Devuelve el equipo de atención al cliente 
+    @Operation(summary = "Get customer service team (about us)")
+    @GetMapping("/about-us")
+    public List<UserDTO> getAboutUsTeam() {
+        return userService.getStaffByDepartment("Atencion al cliente").stream()
+                .map(userMapper::toDTO)
+                .collect(Collectors.toList());
+    }
     // ── Helper ────────────────────────────────────────────────────────────────
     private User resolveUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
