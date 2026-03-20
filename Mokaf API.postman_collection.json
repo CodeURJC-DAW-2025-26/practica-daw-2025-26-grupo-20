@@ -1,13 +1,178 @@
 {
   "info": {
-    "_postman_id": "5ffca78a-429d-48c9-8d1c-bd0af899c6dd",
+    "_postman_id": "8eebbba4-5d1c-4bd3-8e3c-c42ae0b069c7",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52807584",
-    "_collection_link": "https://go.postman.co/collection/52807584-5ffca78a-429d-48c9-8d1c-bd0af899c6dd?source=collection_link"
+    "_exporter_id": "43168622"
   },
   "item": [
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "dashboard"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "bestSellingProduct",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/best-product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "best-product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TopRatedProduct",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/top-rated-product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "top-rated-product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TopCategory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/top-category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "top-category"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AllCategories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TopBranch",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/top-branch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "top-branch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AllBranches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/branches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AllCategories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/statistics/categories/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "statistics",
+                "categories",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
     {
       "name": "Users",
       "item": [
@@ -148,54 +313,12 @@
           "response": []
         },
         {
-          "name": "LogIn",
+          "name": "New Request",
           "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"email\": \"admin@mokaf.com\",\r\n  \"password\": \"admin123\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "https://localhost:8443/api/v1/auth/login",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "LogOut",
-          "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/auth/logout",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "logout"
-              ]
+              "raw": ""
             }
           },
           "response": []
@@ -538,7 +661,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/26/checkout",
+              "raw": "{{baseUrl}}/api/v1/orders/1/checkout",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -546,7 +669,7 @@
                 "api",
                 "v1",
                 "orders",
-                "26",
+                "1",
                 "checkout"
               ]
             }
@@ -568,193 +691,6 @@
                 "v1",
                 "orders",
                 "1"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Branches",
-      "item": [
-        {
-          "name": "get branches",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "https://localhost:8443/api/v1/branches",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "branches"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get branch by id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "https://localhost:8443/api/v1/branches/1",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "branches",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create branch",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Sucursal Madrid Centro\",\r\n  \"description\": \"Ubicada en el centro de Madrid\",\r\n  \"purchaseDiscountPercent\": 5.00\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "https://localhost:8443/api/v1/branches",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "branches"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update branch",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"name\": \"UPDATE Sucursal\",\r\n  \"description\": \"Ubicada en mi casa\",\r\n  \"purchaseDiscountPercent\": 8.00\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "https://localhost:8443/api/v1/branches/5",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "branches",
-                "5"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Branch",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "https://localhost:8443/api/v1/branches/5",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "branches",
-                "5"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "About_us",
-      "item": [
-        {
-          "name": "post message",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"firstName\": \"Juan\",\r\n  \"lastName\": \"García\",\r\n  \"email\": \"juan@ejemplo.com\",\r\n  \"phone\": \"612345678\",\r\n  \"subject\": \"Consulta sobre horarios\",\r\n  \"message\": \"¿Cuál es el horario de la sucursal de Madrid?\",\r\n  \"newsletter\": false\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "https://localhost:8443/api/v1/contact",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "contact"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get workers",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "https://localhost:8443/api/v1/about-us",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "about-us"
               ]
             }
           },
