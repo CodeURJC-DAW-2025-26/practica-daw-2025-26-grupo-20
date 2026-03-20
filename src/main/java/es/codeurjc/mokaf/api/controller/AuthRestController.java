@@ -1,111 +1,120 @@
 package es.codeurjc.mokaf.api.controller;
 
-import es.codeurjc.mokaf.api.dto.LoginRequestDTO;
 import es.codeurjc.mokaf.api.dto.UserDTO;
-import es.codeurjc.mokaf.api.exception.UnauthorizedException;
+import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.mapper.UserMapper;
+import es.codeurjc.mokaf.api.security.jwt.AuthResponse;
+import es.codeurjc.mokaf.api.security.jwt.LoginRequest;
+import es.codeurjc.mokaf.api.security.jwt.UserLoginService;
 import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Authentication endpoints (all public).
+ *
+ *   POST /api/v1/auth/login    → login, returns JWT cookies
+ *   POST /api/v1/auth/signup   → register new CUSTOMER account
+ *   POST /api/v1/auth/refresh  → renew AuthToken using RefreshToken cookie
+ *   POST /api/v1/auth/logout   → clear JWT cookies
+ */
+@Tag(name = "Auth", description = "Authentication and registration endpoints")
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthRestController {
 
-    private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
-    private final UserService userService;
-    private final UserMapper userMapper;
+    @Autowired private UserLoginService userLoginService;
+    @Autowired private UserService userService;
+    @Autowired private UserMapper userMapper;
+    @Autowired private PasswordEncoder passwordEncoder;
 
-    public AuthRestController(AuthenticationManager authenticationManager,
-                              SecurityContextRepository securityContextRepository,
-                              UserService userService,
-                              UserMapper userMapper) {
-        this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
-        this.userService = userService;
-        this.userMapper = userMapper;
-    }
+    // ── Signup request DTO ────────────────────────────────────────────────────
 
-    // ── POST /api/v1/auth/login ───────────────────────────────────────────────
-    @Operation(summary = "Login and start a session")
+    public record SignupRequest(
+            @NotBlank(message = "Name is required")
+            String name,
+
+            @NotBlank(message = "Email is required")
+            @Email(message = "Email format is invalid")
+            String email,
+
+            @NotBlank(message = "Password is required")
+            @Size(min = 6, message = "Password must be at least 6 characters")
+            @Pattern(
+                regexp = "^(?=.*[a-zA-Z])(?=.*\\d).+$",
+                message = "Password must contain both letters and numbers"
+            )
+            String password
+    ) {}
+
+    // ── Endpoints ─────────────────────────────────────────────────────────────
+
+    @Operation(summary = "Login with email and password",
+               description = "Returns HttpOnly cookies: AuthToken (5 min) and RefreshToken (7 days). "
+                           + "Subtítulo vídeo: 'Endpoint de login'")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login successful"),
             @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
     @PostMapping("/login")
-    public UserDTO login(@Valid @RequestBody LoginRequestDTO loginRequest,
-                         HttpServletRequest request,
-                         HttpServletResponse response) {
-        try {
-            // Autenticar credenciales
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.email(),
-                            loginRequest.password()
-                    )
-            );
-
-            // Guardar en el contexto de seguridad y en la sesión (cookie JSESSIONID)
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authentication);
-            SecurityContextHolder.setContext(context);
-            securityContextRepository.saveContext(context, request, response);
-
-            // Devolver datos del usuario autenticado
-            User user = userService.findByEmail(loginRequest.email())
-                    .orElseThrow(() -> new UnauthorizedException("User not found"));
-
-            return userMapper.toDTO(user);
-
-        } catch (BadCredentialsException e) {
-            throw new UnauthorizedException("Invalid email or password");
-        }
+    public ResponseEntity<AuthResponse> login(
+            @RequestBody LoginRequest loginRequest,
+            HttpServletResponse response) {
+        return userLoginService.login(response, loginRequest);
     }
 
-    // ── POST /api/v1/auth/logout ──────────────────────────────────────────────
-    @Operation(summary = "Logout and invalidate session")
-    @ApiResponse(responseCode = "204", description = "Logged out successfully")
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(HttpServletRequest request) {
-        request.getSession(false); // no crear sesión nueva
-        var session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        SecurityContextHolder.clearContext();
-    }
-
-    // ── GET /api/v1/auth/me ───────────────────────────────────────────────────
-    @Operation(summary = "Get current authenticated user")
+    @Operation(summary = "Register a new user account",
+               description = "Creates a new CUSTOMER account. "
+                           + "Subtítulo vídeo: 'Endpoint de registro'")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Authenticated user info"),
-            @ApiResponse(responseCode = "401", description = "Not authenticated")
+            @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Validation error or email already in use")
     })
-    @GetMapping("/me")
-    public UserDTO me(HttpServletRequest request) {
-        var principal = request.getUserPrincipal();
-        if (principal == null) {
-            throw new UnauthorizedException("Not authenticated");
-        }
-        return userService.findByEmail(principal.getName())
-                .map(userMapper::toDTO)
-                .orElseThrow(() -> new UnauthorizedException("User not found"));
+    @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO signup(@Valid @RequestBody SignupRequest request) {
+        if (userService.existsByEmail(request.email()))
+            throw new IllegalArgumentException("Email already registered: " + request.email());
+
+        User newUser = new User();
+        newUser.setName(request.name());
+        newUser.setEmail(request.email());
+        newUser.setPasswordHash(passwordEncoder.encode(request.password()));
+        newUser.setRole(User.Role.CUSTOMER);
+
+        return userMapper.toDTO(userService.save(newUser));
     }
 
+    @Operation(summary = "Refresh the access token",
+               description = "Uses the RefreshToken cookie to issue a new AuthToken cookie")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Token refreshed"),
+            @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
+    })
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(
+            @CookieValue(name = "RefreshToken", required = false) String refreshToken,
+            HttpServletResponse response) {
+        return userLoginService.refresh(response, refreshToken);
+    }
+
+    @Operation(summary = "Logout — clears JWT cookies")
+    @PostMapping("/logout")
+    public ResponseEntity<AuthResponse> logout(HttpServletResponse response) {
+        return userLoginService.logout(response);
+    }
 }
