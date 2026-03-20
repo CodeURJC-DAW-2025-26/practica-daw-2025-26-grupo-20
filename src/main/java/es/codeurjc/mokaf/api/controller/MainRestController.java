@@ -50,15 +50,6 @@ public class MainRestController {
         this.branchMapper = branchMapper;
     }
 
-    // ── GET /api/v1/branches ──────────────────────────────────────────────────
-    // Cualquiera puede ver las sucursales
-    @Operation(summary = "Get all branches")
-    @GetMapping("/branches")
-    public List<BranchDTO> getBranches() {
-        return branchService.getAllBranches().stream()
-                .map(branchMapper::toDto)
-                .collect(Collectors.toList());
-    }
 
     // ── POST /api/v1/contact ──────────────────────────────────────────────────
     // Cualquiera puede enviar un mensaje de contacto
