@@ -35,8 +35,13 @@ import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
+
+        @Value("${app.database.init:true}")
+        private boolean initDb;
 
         private final ProductRepository productRepository;
         private final ImageRepository imageRepository;
@@ -73,6 +78,11 @@ public class DatabaseInitializer implements ApplicationRunner {
         @Override
         @Transactional
         public void run(ApplicationArguments args) throws Exception {
+                if (!initDb) {
+                        System.out.println(">>> Database initialization is disabled. Skipping sample data load.");
+                        return;
+                }
+
                 // 1) ERASE (children -> parents) to protect FK constraints
                 try {
                         orderRepository.deleteAll();

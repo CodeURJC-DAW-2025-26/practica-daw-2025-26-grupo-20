@@ -34,8 +34,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mokaf_database?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: my_secret_password
-      # Opcional: Recomendado para que Hibernate cree/actualice las tablas automáticamente si no lo tienes en el properties
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # Modo inicialización: 
+      # Si se desea arrancar sin datos de ejemplo, cambiar APP_DATABASE_INIT a false
+      APP_DATABASE_INIT: ${APP_DATABASE_INIT:-true}
+      # Si se desea evitar que se modifique el esquema de BD, cambiar a 'none'
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
     depends_on:
       db:
         # Esto hace que la app espere a que el "healthcheck" de la BD sea exitoso ("healthy")
