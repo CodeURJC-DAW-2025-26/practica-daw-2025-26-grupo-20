@@ -382,15 +382,36 @@
           "name": "Create Product",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"New Coffee Blend\",\n    \"description\": \"A rich and aromatic blend.\",\n    \"priceBase\": 4.50,\n    \"category\": \"HOT\"\n}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "New Coffee Blend",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "A rich and aromatic blend.",
+                  "type": "text"
+                },
+                {
+                  "key": "priceBase",
+                  "value": "4.50",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "HOT",
+                  "type": "text"
+                },
+                {
+                  "key": "imageFile",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/products",
@@ -410,15 +431,36 @@
           "name": "Update Product",
           "request": {
             "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Coffee\",\n    \"description\": \"Now even better.\",\n    \"priceBase\": 4.90,\n    \"category\": \"HOT\"\n}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Coffee",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Now even better.",
+                  "type": "text"
+                },
+                {
+                  "key": "priceBase",
+                  "value": "4.90",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "HOT",
+                  "type": "text"
+                },
+                {
+                  "key": "imageFile",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/products/1",

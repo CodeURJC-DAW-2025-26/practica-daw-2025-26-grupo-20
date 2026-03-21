@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public record ProductDTO(
         Long id,
         String name,
@@ -12,6 +15,9 @@ public record ProductDTO(
         String category,
         Long imageId,
         LocalDateTime createdAt,
-        List<AllergenDTO> allergens
+        List<AllergenDTO> allergens,
+        
+        @JsonIgnore
+        MultipartFile imageFile
 ) {
 }

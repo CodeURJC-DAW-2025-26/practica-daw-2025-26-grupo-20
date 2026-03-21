@@ -12,6 +12,7 @@ import es.codeurjc.mokaf.api.dto.ReviewDTO;
 import es.codeurjc.mokaf.api.mapper.ProductMapper;
 import es.codeurjc.mokaf.api.mapper.ReviewMapper;
 import es.codeurjc.mokaf.model.Category;
+import es.codeurjc.mokaf.model.Image;
 import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
@@ -19,6 +20,7 @@ import es.codeurjc.mokaf.service.ProductService;
 import es.codeurjc.mokaf.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
@@ -85,8 +87,8 @@ public class ProductRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping
-    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ProductDTO createProduct(@ModelAttribute ProductDTO productDTO) {
         Product product = new Product();
         product.setName(productDTO.name());
         product.setDescription(productDTO.description());
@@ -100,13 +102,23 @@ public class ProductRestController {
             throw new IllegalArgumentException("Categoría inválida: " + productDTO.category());
         }
 
+        if (productDTO.imageFile() != null && !productDTO.imageFile().isEmpty()) {
+            try {
+                byte[] imageData = productDTO.imageFile().getBytes();
+                Image imageObj = new Image(new javax.sql.rowset.serial.SerialBlob(imageData));
+                product.setImage(imageObj);
+            } catch (Exception e) {
+                throw new RuntimeException("Error guardando la imagen", e);
+            }
+        }
+
         productService.addProduct(product);
 
         return productMapper.toProductDTO(product);
     }
 
-    @PutMapping("/{id}")
-    public ProductDTO updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ProductDTO updateProduct(@PathVariable Long id, @ModelAttribute ProductDTO productDTO) {
         Product product = productService.getProductById(id);
 
         if (product == null) {
@@ -123,6 +135,16 @@ public class ProductRestController {
             }
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Categoría inválida: " + productDTO.category());
+        }
+
+        if (productDTO.imageFile() != null && !productDTO.imageFile().isEmpty()) {
+            try {
+                byte[] imageData = productDTO.imageFile().getBytes();
+                Image imageObj = new Image(new javax.sql.rowset.serial.SerialBlob(imageData));
+                product.setImage(imageObj);
+            } catch (Exception e) {
+                throw new RuntimeException("Error guardando la imagen", e);
+            }
         }
 
         productService.addProduct(product);

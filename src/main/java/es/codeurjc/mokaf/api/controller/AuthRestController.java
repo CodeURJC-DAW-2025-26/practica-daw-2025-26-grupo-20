@@ -1,7 +1,6 @@
 package es.codeurjc.mokaf.api.controller;
 
 import es.codeurjc.mokaf.api.dto.UserDTO;
-import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.mapper.UserMapper;
 import es.codeurjc.mokaf.api.security.jwt.AuthResponse;
 import es.codeurjc.mokaf.api.security.jwt.LoginRequest;

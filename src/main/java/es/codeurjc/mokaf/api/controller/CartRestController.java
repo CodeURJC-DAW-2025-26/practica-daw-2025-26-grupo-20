@@ -3,7 +3,6 @@ package es.codeurjc.mokaf.api.controller;
 import es.codeurjc.mokaf.api.dto.BranchDTO;
 import es.codeurjc.mokaf.api.dto.CartDTOs.CartResponseDTO;
 import es.codeurjc.mokaf.api.dto.CartDTOs.CartSummaryDTO;
-import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.exception.UnauthorizedException;
 import es.codeurjc.mokaf.api.mapper.CartMapper;
 import es.codeurjc.mokaf.model.Order;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

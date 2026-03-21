@@ -2,16 +2,13 @@ package es.codeurjc.mokaf.api.controller;
 
 import java.util.Map;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import es.codeurjc.mokaf.api.dto.ReviewDTO;
 import es.codeurjc.mokaf.api.dto.StatsDTO.*;
 import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.mapper.StatisticsMapper;
-import es.codeurjc.mokaf.api.mapper.ReviewMapper;
 import es.codeurjc.mokaf.service.StatisticsService;
 
 @RestController
@@ -23,9 +20,6 @@ public class StatisticsRestController {
 
     @Autowired
     private StatisticsMapper statisticsMapper;
-
-    @Autowired
-    private ReviewMapper reviewMapper;
 
     @GetMapping("/dashboard")
     public StatisticsDTO getDashboardStatistics() {

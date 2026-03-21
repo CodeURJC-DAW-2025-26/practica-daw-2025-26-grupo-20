@@ -23,6 +23,7 @@ public interface ProductMapper {
 
     @Mapping(target = "imageId", expression = "java(product.getImage() != null ? product.getImage().getId() : null)")
     @Mapping(target = "category", expression = "java(product.getCategory() != null ? product.getCategory().name() : null)")
+    @Mapping(target = "imageFile", ignore = true)
     ProductDTO toProductDTO(Product product);
 
     List<ProductDTO> toProductDTOs(Collection<Product> products);
