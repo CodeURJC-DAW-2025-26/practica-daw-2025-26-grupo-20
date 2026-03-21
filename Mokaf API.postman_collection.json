@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "a77e0511-e7a2-45bf-950e-c5f75052c01e",
+    "_postman_id": "6e4475ee-7370-4b48-b87e-b022c8c2d892",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "38979143",
-    "_collection_link": "https://go.postman.co/collection/38979143-a77e0511-e7a2-45bf-950e-c5f75052c01e?source=collection_link"
+    "_exporter_id": "52807584"
   },
   "item": [
     {
@@ -309,17 +308,6 @@
                 "users",
                 "1"
               ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "New Request",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": ""
             }
           },
           "response": []
@@ -1106,6 +1094,162 @@
                 "v1",
                 "auth",
                 "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "Get Branches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:8443/api/v1/branches",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "8443",
+              "path": [
+                "api",
+                "v1",
+                "branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get branch by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:8443/api/v1/branches/1",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "8443",
+              "path": [
+                "api",
+                "v1",
+                "branches",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create branch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Sucursal Madrid Centro\",\r\n  \"description\": \"Ubicada en el centro de Madrid\",\r\n  \"purchaseDiscountPercent\": 5.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:8443/api/v1/branches",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "8443",
+              "path": [
+                "api",
+                "v1",
+                "branches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete branch",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:8443/api/v1/branches/7",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "8443",
+              "path": [
+                "api",
+                "v1",
+                "branches",
+                "7"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "About_us",
+      "item": [
+        {
+          "name": "Post message",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Juan\",\r\n  \"lastName\": \"García\",\r\n  \"email\": \"juan@ejemplo.com\",\r\n  \"phone\": \"612345678\",\r\n  \"subject\": \"Consulta sobre horarios\",\r\n  \"message\": \"¿Cuál es el horario de la sucursal de Madrid?\",\r\n  \"newsletter\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:8443/api/v1/contact",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "8443",
+              "path": [
+                "api",
+                "v1",
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get team",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:8443/api/v1/about-us",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "8443",
+              "path": [
+                "api",
+                "v1",
+                "about-us"
               ]
             }
           },
