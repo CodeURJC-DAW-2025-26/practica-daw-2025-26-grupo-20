@@ -934,7 +934,7 @@
               "raw": "{\r\n  \"email\": \"admin@mokaf.com\",\r\n  \"password\": \"admin123\"\r\n}",
               "options": {
                 "raw": {
-                  "language": "text"
+                  "language": "json"
                 }
               }
             },
@@ -977,7 +977,7 @@
               "raw": "{\r\n  \"name\": \"Test User\",\r\n  \"email\": \"test@mokaf.com\",\r\n  \"password\": \"test123\"\r\n}",
               "options": {
                 "raw": {
-                  "language": "text"
+                  "language": "json"
                 }
               }
             },
