@@ -1,10 +1,11 @@
 {
   "info": {
-    "_postman_id": "32dccbf9-6ff2-471b-9f58-3158ede40ed5",
+    "_postman_id": "a77e0511-e7a2-45bf-950e-c5f75052c01e",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "43168622"
+    "_exporter_id": "38979143",
+    "_collection_link": "https://go.postman.co/collection/38979143-a77e0511-e7a2-45bf-950e-c5f75052c01e?source=collection_link"
   },
   "item": [
     {
@@ -334,12 +335,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products?page=0&size=10",
+              "raw": "{{baseUrl}}/api/v1/products?page=0&size=10",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products"
               ],
               "query": [
@@ -362,12 +364,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products/1",
+              "raw": "{{baseUrl}}/api/v1/products/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "1"
               ]
@@ -387,15 +390,16 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"New Coffee Blend\",\n    \"description\": \"A rich and aromatic blend.\",\n    \"priceBase\": 4.50,\n    \"category\": \"COFFEE\"\n}"
+              "raw": "{\n    \"name\": \"New Coffee Blend\",\n    \"description\": \"A rich and aromatic blend.\",\n    \"priceBase\": 4.50,\n    \"category\": \"HOT\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/products",
+              "raw": "{{baseUrl}}/api/v1/products",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products"
               ]
             }
@@ -414,15 +418,16 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Coffee\",\n    \"description\": \"Now even better.\",\n    \"priceBase\": 4.90,\n    \"category\": \"COFFEE\"\n}"
+              "raw": "{\n    \"name\": \"Updated Coffee\",\n    \"description\": \"Now even better.\",\n    \"priceBase\": 4.90,\n    \"category\": \"HOT\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/products/1",
+              "raw": "{{baseUrl}}/api/v1/products/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "1"
               ]
@@ -436,12 +441,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/products/1",
+              "raw": "{{baseUrl}}/api/v1/products/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "v1",
                 "products",
                 "1"
               ]
@@ -740,14 +746,12 @@
                 {
                   "key": "productId",
                   "value": "3",
-                  "type": "text",
-                  "id": 0
+                  "type": "text"
                 },
                 {
                   "key": "quantity",
                   "value": "2",
-                  "type": "text",
-                  "id": 1
+                  "type": "text"
                 }
               ]
             }
@@ -775,8 +779,7 @@
                 {
                   "key": "quantity",
                   "value": "1",
-                  "type": "text",
-                  "id": 0
+                  "type": "text"
                 }
               ]
             }
@@ -864,8 +867,7 @@
                 {
                   "key": "branchId",
                   "value": "2",
-                  "type": "text",
-                  "id": 0
+                  "type": "text"
                 }
               ]
             }
@@ -892,8 +894,7 @@
                 {
                   "key": "paymentMethod",
                   "value": "paypal",
-                  "type": "text",
-                  "id": 0
+                  "type": "text"
                 }
               ]
             }
@@ -1096,7 +1097,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8080"
+      "value": "https://localhost:8443"
     }
   ]
 }
