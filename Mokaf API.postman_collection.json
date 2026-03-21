@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "8eebbba4-5d1c-4bd3-8e3c-c42ae0b069c7",
+    "_postman_id": "32dccbf9-6ff2-471b-9f58-3158ede40ed5",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -697,100 +697,299 @@
           "response": []
         }
       ]
-    }
-  ],
-  "event": [
+    },
     {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          ""
-        ]
-      }
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items?productId=3&quantity=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "productId",
+                  "value": "3",
+                  "type": "text",
+                  "id": 0
+                },
+                {
+                  "key": "quantity",
+                  "value": "2",
+                  "type": "text",
+                  "id": 1
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update quantity in Cart",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{itemId}?quantity=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{itemId}"
+              ],
+              "query": [
+                {
+                  "key": "quantity",
+                  "value": "1",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete product from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/items/{itemId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "items",
+                "{itemId}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get current Branch",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/branch/current",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "branch",
+                "current"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change branch in Cart",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/branch?branchId=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "branch"
+              ],
+              "query": [
+                {
+                  "key": "branchId",
+                  "value": "2",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Checkout Cart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cart/checkout?paymentMethod=paypal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cart",
+                "checkout"
+              ],
+              "query": [
+                {
+                  "key": "paymentMethod",
+                  "value": "paypal",
+                  "type": "text",
+                  "id": 0
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
       "name": "Auth",
       "item": [
         {
           "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    if (jsonData.token) {\r",
+                  "        pm.environment.set(\"authToken\", jsonData.token);\r",
+                  "        console.log(\"Token guardado: \" + jsonData.token);\r",
+                  "    }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"question\": \"How do I order?\",\n    \"answer\": \"You can order through our website or mobile app.\"\n}"
+              "raw": "{\r\n  \"email\": \"admin@mokaf.com\",\r\n  \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs",
+              "raw": "{{baseUrl}}/api/v1/auth/login",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "faqs"
+                "auth",
+                "login"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Logout",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
+          "name": "Sign Up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {\r",
+                  "    console.log(\"Usuario creado exitosamente\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
               }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"question\": \"How do I order?\",\n    \"answer\": \"You can order through our website or mobile app.\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "faqs"
-              ]
             }
-          },
-          "response": []
-        },
-        {
-          "name": "Signup",
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"question\": \"How do I order?\",\n    \"answer\": \"You can order through our website or mobile app.\"\n}"
+              "raw": "{\r\n  \"name\": \"Test User\",\r\n  \"email\": \"test@mokaf.com\",\r\n  \"password\": \"test123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs",
+              "raw": "{{baseUrl}}/api/v1/auth/signup",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "faqs"
+                "auth",
+                "signup"
               ]
             }
           },
@@ -798,27 +997,72 @@
         },
         {
           "name": "Refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    if (jsonData.token) {\r",
+                  "        pm.environment.set(\"authToken\", jsonData.token);\r",
+                  "        console.log(\"Token refrescado\");\r",
+                  "    }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"question\": \"How do I order?\",\n    \"answer\": \"You can order through our website or mobile app.\"\n}"
-            },
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs",
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "v1",
-                "faqs"
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log Out",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.unset(\"authToken\");\r",
+                  "    console.log(\"Sesión cerrada, token eliminado\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
               ]
             }
           },
