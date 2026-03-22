@@ -102,6 +102,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,   "/api/v1/products/*/reviews").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/products/*/reviews/*").authenticated()
 
+                //Statistics → only ADMIN
+                .requestMatchers("/api/v1/statistics/**").hasRole("ADMIN")
+
                 // CRUD de productos (todo lo demás que no sea review) → solo ADMIN
                 .requestMatchers(HttpMethod.POST,   "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,    "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")

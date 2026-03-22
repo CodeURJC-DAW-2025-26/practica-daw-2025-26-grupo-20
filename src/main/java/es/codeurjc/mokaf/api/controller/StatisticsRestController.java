@@ -4,12 +4,17 @@ import java.util.Map;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import es.codeurjc.mokaf.api.dto.StatsDTO.*;
 import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.mapper.StatisticsMapper;
+import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.StatisticsService;
+import es.codeurjc.mokaf.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/statistics")
@@ -21,8 +26,49 @@ public class StatisticsRestController {
     @Autowired
     private StatisticsMapper statisticsMapper;
 
+    @Autowired
+    private UserService userService;
+
+    // ============ Helper para verificar que es ADMIN ============
+
+    /**
+     * Verifica que el usuario esté autenticado y sea ADMIN.
+     * Lanza 401 si no está autenticado, 403 si no es ADMIN.
+     */
+    private User resolveAdmin(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
+                "Debes iniciar sesión para acceder a las estadísticas");
+        }
+
+        Object principal = authentication.getPrincipal();
+        User user;
+
+        if (principal instanceof User u) {
+            user = u;
+        } else if (principal instanceof String email) {
+            user = userService.findByEmail(email)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
+                "No se pudo identificar al usuario");
+        }
+
+        if (user.getRole() != User.Role.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, 
+                "Acceso denegado. Solo administradores pueden ver estadísticas");
+        }
+
+        return user;
+    }
+
+    // ============ Endpoints ============
+
     @GetMapping("/dashboard")
-    public StatisticsDTO getDashboardStatistics() {
+    public StatisticsDTO getDashboardStatistics(Authentication authentication) {
+        resolveAdmin(authentication); 
+
         Map<String, Object> stats = statisticsService.getChartStatistics();
 
         @SuppressWarnings("unchecked")
@@ -38,7 +84,7 @@ public class StatisticsRestController {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> allBranchesMaps = (List<Map<String, Object>>) stats.get("allBranches");
 
-        // Procesar productos con sus reviews
+        
         ProductStatDTO bestProduct = processProductWithReviews(bestProductMap);
         ProductStatDTO topRatedProduct = processProductWithReviews(topRatedProductMap);
 
@@ -54,7 +100,9 @@ public class StatisticsRestController {
     }
 
     @GetMapping("/best-product")
-    public ProductStatDTO getBestSellingProduct() {
+    public ProductStatDTO getBestSellingProduct(Authentication authentication) {
+        resolveAdmin(authentication); 
+
         Map<String, Object> bestProduct = statisticsService.getBestSellingProductCurrentMonth();
         if (bestProduct == null || !Boolean.TRUE.equals(bestProduct.get("exists"))) {
             throw new ResourceNotFoundException("No hay datos de producto más vendido");
@@ -63,7 +111,9 @@ public class StatisticsRestController {
     }
 
     @GetMapping("/top-rated-product")
-    public ProductStatDTO getTopRatedProduct() {
+    public ProductStatDTO getTopRatedProduct(Authentication authentication) {
+        resolveAdmin(authentication);
+
         Map<String, Object> topRatedProduct = statisticsService.getTopRatedProductLastMonth();
         if (topRatedProduct == null || !Boolean.TRUE.equals(topRatedProduct.get("exists"))) {
             throw new ResourceNotFoundException("No hay datos de producto mejor valorado");
@@ -72,7 +122,9 @@ public class StatisticsRestController {
     }
 
     @GetMapping("/top-category")
-    public CategoryStatDTO getTopCategory() {
+    public CategoryStatDTO getTopCategory(Authentication authentication) {
+        resolveAdmin(authentication); 
+
         Map<String, Object> topCategory = statisticsService.getTopCategoryLast3Months();
         if (topCategory == null || !Boolean.TRUE.equals(topCategory.get("exists"))) {
             throw new ResourceNotFoundException("No hay datos de categoría más vendida");
@@ -81,13 +133,17 @@ public class StatisticsRestController {
     }
 
     @GetMapping("/categories")
-    public List<CategoryStatDTO> getAllCategories() {
+    public List<CategoryStatDTO> getAllCategories(Authentication authentication) {
+        resolveAdmin(authentication); 
+
         List<Map<String, Object>> categories = statisticsService.getAllCategoriesLast3Months();
         return statisticsMapper.toCategoryStatDTOs(categories);
     }
 
     @GetMapping("/top-branch")
-    public BranchStatDTO getTopBranch() {
+    public BranchStatDTO getTopBranch(Authentication authentication) {
+        resolveAdmin(authentication); 
+
         Map<String, Object> topBranch = statisticsService.getTopBranch();
         if (topBranch == null || !Boolean.TRUE.equals(topBranch.get("exists"))) {
             throw new ResourceNotFoundException("No hay datos de sucursal más vendida");
@@ -96,30 +152,35 @@ public class StatisticsRestController {
     }
 
     @GetMapping("/branches")
-    public List<BranchStatDTO> getAllBranches() {
+    public List<BranchStatDTO> getAllBranches(Authentication authentication) {
+        resolveAdmin(authentication);
+
         List<Map<String, Object>> branches = statisticsService.getAllBranches();
         return statisticsMapper.toBranchStatDTOs(branches);
     }
 
     @GetMapping("/categories/list")
-    public List<String> getAllProductCategories() {
+    public List<String> getAllProductCategories(Authentication authentication) {
+        resolveAdmin(authentication);
+
         return statisticsService.getAllProductCategories();
     }
 
     @GetMapping("/health")
     public Map<String, String> healthCheck() {
+        
         return Map.of(
                 "status", "OK",
                 "service", "Statistics REST API",
                 "timestamp", java.time.LocalDateTime.now().toString());
     }
 
-    // Método auxiliar para procesar productos con sus reviews
+    
     private ProductStatDTO processProductWithReviews(Map<String, Object> productMap) {
         if (productMap == null)
             return null;
 
-        // El mapper ya no necesita manejar reviews
+        
         return statisticsMapper.toProductStatDTO(productMap);
     }
 }
