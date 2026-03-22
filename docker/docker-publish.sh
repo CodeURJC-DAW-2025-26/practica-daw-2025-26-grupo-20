@@ -24,18 +24,9 @@ IMAGE_NAME="mokaf"
 TAG="latest"
 
 echo "========================================="
-echo "☕ Construyendo la imagen oficial: $IMAGE_NAME"
+echo "🚀 Iniciando publicación de la imagen: $IMAGE_NAME:$TAG"
+echo "Asegúrate de haber ejecutado './docker-build.sh' previamente."
 echo "========================================="
-docker build -t $IMAGE_NAME:$TAG .
-
-if [ $? -ne 0 ]; then
-  echo "❌ Error al construir la imagen de Docker. Abortando."
-  exit 1
-fi
-
-echo ""
-echo "✅ Imagen construida localmente con éxito."
-echo ""
 
 # Iteramos sobre cada miembro del equipo
 for MEMBER in $MEMBERS_LIST
