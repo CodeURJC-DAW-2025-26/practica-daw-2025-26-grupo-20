@@ -151,7 +151,7 @@
           "response": []
         },
         {
-          "name": "AllCategories",
+          "name": "AllCategories List",
           "request": {
             "method": "GET",
             "header": [],
@@ -247,7 +247,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"role\": \"CUSTOMER\"\n}"
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"role\": \"CUSTOMER\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users",
@@ -264,7 +264,7 @@
           "response": []
         },
         {
-          "name": "Update User",
+          "name": "Update User by ID",
           "request": {
             "method": "PUT",
             "header": [
@@ -275,7 +275,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}"
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/1",
@@ -287,6 +287,67 @@
                 "v1",
                 "users",
                 "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Current User (Me)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"admin@mokaf.com\",\n  \"password\": \"nuevaPass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "description": "Introduce la foto",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "image"
               ]
             }
           },
@@ -853,7 +914,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/items",
+              "raw": "{{baseUrl}}/api/v1/cart/items?productId=3&quantity=80",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1035,12 +1096,12 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {\r",
-                  "    var jsonData = pm.response.json();\r",
-                  "    if (jsonData.token) {\r",
-                  "        pm.environment.set(\"authToken\", jsonData.token);\r",
-                  "        console.log(\"Token guardado: \" + jsonData.token);\r",
-                  "    }\r",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.token) {",
+                  "        pm.environment.set(\"authToken\", jsonData.token);",
+                  "        console.log(\"Token guardado: \" + jsonData.token);",
+                  "    }",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1082,8 +1143,8 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 201 || pm.response.code === 200) {\r",
-                  "    console.log(\"Usuario creado exitosamente\");\r",
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    console.log(\"Usuario creado exitosamente\");",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1125,12 +1186,12 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {\r",
-                  "    var jsonData = pm.response.json();\r",
-                  "    if (jsonData.token) {\r",
-                  "        pm.environment.set(\"authToken\", jsonData.token);\r",
-                  "        console.log(\"Token refrescado\");\r",
-                  "    }\r",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.token) {",
+                  "        pm.environment.set(\"authToken\", jsonData.token);",
+                  "        console.log(\"Token refrescado\");",
+                  "    }",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1163,9 +1224,9 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {\r",
-                  "    pm.environment.unset(\"authToken\");\r",
-                  "    console.log(\"Sesión cerrada, token eliminado\");\r",
+                  "if (pm.response.code === 200) {",
+                  "    pm.environment.unset(\"authToken\");",
+                  "    console.log(\"Sesión cerrada, token eliminado\");",
                   "}"
                 ],
                 "type": "text/javascript",

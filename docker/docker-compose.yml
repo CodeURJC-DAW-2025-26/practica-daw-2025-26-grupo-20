@@ -3,17 +3,15 @@ services:
   db:
     image: mysql:8.0
     container_name: mysql_db
+    volumes:
+      - mysql_data:/var/lib/mysql
     environment:
-      # Configuramos la contraseña de root y la base de datos a crear por defecto
-      MYSQL_ROOT_PASSWORD: my_secret_password
-      MYSQL_DATABASE: mokaf_database
-    # Cambiamos el puerto de tu ordenador al 3307 para evitar el conflicto
-    # (El contenedor internamente sigue usando el 3306)
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-my_secret_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-mokaf_database}
     ports:
       - "3307:3306"
-    # Definimos el healthcheck para saber cuándo MySQL está realmente listo para aceptar conexiones
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmy_secret_password"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
       interval: 10s       # Cada cuánto tiempo hace la comprobación
       timeout: 5s         # Tiempo de espera máximo para la prueba
       retries: 5          # Número de intentos antes de marcarlo como fallido
@@ -21,25 +19,37 @@ services:
 
   # Servicio de la Aplicación Spring Boot (Mokaf)
   app:
-    image: przx27/mokaf:latest
-    # Opcional: Si en lugar de usar la imagen ya creada prefieres que docker-compose la construya
-    # automáticamente cada vez, puedes descomentar la siguiente línea y comentar la de "image":
-    # build: .
+    image: ${DOCKERHUB_USER}/mokaf:latest
     container_name: mokaf_app
     ports:
       - "8443:8443"
     environment:
       # Configuramos la conexión a la base de datos para Spring Boot
       # Observa que usamos "db" (el nombre del servicio de arriba) como host
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mokaf_database?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      # corregido: la base de datos dentro de la URL también se parametriza
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE:-mokaf_database}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: my_secret_password
-      # Modo inicialización: 
-      # Si se desea arrancar sin datos de ejemplo, cambiar APP_DATABASE_INIT a false
-      APP_DATABASE_INIT: ${APP_DATABASE_INIT:-true}
-      # Si se desea evitar que se modifique el esquema de BD, cambiar a 'none'
-      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+      # corregido: la contraseña también se parametriza
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-my_secret_password}
+      # Modo inicialización:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-none}
     depends_on:
       db:
         # Esto hace que la app espere a que el "healthcheck" de la BD sea exitoso ("healthy")
         condition: service_healthy
+
+volumes:
+  mysql_data:
+
+
+## primer arranque DOCKERHUB_USER=usuario1 SPRING_JPA_HIBERNATE_DDL_AUTO=create docker compose up -d
+
+## en powershell:
+#$env:DOCKERHUB_USER="przx27"
+#$env:SPRING_JPA_HIBERNATE_DDL_AUTO="create"
+#docker compose up -d
+
+  ## la lanzamos asi: DOCKERHUB_USER=usuario1 docker compose up -d
+
+#$env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
+#docker compose up -d

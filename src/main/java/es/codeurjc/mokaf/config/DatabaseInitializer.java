@@ -39,10 +39,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
-
-        @Value("${app.database.init:true}")
-        private boolean initDb;
-
         private final ProductRepository productRepository;
         private final ImageRepository imageRepository;
         private final UserRepository userRepository;
@@ -78,23 +74,9 @@ public class DatabaseInitializer implements ApplicationRunner {
         @Override
         @Transactional
         public void run(ApplicationArguments args) throws Exception {
-                if (!initDb) {
-                        System.out.println(">>> Database initialization is disabled. Skipping sample data load.");
+                if (userRepository.count() > 0) {
+                        System.out.println(">>> DB already initialized, skipping seeding");
                         return;
-                }
-
-                // 1) ERASE (children -> parents) to protect FK constraints
-                try {
-                        orderRepository.deleteAll();
-                        reviewRepository.deleteAll();
-                        userRepository.deleteAll();
-                        branchRepository.deleteAll();
-                        productRepository.deleteAll();
-                        imageRepository.deleteAll();
-                        allergenRepository.deleteAll();
-                        faqRepository.deleteAll();
-                } catch (Exception e) {
-                        System.out.println(">>> Non-critical error during DB cleanup: " + e.getMessage());
                 }
 
                 // 2) BRANCHES
