@@ -234,16 +234,7 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 
 #### **Credenciales de prueba**
 
-Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos utilizar la cuenta de admin; `admin@mokaf.com` , `admin123` y puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
-   mvn clear install -DSkipTest
-   mvn spring-boot:run
-   ```
-5. **Acceder a la aplicación**:
-   Abre tu navegador y ve a `http://localhost:8443`.
-
-#### **Credenciales de prueba**
-Actualmente Contamos con varios usuarios en DatabaseInitialzer;
-de admin puedes probar en el login; de nombre admin@mokaf.com , de contraseña admin123. y para usuario te puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
+Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos utilizar la cuenta de admin;  ,  y puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
 
 ### **Diagrama de Entidades de Base de Datos**
 
@@ -487,17 +478,21 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 ---
 
-#### **Alumno 3 - [Nombre Completo]**
+#### **Alumno 3 - Guillermo Blázquez Barbacid**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+- Feat los cambios de user y los DTO.
+- Seguridad de tokens y login JWT.
+- Añadidos de seguridad y config, urls.
+- UPDATE IMAGE AND PASSWORD.
+- Mokaf API.postman_collection.json.
 
-| Nº  |               Commits                |           Files           |
+| Nº  | Commits | Files |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [Feat: los cambios de user y los DTO](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d5c75262e1dd89da9544cc6282644f78e4e4749a) | [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java) |
+|  2  | [Feat: seguridad de tokens y login JWT](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/249331bcaa07e19abf6de061de39795bcac6ec5b) | [JwtTokenProvider.java](src/main/java/es/codeurjc/mokaf/api/security/jwt/JwtTokenProvider.java) |
+|  3  | [Feat: añadidos de seguridad y config, urls](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1b68e2c2f2025a689dc2ca40c1e5f27e02cc80fc) | [SecurityConfig.java](src/main/java/es/codeurjc/mokaf/config/SecurityConfig.java) |
+|  4  | [Feat: UPDATE IMAGE AND PASSWORD](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/962912b7ee2c7de90e0ed26d6b373f403ec22772) | [UserRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/UserRestController.java) |
+|  5  | [Feat: Update Mokaf API postman collection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1bf1b3a70edd44a58cbf21b68e538880ae435055) | [Mokaf API.postman_collection.json](Mokaf%20API.postman_collection.json) |
 
 ---
 
