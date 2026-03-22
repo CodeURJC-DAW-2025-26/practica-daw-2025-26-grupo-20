@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "c9bb74f2-a94f-4b0f-bf71-154d7c62dcaf",
+    "_postman_id": "e27cb62f-4d65-4b7d-a359-05e3cfae14ee",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "53366250"
+    "_exporter_id": "43168622"
   },
   "item": [
     {
@@ -264,44 +264,6 @@
           "response": []
         },
         {
-          "name": "Update User Image",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "description": "Introduce la foto",
-                  "type": "file",
-                  "uuid": "c348f2d9-ef98-4627-8033-bff1044e2901",
-                  "src": "/C:/Users/guill/OneDrive/Escritorio/Captura de pantalla (109).png"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/users/me/image",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "users",
-                "me",
-                "image"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Update User",
           "request": {
             "method": "PUT",
@@ -313,10 +275,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"admin@mokaf.com\",\n    \"password\": \"nuevaPass123\"\n}"
+              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/me",
+              "raw": "{{baseUrl}}/api/v1/users/1",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -324,7 +286,7 @@
                 "api",
                 "v1",
                 "users",
-                "me"
+                "1"
               ]
             }
           },
@@ -435,7 +397,7 @@
                 {
                   "key": "imageFile",
                   "type": "file",
-                  "value": null
+                  "src": []
                 }
               ]
             },
@@ -484,7 +446,7 @@
                 {
                   "key": "imageFile",
                   "type": "file",
-                  "value": null
+                  "src": []
                 }
               ]
             },
@@ -891,7 +853,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/items?productId=3&quantity=2",
+              "raw": "{{baseUrl}}/api/v1/cart/items",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -905,12 +867,14 @@
                 {
                   "key": "productId",
                   "value": "3",
-                  "type": "text"
+                  "type": "text",
+                  "id": 0
                 },
                 {
                   "key": "quantity",
-                  "value": "2",
-                  "type": "text"
+                  "value": "80",
+                  "type": "text",
+                  "id": 1
                 }
               ]
             }
@@ -923,7 +887,7 @@
             "method": "PUT",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/items/{itemId}?quantity=1",
+              "raw": "{{baseUrl}}/api/v1/cart/items/44?quantity=9",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -932,13 +896,12 @@
                 "v1",
                 "cart",
                 "items",
-                "{itemId}"
+                "44"
               ],
               "query": [
                 {
                   "key": "quantity",
-                  "value": "1",
-                  "type": "text"
+                  "value": "9"
                 }
               ]
             }
