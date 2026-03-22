@@ -87,6 +87,11 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/users/me",
                                  "/api/v1/users/me/**").authenticated()
 
+                
+                //Self cart → autenticated
+                .requestMatchers("/api/v1/cart/",
+                                 "/api/v1/cart/**").authenticated()
+
                 // CRUD de usuarios → solo ADMIN
                 .requestMatchers(HttpMethod.GET,    "/api/v1/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,   "/api/v1/users").hasRole("ADMIN")

@@ -3,7 +3,6 @@ package es.codeurjc.mokaf.api.controller;
 import es.codeurjc.mokaf.api.dto.BranchDTO;
 import es.codeurjc.mokaf.api.dto.CartDTOs.CartResponseDTO;
 import es.codeurjc.mokaf.api.dto.CartDTOs.CartSummaryDTO;
-import es.codeurjc.mokaf.api.exception.UnauthorizedException;
 import es.codeurjc.mokaf.api.mapper.CartMapper;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.User;
@@ -13,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,18 +31,32 @@ public class CartRestController {
     @Autowired
     private CartMapper cartMapper;
 
+    // ============ Helper para verificar autenticación ============
+
+    /**
+     * Verifica que el usuario esté autenticado.
+     * Tanto ADMIN como CUSTOMER tienen acceso a su propio carrito.
+     */
+    private User resolveAuthenticatedUser(User user) {
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
+                "Debes iniciar sesión para acceder al carrito");
+        }
+        return user;
+    }
+
+    // ============ Endpoints ============
+
     /**
      * GET /api/v1/cart - Get current cart summary
      */
     @Operation(summary = "Get current user's cart")
     @GetMapping
     public CartSummaryDTO getCart(@AuthenticationPrincipal User user) {
-        if (user == null) {
-            return cartMapper.emptyCartSummary();
-        }
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
-        CartService.CartSummary summary = cartService.getCartSummary(user.getId());
-        int totalUnits = cartService.getCartItemCount(user.getId());
+        CartService.CartSummary summary = cartService.getCartSummary(authenticatedUser.getId());
+        int totalUnits = cartService.getCartItemCount(authenticatedUser.getId());
 
         return cartMapper.toCartSummaryDTO(summary, totalUnits);
     }
@@ -61,15 +76,13 @@ public class CartRestController {
             @RequestParam(defaultValue = "1") int quantity,
             @AuthenticationPrincipal User user) {
 
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para añadir productos al carrito");
-        }
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
         try {
-            cartService.addToCart(user.getId(), productId, quantity, getDefaultBranchId());
+            cartService.addToCart(authenticatedUser.getId(), productId, quantity, getDefaultBranchId());
             
-            CartService.CartSummary summary = cartService.getCartSummary(user.getId());
-            int totalUnits = cartService.getCartItemCount(user.getId());
+            CartService.CartSummary summary = cartService.getCartSummary(authenticatedUser.getId());
+            int totalUnits = cartService.getCartItemCount(authenticatedUser.getId());
             
             CartSummaryDTO cartSummary = cartMapper.toCartSummaryDTO(summary, totalUnits);
             
@@ -97,15 +110,13 @@ public class CartRestController {
             @RequestParam int quantity,
             @AuthenticationPrincipal User user) {
 
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para modificar el carrito");
-        }
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
         try {
-            cartService.updateItemQuantity(user.getId(), itemId, quantity);
+            cartService.updateItemQuantity(authenticatedUser.getId(), itemId, quantity);
             
-            CartService.CartSummary summary = cartService.getCartSummary(user.getId());
-            int totalUnits = cartService.getCartItemCount(user.getId());
+            CartService.CartSummary summary = cartService.getCartSummary(authenticatedUser.getId());
+            int totalUnits = cartService.getCartItemCount(authenticatedUser.getId());
             
             CartSummaryDTO cartSummary = cartMapper.toCartSummaryDTO(summary, totalUnits);
             
@@ -132,15 +143,13 @@ public class CartRestController {
             @PathVariable Long itemId,
             @AuthenticationPrincipal User user) {
 
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para modificar el carrito");
-        }
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
         try {
-            cartService.removeItem(user.getId(), itemId);
+            cartService.removeItem(authenticatedUser.getId(), itemId);
             
-            CartService.CartSummary summary = cartService.getCartSummary(user.getId());
-            int totalUnits = cartService.getCartItemCount(user.getId());
+            CartService.CartSummary summary = cartService.getCartSummary(authenticatedUser.getId());
+            int totalUnits = cartService.getCartItemCount(authenticatedUser.getId());
             
             CartSummaryDTO cartSummary = cartMapper.toCartSummaryDTO(summary, totalUnits);
             
@@ -163,12 +172,11 @@ public class CartRestController {
     })
     @DeleteMapping
     public CartResponseDTO clearCart(@AuthenticationPrincipal User user) {
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para modificar el carrito");
-        }
+
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
         try {
-            cartService.clearCart(user.getId());
+            cartService.clearCart(authenticatedUser.getId());
             
             return cartMapper.successResponseSimple("Carrito vaciado");
             
@@ -201,11 +209,10 @@ public class CartRestController {
     @Operation(summary = "Get current branch of the cart")
     @GetMapping("/branch/current")
     public BranchDTO getCurrentBranch(@AuthenticationPrincipal User user) {
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para ver el carrito");
-        }
 
-        Order cart = cartService.getOrCreateCart(user.getId(), getDefaultBranchId());
+        User authenticatedUser = resolveAuthenticatedUser(user);
+
+        Order cart = cartService.getOrCreateCart(authenticatedUser.getId(), getDefaultBranchId());
         
         es.codeurjc.mokaf.model.Branch branch = cart.getBranch();
         return new BranchDTO(
@@ -230,14 +237,12 @@ public class CartRestController {
             @RequestParam Long branchId,
             @AuthenticationPrincipal User user) {
 
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para cambiar la sucursal");
-        }
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
         try {
-            Order updatedCart = cartService.changeCartBranch(user.getId(), branchId);
-            CartService.CartSummary summary = cartService.getCartSummary(user.getId());
-            int totalUnits = cartService.getCartItemCount(user.getId());
+            Order updatedCart = cartService.changeCartBranch(authenticatedUser.getId(), branchId);
+            CartService.CartSummary summary = cartService.getCartSummary(authenticatedUser.getId());
+            int totalUnits = cartService.getCartItemCount(authenticatedUser.getId());
             
             CartSummaryDTO cartSummary = cartMapper.toCartSummaryDTO(summary, totalUnits);
             
@@ -265,16 +270,14 @@ public class CartRestController {
             @RequestParam String paymentMethod,
             @AuthenticationPrincipal User user) {
 
-        if (user == null) {
-            throw new UnauthorizedException("Debes iniciar sesión para finalizar la compra");
-        }
+        User authenticatedUser = resolveAuthenticatedUser(user);
 
         if (paymentMethod == null || paymentMethod.isEmpty()) {
             throw new IllegalArgumentException("Selecciona un método de pago");
         }
 
         try {
-            Order paidOrder = cartService.processCheckout(user.getId(), paymentMethod);
+            Order paidOrder = cartService.processCheckout(authenticatedUser.getId(), paymentMethod);
             
             return cartMapper.successResponseSimple(
                 "¡Pedido realizado con éxito! Orden #" + paidOrder.getId()
