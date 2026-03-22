@@ -93,6 +93,15 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT,    "/api/v1/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
 
+                // Reviews de productos → Autenticados para añadir/borrar
+                .requestMatchers(HttpMethod.POST,   "/api/v1/products/*/reviews").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/*/reviews/*").authenticated()
+
+                // CRUD de productos (todo lo demás que no sea review) → solo ADMIN
+                .requestMatchers(HttpMethod.POST,   "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,    "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
+
                 .anyRequest().permitAll())
 
             .formLogin(form -> form.disable())

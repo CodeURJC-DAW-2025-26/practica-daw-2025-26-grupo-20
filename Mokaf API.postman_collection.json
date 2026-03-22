@@ -16,9 +16,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/dashboard",
+              "raw": "https://localhost:8443/api/v1/statistics/dashboard",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -36,9 +36,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/best-product",
+              "raw": "https://localhost:8443/api/v1/statistics/best-product",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -56,9 +56,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/top-rated-product",
+              "raw": "https://localhost:8443/api/v1/statistics/top-rated-product",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -76,9 +76,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/top-category",
+              "raw": "https://localhost:8443/api/v1/statistics/top-category",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -96,9 +96,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/categories",
+              "raw": "https://localhost:8443/api/v1/statistics/categories",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -116,9 +116,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/top-branch",
+              "raw": "https://localhost:8443/api/v1/statistics/top-branch",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -136,9 +136,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/branches",
+              "raw": "https://localhost:8443/api/v1/statistics/branches",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -156,9 +156,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/statistics/categories/list",
+              "raw": "https://localhost:8443/api/v1/statistics/categories/list",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -182,9 +182,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users",
+              "raw": "https://localhost:8443/api/v1/users",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -201,9 +201,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/me",
+              "raw": "https://localhost:8443/api/v1/users/me",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -221,9 +221,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/1",
+              "raw": "https://localhost:8443/api/v1/users/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -250,9 +250,9 @@
               "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"role\": \"CUSTOMER\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users",
+              "raw": "https://localhost:8443/api/v1/users",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -278,9 +278,9 @@
               "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/1",
+              "raw": "https://localhost:8443/api/v1/users/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -307,9 +307,9 @@
               "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"admin@mokaf.com\",\n  \"password\": \"nuevaPass123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/me",
+              "raw": "https://localhost:8443/api/v1/users/me",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -338,9 +338,9 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/me/image",
+              "raw": "https://localhost:8443/api/v1/users/me/image",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -359,9 +359,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/1",
+              "raw": "https://localhost:8443/api/v1/users/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -384,9 +384,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products?page=0&size=10",
+              "raw": "https://localhost:8443/api/v1/products?page=0&size=10",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -413,9 +413,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products/1",
+              "raw": "https://localhost:8443/api/v1/products/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -463,9 +463,9 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products",
+              "raw": "https://localhost:8443/api/v1/products",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -512,9 +512,9 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products/1",
+              "raw": "https://localhost:8443/api/v1/products/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -532,9 +532,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/products/1",
+              "raw": "https://localhost:8443/api/v1/products/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -648,9 +648,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs",
+              "raw": "https://localhost:8443/api/v1/faqs",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -667,9 +667,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs/1",
+              "raw": "https://localhost:8443/api/v1/faqs/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -696,9 +696,9 @@
               "raw": "{\n    \"question\": \"Prueba pregunta?\",\n    \"answer\": \"YPrueba respuetsa.\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs",
+              "raw": "https://localhost:8443/api/v1/faqs",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -724,9 +724,9 @@
               "raw": "{\n    \"question\": \"Can I cancel my order?\",\n    \"answer\": \"Yes, within 5 minutes of placing it.\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs/1",
+              "raw": "https://localhost:8443/api/v1/faqs/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -744,9 +744,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/faqs/6",
+              "raw": "https://localhost:8443/api/v1/faqs/6",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -769,9 +769,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders?page=0&size=10",
+              "raw": "https://localhost:8443/api/v1/orders?page=0&size=10",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -798,9 +798,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/user/8?page=0&size=10",
+              "raw": "https://localhost:8443/api/v1/orders/user/8?page=0&size=10",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -829,9 +829,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/1",
+              "raw": "https://localhost:8443/api/v1/orders/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -849,9 +849,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/1/checkout",
+              "raw": "https://localhost:8443/api/v1/orders/1/checkout",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -870,9 +870,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/1",
+              "raw": "https://localhost:8443/api/v1/orders/1",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -895,9 +895,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart",
+              "raw": "https://localhost:8443/api/v1/cart",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -914,9 +914,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/items?productId=3&quantity=80",
+              "raw": "https://localhost:8443/api/v1/cart/items?productId=3&quantity=80",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -948,9 +948,9 @@
             "method": "PUT",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/items/44?quantity=9",
+              "raw": "https://localhost:8443/api/v1/cart/items/44?quantity=9",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -975,9 +975,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/items/{itemId}",
+              "raw": "https://localhost:8443/api/v1/cart/items/{itemId}",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -996,9 +996,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart",
+              "raw": "https://localhost:8443/api/v1/cart",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1015,9 +1015,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/branch/current",
+              "raw": "https://localhost:8443/api/v1/cart/branch/current",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1036,9 +1036,9 @@
             "method": "PUT",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/branch?branchId=2",
+              "raw": "https://localhost:8443/api/v1/cart/branch?branchId=2",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1063,9 +1063,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/checkout?paymentMethod=paypal",
+              "raw": "https://localhost:8443/api/v1/cart/checkout?paymentMethod=paypal",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1122,9 +1122,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "raw": "https://localhost:8443/api/v1/auth/login",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1165,9 +1165,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/signup",
+              "raw": "https://localhost:8443/api/v1/auth/signup",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1203,9 +1203,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "raw": "https://localhost:8443/api/v1/auth/refresh",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",
@@ -1238,9 +1238,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "raw": "https://localhost:8443/api/v1/auth/logout",
               "host": [
-                "{{baseUrl}}"
+                "https://localhost:8443"
               ],
               "path": [
                 "api",

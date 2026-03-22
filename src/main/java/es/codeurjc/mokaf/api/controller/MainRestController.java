@@ -31,22 +31,17 @@ public class MainRestController {
     private final UserService userService;
     private final BranchService branchService;
     private final ContactEmailService contactEmailService;
-    private final OrderMapper orderMapper;
-    private final BranchMapper branchMapper;
     private final UserMapper userMapper;
 
     public MainRestController(OrdersService ordersService,
                               UserService userService,
                               BranchService branchService,
                               ContactEmailService contactEmailService,
-                              OrderMapper orderMapper,
-                              BranchMapper branchMapper,UserMapper userMapper) {
+                              UserMapper userMapper) {
         this.ordersService = ordersService;
         this.userService = userService;
         this.branchService = branchService;
         this.contactEmailService = contactEmailService;
-        this.orderMapper = orderMapper;
-        this.branchMapper = branchMapper;
         this.userMapper = userMapper;
     }
 
