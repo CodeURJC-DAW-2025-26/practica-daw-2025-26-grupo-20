@@ -281,7 +281,7 @@
                   "description": "Introduce la foto",
                   "type": "file",
                   "uuid": "c348f2d9-ef98-4627-8033-bff1044e2901",
-                  "value": null
+                  "src": "/C:/Users/guill/OneDrive/Escritorio/Captura de pantalla (109).png"
                 }
               ]
             },
@@ -313,10 +313,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n    \"password\": \"nuevaPass123\"\n}"
+              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"admin@mokaf.com\",\n    \"password\": \"nuevaPass123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/1",
+              "raw": "{{baseUrl}}/api/v1/users/me",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -324,7 +324,7 @@
                 "api",
                 "v1",
                 "users",
-                "1"
+                "me"
               ]
             }
           },
