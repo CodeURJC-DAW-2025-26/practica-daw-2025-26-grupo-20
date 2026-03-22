@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "c6de69e7-45b5-42cd-a169-a04535c51300",
+    "_postman_id": "c9bb74f2-a94f-4b0f-bf71-154d7c62dcaf",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "43347790",
-    "_collection_link": "https://go.postman.co/collection/43347790-c6de69e7-45b5-42cd-a169-a04535c51300?source=collection_link"
+    "_exporter_id": "53366250"
   },
   "item": [
     {
@@ -265,6 +264,44 @@
           "response": []
         },
         {
+          "name": "Update User Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "description": "Introduce la foto",
+                  "type": "file",
+                  "uuid": "c348f2d9-ef98-4627-8033-bff1044e2901",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "image"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Update User",
           "request": {
             "method": "PUT",
@@ -276,7 +313,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}"
+              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n    \"password\": \"nuevaPass123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/1",
@@ -398,7 +435,7 @@
                 {
                   "key": "imageFile",
                   "type": "file",
-                  "src": []
+                  "value": null
                 }
               ]
             },
@@ -447,7 +484,7 @@
                 {
                   "key": "imageFile",
                   "type": "file",
-                  "src": []
+                  "value": null
                 }
               ]
             },

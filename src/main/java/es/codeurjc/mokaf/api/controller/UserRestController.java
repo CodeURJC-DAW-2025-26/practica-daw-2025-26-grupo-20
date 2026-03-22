@@ -43,41 +43,64 @@ public class UserRestController {
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private ImageService imageService;
 
+    // ── Request body for profile update ──────────────────────────────────────
+
+    /**
+     * JSON body for PUT /api/v1/users/me
+     * All fields are optional except name and email.
+     * password is only updated if provided.
+     */
+    public record UpdateMeRequest(
+            String name,
+            String email,
+            String password,
+            String firstName,
+            String lastName,
+            String description,
+            String position,
+            String department
+    ) {}
+
     // ── Own profile ───────────────────────────────────────────────────────────
 
     @Operation(summary = "Get the authenticated user's profile")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Profile returned successfully"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated")
+    })
     @GetMapping("/me")
     public UserDTO getMe(HttpServletRequest request) {
         return userMapper.toDTO(resolveCurrentUser(request));
     }
 
-    @Operation(summary = "Update the authenticated user's own profile")
+    @Operation(summary = "Update the authenticated user's own profile",
+               description = "Accepts JSON body. All fields optional except name and email. "
+                           + "password only updated if provided.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Profile updated"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "409", description = "Email already in use")
+    })
     @PutMapping("/me")
     public UserDTO updateMe(
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) String firstName,
-            @RequestParam(required = false) String lastName,
-            @RequestParam(required = false) String description,
-            @RequestParam(required = false) String position,
-            @RequestParam(required = false) String department,
+            @RequestBody UpdateMeRequest body,
             HttpServletRequest request) {
 
         User user = resolveCurrentUser(request);
 
-        if (!email.equals(user.getEmail()) && userService.existsByEmail(email))
-            throw new IllegalArgumentException("Email already in use: " + email);
+        if (body.email() != null && !body.email().equals(user.getEmail())
+                && userService.existsByEmail(body.email()))
+            throw new IllegalArgumentException("Email already in use: " + body.email());
 
-        user.setName(name);
-        user.setEmail(email);
-        if (firstName   != null) user.setFirstName(firstName);
-        if (lastName    != null) user.setLastName(lastName);
-        if (description != null) user.setDescription(description);
-        if (position    != null) user.setPosition(position);
-        if (department  != null) user.setDepartment(department);
-        if (password != null && !password.isBlank())
-            user.setPasswordHash(passwordEncoder.encode(password));
+        if (body.name()        != null) user.setName(body.name());
+        if (body.email()       != null) user.setEmail(body.email());
+        if (body.firstName()   != null) user.setFirstName(body.firstName());
+        if (body.lastName()    != null) user.setLastName(body.lastName());
+        if (body.description() != null) user.setDescription(body.description());
+        if (body.position()    != null) user.setPosition(body.position());
+        if (body.department()  != null) user.setDepartment(body.department());
+        if (body.password() != null && !body.password().isBlank())
+            user.setPasswordHash(passwordEncoder.encode(body.password()));
 
         User saved = userService.save(user);
         refreshSecurityContext(saved, request);
@@ -85,7 +108,13 @@ public class UserRestController {
     }
 
     @Operation(summary = "Upload or replace profile image",
-               description = "Subtítulo vídeo: 'Endpoint imagen User entidad'")
+               description = "Accepts multipart/form-data with field 'image'. "
+                           + "Subtítulo vídeo: 'Endpoint imagen User entidad'")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Image updated"),
+            @ApiResponse(responseCode = "400", description = "No image provided"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated")
+    })
     @PostMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String, String> uploadMyImage(
             @RequestParam("image") MultipartFile imageFile,
@@ -110,6 +139,10 @@ public class UserRestController {
     }
 
     @Operation(summary = "Delete the authenticated user's own account")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Account deleted"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated")
+    })
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMe(HttpServletRequest request, HttpServletResponse response) {
@@ -154,16 +187,9 @@ public class UserRestController {
         return userMapper.toDTO(userService.save(user));
     }
 
-    /**
-     * Update a user by id.
-     * Owner access control (rúbrica punto 14):
-     *   - ADMIN can edit any user.
-     *   - Non-admin users can only edit their own profile.
-     *   - Attempting to edit another user's data returns 403.
-     * Subtítulo vídeo: 'Endpoint control de acceso por dueño'
-     */
     @Operation(summary = "Update a user by id",
-               description = "ADMIN: any user. Non-admin: own profile only.")
+               description = "ADMIN: any user. Non-admin: own profile only. "
+                           + "Subtítulo vídeo: 'Endpoint control de acceso por dueño'")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User updated"),
             @ApiResponse(responseCode = "403", description = "Access denied — not the owner"),
@@ -179,31 +205,21 @@ public class UserRestController {
         User target = userService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
 
-        // Owner check
         if (currentUser.getRole() != User.Role.ADMIN
-                && !currentUser.getId().equals(target.getId())) {
+                && !currentUser.getId().equals(target.getId()))
             throw new UnauthorizedException("Access denied: you can only edit your own profile");
-        }
 
         if (userDTO.email() != null && !userDTO.email().equals(target.getEmail())
-                && userService.existsByEmail(userDTO.email())) {
+                && userService.existsByEmail(userDTO.email()))
             throw new IllegalArgumentException("Email already in use: " + userDTO.email());
-        }
 
         userMapper.updateEntity(target, userDTO);
         return userMapper.toDTO(userService.save(target));
     }
 
-    /**
-     * Delete a user by id.
-     * Owner access control (rúbrica punto 14):
-     *   - ADMIN can delete any user.
-     *   - Non-admin users can only delete their own account.
-     *   - Attempting to delete another user's account returns 403.
-     * Subtítulo vídeo: 'Endpoint control de acceso por dueño'
-     */
     @Operation(summary = "Delete a user by id",
-               description = "ADMIN: any user. Non-admin: own account only.")
+               description = "ADMIN: any user. Non-admin: own account only. "
+                           + "Subtítulo vídeo: 'Endpoint control de acceso por dueño'")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "User deleted"),
             @ApiResponse(responseCode = "403", description = "Access denied — not the owner"),
@@ -216,11 +232,9 @@ public class UserRestController {
         User target = userService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
 
-        // Owner check
         if (currentUser.getRole() != User.Role.ADMIN
-                && !currentUser.getId().equals(target.getId())) {
+                && !currentUser.getId().equals(target.getId()))
             throw new UnauthorizedException("Access denied: you can only delete your own account");
-        }
 
         if (target.getImage() != null) imageService.deleteImage(target.getImage().getId());
         userService.delete(target);
