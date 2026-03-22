@@ -17,9 +17,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/dashboard",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -37,9 +39,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/best-product",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -57,9 +61,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/top-rated-product",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -77,9 +83,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/top-category",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -97,9 +105,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/categories",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -117,9 +127,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/top-branch",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -131,35 +143,17 @@
           "response": []
         },
         {
-          "name": "AllBranches",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/branches",
-              "host": [
-                "https://localhost:8443"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "statistics",
-                "branches"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "AllCategories List",
+          "name": "AllCategories",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/statistics/categories/list",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -183,9 +177,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/users",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -202,9 +198,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/users/me",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -222,9 +220,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/users/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -247,13 +247,20 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"role\": \"CUSTOMER\"\n}"
+              "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"role\": \"CUSTOMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/users",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -264,7 +271,7 @@
           "response": []
         },
         {
-          "name": "Update User by ID",
+          "name": "Update User",
           "request": {
             "method": "PUT",
             "header": [
@@ -275,79 +282,25 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}"
+              "raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/users/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
                 "users",
                 "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Current User (Me)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"admin@mokaf.com\",\n  \"password\": \"nuevaPass123\"\n}"
-            },
-            "url": {
-              "raw": "https://localhost:8443/api/v1/users/me",
-              "host": [
-                "https://localhost:8443"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "users",
-                "me"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update User Image",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "description": "Introduce la foto",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            },
-            "url": {
-              "raw": "https://localhost:8443/api/v1/users/me/image",
-              "host": [
-                "https://localhost:8443"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "users",
-                "me",
-                "image"
               ]
             }
           },
@@ -360,9 +313,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/users/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -385,9 +340,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/products?page=0&size=10",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -414,9 +371,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/products/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -464,9 +423,11 @@
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/products",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -513,9 +474,11 @@
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/products/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -533,9 +496,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/products/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -649,9 +614,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/faqs",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -668,9 +635,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/faqs/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -693,13 +662,20 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"question\": \"Prueba pregunta?\",\n    \"answer\": \"YPrueba respuetsa.\"\n}"
+              "raw": "{\n    \"question\": \"Prueba pregunta?\",\n    \"answer\": \"YPrueba respuetsa.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/faqs",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -721,13 +697,20 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"question\": \"Can I cancel my order?\",\n    \"answer\": \"Yes, within 5 minutes of placing it.\"\n}"
+              "raw": "{\n    \"question\": \"Can I cancel my order?\",\n    \"answer\": \"Yes, within 5 minutes of placing it.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/faqs/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -745,9 +728,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/faqs/6",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -770,9 +755,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/orders?page=0&size=10",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -799,9 +786,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/orders/user/8?page=0&size=10",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -830,9 +819,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/orders/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -850,9 +841,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/orders/1/checkout",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -871,9 +864,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/orders/1",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -896,9 +891,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/cart",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -914,29 +911,17 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/items?productId=3&quantity=80",
+              "raw": "https://localhost:8443/api/v1/cart/items",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
                 "cart",
                 "items"
-              ],
-              "query": [
-                {
-                  "key": "productId",
-                  "value": "3",
-                  "type": "text",
-                  "id": 0
-                },
-                {
-                  "key": "quantity",
-                  "value": "80",
-                  "type": "text",
-                  "id": 1
-                }
               ]
             }
           },
@@ -949,9 +934,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/cart/items/44?quantity=9",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -976,9 +963,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/cart/items/{itemId}",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -997,9 +986,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/cart",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1016,9 +1007,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/cart/branch/current",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1037,9 +1030,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/cart/branch?branchId=2",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1049,8 +1044,7 @@
               "query": [
                 {
                   "key": "branchId",
-                  "value": "2",
-                  "type": "text"
+                  "value": "2"
                 }
               ]
             }
@@ -1063,9 +1057,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/checkout?paymentMethod=paypal",
+              "raw": "{{baseUrl}}/api/v1/cart/checkout?paymentMethod=paypal",
               "host": [
-                "https://localhost:8443"
+                "{{baseUrl}}"
               ],
               "path": [
                 "api",
@@ -1096,12 +1090,12 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.token) {",
-                  "        pm.environment.set(\"authToken\", jsonData.token);",
-                  "        console.log(\"Token guardado: \" + jsonData.token);",
-                  "    }",
+                  "if (pm.response.code === 200) {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    if (jsonData.token) {\r",
+                  "        pm.environment.set(\"authToken\", jsonData.token);\r",
+                  "        console.log(\"Token guardado: \" + jsonData.token);\r",
+                  "    }\r",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1123,9 +1117,11 @@
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/auth/login",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1143,8 +1139,8 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 201 || pm.response.code === 200) {",
-                  "    console.log(\"Usuario creado exitosamente\");",
+                  "if (pm.response.code === 201 || pm.response.code === 200) {\r",
+                  "    console.log(\"Usuario creado exitosamente\");\r",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1166,9 +1162,11 @@
             },
             "url": {
               "raw": "https://localhost:8443/api/v1/auth/signup",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1186,12 +1184,12 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.token) {",
-                  "        pm.environment.set(\"authToken\", jsonData.token);",
-                  "        console.log(\"Token refrescado\");",
-                  "    }",
+                  "if (pm.response.code === 200) {\r",
+                  "    var jsonData = pm.response.json();\r",
+                  "    if (jsonData.token) {\r",
+                  "        pm.environment.set(\"authToken\", jsonData.token);\r",
+                  "        console.log(\"Token refrescado\");\r",
+                  "    }\r",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1204,9 +1202,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/auth/refresh",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1224,9 +1224,9 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    pm.environment.unset(\"authToken\");",
-                  "    console.log(\"Sesión cerrada, token eliminado\");",
+                  "if (pm.response.code === 200) {\r",
+                  "    pm.environment.unset(\"authToken\");\r",
+                  "    console.log(\"Sesión cerrada, token eliminado\");\r",
                   "}"
                 ],
                 "type": "text/javascript",
@@ -1239,9 +1239,11 @@
             "header": [],
             "url": {
               "raw": "https://localhost:8443/api/v1/auth/logout",
+              "protocol": "https",
               "host": [
-                "https://localhost:8443"
+                "localhost"
               ],
+              "port": "8443",
               "path": [
                 "api",
                 "v1",
