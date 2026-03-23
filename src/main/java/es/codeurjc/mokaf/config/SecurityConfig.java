@@ -106,6 +106,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT,    "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
 
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/faqs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/faqs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/faqs/**").hasRole("ADMIN")
+
                 .anyRequest().permitAll())
 
             .formLogin(form -> form.disable())
