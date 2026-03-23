@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,7 +34,7 @@ public class OrderRestController {
 
     // ── GET /api/v1/orders ────────────────────────────────────────────────────
     @Operation(summary = "Get paid orders. Admin sees all, user sees only their own.")
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<OrderDTO> getPaidOrders(
             Authentication authentication,
             @RequestParam(defaultValue = "0") int page,
@@ -41,11 +43,17 @@ public class OrderRestController {
         User user = resolveUser(authentication); // 401 if is not authenticated
 
         if (user.getRole() == User.Role.ADMIN) {
-            return ordersService.getPaidOrders(page, size)
-                    .map(orderMapper::toDto);
+            Page<Order> result = ordersService.getPaidOrders(page, size);
+            if (result == null) {
+                return Page.empty(PageRequest.of(page, size));
+            }
+            return result.map(orderMapper::toDto);
         } else {
-            return ordersService.getPaidOrdersByUser(user.getId(), page, size)
-                    .map(orderMapper::toDto);
+            Page<Order> result = ordersService.getPaidOrdersByUser(user.getId(), page, size);
+            if (result == null) {
+                return Page.empty(PageRequest.of(page, size));
+            }
+            return result.map(orderMapper::toDto);
         }
     }
 
@@ -60,7 +68,7 @@ public class OrderRestController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Order not found")
     })
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public OrderDTO getOrder(@PathVariable Long id, Authentication authentication) {
 
         User user = resolveUser(authentication);
@@ -127,7 +135,7 @@ public class OrderRestController {
 
     // ── GET /api/v1/orders/user/{userId} ──────────────────────────────────────
     @Operation(summary = "Get paid orders for a given user id (admin or owner)")
-    @GetMapping("/user/{userId}")
+    @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<OrderDTO> getOrdersByUserId(
             @PathVariable Long userId,
             Authentication authentication,
@@ -138,8 +146,11 @@ public class OrderRestController {
 
         // Admins can request any user's orders; normal users only their own
         if (requester.getRole() == User.Role.ADMIN || requester.getId().equals(userId)) {
-            return ordersService.getPaidOrdersByUser(userId, page, size)
-                    .map(orderMapper::toDto);
+            Page<Order> result = ordersService.getPaidOrdersByUser(userId, page, size);
+            if (result == null) {
+                return Page.empty(PageRequest.of(page, size));
+            }
+            return result.map(orderMapper::toDto);
         } else {
             throw new ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN,
                     "You don't have permission to view these orders");
