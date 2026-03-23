@@ -35,8 +35,6 @@ import es.codeurjc.mokaf.repository.ProductRepository;
 import es.codeurjc.mokaf.repository.ReviewRepository;
 import es.codeurjc.mokaf.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Value;
-
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
         private final ProductRepository productRepository;
