@@ -4,7 +4,6 @@ import es.codeurjc.mokaf.api.dto.ContactRequestDTO;
 import es.codeurjc.mokaf.api.dto.UserDTO;
 import es.codeurjc.mokaf.api.mapper.UserMapper;
 import es.codeurjc.mokaf.model.ContactRequest;
-import es.codeurjc.mokaf.model.User;
 import es.codeurjc.mokaf.service.BranchService;
 import es.codeurjc.mokaf.service.ContactEmailService;
 import es.codeurjc.mokaf.service.OrdersService;
@@ -14,10 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class MainRestController {
 
-    private final OrdersService ordersService;
     private final UserService userService;
-    private final BranchService branchService;
     private final ContactEmailService contactEmailService;
     private final UserMapper userMapper;
 
@@ -36,16 +30,13 @@ public class MainRestController {
                               BranchService branchService,
                               ContactEmailService contactEmailService,
                               UserMapper userMapper) {
-        this.ordersService = ordersService;
         this.userService = userService;
-        this.branchService = branchService;
         this.contactEmailService = contactEmailService;
         this.userMapper = userMapper;
     }
 
 
     // ── POST /api/v1/contact ──────────────────────────────────────────────────
-    // Cualquiera puede enviar un mensaje de contacto
     @Operation(summary = "Send a contact message")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Message sent successfully"),
@@ -76,24 +67,5 @@ public class MainRestController {
                 .map(userMapper::toDTO)
                 .collect(Collectors.toList());
     }
-    // ── Helper ────────────────────────────────────────────────────────────────
-    private User resolveUser(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-        }
 
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof User u) {
-            return u;
-        }
-
-        if (principal instanceof String email) {
-            return userService.findByEmail(email)
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.UNAUTHORIZED, "User not found"));
-        }
-
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-    }
 }

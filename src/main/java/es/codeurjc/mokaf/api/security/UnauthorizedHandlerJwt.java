@@ -15,13 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Devuelve una respuesta JSON 401 cuando una petición a /api/** no está autenticada.
- * Sin este handler, Spring Security redirigiría al formulario de login web (/login),
- * lo cual no tiene sentido para un cliente REST.
- *
- * Patrón extraído del tema 4.10: Seguridad en Spring Web + REST.
- */
+
 @Component
 public class UnauthorizedHandlerJwt implements AuthenticationEntryPoint {
 

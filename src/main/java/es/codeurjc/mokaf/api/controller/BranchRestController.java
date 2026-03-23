@@ -36,7 +36,7 @@ public class BranchRestController {
     }
 
     // ── GET /api/v1/branches ──────────────────────────────────────────────────
-    // Cualquiera puede ver todas las sucursales
+
     @Operation(summary = "Get all branches")
     @GetMapping
     public List<BranchDTO> getAllBranches() {
@@ -46,7 +46,7 @@ public class BranchRestController {
     }
 
     // ── GET /api/v1/branches/{id} ─────────────────────────────────────────────
-    // Cualquiera puede ver una sucursal
+    
     @Operation(summary = "Get a branch by its id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Branch found"),
@@ -60,7 +60,7 @@ public class BranchRestController {
     }
 
     // ── POST /api/v1/branches ─────────────────────────────────────────────────
-    // Solo ADMIN puede crear sucursales
+   
     @Operation(summary = "Create a new branch. Admin only.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Branch created"),
@@ -79,7 +79,7 @@ public class BranchRestController {
     }
 
     // ── PUT /api/v1/branches/{id} ─────────────────────────────────────────────
-    // Solo ADMIN puede actualizar sucursales
+    
     @Operation(summary = "Update an existing branch. Admin only.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Branch updated"),
@@ -102,7 +102,7 @@ public class BranchRestController {
     }
 
     // ── DELETE /api/v1/branches/{id} ──────────────────────────────────────────
-    // Solo ADMIN puede borrar sucursales
+
     @Operation(summary = "Delete a branch. Admin only.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Branch deleted"),

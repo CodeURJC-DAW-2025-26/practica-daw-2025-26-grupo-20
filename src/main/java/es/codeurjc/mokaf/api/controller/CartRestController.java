@@ -31,11 +31,11 @@ public class CartRestController {
     @Autowired
     private CartMapper cartMapper;
 
-    // ============ Helper para verificar autenticación ============
+    // ============ Helper to verify authentication============
 
     /**
-     * Verifica que el usuario esté autenticado.
-     * Tanto ADMIN como CUSTOMER tienen acceso a su propio carrito.
+     * Verify user is authenticated and return the User object. If not authenticated, throw 401.
+     * ADMIN and CUSTOMER have access to cart endpoints, but they must be logged in.
      */
     private User resolveAuthenticatedUser(User user) {
         if (user == null) {

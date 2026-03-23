@@ -22,12 +22,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 
 
-/**
- * Configuración de seguridad con dos FilterChain (tema 4.10: Web + REST):
- *
- *   @Order(1) apiFilterChain → /api/**  → JWT stateless
- *   @Order(2) webFilterChain → resto    → sesión HTTP + form login
- */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -41,7 +36,7 @@ public class SecurityConfig {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
-    // ── Beans compartidos ─────────────────────────────────────────────────────
+    // ── share Beans  ─────────────────────────────────────────────────────
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -80,10 +75,10 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
 
             .authorizeHttpRequests(auth -> auth
-                // Auth pública (login, refresh, logout)
+                // public endpoints for authentication
                 .requestMatchers("/api/v1/auth/**").permitAll()
 
-                // Perfil propio → autenticado
+                // own profile → authenticated
                 .requestMatchers("/api/v1/users/me",
                                  "/api/v1/users/me/**").authenticated()
 
@@ -92,20 +87,20 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/cart/",
                                  "/api/v1/cart/**").authenticated()
 
-                // CRUD de usuarios → solo ADMIN
+                // CRUD of users → only ADMIN
                 .requestMatchers(HttpMethod.GET,    "/api/v1/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST,   "/api/v1/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,    "/api/v1/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
 
-                // Reviews de productos → Autenticados para añadir/borrar
+                // Reviews of products → authenticated (any user can review, but must be logged in)
                 .requestMatchers(HttpMethod.POST,   "/api/v1/products/*/reviews").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/products/*/reviews/*").authenticated()
 
                 //Statistics → only ADMIN
                 .requestMatchers("/api/v1/statistics/**").hasRole("ADMIN")
 
-                // CRUD de productos (todo lo demás que no sea review) → solo ADMIN
+                // CRUD of products (everything else that is not a review) → only ADMIN
                 .requestMatchers(HttpMethod.POST,   "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,    "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/products", "/api/v1/products/**").hasRole("ADMIN")

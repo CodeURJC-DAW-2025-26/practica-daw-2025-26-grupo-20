@@ -99,17 +99,7 @@ public class StatisticsRestController {
         return statisticsDTO;
     }
 
-    @GetMapping("/best-product")
-    public ProductStatDTO getBestSellingProduct(Authentication authentication) {
-        resolveAdmin(authentication); 
-
-        Map<String, Object> bestProduct = statisticsService.getBestSellingProductCurrentMonth();
-        if (bestProduct == null || !Boolean.TRUE.equals(bestProduct.get("exists"))) {
-            throw new ResourceNotFoundException("No hay datos de producto más vendido");
-        }
-        return processProductWithReviews(bestProduct);
-    }
-
+   
     @GetMapping("/top-rated-product")
     public ProductStatDTO getTopRatedProduct(Authentication authentication) {
         resolveAdmin(authentication);

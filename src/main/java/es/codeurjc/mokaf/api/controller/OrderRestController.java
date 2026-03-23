@@ -31,9 +31,6 @@ public class OrderRestController {
     }
 
     // ── GET /api/v1/orders ────────────────────────────────────────────────────
-    // Admin → todas las órdenes pagadas
-    // Usuario normal → solo las suyas
-    // No autenticado → 401
     @Operation(summary = "Get paid orders. Admin sees all, user sees only their own.")
     @GetMapping
     public Page<OrderDTO> getPaidOrders(
@@ -41,7 +38,7 @@ public class OrderRestController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        User user = resolveUser(authentication); // lanza 401 si no autenticado
+        User user = resolveUser(authentication); // 401 if is not authenticated
 
         if (user.getRole() == User.Role.ADMIN) {
             return ordersService.getPaidOrders(page, size)
@@ -53,9 +50,9 @@ public class OrderRestController {
     }
 
     // ── GET /api/v1/orders/{id} ───────────────────────────────────────────────
-    // Admin → puede ver cualquier orden
-    // Usuario normal → solo si le pertenece
-    // No autenticado → 401
+    // Admin → can see any order
+    // Normal user → only their own orders
+    // Not authenticated → 401
     @Operation(summary = "Get order by id. Admin sees any, user only their own.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Order found"),
@@ -81,8 +78,8 @@ public class OrderRestController {
     }
 
     // ── POST /api/v1/orders/{orderId}/checkout ────────────────────────────────
-    // Cambia el estado de CART a PAID
-    // Solo el usuario dueño de la orden puede hacer checkout
+    // Change Status from CART to PAID. Only owner can checkout their order. Admin cannot checkout other users' orders.
+    // Only owner can checkout their order. Admin cannot checkout other users' orders.
     @Operation(summary = "Checkout an order by its id (CART → PAID)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Order paid successfully"),
@@ -96,32 +93,32 @@ public class OrderRestController {
 
         User user = resolveUser(authentication);
 
-        // Buscar la orden por su ID
+        // search order and verify it exists
         Order order = ordersService.getOrderById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + orderId));
 
-        // Solo el dueño puede hacer checkout
+        // Only owner can checkout their order
         if (!order.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "You can only checkout your own order");
         }
 
-        // Verificar que está en estado CART
+        // Verify CART state
         if (order.getStatus() != Order.Status.CART) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Order " + orderId + " is already " + order.getStatus());
         }
 
-        // Verificar que tiene items
+        // Verify that cart is not empty
         if (order.getItems().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Cannot checkout an empty cart");
         }
 
-        // Procesar el pago usando el userId del dueño de la orden
+        // Process payment and change status to PAID
         ordersService.processCheckout(order.getUser().getId());
 
-        // Devolver la orden ya pagada
+        // Retun payed order (paid state)
         Order paid = ordersService.getOrderById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found after checkout"));
 
@@ -129,7 +126,6 @@ public class OrderRestController {
     }
 
     // ── DELETE /api/v1/orders/{id} ────────────────────────────────────────────
-    // Solo el ADMIN puede borrar órdenes → 403 si es usuario normal
     @Operation(summary = "Delete an order. Admin only.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Order deleted"),

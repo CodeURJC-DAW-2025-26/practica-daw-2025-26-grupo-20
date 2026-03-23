@@ -14,13 +14,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-/**
- * Genera, valida y extrae información de tokens JWT.
- * Los tokens viajan en cookies HttpOnly (más seguro que cabeceras para SPA).
- *
- * Configura el secreto en application.properties:
- *   jwt.secret=clave-secreta-larga-de-al-menos-32-caracteres
- */
+
 @Component
 public class JwtTokenProvider {
 
@@ -32,8 +26,8 @@ public class JwtTokenProvider {
     // ── Generación ────────────────────────────────────────────────────────────
 
     /**
-     * Genera un token JWT (ACCESS o REFRESH) para el usuario dado
-     * y lo establece como cookie HttpOnly en la respuesta.
+     * Generate a JWT token containing username and role, with expiration based on the token type (ACCESS or REFRESH).
+     * set the role as a claim in the token, so we can use it in the filter without needing to query the database again.
      */
     public String generateToken(String username, String role, TokenType type) {
         Date now    = new Date();
@@ -49,7 +43,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Escribe el token como cookie HttpOnly en la respuesta HTTP.
+     * Set the JWT token in an HttpOnly cookie in the response. The cookie name and duration depend on the token type (ACCESS or REFRESH).
      */
     public void setTokenCookie(HttpServletResponse response, String token, TokenType type) {
         Cookie cookie = new Cookie(type.getCookieName(), token);
@@ -61,21 +55,21 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Borra la cookie del token (logout).
+     * Erase the JWT cookie by setting an empty value and maxAge=0. The cookie name depends on the token type (ACCESS or REFRESH).
      */
     public void clearTokenCookie(HttpServletResponse response, TokenType type) {
         Cookie cookie = new Cookie(type.getCookieName(), "");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setMaxAge(0);           // Expira inmediatamente
+        cookie.setMaxAge(0);           // Expires immediately
         response.addCookie(cookie);
     }
 
     // ── Lectura ───────────────────────────────────────────────────────────────
 
     /**
-     * Extrae el token JWT de la cookie correspondiente al tipo dado.
+     * Extract the JWT token from the request cookies. The cookie name depends on the token type (ACCESS or REFRESH).
      */
     public String getTokenFromCookie(HttpServletRequest request, TokenType type) {
         if (request.getCookies() == null) return null;
@@ -88,14 +82,14 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Extrae el username (email) del token.
+     * Extract the username (subject) from the token claims. Assumes the token is valid.
      */
     public String getUsernameFromToken(String token) {
         return parseClaims(token).getSubject();
     }
 
     /**
-     * Extrae el rol del token.
+     * Extract the role from the token claims. Assumes the token is valid. The role is stored as a custom claim named "role".
      */
     public String getRoleFromToken(String token) {
         return parseClaims(token).get("role", String.class);
@@ -104,7 +98,7 @@ public class JwtTokenProvider {
     // ── Validación ────────────────────────────────────────────────────────────
 
     /**
-     * Devuelve true si el token es válido (firma correcta y no caducado).
+     * return true if the token is valid (signature correct and not expired), false otherwise. Logs the reason for invalidity (expired, malformed, etc.)
      */
     public boolean validateToken(String token) {
         try {

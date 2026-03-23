@@ -48,7 +48,7 @@ public interface ReviewMapper {
             stars = ((Number) reviewMap.get("stars")).intValue();
         }
 
-        // Necesitas adaptar esto según tu ReviewDTO
+     
         return new ReviewDTO(
                 null,
                 null, 

@@ -10,12 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-/**
- * Lógica de autenticación JWT:
- *  - login  : valida credenciales, genera ACCESS + REFRESH token como cookies
- *  - refresh: valida el RefreshToken y emite un nuevo AccessToken
- *  - logout : borra ambas cookies
- */
 @Service
 public class UserLoginService {
 
@@ -33,7 +27,7 @@ public class UserLoginService {
     public ResponseEntity<AuthResponse> login(HttpServletResponse response,
                                               LoginRequest loginRequest) {
         try {
-            // Delegar en Spring Security para validar email + password
+            // Delegate authentication to Spring Security (which will call our UserDetailsService)
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.email(),
@@ -42,11 +36,11 @@ public class UserLoginService {
             User user = (User) authentication.getPrincipal();
             String role = user.getRole().name();
 
-            // Generar ACCESS token (5 min) y REFRESH token (7 días)
+            // Generate JWT tokens with role as claim
             String accessToken  = jwtTokenProvider.generateToken(user.getEmail(), role, TokenType.ACCESS);
             String refreshToken = jwtTokenProvider.generateToken(user.getEmail(), role, TokenType.REFRESH);
 
-            // Escribir como cookies HttpOnly
+            // Set tokens in HttpOnly cookies
             jwtTokenProvider.setTokenCookie(response, accessToken,  TokenType.ACCESS);
             jwtTokenProvider.setTokenCookie(response, refreshToken, TokenType.REFRESH);
 
@@ -71,14 +65,14 @@ public class UserLoginService {
         String username = jwtTokenProvider.getUsernameFromToken(refreshToken);
         String role     = jwtTokenProvider.getRoleFromToken(refreshToken);
 
-        // Verificar que el usuario sigue existiendo en base de datos
+        // Verify that the user still exists (optional, but good practice)
         User user = userService.findByEmail(username).orElse(null);
         if (user == null) {
             return ResponseEntity.status(401)
                     .body(new AuthResponse(AuthResponse.Status.FAILURE, "User not found"));
         }
 
-        // Emitir nuevo AccessToken
+        // Generate new access token and set it in the cookie. The refresh token remains unchanged.
         String newAccessToken = jwtTokenProvider.generateToken(username, role, TokenType.ACCESS);
         jwtTokenProvider.setTokenCookie(response, newAccessToken, TokenType.ACCESS);
 

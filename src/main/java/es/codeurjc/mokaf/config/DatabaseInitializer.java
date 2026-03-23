@@ -38,7 +38,7 @@ import es.codeurjc.mokaf.repository.UserRepository;
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
         private final ProductRepository productRepository;
-        private final ImageRepository imageRepository;
+        //private final ImageRepository imageRepository;
         private final UserRepository userRepository;
         private final ReviewRepository reviewRepository;
         private final AllergenRepository allergenRepository;
@@ -59,7 +59,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         PasswordEncoder passwordEncoder) {
 
                 this.productRepository = productRepository;
-                this.imageRepository = imageRepository;
+                //this.imageRepository = imageRepository;
                 this.userRepository = userRepository;
                 this.reviewRepository = reviewRepository;
                 this.allergenRepository = allergenRepository;
