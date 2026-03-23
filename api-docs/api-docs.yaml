@@ -221,6 +221,12 @@ paths:
           description: Not Found
         "200":
           description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
   /api/v1/faqs/{id}:
     get:
       tags:
@@ -285,8 +291,14 @@ paths:
       responses:
         "404":
           description: Not Found
-        "204":
-          description: No Content
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
   /api/v1/cart/items/{itemId}:
     put:
       tags:
@@ -458,12 +470,38 @@ paths:
       responses:
         "404":
           description: Branch not found
-        "204":
+        "200":
           description: Branch deleted
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "409":
+          description: Conflict - branch in use
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "401":
           description: Not authenticated
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "403":
           description: Forbidden — admin only
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
   /cart/update:
     post:
       tags:
@@ -634,8 +672,8 @@ paths:
       responses:
         "404":
           description: Not Found
-        "201":
-          description: Created
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
@@ -794,12 +832,12 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/ReviewDTO"
-  /api/v1/orders/{orderId}/checkout:
+  /api/v1/orders/{orderId}/payments:
     post:
       tags:
       - order-rest-controller
-      summary: Checkout an order by its id (CART → PAID)
-      operationId: checkout
+      summary: Create payment for an order by its id (CART → PAID)
+      operationId: createPayment
       parameters:
       - name: orderId
         in: path
@@ -865,8 +903,8 @@ paths:
       responses:
         "404":
           description: Not Found
-        "201":
-          description: Created
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
@@ -886,10 +924,55 @@ paths:
       responses:
         "404":
           description: Not Found
-        "204":
+        "200":
           description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "400":
           description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/v1/cart/payments:
+    post:
+      tags:
+      - Cart
+      summary: Create a payment for the cart and generate order
+      operationId: createPayment_1
+      parameters:
+      - name: paymentMethod
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+        "200":
+          description: Payment processed successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CartResponseDTO"
+        "401":
+          description: User not authenticated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CartResponseDTO"
+        "400":
+          description: Empty cart or invalid payment method
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CartResponseDTO"
   /api/v1/cart/items:
     post:
       tags:
@@ -927,39 +1010,6 @@ paths:
                 $ref: "#/components/schemas/CartResponseDTO"
         "400":
           description: Invalid request
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CartResponseDTO"
-  /api/v1/cart/checkout:
-    post:
-      tags:
-      - Cart
-      summary: Process checkout and create order
-      operationId: checkout_1
-      parameters:
-      - name: paymentMethod
-        in: query
-        required: true
-        schema:
-          type: string
-      responses:
-        "404":
-          description: Not Found
-        "200":
-          description: Checkout successful
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CartResponseDTO"
-        "401":
-          description: User not authenticated
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CartResponseDTO"
-        "400":
-          description: Empty cart or invalid payment method
           content:
             '*/*':
               schema:
@@ -1013,36 +1063,7 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BranchDTO"
-  /api/v1/auth/signup:
-    post:
-      tags:
-      - Auth
-      summary: Register a new user account
-      description: "Creates a new CUSTOMER account. Subtítulo vídeo: 'Endpoint de\
-        \ registro'"
-      operationId: signup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SignupRequest"
-        required: true
-      responses:
-        "404":
-          description: Not Found
-        "201":
-          description: User registered successfully
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/UserDTO"
-        "400":
-          description: Validation error or email already in use
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/UserDTO"
-  /api/v1/auth/refresh:
+  /api/v1/auth/tokens:
     post:
       tags:
       - Auth
@@ -1070,22 +1091,7 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/AuthResponse"
-  /api/v1/auth/logout:
-    post:
-      tags:
-      - Auth
-      summary: Logout — clears JWT cookies
-      operationId: logout
-      responses:
-        "404":
-          description: Not Found
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/AuthResponse"
-  /api/v1/auth/login:
+  /api/v1/auth/sessions:
     post:
       tags:
       - Auth
@@ -1114,6 +1120,35 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+  /api/v1/auth/registrations:
+    post:
+      tags:
+      - Auth
+      summary: Register a new user account
+      description: "Creates a new CUSTOMER account. Subtítulo vídeo: 'Endpoint de\
+        \ registro'"
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+        "201":
+          description: User registered successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserDTO"
+        "400":
+          description: Validation error or email already in use
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserDTO"
   /profiles/images/{id}:
     get:
       tags:
@@ -1350,7 +1385,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/PageOrderDTO"
   /api/v1/orders/{id}:
@@ -1372,19 +1407,19 @@ paths:
         "200":
           description: Order found
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/OrderDTO"
         "401":
           description: Not authenticated
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/OrderDTO"
         "403":
           description: Forbidden
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: "#/components/schemas/OrderDTO"
     delete:
@@ -1402,12 +1437,66 @@ paths:
       responses:
         "404":
           description: Order not found
-        "204":
+        "200":
           description: Order deleted
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "401":
           description: Not authenticated
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
         "403":
           description: Forbidden — admin only
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/v1/orders/user/{userId}:
+    get:
+      tags:
+      - order-rest-controller
+      summary: Get paid orders for a given user id (admin or owner)
+      operationId: getOrdersByUserId
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "404":
+          description: Not Found
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageOrderDTO"
   /api/v1/cart:
     get:
       tags:
@@ -1515,6 +1604,27 @@ paths:
           description: Not Found
         "200":
           description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/v1/auth/sessions/current:
+    delete:
+      tags:
+      - Auth
+      summary: Logout — clears JWT cookies
+      operationId: logout
+      responses:
+        "404":
+          description: Not Found
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
 components:
   schemas:
     UserDTO:
@@ -1529,6 +1639,9 @@ components:
           type: string
         role:
           type: string
+        password:
+          type: string
+          writeOnly: true
         imageId:
           type: integer
           format: int64
@@ -1795,6 +1908,23 @@ components:
       - firstName
       - message
       - subject
+    AuthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - SUCCESS
+          - FAILURE
+        message:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
     SignupRequest:
       type: object
       properties:
@@ -1814,23 +1944,6 @@ components:
       - email
       - name
       - password
-    AuthResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - SUCCESS
-          - FAILURE
-        message:
-          type: string
-    LoginRequest:
-      type: object
-      properties:
-        email:
-          type: string
-        password:
-          type: string
     ProductStatDTO:
       type: object
       properties:
@@ -1934,14 +2047,12 @@ components:
     PageProductDTO:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
+        totalPages:
+          type: integer
+          format: int32
         numberOfElements:
           type: integer
           format: int32
@@ -1949,6 +2060,8 @@ components:
           type: boolean
         last:
           type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
@@ -1966,16 +2079,16 @@ components:
     PageableObject:
       type: object
       properties:
-        unpaged:
+        paged:
           type: boolean
         pageNumber:
           type: integer
           format: int32
-        paged:
-          type: boolean
         pageSize:
           type: integer
           format: int32
+        unpaged:
+          type: boolean
         offset:
           type: integer
           format: int64
@@ -1984,9 +2097,9 @@ components:
     SortObject:
       type: object
       properties:
-        unsorted:
-          type: boolean
         sorted:
+          type: boolean
+        unsorted:
           type: boolean
         empty:
           type: boolean
@@ -2014,14 +2127,12 @@ components:
     PageReviewDTO:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
+        totalPages:
+          type: integer
+          format: int32
         numberOfElements:
           type: integer
           format: int32
@@ -2029,6 +2140,8 @@ components:
           type: boolean
         last:
           type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
@@ -2046,14 +2159,12 @@ components:
     PageOrderDTO:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
+        totalPages:
+          type: integer
+          format: int32
         numberOfElements:
           type: integer
           format: int32
@@ -2061,6 +2172,8 @@ components:
           type: boolean
         last:
           type: boolean
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         size:
           type: integer
           format: int32
