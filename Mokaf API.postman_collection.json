@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "41a314ec-6774-47e0-b849-d0bda4e90835",
+    "_postman_id": "fefa7cd4-0782-4e7e-9d41-6130b80ee178",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -207,7 +207,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"role\": \"CUSTOMER\"\n}",
+              "raw": "{\n  \"name\": \"Nuevo Usuario\",\n  \"email\": \"nuevo@example.com\",\n  \"password\": \"secreto123\",\n  \"role\": \"CUSTOMER\",\n  \"firstName\": \"Nuevo\",\n  \"lastName\": \"Usuario\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -293,7 +293,7 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": "/C:/Users/guill/OneDrive/Pictures/Capturas de pantalla/Captura de pantalla 2025-06-27 125619.png"
+                  "value": null
                 }
               ]
             },
