@@ -121,7 +121,11 @@ public class CartService {
                     .setScale(2, RoundingMode.HALF_UP);
             item.setLineTotal(lineTotal);
 
-            return orderItemRepository.save(item);
+            // Save updated item and refresh cart totals
+            OrderItem savedItem = orderItemRepository.save(item);
+            updateCartTotals(cart);
+
+            return savedItem;
         } else {
             // Create new item
             OrderItem newItem = new OrderItem();
