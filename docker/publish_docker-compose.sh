@@ -1,13 +1,17 @@
 #!/bin/bash
 
 set -e
+export PATH="$HOME/.local/bin:$PATH"
 
-ENV_FILE="docker/.env"
-if [ ! -f "$ENV_FILE" ] && [ -f ".env" ]; then
-    ENV_FILE=".env"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+ENV_FILE="$SCRIPT_DIR/.env"
+if [ ! -f "$ENV_FILE" ] && [ -f "$ROOT_DIR/.env" ]; then
+    ENV_FILE="$ROOT_DIR/.env"
 fi
 
-COMPOSE_FILE="docker/docker-compose.yml"
+COMPOSE_FILE="docker-compose.yml"
 ARTIFACT_NAME="mokaf-compose"
 TAG="latest"
 ARTIFACT_TYPE="application/vnd.docker.compose.project.v1+yaml"
@@ -19,10 +23,12 @@ if ! command -v oras >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ ! -f "$COMPOSE_FILE" ]; then
+if [ ! -f "$SCRIPT_DIR/$COMPOSE_FILE" ]; then
     echo "No se encuentra el fichero $COMPOSE_FILE"
     exit 1
 fi
+
+cd "$SCRIPT_DIR"
 
 if [ -f "$ENV_FILE" ]; then
     echo "Cargando variables desde $ENV_FILE..."
