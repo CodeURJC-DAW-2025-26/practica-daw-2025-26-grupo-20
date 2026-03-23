@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Authentication endpoints (all public).
  *
- *   POST /api/v1/auth/login    → login, returns JWT cookies
- *   POST /api/v1/auth/signup   → register new CUSTOMER account
- *   POST /api/v1/auth/refresh  → renew AuthToken using RefreshToken cookie
- *   POST /api/v1/auth/logout   → clear JWT cookies
+ *   POST   /api/v1/auth/sessions         → login, returns JWT cookies
+ *   POST   /api/v1/auth/registrations    → register new CUSTOMER account
+ *   POST   /api/v1/auth/tokens           → renew AuthToken using RefreshToken cookie
+ *   DELETE /api/v1/auth/sessions/current → clear JWT cookies
  */
 @Tag(name = "Auth", description = "Authentication and registration endpoints")
 @RestController
@@ -69,7 +69,7 @@ public class AuthRestController {
             @ApiResponse(responseCode = "200", description = "Login successful"),
             @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
-    @PostMapping("/login")
+    @PostMapping("/sessions")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
@@ -83,7 +83,7 @@ public class AuthRestController {
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
             @ApiResponse(responseCode = "400", description = "Validation error or email already in use")
     })
-    @PostMapping("/signup")
+    @PostMapping("/registrations")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO signup(@Valid @RequestBody SignupRequest request) {
         if (userService.existsByEmail(request.email()))
@@ -104,7 +104,7 @@ public class AuthRestController {
             @ApiResponse(responseCode = "200", description = "Token refreshed"),
             @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
     })
-    @PostMapping("/refresh")
+    @PostMapping("/tokens")
     public ResponseEntity<AuthResponse> refresh(
             @CookieValue(name = "RefreshToken", required = false) String refreshToken,
             HttpServletResponse response) {
@@ -112,7 +112,7 @@ public class AuthRestController {
     }
 
     @Operation(summary = "Logout — clears JWT cookies")
-    @PostMapping("/logout")
+    @DeleteMapping("/sessions/current")
     public ResponseEntity<AuthResponse> logout(HttpServletResponse response) {
         return userLoginService.logout(response);
     }

@@ -366,6 +366,13 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 > La documentación de la API REST se encuentra en la carpeta `/api-docs` del repositorio. Se ha generado automáticamente con SpringDoc a partir de las anotaciones en el código Java.
 
+#### **Endpoints de Autenticación (API REST)**
+
+- `POST /api/v1/auth/sessions` → Inicio de sesión (genera cookies/tokens JWT).
+- `POST /api/v1/auth/registrations` → Registro de nuevo usuario cliente.
+- `POST /api/v1/auth/tokens` → Renovación de token de acceso con refresh token.
+- `DELETE /api/v1/auth/sessions/current` → Cierre de sesión (invalidación de cookies/tokens).
+
 ### **Diagrama de Clases y Templates Actualizado**
 
 Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:

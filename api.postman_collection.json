@@ -1200,7 +1200,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "raw": "{{baseUrl}}/api/v1/auth/sessions",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1208,7 +1208,7 @@
                 "api",
                 "v1",
                 "auth",
-                "login"
+                "sessions"
               ]
             }
           },
@@ -1243,7 +1243,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/signup",
+              "raw": "{{baseUrl}}/api/v1/auth/registrations",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1251,7 +1251,7 @@
                 "api",
                 "v1",
                 "auth",
-                "signup"
+                "registrations"
               ]
             }
           },
@@ -1281,7 +1281,7 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "raw": "{{baseUrl}}/api/v1/auth/tokens",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1289,7 +1289,7 @@
                 "api",
                 "v1",
                 "auth",
-                "refresh"
+                "tokens"
               ]
             }
           },
@@ -1313,10 +1313,10 @@
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "raw": "{{baseUrl}}/api/v1/auth/sessions/current",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1324,7 +1324,8 @@
                 "api",
                 "v1",
                 "auth",
-                "logout"
+                "sessions",
+                "current"
               ]
             }
           },
