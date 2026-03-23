@@ -623,7 +623,7 @@ docker compose up -d
 
 ---
 
-#### **Alumno 4 - [Alexandra Cararus Verdes]**
+#### **Alumno 5 - [Alexandra Cararus Verdes]**
 
 - Integración de REST utilizando JSON y pruebas con Postman en las páginas About Us, Orders y Branch.
 - Resolución y depuración de errores en la aplicación.
