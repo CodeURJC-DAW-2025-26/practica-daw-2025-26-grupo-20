@@ -618,7 +618,7 @@ docker compose up -d
 |  1  | [Statistics Rest Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/970623a451905694b8aafec8c70689ea96370a0f) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
 |  2  | [Statistics Rest Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/970623a451905694b8aafec8c70689ea96370a0f) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
 |  3  | [Fixed Statistics security on Rest controller and config](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/7e6f13c20549363836933e9d2ee08d0d67211d23) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
-|  4  | [Update API postman Statistics](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4b778e7c0f3ecc55b69e345e1f0ed3071f3315a2) | [API Colection](Mokaf API.postman_collection.json) |
+|  4  | [Update API postman Statistics](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4b778e7c0f3ecc55b69e345e1f0ed3071f3315a2) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
 |  5  | [Cart update security on postman request API](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8bb909f1996242b30097935459a873b477fc9498) | [CartRestController](src/main/java/es/codeurjc/mokaf/api/controller/CartRestController.java) |
 
 ---
