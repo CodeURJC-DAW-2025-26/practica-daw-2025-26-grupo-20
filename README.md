@@ -377,7 +377,26 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:
 
-![Diagrama de Clases Actualizado](images/complete-classes-diagram.png)
+![Diagrama de Clases Actualizado](./src/main/resources/static/images/MokafRest.drawio.png)
+
+> #### Controllers identificados en el diagrama:
+>
+> - `MainRestController`: Punto de entrada general para operaciones principales.
+> - `CartRestController`: Gestión del carrito (añadir, eliminar, actualizar productos).
+> - `OrderRestController`: Procesamiento y consulta de pedidos.
+> - `AuthRestController`: Autenticación y autorización de usuarios.
+> - `UserRestController`: Operaciones sobre usuarios (perfil, gestión).
+> - `BranchRestController`: Manejo de sucursales.
+> - `StatisticsRestController`: Exposición de métricas y estadísticas.
+> - `ProductRestController`: Gestión de productos.
+>
+> #### Flujo típico:
+>
+> 1. Cliente realiza petición HTTP → REST Controller.
+> 2. El controller valida y procesa la entrada.
+> 3. Delega la lógica al Service correspondiente.
+> 4. El Service interactúa con los Repositories.
+> 5. Se construye la respuesta y se devuelve al cliente.
 
 ### **Instrucciones de Ejecución con Docker**
 
@@ -503,17 +522,21 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 ---
 
-#### **Alumno 4 - [Nombre Completo]**
+#### **Alumno 4 - [Elinee Nathalie Freites Muñoz]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+- Implementacion Cart Rest.
+- Implementación Statistics Rest.
+- Diagrama de clases.
+- Implementación de Cart y Statistics Requests.
+- Dtos de Cart y Statistics.
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [Statistics Rest Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/970623a451905694b8aafec8c70689ea96370a0f) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
+|  2  | [Statistics Rest Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/970623a451905694b8aafec8c70689ea96370a0f) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
+|  3  | [Fixed Statistics security on Rest controller and config](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/7e6f13c20549363836933e9d2ee08d0d67211d23) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
+|  4  | [Update API postman Statistics](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4b778e7c0f3ecc55b69e345e1f0ed3071f3315a2) | [API Colection](Mokaf API.postman_collection.json) |
+|  5  | [Cart update security on postman request API](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8bb909f1996242b30097935459a873b477fc9498) | [CartRestController](src/main/java/es/codeurjc/mokaf/api/controller/CartRestController.java) |
 
 ---
 
