@@ -350,7 +350,7 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 ### **Vídeo de Demostración**
 
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+📹 **[Enlace al vídeo en YouTube](https://youtu.be/MDhQT2KBTv4)**
 
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
@@ -622,6 +622,22 @@ docker compose up -d
 |  5  | [Cart update security on postman request API](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8bb909f1996242b30097935459a873b477fc9498) | [CartRestController](src/main/java/es/codeurjc/mokaf/api/controller/CartRestController.java) |
 
 ---
+
+#### **Alumno 4 - [Alexandra Cararus Verdes]**
+
+- Integración de REST utilizando JSON y pruebas con Postman en las páginas About Us, Orders y Branch.
+- Resolución y depuración de errores en la aplicación.
+- Refactorización y optimización de controladores y mappers para la API.
+- Corrección y estandarización de URLs.
+- Limpieza de código y eliminación de duplicidades.
+
+| Nº  |               Commits                |           Files           |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [fix errors](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d49640415babfc488b49911deac048f78f367257 ) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  2  | [Orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3a55907dd7046af747bc7a822484d4ccab5446e1) | [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java) |
+|  3  | [About_us](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/07322cc5b7632378addbae0adaac246a199e6e3b) | [MainRestController](src/main/java/es/codeurjc/mokaf/api/controller/MainRestController.java) |
+|  4  | [Branch](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  5  | [Orders Api](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) |[API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
 
 ## 🛠 **Práctica 3: Implementación de la web con arquitectura SPA**
 
