@@ -80,13 +80,18 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/{productId}/reviews/{reviewId}")
-    public ResponseEntity<Void> deleteReview(
+    public ResponseEntity<java.util.Map<String, String>> deleteReview(
             @PathVariable Long productId,
             @PathVariable Long reviewId,
             @AuthenticationPrincipal User currentUser) {
 
-        reviewService.deleteReview(productId, reviewId, currentUser);
-        return ResponseEntity.noContent().build();
+        try {
+            reviewService.deleteReview(productId, reviewId, currentUser);
+            return ResponseEntity.ok(java.util.Map.of("message", "Review deleted successfully"));
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", "Cannot delete review: constraint violation"));
+        }
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
