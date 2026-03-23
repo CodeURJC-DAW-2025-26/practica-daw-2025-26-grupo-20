@@ -350,7 +350,7 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 ### **Vídeo de Demostración**
 
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+📹 **[Enlace al vídeo en YouTube](https://youtu.be/MDhQT2KBTv4)**
 
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
@@ -580,11 +580,11 @@ docker compose up -d
 
 | Nº  | Commits | Files |
 | :-: | :------ | :---- |
-|  1  | [FIxed Docker, Merge Postman](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b1042d0952b7f5c5929386553bb850272adbfb76) | API Postman collection, docker scripts :contentReference[oaicite:0]{index=0} |
-|  2  | [feat: …](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/715148ab8b0fec8f9cdc94ae189d984072579d84) | (endpoint/API/JSON related — placeholder until you add description) |
-|  3  | [feat: …](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/6ebe337c3b20c8193a43a4ecfea8e3d3ab403451) | (REST/JSON enhancement — placeholder until you add description) |
-|  4  | [feat: Add Dockerfile and docker-compose configuration for application containerization](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/beca709fb78d4d0790e7c92f5913f0f82db33cdf) | Dockerfile & docker-compose.yml :contentReference[oaicite:1]{index=1} |
-|  5  | [Actuaizacion DTO MAPPER CONTROLLER](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe) | API DTOs and controller improvements :contentReference[oaicite:2]{index=2} |
+|  1  | [FIxed Docker, Merge Postman](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b1042d0952b7f5c5929386553bb850272adbfb76) | [Mokaf API.postman_collection.json](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/b1042d0952b7f5c5929386553bb850272adbfb76/Mokaf%20API.postman_collection.json), [docker-compose.yml](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/b1042d0952b7f5c5929386553bb850272adbfb76/docker/docker-compose.yml) |
+|  2  | [Update Postman Rreviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/715148ab8b0fec8f9cdc94ae189d984072579d84) | [Mokaf API.postman_collection.json](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/715148ab8b0fec8f9cdc94ae189d984072579d84/Mokaf%20API.postman_collection.json) |
+|  3  | [Añadidas reviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/6ebe337c3b20c8193a43a4ecfea8e3d3ab403451) | [ProductRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/6ebe337c3b20c8193a43a4ecfea8e3d3ab403451/src/main/java/es/codeurjc/mokaf/api/controller/ProductRestController.java) |
+|  4  | [feat: Add Dockerfile and docker-compose configuration for application containerization](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/beca709fb78d4d0790e7c92f5913f0f82db33cdf) | [Dockerfile](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/beca709fb78d4d0790e7c92f5913f0f82db33cdf/Dockerfile), [docker-compose.yml](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/beca709fb78d4d0790e7c92f5913f0f82db33cdf/docker-compose.yml) |
+|  5  | [Actuaizacion DTO MAPPER CONTROLLER](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe) | [ProductRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe/src/main/java/es/codeurjc/mokaf/api/controller/ProductRestController.java), [FaqRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe/src/main/java/es/codeurjc/mokaf/api/controller/FaqRestController.java), [ProductDTO.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe/src/main/java/es/codeurjc/mokaf/api/dto/ProductDTO.java) |
 ---
 
 #### **Alumno 3 - Guillermo Blázquez Barbacid**
@@ -622,6 +622,22 @@ docker compose up -d
 |  5  | [Cart update security on postman request API](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8bb909f1996242b30097935459a873b477fc9498) | [CartRestController](src/main/java/es/codeurjc/mokaf/api/controller/CartRestController.java) |
 
 ---
+
+#### **Alumno 4 - [Alexandra Cararus Verdes]**
+
+- Integración de REST utilizando JSON y pruebas con Postman en las páginas About Us, Orders y Branch.
+- Resolución y depuración de errores en la aplicación.
+- Refactorización y optimización de controladores y mappers para la API.
+- Corrección y estandarización de URLs.
+- Limpieza de código y eliminación de duplicidades.
+
+| Nº  |               Commits                |           Files           |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [fix errors](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d49640415babfc488b49911deac048f78f367257 ) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  2  | [Orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3a55907dd7046af747bc7a822484d4ccab5446e1) | [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java) |
+|  3  | [About_us](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/07322cc5b7632378addbae0adaac246a199e6e3b) | [MainRestController](src/main/java/es/codeurjc/mokaf/api/controller/MainRestController.java) |
+|  4  | [Branch](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  5  | [Orders Api](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) |[API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
 
 ## 🛠 **Práctica 3: Implementación de la web con arquitectura SPA**
 
