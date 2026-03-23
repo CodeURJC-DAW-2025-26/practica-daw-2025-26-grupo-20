@@ -21,6 +21,7 @@ import es.codeurjc.mokaf.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -161,13 +162,19 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<java.util.Map<String, String>> deleteProduct(@PathVariable Long id) {
         Product product = productService.getProductById(id);
 
         if (product == null) {
             throw new NoSuchElementException("Producto no encontrado: " + id);
         }
 
-        productService.deleteProduct(id);
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.ok(java.util.Map.of("message", "Product deleted successfully"));
+        } catch (DataIntegrityViolationException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", "Cannot delete product: it is referenced by other records"));
+        }
     }
 }
