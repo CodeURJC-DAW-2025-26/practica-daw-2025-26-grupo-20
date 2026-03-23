@@ -484,7 +484,7 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 - Seguridad de tokens y login JWT.
 - Añadidos de seguridad y config, urls.
 - UPDATE IMAGE AND PASSWORD.
-- Mokaf API.postman_collection.json.
+- api.postman_collection.json.
 
 | Nº  | Commits | Files |
 | :-: | :----------------------------------: | :-----------------------: |
@@ -492,7 +492,7 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 |  2  | [Feat: seguridad de tokens y login JWT](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/249331bcaa07e19abf6de061de39795bcac6ec5b) | [JwtTokenProvider.java](src/main/java/es/codeurjc/mokaf/api/security/jwt/JwtTokenProvider.java) |
 |  3  | [Feat: añadidos de seguridad y config, urls](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1b68e2c2f2025a689dc2ca40c1e5f27e02cc80fc) | [SecurityConfig.java](src/main/java/es/codeurjc/mokaf/config/SecurityConfig.java) |
 |  4  | [Feat: UPDATE IMAGE AND PASSWORD](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/962912b7ee2c7de90e0ed26d6b373f403ec22772) | [UserRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/UserRestController.java) |
-|  5  | [Feat: Update Mokaf API postman collection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1bf1b3a70edd44a58cbf21b68e538880ae435055) | [Mokaf API.postman_collection.json](Mokaf%20API.postman_collection.json) |
+|  5  | [Feat: Update Mokaf API postman collection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1bf1b3a70edd44a58cbf21b68e538880ae435055) | [api.postman_collection.json](api.postman_collection.json) |
 
 ---
 

@@ -16,12 +16,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/dashboard",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/statistics/dashboard",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -38,12 +36,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/top-rated-product",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/statistics/top-rated-product",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -60,12 +56,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/top-category",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/statistics/top-category",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -82,12 +76,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/categories",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/statistics/categories",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -104,12 +96,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/top-branch",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/statistics/top-branch",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -126,12 +116,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/categories/list",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/statistics/categories/list",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -154,12 +142,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/users",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -175,12 +161,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/users/me",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users/me",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -197,12 +181,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/users/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -233,12 +215,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/users",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -268,12 +248,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/users/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -290,12 +268,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/users/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -323,12 +299,10 @@
               ]
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/users/me/image",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users/me/image",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -474,12 +448,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/users/me",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/users/me",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -501,12 +473,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/products?page=0&size=10",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products?page=0&size=10",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -532,12 +502,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/products/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -584,12 +552,10 @@
               ]
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/products",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -635,12 +601,10 @@
               ]
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/products/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -657,12 +621,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/products/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -691,12 +653,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/products/1/reviews",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products/1/reviews",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -723,12 +683,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/products/1/reviews",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products/1/reviews",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -746,12 +704,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/products/1/reviews/46",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/products/1/reviews/46",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -775,12 +731,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/faqs",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/faqs",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -796,12 +750,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/faqs/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/faqs/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -832,12 +784,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/faqs",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/faqs",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -867,12 +817,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/faqs/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/faqs/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -889,12 +837,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/faqs/6",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/faqs/6",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -916,12 +862,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/orders?page=0&size=10",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/orders?page=0&size=10",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -947,12 +891,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/orders/user/8?page=0&size=10",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/orders/user/8?page=0&size=10",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -980,12 +922,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/orders/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/orders/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1002,12 +942,10 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/orders/1/checkout",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/orders/1/checkout",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1025,12 +963,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/orders/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/orders/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1052,12 +988,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1073,12 +1007,10 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/items",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart/items",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1095,12 +1027,10 @@
             "method": "PUT",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/items/44?quantity=9",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart/items/44?quantity=9",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1124,12 +1054,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/items/{itemId}",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart/items/{itemId}",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1147,12 +1075,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1168,12 +1094,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/branch/current",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart/branch/current",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1191,12 +1115,10 @@
             "method": "PUT",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/cart/branch?branchId=2",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/cart/branch?branchId=2",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1278,12 +1200,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/auth/login",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/auth/login",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1323,12 +1243,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/auth/signup",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/auth/signup",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1363,12 +1281,10 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/auth/refresh",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1400,12 +1316,10 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/auth/logout",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1427,12 +1341,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/branches",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/branches",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1448,12 +1360,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/branches/1",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/branches/1",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1479,12 +1389,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/branches",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/branches",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1500,12 +1408,10 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/branches/7",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/branches/7",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1536,12 +1442,10 @@
               }
             },
             "url": {
-              "raw": "https://localhost:8443/api/v1/contact",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/contact",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
@@ -1557,12 +1461,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "https://localhost:8443/api/v1/about-us",
-              "protocol": "https",
+              "raw": "{{baseUrl}}/api/v1/about-us",
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "8443",
               "path": [
                 "api",
                 "v1",
