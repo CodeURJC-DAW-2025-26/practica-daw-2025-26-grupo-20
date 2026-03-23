@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "e27cb62f-4d65-4b7d-a359-05e3cfae14ee",
+    "_postman_id": "fbf4abcd-400c-4b9d-a985-9db3040106cf",
     "name": "Mokaf API",
     "description": "API for Mokaf application including Users, Products, and FAQs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "43168622"
+    "_exporter_id": "52807584"
   },
   "item": [
     {
@@ -27,28 +27,6 @@
                 "v1",
                 "statistics",
                 "dashboard"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "bestSellingProduct",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "https://localhost:8443/api/v1/statistics/best-product",
-              "protocol": "https",
-              "host": [
-                "localhost"
-              ],
-              "port": "8443",
-              "path": [
-                "api",
-                "v1",
-                "statistics",
-                "best-product"
               ]
             }
           },
