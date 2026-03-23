@@ -35,4 +35,13 @@ public class BranchService {
     public Optional<Branch> getBranchByName(String name) {
         return branchRepository.findByName(name);
     }
+
+    
+    public Branch save(Branch branch) {
+        return branchRepository.save(branch);
+    }
+
+    public void delete(Long id) {
+        branchRepository.deleteById(id);
+    }
 }

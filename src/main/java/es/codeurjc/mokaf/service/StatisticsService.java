@@ -1,12 +1,14 @@
 package es.codeurjc.mokaf.service;
 
 import es.codeurjc.mokaf.model.Branch;
+import es.codeurjc.mokaf.model.Product;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.repository.BranchRepository; // IMPORTANT: Add this import
 import es.codeurjc.mokaf.repository.StatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import es.codeurjc.mokaf.repository.ReviewRepository;
+import es.codeurjc.mokaf.repository.ProductRepository;
 
 import java.util.*;
 
@@ -21,6 +23,9 @@ public class StatisticsService {
     
     @Autowired
     private BranchRepository branchRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     /**
      * Get the best selling product of the current month (by units sold)
@@ -112,8 +117,9 @@ public class StatisticsService {
         product.put("recentReviews", reviewList);
 
         // Use ID to generate image path
-        product.put("imagePath", "/images/" + productId);
-
+        //product.put("imagePath", "/images/" + productId);
+        Product productEntity = productRepository.findById(productId).orElse(null);
+        product.put("imagePath", "/images/" + productEntity.getImage().getId());
         product.put("exists", true);
 
         return product;

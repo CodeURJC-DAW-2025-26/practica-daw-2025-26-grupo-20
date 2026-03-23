@@ -1,0 +1,28 @@
+meta {
+  name: Create Product
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/products
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "name": "New Coffee Blend",
+      "description": "A rich and aromatic blend.",
+      "priceBase": 4.50,
+      "category": "COFFEE"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

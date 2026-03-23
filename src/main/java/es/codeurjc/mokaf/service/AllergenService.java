@@ -24,7 +24,8 @@ public class AllergenService {
     }
 
     public Set<Allergen> getAllergensByIds(List<Long> ids) {
-        if (ids == null || ids.isEmpty()) return Collections.emptySet();
+        if (ids == null || ids.isEmpty())
+            return Collections.emptySet();
         // JPA: hace 1 query con IN(...)
         List<Allergen> allergens = allergenRepository.findAllById(ids);
         return new HashSet<>(allergens);

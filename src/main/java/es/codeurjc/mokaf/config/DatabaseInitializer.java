@@ -37,9 +37,8 @@ import es.codeurjc.mokaf.repository.UserRepository;
 
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
-
         private final ProductRepository productRepository;
-        private final ImageRepository imageRepository;
+        //private final ImageRepository imageRepository;
         private final UserRepository userRepository;
         private final ReviewRepository reviewRepository;
         private final AllergenRepository allergenRepository;
@@ -60,7 +59,7 @@ public class DatabaseInitializer implements ApplicationRunner {
                         PasswordEncoder passwordEncoder) {
 
                 this.productRepository = productRepository;
-                this.imageRepository = imageRepository;
+                //this.imageRepository = imageRepository;
                 this.userRepository = userRepository;
                 this.reviewRepository = reviewRepository;
                 this.allergenRepository = allergenRepository;
@@ -73,18 +72,9 @@ public class DatabaseInitializer implements ApplicationRunner {
         @Override
         @Transactional
         public void run(ApplicationArguments args) throws Exception {
-                // 1) ERASE (children -> parents) to protect FK constraints
-                try {
-                        orderRepository.deleteAll();
-                        reviewRepository.deleteAll();
-                        userRepository.deleteAll();
-                        branchRepository.deleteAll();
-                        productRepository.deleteAll();
-                        imageRepository.deleteAll();
-                        allergenRepository.deleteAll();
-                        faqRepository.deleteAll();
-                } catch (Exception e) {
-                        System.out.println(">>> Non-critical error during DB cleanup: " + e.getMessage());
+                if (userRepository.count() > 0) {
+                        System.out.println(">>> DB already initialized, skipping seeding");
+                        return;
                 }
 
                 // 2) BRANCHES

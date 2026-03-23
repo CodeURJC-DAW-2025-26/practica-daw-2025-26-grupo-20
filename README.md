@@ -234,16 +234,7 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 
 #### **Credenciales de prueba**
 
-Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos utilizar la cuenta de admin; `admin@mokaf.com` , `admin123` y puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
-   mvn clear install -DSkipTest
-   mvn spring-boot:run
-   ```
-5. **Acceder a la aplicación**:
-   Abre tu navegador y ve a `http://localhost:8443`.
-
-#### **Credenciales de prueba**
-Actualmente Contamos con varios usuarios en DatabaseInitialzer;
-de admin puedes probar en el login; de nombre admin@mokaf.com , de contraseña admin123. y para usuario te puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
+Actualmente hay de ambos tipos de usuarios en DatabaseInitializer; aconsejamos utilizar la cuenta de admin;  ,  y puedes utilizar la opción de **Registro** en el menú para crear una cuenta nueva y probar las funcionalidades de usuario registrado.
 
 ### **Diagrama de Entidades de Base de Datos**
 
@@ -359,7 +350,7 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 ### **Vídeo de Demostración**
 
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+📹 **[Enlace al vídeo en YouTube](https://youtu.be/MDhQT2KBTv4)**
 
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
@@ -375,11 +366,37 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 > La documentación de la API REST se encuentra en la carpeta `/api-docs` del repositorio. Se ha generado automáticamente con SpringDoc a partir de las anotaciones en el código Java.
 
+#### **Endpoints de Autenticación (API REST)**
+
+- `POST /api/v1/auth/sessions` → Inicio de sesión (genera cookies/tokens JWT).
+- `POST /api/v1/auth/registrations` → Registro de nuevo usuario cliente.
+- `POST /api/v1/auth/tokens` → Renovación de token de acceso con refresh token.
+- `DELETE /api/v1/auth/sessions/current` → Cierre de sesión (invalidación de cookies/tokens).
+
 ### **Diagrama de Clases y Templates Actualizado**
 
 Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:
 
-![Diagrama de Clases Actualizado](images/complete-classes-diagram.png)
+![Diagrama de Clases Actualizado](./src/main/resources/static/images/MokafRest.drawio.png)
+
+> #### Controllers identificados en el diagrama:
+>
+> - `MainRestController`: Punto de entrada general para operaciones principales.
+> - `CartRestController`: Gestión del carrito (añadir, eliminar, actualizar productos).
+> - `OrderRestController`: Procesamiento y consulta de pedidos.
+> - `AuthRestController`: Autenticación y autorización de usuarios.
+> - `UserRestController`: Operaciones sobre usuarios (perfil, gestión).
+> - `BranchRestController`: Manejo de sucursales.
+> - `StatisticsRestController`: Exposición de métricas y estadísticas.
+> - `ProductRestController`: Gestión de productos.
+>
+> #### Flujo típico:
+>
+> 1. Cliente realiza petición HTTP → REST Controller.
+> 2. El controller valida y procesa la entrada.
+> 3. Delega la lógica al Service correspondiente.
+> 4. El Service interactúa con los Repositories.
+> 5. Se construye la respuesta y se devuelve al cliente.
 
 ### **Instrucciones de Ejecución con Docker**
 
@@ -407,11 +424,89 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 #### **Pasos para construir y publicar la imagen:**
 
-1. **Navegar al directorio de Docker**:
+## 🐳 Lanzamiento del Proyecto con Docker en la Máquina Virtual
 
-   ```bash
-   cd docker
-   ```
+Sigue estos pasos para lanzar la aplicación Mokaf usando Docker desde la máquina virtual.
+
+---
+
+### 1️⃣ Conexión a la Máquina Virtual
+
+Accede mediante SSH:
+
+ssh -i [ruta/a/clave.key] [usuario]@[IP-o-dominio-VM]
+
+---
+
+### 2️⃣ Clonar el repositorio
+
+git clone https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20.git
+cd practica-daw-2025-26-grupo-20
+
+---
+
+### 3️⃣ Crear la imagen Docker
+
+Desde la **carpeta raíz del proyecto**, ejecuta:
+
+- **Bash:**
+./docker/create_image.sh mokaf
+
+- **PowerShell:**
+./docker/create_image.ps1 mokaf
+
+> Esto genera la imagen de la aplicación lista para publicar en DockerHub.
+
+---
+
+### 4️⃣ Publicar la imagen Docker
+
+- **Bash:**
+./docker/publish_image.sh
+
+- **PowerShell:**
+./docker/publish_image.ps1
+
+---
+
+### 5️⃣ Publicar el artefacto Docker Compose
+
+- **Bash y PowerShell:**
+./docker/publish_docker-compose.sh
+
+> Estos scripts usan el archivo `.env` que debe estar en la carpeta `docker`, con contraseñas y lista de usuarios configuradas.
+
+---
+
+### 6️⃣ Lanzamiento de la aplicación con Docker Compose
+
+1. Accede a la carpeta `docker`:
+
+cd docker
+
+2. Configura el modo según el tipo de arranque:
+
+#### 🔹 Primer arranque (crea la base de datos)
+
+- **Bash:**
+DOCKERHUB_USER=usuario1 SPRING_JPA_HIBERNATE_DDL_AUTO=create docker compose up -d
+
+- **PowerShell:**
+$env:DOCKERHUB_USER="usuario1"
+$env:SPRING_JPA_HIBERNATE_DDL_AUTO="create"
+docker compose up -d
+
+#### 🔹 Arranque normal (sin recrear base de datos)
+
+- **Bash:**
+DOCKERHUB_USER=usuario1 SPRING_JPA_HIBERNATE_DDL_AUTO=none docker compose up -d
+
+- **PowerShell:**
+$env:DOCKERHUB_USER="usuario1"
+$env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
+docker compose up -d
+
+> Esto levantará la aplicación junto con todos los servicios definidos en `docker-compose.yml`.
 
 2. **AQUÍ LOS SIGUIENTES PASOS**
 
@@ -457,63 +552,92 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 **Responsabilidades:**
 
-- Implementation of the email notification system, including the generation and sending of PDF invoices after order confirmation.
-- Development of the dynamic product recommendation algorithm in the menu, customizing suggestions for registered users and filtering by "best-sellers" for visitors.
-- Creation of a category filtering system with AJAX paging on the server to optimize performance and user experience.
-- Implementation of a robust contact form with server validation and email query management.
-- Strengthening security in user registration through complex validation of passwords and email formats.
+- Implementación de la API REST v1 para usuarios, productos y FAQs con DTOs y documentación OpenAPI.
+- Incorporación y mantenimiento de la colección de pruebas API en Postman.
+- Refactorización de controladores/configuración API para simplificar el backend (incluyendo eliminación de MapStruct).
+- Automatización del flujo Docker para creación y publicación de imágenes con scripts de shell.
+- Ajustes de seguridad y hardening en endpoints, junto con actualización de baseURL en Postman para entorno local.
 
-| Nº  | Commits                                                                                                                                                                                          | Files                                                                                                                                                                    |
-| :-: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  1  | [feat: Implement order confirmation emails with attached PDF invoices](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/pull/36)                                            | [OrderEmailService.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/java/es/codeurjc/mokaf/service/OrderEmailService.java) |
-|  2  | [feat: add dynamic product recommendations to the menu](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/ce85a6265c89b6b0e6d088db02f6bad70228325c)                   | [ProductService.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/java/es/codeurjc/mokaf/service/ProductService.java)       |
-|  3  | [feat: Implement category filtering with server-side pagination and AJAX](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d349bdb812e5bec224859a88c2b56f84614ae24c) | [MenuController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/java/es/codeurjc/mokaf/controller/MenuController.java)    |
-|  4  | [feat: Implement a functional contact form with server-side validation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/59ebd1f6e62c4f5db3d019e5abfefe12c4d41f6d)   | [MainController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/java/es/codeurjc/mokaf/controller/MainController.java)    |
-|  5  | [feat: Add email and password complexity validation to registration](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/e944a7042d130460bf887af4f4f5bbc219593bad)      | [AuthController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/main/src/main/java/es/codeurjc/mokaf/controller/AuthController.java)    |
+| Nº  | Commits                                                                                                                                                                                                                                                | Files                                                                                                                                                                                                                            |
+| :-: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|  1  | [feat: Implement REST API for User, Product, and FAQ entities with dedicated DTOs, REST controllers, and OpenAPI documentation.](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/075074592111f4c225f5d8a903da567b1d995024) | [UserRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/075074592111f4c225f5d8a903da567b1d995024/src/main/java/es/codeurjc/mokaf/api/controller/UserRestController.java)     |
+|  2  | [feat: Add Docker build and publish scripts.](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/2ba1fa447c97174b672269decd8b4bda1fa421bc)                                                                                                 | [docker-publish.sh](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/2ba1fa447c97174b672269decd8b4bda1fa421bc/docker-publish.sh)                                                                  |
+|  3  | [feat: Add multi-user Docker image publishing, configurable database initialization.](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/c272ab3755ed54d79203564f31ac9f00dc8eed7a)                                         | [docker-compose.yml](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/c272ab3755ed54d79203564f31ac9f00dc8eed7a/docker-compose.yml)                                                           |
+|  4  | [Create publish and create image by .sh](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/034696bd919d27fac5840a698857b9be28aac51b)                                                                                   | [create_image.sh](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/034696bd919d27fac5840a698857b9be28aac51b/docker/create_image.sh)                                                               |
+|  5  | [add post vulneravility, and replace baseURL in postman to localhost](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/85ae0bcc839ae473bd25305215c5d3d5953cceeb)                                                         | [SecurityConfig.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/85ae0bcc839ae473bd25305215c5d3d5953cceeb/src/main/java/es/codeurjc/mokaf/config/SecurityConfig.java)                         |
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - Gonzalo Pérez Roca**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+**Responsabilidades:**
+
+- Integración de REST, JSON y Postman en el flujo de desarrollo.
+- Configuración y soporte de Docker (Dockerfile y Docker Compose).
+- Soporte de inicialización y despliegue con contenedores.
+- Adaptación y limpieza de controladores y mappers para API.
+- Colaboración en la integración de servicios reutilizables.
+
+| Nº  | Commits | Files |
+| :-: | :------ | :---- |
+|  1  | [FIxed Docker, Merge Postman](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b1042d0952b7f5c5929386553bb850272adbfb76) | [Mokaf API.postman_collection.json](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/b1042d0952b7f5c5929386553bb850272adbfb76/Mokaf%20API.postman_collection.json), [docker-compose.yml](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/b1042d0952b7f5c5929386553bb850272adbfb76/docker/docker-compose.yml) |
+|  2  | [Update Postman Rreviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/715148ab8b0fec8f9cdc94ae189d984072579d84) | [Mokaf API.postman_collection.json](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/715148ab8b0fec8f9cdc94ae189d984072579d84/Mokaf%20API.postman_collection.json) |
+|  3  | [Añadidas reviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/6ebe337c3b20c8193a43a4ecfea8e3d3ab403451) | [ProductRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/6ebe337c3b20c8193a43a4ecfea8e3d3ab403451/src/main/java/es/codeurjc/mokaf/api/controller/ProductRestController.java) |
+|  4  | [feat: Add Dockerfile and docker-compose configuration for application containerization](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/beca709fb78d4d0790e7c92f5913f0f82db33cdf) | [Dockerfile](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/beca709fb78d4d0790e7c92f5913f0f82db33cdf/Dockerfile), [docker-compose.yml](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/beca709fb78d4d0790e7c92f5913f0f82db33cdf/docker-compose.yml) |
+|  5  | [Actuaizacion DTO MAPPER CONTROLLER](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe) | [ProductRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe/src/main/java/es/codeurjc/mokaf/api/controller/ProductRestController.java), [FaqRestController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe/src/main/java/es/codeurjc/mokaf/api/controller/FaqRestController.java), [ProductDTO.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe/src/main/java/es/codeurjc/mokaf/api/dto/ProductDTO.java) |
+---
+
+#### **Alumno 3 - Guillermo Blázquez Barbacid**
+
+- Feat los cambios de user y los DTO.
+- Seguridad de tokens y login JWT.
+- Añadidos de seguridad y config, urls.
+- UPDATE IMAGE AND PASSWORD.
+- api.postman_collection.json.
+
+| Nº  | Commits | Files |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [Feat: los cambios de user y los DTO](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d5c75262e1dd89da9544cc6282644f78e4e4749a) | [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java) |
+|  2  | [Feat: seguridad de tokens y login JWT](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/249331bcaa07e19abf6de061de39795bcac6ec5b) | [JwtTokenProvider.java](src/main/java/es/codeurjc/mokaf/api/security/jwt/JwtTokenProvider.java) |
+|  3  | [Feat: añadidos de seguridad y config, urls](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1b68e2c2f2025a689dc2ca40c1e5f27e02cc80fc) | [SecurityConfig.java](src/main/java/es/codeurjc/mokaf/config/SecurityConfig.java) |
+|  4  | [Feat: UPDATE IMAGE AND PASSWORD](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/962912b7ee2c7de90e0ed26d6b373f403ec22772) | [UserRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/UserRestController.java) |
+|  5  | [Feat: Update Mokaf API postman collection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/1bf1b3a70edd44a58cbf21b68e538880ae435055) | [api.postman_collection.json](api.postman_collection.json) |
+
+---
+
+#### **Alumno 4 - [Elinee Nathalie Freites Muñoz]**
+
+- Implementacion Cart Rest.
+- Implementación Statistics Rest.
+- Diagrama de clases.
+- Implementación de Cart y Statistics Requests.
+- Dtos de Cart y Statistics.
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [Cart Rest and JSON impl](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/0478586d76107c080563f59295117bd28d990165) | [CartRestController](src/main/java/es/codeurjc/mokaf/api/controller/CartRestController.java) |
+|  2  | [Statistics Rest Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/970623a451905694b8aafec8c70689ea96370a0f) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
+|  3  | [Fixed Statistics security on Rest controller and config](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/7e6f13c20549363836933e9d2ee08d0d67211d23) | [StatisticsRestController](src/main/java/es/codeurjc/mokaf/api/controller/StatisticsRestController.java) |
+|  4  | [Update API postman Statistics](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4b778e7c0f3ecc55b69e345e1f0ed3071f3315a2) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  5  | [Cart update security on postman request API](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8bb909f1996242b30097935459a873b477fc9498) | [CartRestController](src/main/java/es/codeurjc/mokaf/api/controller/CartRestController.java) |
 
 ---
 
-#### **Alumno 3 - [Nombre Completo]**
+#### **Alumno 4 - [Alexandra Cararus Verdes]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+- Integración de REST utilizando JSON y pruebas con Postman en las páginas About Us, Orders y Branch.
+- Resolución y depuración de errores en la aplicación.
+- Refactorización y optimización de controladores y mappers para la API.
+- Corrección y estandarización de URLs.
+- Limpieza de código y eliminación de duplicidades.
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
-
----
-
-#### **Alumno 4 - [Nombre Completo]**
-
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
-
-| Nº  |               Commits                |           Files           |
-| :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
-
----
+|  1  | [fix errors](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d49640415babfc488b49911deac048f78f367257 ) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  2  | [Orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3a55907dd7046af747bc7a822484d4ccab5446e1) | [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java) |
+|  3  | [About_us](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/07322cc5b7632378addbae0adaac246a199e6e3b) | [MainRestController](src/main/java/es/codeurjc/mokaf/api/controller/MainRestController.java) |
+|  4  | [Branch](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  5  | [Orders Api](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) |[API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
 
 ## 🛠 **Práctica 3: Implementación de la web con arquitectura SPA**
 

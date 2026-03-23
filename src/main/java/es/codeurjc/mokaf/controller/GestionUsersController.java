@@ -128,7 +128,7 @@ public class GestionUsersController {
                     user.setHireDate(java.time.LocalDateTime.now());
                 }
             } else {
-                // Clear employee fields if downgraded to CUSTOMER
+                // creater o downgraded to CUSTOMER → clear employee-specific fields
                 user.setFirstName(null);
                 user.setLastName(null);
                 user.setPosition(null);
