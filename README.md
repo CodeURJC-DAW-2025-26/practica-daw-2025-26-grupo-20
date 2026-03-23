@@ -471,18 +471,23 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - Gonzalo Pérez Roca**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+**Responsabilidades:**
 
-| Nº  |               Commits                |           Files           |
-| :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+- Integración de REST, JSON y Postman en el flujo de desarrollo.
+- Configuración y soporte de Docker (Dockerfile y Docker Compose).
+- Soporte de inicialización y despliegue con contenedores.
+- Adaptación y limpieza de controladores y mappers para API.
+- Colaboración en la integración de servicios reutilizables.
 
+| Nº  | Commits | Files |
+| :-: | :------ | :---- |
+|  1  | [FIxed Docker, Merge Postman](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b1042d0952b7f5c5929386553bb850272adbfb76) | API Postman collection, docker scripts :contentReference[oaicite:0]{index=0} |
+|  2  | [feat: …](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/715148ab8b0fec8f9cdc94ae189d984072579d84) | (endpoint/API/JSON related — placeholder until you add description) |
+|  3  | [feat: …](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/6ebe337c3b20c8193a43a4ecfea8e3d3ab403451) | (REST/JSON enhancement — placeholder until you add description) |
+|  4  | [feat: Add Dockerfile and docker-compose configuration for application containerization](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/beca709fb78d4d0790e7c92f5913f0f82db33cdf) | Dockerfile & docker-compose.yml :contentReference[oaicite:1]{index=1} |
+|  5  | [Actuaizacion DTO MAPPER CONTROLLER](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9a4dcc8b29abc26fef1db88e8e3821a53f82dafe) | API DTOs and controller improvements :contentReference[oaicite:2]{index=2} |
 ---
 
 #### **Alumno 3 - Guillermo Blázquez Barbacid**
