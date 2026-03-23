@@ -405,11 +405,89 @@ Diagrama actualizado incluyendo los @RestController y su relación con los @Serv
 
 #### **Pasos para construir y publicar la imagen:**
 
-1. **Navegar al directorio de Docker**:
+## 🐳 Lanzamiento del Proyecto con Docker en la Máquina Virtual
 
-   ```bash
-   cd docker
-   ```
+Sigue estos pasos para lanzar la aplicación Mokaf usando Docker desde la máquina virtual.
+
+---
+
+### 1️⃣ Conexión a la Máquina Virtual
+
+Accede mediante SSH:
+
+ssh -i [ruta/a/clave.key] [usuario]@[IP-o-dominio-VM]
+
+---
+
+### 2️⃣ Clonar el repositorio
+
+git clone https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20.git
+cd practica-daw-2025-26-grupo-20
+
+---
+
+### 3️⃣ Crear la imagen Docker
+
+Desde la **carpeta raíz del proyecto**, ejecuta:
+
+- **Bash:**
+./docker/create_image.sh mokaf
+
+- **PowerShell:**
+./docker/create_image.ps1 mokaf
+
+> Esto genera la imagen de la aplicación lista para publicar en DockerHub.
+
+---
+
+### 4️⃣ Publicar la imagen Docker
+
+- **Bash:**
+./docker/publish_image.sh
+
+- **PowerShell:**
+./docker/publish_image.ps1
+
+---
+
+### 5️⃣ Publicar el artefacto Docker Compose
+
+- **Bash y PowerShell:**
+./docker/publish_docker-compose.sh
+
+> Estos scripts usan el archivo `.env` que debe estar en la carpeta `docker`, con contraseñas y lista de usuarios configuradas.
+
+---
+
+### 6️⃣ Lanzamiento de la aplicación con Docker Compose
+
+1. Accede a la carpeta `docker`:
+
+cd docker
+
+2. Configura el modo según el tipo de arranque:
+
+#### 🔹 Primer arranque (crea la base de datos)
+
+- **Bash:**
+DOCKERHUB_USER=usuario1 SPRING_JPA_HIBERNATE_DDL_AUTO=create docker compose up -d
+
+- **PowerShell:**
+$env:DOCKERHUB_USER="usuario1"
+$env:SPRING_JPA_HIBERNATE_DDL_AUTO="create"
+docker compose up -d
+
+#### 🔹 Arranque normal (sin recrear base de datos)
+
+- **Bash:**
+DOCKERHUB_USER=usuario1 SPRING_JPA_HIBERNATE_DDL_AUTO=none docker compose up -d
+
+- **PowerShell:**
+$env:DOCKERHUB_USER="usuario1"
+$env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
+docker compose up -d
+
+> Esto levantará la aplicación junto con todos los servicios definidos en `docker-compose.yml`.
 
 2. **AQUÍ LOS SIGUIENTES PASOS**
 
