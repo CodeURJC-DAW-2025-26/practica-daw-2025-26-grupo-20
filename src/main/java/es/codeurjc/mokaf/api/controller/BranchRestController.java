@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,21 +115,28 @@ public class BranchRestController {
 
     @Operation(summary = "Delete a branch. Admin only.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Branch deleted"),
+            @ApiResponse(responseCode = "200", description = "Branch deleted"),
+            @ApiResponse(responseCode = "409", description = "Conflict - branch in use"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
             @ApiResponse(responseCode = "403", description = "Forbidden — admin only"),
             @ApiResponse(responseCode = "404", description = "Branch not found")
     })
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBranch(@PathVariable Long id, Authentication authentication) {
+        @DeleteMapping("/{id}")
+        public org.springframework.http.ResponseEntity<java.util.Map<String, String>> deleteBranch(@PathVariable Long id, Authentication authentication) {
         requireAdmin(authentication);
 
         Branch branch = branchService.getBranchById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Branch not found: " + id));
 
-        branchService.delete(branch.getId());
-    }
+        try {
+            branchService.delete(branch.getId());
+            return org.springframework.http.ResponseEntity.ok(java.util.Map.of("message", "Branch deleted successfully"));
+        } catch (DataIntegrityViolationException ex) {
+            return org.springframework.http.ResponseEntity
+                .status(org.springframework.http.HttpStatus.CONFLICT)
+                .body(java.util.Map.of("message", "Cannot delete branch: there are orders referencing it"));
+        }
+        }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     private void requireAdmin(Authentication authentication) {

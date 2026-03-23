@@ -142,18 +142,18 @@ public class UserRestController {
 
     @Operation(summary = "Delete the authenticated user's own account")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Account deleted"),
+            @ApiResponse(responseCode = "200", description = "Account deleted"),
             @ApiResponse(responseCode = "401", description = "Not authenticated")
     })
-    @DeleteMapping("/me")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMe(HttpServletRequest request, HttpServletResponse response) {
+        @DeleteMapping("/me")
+        public java.util.Map<String, String> deleteMe(HttpServletRequest request, HttpServletResponse response) {
         User user = resolveCurrentUser(request);
         if (user.getImage() != null) imageService.deleteImage(user.getImage().getId());
         userService.delete(user);
         new SecurityContextLogoutHandler().logout(
-                request, response, SecurityContextHolder.getContext().getAuthentication());
-    }
+            request, response, SecurityContextHolder.getContext().getAuthentication());
+        return java.util.Map.of("message", "Account deleted successfully");
+        }
 
     // ── User management (ADMIN) ───────────────────────────────────────────────
 
@@ -231,13 +231,12 @@ public class UserRestController {
                description = "ADMIN: any user. Non-admin: own account only. "
                            + "Subtítulo vídeo: 'Endpoint control de acceso por dueño'")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "User deleted"),
+            @ApiResponse(responseCode = "200", description = "User deleted"),
             @ApiResponse(responseCode = "403", description = "Access denied — not the owner"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long id, HttpServletRequest request) {
+    public java.util.Map<String, String> deleteUser(@PathVariable Long id, HttpServletRequest request) {
         User currentUser = resolveCurrentUser(request);
         User target = userService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
@@ -248,6 +247,7 @@ public class UserRestController {
 
         if (target.getImage() != null) imageService.deleteImage(target.getImage().getId());
         userService.delete(target);
+        return java.util.Map.of("message", "User deleted successfully");
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

@@ -160,14 +160,13 @@ public class OrderRestController {
     // ── DELETE /api/v1/orders/{id} ────────────────────────────────────────────
     @Operation(summary = "Delete an order. Admin only.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Order deleted"),
+            @ApiResponse(responseCode = "200", description = "Order deleted"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
             @ApiResponse(responseCode = "403", description = "Forbidden — admin only"),
             @ApiResponse(responseCode = "404", description = "Order not found")
     })
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrder(@PathVariable Long id, Authentication authentication) {
+        @DeleteMapping("/{id}")
+        public java.util.Map<String, String> deleteOrder(@PathVariable Long id, Authentication authentication) {
 
         User user = resolveUser(authentication);
 
@@ -180,6 +179,7 @@ public class OrderRestController {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + id));
 
         ordersService.deleteOrder(id);
+        return java.util.Map.of("message", "Order deleted successfully");
     }
 
     // ── Helper ────────────────────────────────────────────────────────────────
