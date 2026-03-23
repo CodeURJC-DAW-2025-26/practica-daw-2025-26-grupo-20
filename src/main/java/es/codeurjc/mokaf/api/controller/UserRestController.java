@@ -1,5 +1,34 @@
 package es.codeurjc.mokaf.api.controller;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import es.codeurjc.mokaf.api.dto.UserDTO;
 import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.exception.UnauthorizedException;
@@ -15,26 +44,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Tag(name = "Users", description = "User management and profile operations")
 @RestController
@@ -143,18 +152,18 @@ public class UserRestController {
 
     @Operation(summary = "Delete the authenticated user's own account")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Account deleted"),
+            @ApiResponse(responseCode = "204", description = "Account deleted"),
             @ApiResponse(responseCode = "401", description = "Not authenticated")
     })
-        @DeleteMapping("/me")
-        public java.util.Map<String, String> deleteMe(HttpServletRequest request, HttpServletResponse response) {
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMe(HttpServletRequest request, HttpServletResponse response) {
         User user = resolveCurrentUser(request);
         if (user.getImage() != null) imageService.deleteImage(user.getImage().getId());
         userService.delete(user);
         new SecurityContextLogoutHandler().logout(
-            request, response, SecurityContextHolder.getContext().getAuthentication());
-        return java.util.Map.of("message", "Account deleted successfully");
-        }
+                request, response, SecurityContextHolder.getContext().getAuthentication());
+    }
 
     // ── User management (ADMIN) ───────────────────────────────────────────────
 
@@ -177,29 +186,27 @@ public class UserRestController {
                 .map(userMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
-
     @Operation(summary = "Create a new user",
                description = "Subtítulo vídeo: 'Endpoint creación de User'")
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         if (userService.existsByEmail(userDTO.email()))
-            throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,
-                    "Email already in use: " + userDTO.email());
-
-        String rawPassword = extractPassword(userDTO);
-        if (rawPassword == null || rawPassword.isBlank()) {
-            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST,
-                    "Password is required");
+            throw new IllegalArgumentException("Email already in use: " + userDTO.email());
+        
+        // Validar que venga password
+        if (userDTO.password() == null || userDTO.password().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
         }
-
+        
         User user = userMapper.toEntity(userDTO);
-        // encode and store password hash
-        user.setPasswordHash(passwordEncoder.encode(rawPassword));
-
+        
+        // CODIFICAR EL PASSWORD antes de guardar (esto faltaba)
+        user.setPasswordHash(passwordEncoder.encode(userDTO.password()));
+        
         if (user.getRole() == null) user.setRole(User.Role.CUSTOMER);
         User saved = userService.save(user);
         UserDTO savedDto = userMapper.toDTO(saved);
-
+    
         return ResponseEntity.created(
                         ServletUriComponentsBuilder
                                 .fromCurrentRequest()
@@ -243,12 +250,13 @@ public class UserRestController {
                description = "ADMIN: any user. Non-admin: own account only. "
                            + "Subtítulo vídeo: 'Endpoint control de acceso por dueño'")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User deleted"),
+            @ApiResponse(responseCode = "204", description = "User deleted"),
             @ApiResponse(responseCode = "403", description = "Access denied — not the owner"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @DeleteMapping("/{id}")
-    public java.util.Map<String, String> deleteUser(@PathVariable Long id, HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id, HttpServletRequest request) {
         User currentUser = resolveCurrentUser(request);
         User target = userService.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
@@ -259,26 +267,9 @@ public class UserRestController {
 
         if (target.getImage() != null) imageService.deleteImage(target.getImage().getId());
         userService.delete(target);
-        return java.util.Map.of("message", "User deleted successfully");
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private String extractPassword(UserDTO userDTO) {
-        try {
-            java.lang.reflect.Method passwordMethod = userDTO.getClass().getMethod("password");
-            Object value = passwordMethod.invoke(userDTO);
-            return value instanceof String ? (String) value : null;
-        } catch (ReflectiveOperationException ignored) {
-            try {
-                java.lang.reflect.Method getterMethod = userDTO.getClass().getMethod("getPassword");
-                Object value = getterMethod.invoke(userDTO);
-                return value instanceof String ? (String) value : null;
-            } catch (ReflectiveOperationException ignoredToo) {
-                return null;
-            }
-        }
-    }
 
     private User resolveCurrentUser(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();

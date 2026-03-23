@@ -3,6 +3,7 @@ package es.codeurjc.mokaf.api.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record UserDTO(
         // ── Identity ──────────────────────────────────────────────────────
@@ -10,6 +11,10 @@ public record UserDTO(
         String name,
         String email,
         String role,
+
+        // ── Password (solo escritura, nunca se devuelve en la respuesta) ──
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        String password,
 
         // ── Image ─────────────────────────────────────────────────────────
         Long imageId,
