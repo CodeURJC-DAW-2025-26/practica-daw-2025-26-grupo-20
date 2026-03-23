@@ -5,8 +5,8 @@ import java.time.Duration;
 
 public enum TokenType {
 
-    ACCESS (Duration.ofMinutes(5),  "AuthToken"),
-    REFRESH(Duration.ofDays(7),     "RefreshToken");
+    ACCESS (Duration.ofMinutes(30),  "AuthToken"),
+    REFRESH(Duration.ofDays(14),     "RefreshToken");
 
     private final Duration duration;
     private final String cookieName;
