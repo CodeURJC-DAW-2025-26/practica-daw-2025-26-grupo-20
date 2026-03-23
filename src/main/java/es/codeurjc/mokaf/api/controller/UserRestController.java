@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -182,8 +183,19 @@ public class UserRestController {
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         if (userService.existsByEmail(userDTO.email()))
-            throw new IllegalArgumentException("Email already in use: " + userDTO.email());
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,
+                    "Email already in use: " + userDTO.email());
+
+        String rawPassword = extractPassword(userDTO);
+        if (rawPassword == null || rawPassword.isBlank()) {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Password is required");
+        }
+
         User user = userMapper.toEntity(userDTO);
+        // encode and store password hash
+        user.setPasswordHash(passwordEncoder.encode(rawPassword));
+
         if (user.getRole() == null) user.setRole(User.Role.CUSTOMER);
         User saved = userService.save(user);
         UserDTO savedDto = userMapper.toDTO(saved);
@@ -251,6 +263,22 @@ public class UserRestController {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private String extractPassword(UserDTO userDTO) {
+        try {
+            java.lang.reflect.Method passwordMethod = userDTO.getClass().getMethod("password");
+            Object value = passwordMethod.invoke(userDTO);
+            return value instanceof String ? (String) value : null;
+        } catch (ReflectiveOperationException ignored) {
+            try {
+                java.lang.reflect.Method getterMethod = userDTO.getClass().getMethod("getPassword");
+                Object value = getterMethod.invoke(userDTO);
+                return value instanceof String ? (String) value : null;
+            } catch (ReflectiveOperationException ignoredToo) {
+                return null;
+            }
+        }
+    }
 
     private User resolveCurrentUser(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
