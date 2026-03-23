@@ -125,6 +125,27 @@ public class OrderRestController {
         return orderMapper.toDto(paid);
     }
 
+    // ── GET /api/v1/orders/user/{userId} ──────────────────────────────────────
+    @Operation(summary = "Get paid orders for a given user id (admin or owner)")
+    @GetMapping("/user/{userId}")
+    public Page<OrderDTO> getOrdersByUserId(
+            @PathVariable Long userId,
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        User requester = resolveUser(authentication);
+
+        // Admins can request any user's orders; normal users only their own
+        if (requester.getRole() == User.Role.ADMIN || requester.getId().equals(userId)) {
+            return ordersService.getPaidOrdersByUser(userId, page, size)
+                    .map(orderMapper::toDto);
+        } else {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN,
+                    "You don't have permission to view these orders");
+        }
+    }
+
     // ── DELETE /api/v1/orders/{id} ────────────────────────────────────────────
     @Operation(summary = "Delete an order. Admin only.")
     @ApiResponses({

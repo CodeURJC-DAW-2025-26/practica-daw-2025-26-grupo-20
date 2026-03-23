@@ -886,12 +886,12 @@
           "response": []
         },
         {
-          "name": "Get Order by User ID",
+          "name": "Get Orders by User ID",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/user/8?page=0&size=10",
+              "raw": "{{baseUrl}}/api/v1/orders/user/{{userId}}?page=0&size=10",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -900,7 +900,7 @@
                 "v1",
                 "orders",
                 "user",
-                "8"
+                "{{userId}}"
               ],
               "query": [
                 {
