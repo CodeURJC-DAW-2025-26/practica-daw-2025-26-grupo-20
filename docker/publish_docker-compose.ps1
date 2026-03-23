@@ -2,12 +2,16 @@ param()
 
 $ErrorActionPreference = "Stop"
 
-$envFile = ".\docker\.env"
-if (-not (Test-Path $envFile) -and (Test-Path ".\.env")) {
-    $envFile = ".\.env"
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$rootDir = Split-Path -Parent $scriptDir
+
+$envFile = Join-Path $scriptDir ".env"
+if (-not (Test-Path $envFile) -and (Test-Path (Join-Path $rootDir ".env"))) {
+    $envFile = Join-Path $rootDir ".env"
 }
 
-$composeFile = "docker/docker-compose.yml"
+$composeFile = "docker-compose.yml"
+$composeFilePath = Join-Path $scriptDir $composeFile
 $artifactName = "mokaf-compose"
 $tag = "latest"
 $artifactType = "application/vnd.docker.compose.project.v1+yaml"
@@ -19,10 +23,12 @@ if (-not (Get-Command oras -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-if (-not (Test-Path $composeFile)) {
+if (-not (Test-Path $composeFilePath)) {
     Write-Host "No se encuentra el fichero $composeFile"
     exit 1
 }
+
+Set-Location $scriptDir
 
 if (Test-Path $envFile) {
     Write-Host "Cargando variables desde $envFile..."
