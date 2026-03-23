@@ -80,11 +80,10 @@ public class FaqRestController {
 
     @Operation(summary = "Delete a FAQ")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFaq(@PathVariable Long id) {
+    public java.util.Map<String, String> deleteFaq(@PathVariable Long id) {
         Faq faq = faqService.getFaqById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("FAQ not found: " + id));
-
         faqService.delete(faq.getId());
+        return java.util.Map.of("message", "FAQ deleted successfully");
     }
 }

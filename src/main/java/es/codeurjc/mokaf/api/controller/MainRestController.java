@@ -13,7 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,13 +40,12 @@ public class MainRestController {
 
     // ── POST /api/v1/contact ──────────────────────────────────────────────────
     @Operation(summary = "Send a contact message")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Message sent successfully"),
+        @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Message sent successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request body")
-    })
-    @PostMapping("/contact")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void sendContactMessage(@Valid @RequestBody ContactRequestDTO dto) {
+        })
+        @PostMapping(value = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
+        public Map<String, String> sendContactMessage(@Valid @RequestBody ContactRequestDTO dto) {
 
         ContactRequest request = new ContactRequest();
         request.setFirstName(dto.firstName());
@@ -56,6 +57,8 @@ public class MainRestController {
         request.setNewsletter(dto.newsletter());
 
         contactEmailService.sendContactEmail(request);
+
+        return Map.of("message", "Mensaje enviado correctamente");
     }
 
     // ── GET /api/v1/about-us ──────────────────────────────────────────────────
