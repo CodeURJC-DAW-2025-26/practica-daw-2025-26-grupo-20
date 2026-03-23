@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -68,14 +70,21 @@ public class BranchRestController {
             @ApiResponse(responseCode = "403", description = "Forbidden — admin only")
     })
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public BranchDTO createBranch(@Valid @RequestBody BranchDTO branchDTO,
-                                  Authentication authentication) {
+    public ResponseEntity<BranchDTO> createBranch(@Valid @RequestBody BranchDTO branchDTO,
+                                                  Authentication authentication) {
         requireAdmin(authentication);
 
         Branch branch = branchMapper.toEntity(branchDTO);
         Branch saved = branchService.save(branch);
-        return branchMapper.toDto(saved);
+        BranchDTO savedDto = branchMapper.toDto(saved);
+
+        return ResponseEntity.created(
+                        ServletUriComponentsBuilder
+                                .fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(savedDto.id())
+                                .toUri())
+                .body(savedDto);
     }
 
     // ── PUT /api/v1/branches/{id} ─────────────────────────────────────────────

@@ -18,12 +18,14 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -178,13 +180,21 @@ public class UserRestController {
     @Operation(summary = "Create a new user",
                description = "Subtítulo vídeo: 'Endpoint creación de User'")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         if (userService.existsByEmail(userDTO.email()))
             throw new IllegalArgumentException("Email already in use: " + userDTO.email());
         User user = userMapper.toEntity(userDTO);
         if (user.getRole() == null) user.setRole(User.Role.CUSTOMER);
-        return userMapper.toDTO(userService.save(user));
+        User saved = userService.save(user);
+        UserDTO savedDto = userMapper.toDTO(saved);
+
+        return ResponseEntity.created(
+                        ServletUriComponentsBuilder
+                                .fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(saved.getId())
+                                .toUri())
+                .body(savedDto);
     }
 
     @Operation(summary = "Update a user by id",

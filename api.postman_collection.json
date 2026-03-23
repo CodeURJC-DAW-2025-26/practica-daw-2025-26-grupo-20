@@ -937,12 +937,12 @@
           "response": []
         },
         {
-          "name": "Create Pay Order",
+          "name": "Create Order Payment",
           "request": {
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/orders/1/checkout",
+              "raw": "{{baseUrl}}/api/v1/orders/1/payments",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -951,7 +951,7 @@
                 "v1",
                 "orders",
                 "1",
-                "checkout"
+                "payments"
               ]
             }
           },
@@ -1136,12 +1136,12 @@
           "response": []
         },
         {
-          "name": "Checkout Cart",
+          "name": "Create Cart Payment",
           "request": {
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/cart/checkout?paymentMethod=paypal",
+              "raw": "{{baseUrl}}/api/v1/cart/payments?paymentMethod=paypal",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1149,7 +1149,7 @@
                 "api",
                 "v1",
                 "cart",
-                "checkout"
+                "payments"
               ],
               "query": [
                 {

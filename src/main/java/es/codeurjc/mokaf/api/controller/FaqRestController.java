@@ -9,7 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,11 +51,18 @@ public class FaqRestController {
 
     @Operation(summary = "Create a new FAQ")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public FaqDTO createFaq(@RequestBody FaqDTO faqDTO) {
+    public ResponseEntity<FaqDTO> createFaq(@RequestBody FaqDTO faqDTO) {
         Faq faq = faqMapper.toEntity(faqDTO);
         Faq savedFaq = faqService.save(faq);
-        return faqMapper.toDto(savedFaq);
+        FaqDTO savedDto = faqMapper.toDto(savedFaq);
+
+        return ResponseEntity.created(
+                        ServletUriComponentsBuilder
+                                .fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(savedDto.id())
+                                .toUri())
+                .body(savedDto);
     }
 
     @Operation(summary = "Update an existing FAQ")

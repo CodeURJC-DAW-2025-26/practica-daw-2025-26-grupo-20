@@ -257,16 +257,16 @@ public class CartRestController {
     }
 
     /**
-     * POST /api/v1/cart/checkout - Process checkout
+     * POST /api/v1/cart/payments - Process payment and create order
      */
-    @Operation(summary = "Process checkout and create order")
+    @Operation(summary = "Create a payment for the cart and generate order")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Checkout successful"),
+        @ApiResponse(responseCode = "200", description = "Payment processed successfully"),
         @ApiResponse(responseCode = "401", description = "User not authenticated"),
         @ApiResponse(responseCode = "400", description = "Empty cart or invalid payment method")
     })
-    @PostMapping("/checkout")
-    public CartResponseDTO checkout(
+    @PostMapping("/payments")
+    public CartResponseDTO createPayment(
             @RequestParam String paymentMethod,
             @AuthenticationPrincipal User user) {
 

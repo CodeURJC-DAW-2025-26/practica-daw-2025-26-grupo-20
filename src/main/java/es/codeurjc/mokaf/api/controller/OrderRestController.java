@@ -77,10 +77,10 @@ public class OrderRestController {
         return orderMapper.toDto(order);
     }
 
-    // ── POST /api/v1/orders/{orderId}/checkout ────────────────────────────────
-    // Change Status from CART to PAID. Only owner can checkout their order. Admin cannot checkout other users' orders.
-    // Only owner can checkout their order. Admin cannot checkout other users' orders.
-    @Operation(summary = "Checkout an order by its id (CART → PAID)")
+    // ── POST /api/v1/orders/{orderId}/payments ────────────────────────────────
+    // Change Status from CART to PAID. Only owner can pay their order. Admin cannot pay other users' orders.
+    // Only owner can pay their order. Admin cannot pay other users' orders.
+    @Operation(summary = "Create payment for an order by its id (CART → PAID)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Order paid successfully"),
             @ApiResponse(responseCode = "400", description = "Order is not in CART status"),
@@ -88,8 +88,8 @@ public class OrderRestController {
             @ApiResponse(responseCode = "403", description = "Forbidden — not your order"),
             @ApiResponse(responseCode = "404", description = "Order not found")
     })
-    @PostMapping("/{orderId}/checkout")
-    public OrderDTO checkout(@PathVariable Long orderId, Authentication authentication) {
+    @PostMapping("/{orderId}/payments")
+    public OrderDTO createPayment(@PathVariable Long orderId, Authentication authentication) {
 
         User user = resolveUser(authentication);
 
@@ -97,10 +97,10 @@ public class OrderRestController {
         Order order = ordersService.getOrderById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + orderId));
 
-        // Only owner can checkout their order
+        // Only owner can pay their order
         if (!order.getUser().getId().equals(user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "You can only checkout your own order");
+                "You can only pay your own order");
         }
 
         // Verify CART state
@@ -118,9 +118,9 @@ public class OrderRestController {
         // Process payment and change status to PAID
         ordersService.processCheckout(order.getUser().getId());
 
-        // Retun payed order (paid state)
+        // Return paid order
         Order paid = ordersService.getOrderById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found after checkout"));
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found after payment"));
 
         return orderMapper.toDto(paid);
     }

@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -88,7 +89,7 @@ public class ProductRestController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ProductDTO createProduct(@ModelAttribute ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> createProduct(@ModelAttribute ProductDTO productDTO) {
         Product product = new Product();
         product.setName(productDTO.name());
         product.setDescription(productDTO.description());
@@ -113,8 +114,15 @@ public class ProductRestController {
         }
 
         productService.addProduct(product);
+        ProductDTO savedDto = productMapper.toProductDTO(product);
 
-        return productMapper.toProductDTO(product);
+        return ResponseEntity.created(
+                ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(product.getId())
+                    .toUri())
+            .body(savedDto);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
