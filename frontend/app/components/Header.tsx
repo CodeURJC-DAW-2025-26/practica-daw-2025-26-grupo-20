@@ -31,7 +31,7 @@ export default function Header() {
             <NavLink 
               key={link.to} 
               to={link.to}
-              className={({ isActive }) => `text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:text-[#d4b88d] ${isActive ? 'text-[#d4b88d]' : 'text-stone-400'}`}
+              className={({ isActive }) => `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg hover:text-[#d4b88d] hover:bg-white/[0.05] ${isActive ? 'text-[#d4b88d] bg-white/[0.03]' : 'text-stone-300'}`}
             >
               {link.label}
             </NavLink>
@@ -44,19 +44,19 @@ export default function Header() {
              <div className="flex items-center gap-5">
                 <Link to="/profile" className="flex items-center gap-3 group">
                    <div className="text-right flex flex-col items-end">
-                      <span className="text-[10px] text-stone-500 font-bold uppercase tracking-widest">{user?.name}</span>
-                      <span className="text-[11px] text-[#d4b88d] font-serif italic">Mi Perfil</span>
+                      <span className="text-[11px] text-stone-300 font-bold uppercase tracking-widest leading-none mb-1">{user?.name}</span>
+                      <span className="text-[12px] text-[#d4b88d] font-serif italic">Mi Perfil</span>
                    </div>
-                   <div className="w-12 h-12 rounded-full border border-[#d4b88d]/30 flex items-center justify-center text-[#d4b88d] group-hover:bg-[#d4b88d] group-hover:text-black transition-all duration-500 shadow-xl overflow-hidden">
+                   <div className="w-12 h-12 rounded-full border-2 border-[#d4b88d]/40 flex items-center justify-center text-[#d4b88d] group-hover:border-[#d4b88d] group-hover:bg-[#d4b88d] group-hover:text-black transition-all duration-500 shadow-xl overflow-hidden">
                       {user?.profileImageUrl ? (
                         <img src={user.profileImageUrl} alt="user" className="w-full h-full object-cover" />
                       ) : (
-                        <i className="fas fa-user text-[13px]"></i>
+                        <i className="fas fa-user text-[14px]"></i>
                       )}
                    </div>
                 </Link>
-                <button onClick={handleLogout} className="w-10 h-10 flex items-center justify-center text-stone-600 hover:text-white transition-colors">
-                   <i className="fas fa-sign-out-alt text-[11px]"></i>
+                <button onClick={handleLogout} className="w-10 h-10 flex items-center justify-center text-stone-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
+                   <i className="fas fa-sign-out-alt text-[14px]"></i>
                 </button>
              </div>
           ) : (

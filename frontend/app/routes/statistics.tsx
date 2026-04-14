@@ -1,9 +1,10 @@
 import { useLoaderData, useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 export async function loader() {
-  const response = await fetch("https://localhost:8443/api/v1/statistics/dashboard", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/statistics/dashboard`, {
     credentials: "include"
   });
   
@@ -59,7 +60,7 @@ export default function Statistics() {
            
            <div className="relative w-64 h-64 flex-shrink-0">
              <img 
-               src={stats.bestProduct?.imageUrl ? `https://localhost:8443${stats.bestProduct.imageUrl}` : "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500"} 
+               src={stats.bestProduct?.imageUrl ? `${API_BASE_URL}${stats.bestProduct.imageUrl}` : "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500"} 
                className="w-full h-full object-cover rounded-[2.5rem] shadow-2xl transform group-hover:scale-105 transition-transform duration-700" 
                alt="Best Product"
              />
