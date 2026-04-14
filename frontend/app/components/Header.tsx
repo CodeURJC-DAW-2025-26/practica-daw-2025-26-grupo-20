@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 export default function Header() {
   const { isLogged, user, logout } = useAuthStore();
@@ -36,6 +37,16 @@ export default function Header() {
               {link.label}
             </NavLink>
           ))}
+          {/* ============================================================== */}
+          {/* TODO: FRONTEND ROLLBACK SEC - GESTIÓN PRODUCTOS TEMP BYPASS    */}
+          {/* Elimina o condiciona (solo admin) este botón cuando haya login */}
+          <NavLink 
+            to="/gestion-menu"
+            className={({ isActive }) => `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg ${isActive ? 'text-amber-400 bg-white/[0.05]' : 'text-amber-500'} hover:text-amber-400 hover:bg-white/[0.05] border border-amber-500/30`}
+          >
+            Gestión
+          </NavLink>
+          {/* ============================================================== */}
         </nav>
 
         {/* Account Button */}
