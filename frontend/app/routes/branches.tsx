@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router";
+import { API_BASE_URL } from "../config";
 
 interface Branch {
   id: number;
@@ -9,7 +10,7 @@ interface Branch {
 
 export async function loader() {
   try {
-    const response = await fetch("https://localhost:8443/api/v1/branches", { credentials: "include" });
+    const response = await fetch(`${API_BASE_URL}/api/v1/branches`, { credentials: "include" });
     if (!response.ok) return { branches: [] };
     const branches = await response.json();
     return { branches };

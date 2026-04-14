@@ -1,6 +1,7 @@
 import { Form, useActionData, useNavigate, Link } from "react-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 export async function action({ request }: { request: Request }) {
   try {
@@ -8,7 +9,7 @@ export async function action({ request }: { request: Request }) {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const response = await fetch("https://localhost:8443/api/v1/auth/sessions", {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

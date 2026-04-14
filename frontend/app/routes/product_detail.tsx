@@ -1,10 +1,11 @@
 import { useLoaderData, Link, Form } from "react-router";
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 
 export async function loader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes] = await Promise.all([
-    fetch(`https://localhost:8443/api/v1/products/${params.id}`, { credentials: "include" }),
-    fetch(`https://localhost:8443/api/v1/products/${params.id}/reviews`, { credentials: "include" })
+    fetch(`${API_BASE_URL}/api/v1/products/${params.id}`, { credentials: "include" }),
+    fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, { credentials: "include" })
   ]);
 
   if (!productRes.ok) throw new Response("Producto no encontrado", { status: 404 });
@@ -54,7 +55,7 @@ export default function ProductDetail() {
           <div className="absolute -inset-4 bg-stone-100 rounded-[3rem] -z-10 group-hover:rotate-2 group-hover:scale-105 transition-transform duration-700"></div>
           <div className="relative aspect-square overflow-hidden rounded-[2.5rem] shadow-2xl shadow-stone-900/10">
             <img 
-              src={product.imageUrl ? `https://localhost:8443${product.imageUrl}` : `https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=800&auto=format&fit=crop&q=80`} 
+              src={product.imageUrl ? `${API_BASE_URL}${product.imageUrl}` : `https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=800&auto=format&fit=crop&q=80`} 
               alt={product.name} 
               className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000"
             />

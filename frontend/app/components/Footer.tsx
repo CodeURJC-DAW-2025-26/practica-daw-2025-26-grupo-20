@@ -91,10 +91,10 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-8 pt-12 border-t border-white/5 text-center">
          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-[10px] text-stone-600 font-bold uppercase tracking-[0.6em]">
+            <p className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.4em]">
                &copy; 2026 Mokaf Specialty &mdash; Destilando Pasión
             </p>
-            <div className="flex items-center gap-6 text-stone-700 text-[9px] font-bold uppercase tracking-[0.2em]">
+            <div className="flex items-center gap-6 text-stone-500 text-[10px] font-bold uppercase tracking-[0.2em]">
                <a href="#" className="hover:text-[#d4b88d] transition-colors">Cookies</a>
                <a href="#" className="hover:text-[#d4b88d] transition-colors">Privacidad</a>
                <a href="#" className="hover:text-[#d4b88d] transition-colors">Términos</a>

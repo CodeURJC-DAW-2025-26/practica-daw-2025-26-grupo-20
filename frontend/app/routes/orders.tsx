@@ -1,12 +1,13 @@
 import { useLoaderData, Link, useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const page = url.searchParams.get("page") || "0";
   
-  const response = await fetch(`https://localhost:8443/api/v1/orders?page=${page}&size=10`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/orders?page=${page}&size=10`, {
     credentials: "include"
   });
   
@@ -110,7 +111,7 @@ export default function Orders() {
                {order.items?.slice(0, 5).map((item: any) => (
                   <div key={item.id} className="relative group/item">
                      <img 
-                        src={item.productImageUrl ? `https://localhost:8443${item.productImageUrl}` : "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=100"} 
+                        src={item.productImageUrl ? `${API_BASE_URL}${item.productImageUrl}` : "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=100"} 
                         alt="Product" 
                         className="w-12 h-12 rounded-xl object-cover border-2 border-white shadow-md group-hover/item:scale-110 transition-transform"
                      />

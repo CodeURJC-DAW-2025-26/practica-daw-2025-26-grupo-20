@@ -1,6 +1,7 @@
 import { useLoaderData, Link, useActionData, Form, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 interface CartItem {
   id: number;
@@ -120,7 +121,7 @@ export default function Cart() {
               <div key={item.id} className="group bg-white rounded-[3rem] p-8 flex flex-col md:flex-row items-center gap-8 border border-stone-100 shadow-sm hover:shadow-2xl hover:shadow-stone-200/50 transition-all duration-500">
                 <Link to={`/product/${item.productId}`} className="w-40 h-40 rounded-[2rem] overflow-hidden flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform">
                   <img 
-                    src={item.productImageUrl ? `https://localhost:8443${item.productImageUrl}` : `https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500`} 
+                    src={item.productImageUrl ? `${API_BASE_URL}${item.productImageUrl}` : `https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500`} 
                     alt={item.productName} 
                     className="w-full h-full object-cover"
                   />

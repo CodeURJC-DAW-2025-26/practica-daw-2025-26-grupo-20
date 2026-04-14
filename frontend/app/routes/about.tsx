@@ -1,8 +1,9 @@
 import { useLoaderData, Link } from "react-router";
+import { API_BASE_URL } from "../config";
 
 export async function loader() {
   try {
-    const response = await fetch("https://localhost:8443/api/v1/about-us", { credentials: "include" });
+    const response = await fetch(`${API_BASE_URL}/api/v1/about-us`, { credentials: "include" });
     if (!response.ok) return { team: [] };
     const team = await response.json();
     return { team };

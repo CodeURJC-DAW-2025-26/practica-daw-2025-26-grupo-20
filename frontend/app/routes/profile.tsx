@@ -1,9 +1,10 @@
 import { useLoaderData, useActionData, Form, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
+import { API_BASE_URL } from "../config";
 
 export async function loader() {
-  const response = await fetch("https://localhost:8443/api/v1/users/me", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
     credentials: "include"
   });
   
@@ -20,7 +21,7 @@ export async function action({ request }: { request: Request }) {
 
   if (intent === "update") {
     const data = Object.fromEntries(formData);
-    const response = await fetch("https://localhost:8443/api/v1/users/me", {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -39,7 +40,7 @@ export async function action({ request }: { request: Request }) {
     const body = new FormData();
     body.append("image", file);
 
-    const response = await fetch("https://localhost:8443/api/v1/users/me/image", {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/me/image`, {
       method: "POST",
       credentials: "include",
       body,

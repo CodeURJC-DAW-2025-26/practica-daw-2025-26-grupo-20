@@ -1,10 +1,11 @@
 import { useLoaderData, Form, useActionData, Link } from "react-router";
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
 
 export async function loader() {
   try {
-    const teamRes = await fetch("https://localhost:8443/api/v1/about-us", { credentials: "include" });
-    const faqRes = await fetch("https://localhost:8443/api/v1/faqs", { credentials: "include" });
+    const teamRes = await fetch(`${API_BASE_URL}/api/v1/about-us`, { credentials: "include" });
+    const faqRes = await fetch(`${API_BASE_URL}/api/v1/faqs`, { credentials: "include" });
     
     const team = teamRes.ok ? await teamRes.json() : [];
     const faqs = faqRes.ok ? await faqRes.json() : [];
@@ -20,7 +21,7 @@ export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   
-  const response = await fetch("https://localhost:8443/api/v1/contact", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/contact`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
