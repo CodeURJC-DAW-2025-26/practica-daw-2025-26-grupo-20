@@ -31,7 +31,6 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user) => set({ user, isLogged: !!user }),
 
-      // Cierra sesión tanto en el cliente como en el servidor
       logout: async () => {
         try {
           await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
@@ -39,14 +38,13 @@ export const useAuthStore = create<AuthState>()(
             credentials: 'include',
           });
         } catch {
-          // Si falla el servidor, limpiamos igualmente el estado local
+          // Si falla el servidor limpiamos igualmente el estado local
         }
         set({ user: null, isLogged: false });
       },
 
-      // Llamado una sola vez al arrancar la app para sincronizar con la cookie de sesión
       initializeAuth: async () => {
-        // Si ya está inicializado no volvemos a llamar al servidor
+        // Solo ejecutar una vez por sesión de app
         if (get().isInitialized) return;
 
         try {
@@ -58,18 +56,18 @@ export const useAuthStore = create<AuthState>()(
             const user: User = await response.json();
             set({ user, isLogged: true, isInitialized: true });
           } else {
-            // 401 u otro error → sesión inválida, limpiamos el estado local
+            // 401 → sesión inválida o expirada
             set({ user: null, isLogged: false, isInitialized: true });
           }
         } catch {
-          // Sin conexión → mantenemos el estado persistido pero marcamos inicializado
+          // Sin conexión → mantenemos el estado persistido
           set({ isInitialized: true });
         }
       },
     }),
     {
       name: 'mokaf-auth',
-      // Solo persistimos user e isLogged. isInitialized siempre arranca en false
+      // isInitialized NO se persiste: siempre arranca en false para re-verificar con el servidor
       partialize: (state) => ({ user: state.user, isLogged: state.isLogged }),
     }
   )
