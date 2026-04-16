@@ -5,7 +5,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useNavigate,
 } from "react-router";
 import { useEffect } from "react";
 import type { Route } from "./+types/root";
@@ -23,7 +22,6 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap",
   },
-  // Font Awesome para los iconos que usa la app
   {
     rel: "stylesheet",
     href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
@@ -31,7 +29,6 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
-// ─── Layout principal ─────────────────────────────────────────────────────────
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
@@ -50,12 +47,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── App root ─────────────────────────────────────────────────────────────────
 export default function App() {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
 
-  // Una sola llamada al arrancar: sincroniza el estado local con la cookie de sesión del servidor.
-  // Esto cubre el caso en que el usuario recarga la página o abre una nueva pestaña.
+  // Al arrancar la app sincronizamos el estado local con la cookie de sesión del servidor.
+  // Cubre: recarga de página, nueva pestaña, vuelta desde otra app.
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
@@ -63,7 +59,6 @@ export default function App() {
   return <Outlet />;
 }
 
-// ─── Error boundary ───────────────────────────────────────────────────────────
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "¡Algo salió mal!";
   let details = "Se produjo un error inesperado.";
@@ -75,7 +70,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       error.status === 404
         ? "La página que buscas no existe."
         : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
+  } else if (import.meta.env.DEV && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
