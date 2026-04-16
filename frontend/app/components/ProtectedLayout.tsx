@@ -1,7 +1,38 @@
-// layouts/ProtectedLayout.tsx
-// Layout para rutas que requieren estar autenticado (cualquier rol)
-import ProtectedRoute from './ProtectedRoute';
+import { Outlet, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useAuthStore } from "../store/authStore";
 
+/**
+ * Layout para rutas que requieren autenticación (cualquier rol).
+ * En React Router v7 framework mode, este componente actúa como
+ * padre de las rutas hijas y renderiza <Outlet /> cuando hay sesión.
+ */
 export default function ProtectedLayout() {
-  return <ProtectedRoute />;
+  const { user, isLogged, isInitialized } = useAuthStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    if (!isLogged || !user) {
+      navigate("/login", { replace: true });
+    }
+  }, [isInitialized, isLogged, user, navigate]);
+
+  if (!isInitialized) return <AuthLoader />;
+  if (!isLogged || !user) return null;
+
+  return <Outlet />;
+}
+
+function AuthLoader() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#050404] gap-6">
+      <div className="w-16 h-16 bg-[#0c0b0b] border border-[#d4b88d]/20 rounded-[1.5rem] flex items-center justify-center text-[#d4b88d] text-2xl animate-pulse">
+        <i className="fas fa-mug-hot"></i>
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-stone-700">
+        Preparando tu café…
+      </p>
+    </div>
+  );
 }
