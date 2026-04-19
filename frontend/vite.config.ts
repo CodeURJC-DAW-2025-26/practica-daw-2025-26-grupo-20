@@ -12,9 +12,9 @@ export default defineConfig(({ mode }) => {
     resolve: {
       tsconfigPaths: true,
     },
-    server:{
+    server: {
       port: 5174,
-      proxy:{
+      proxy: {
         "/api": {
           target,
           changeOrigin: true,

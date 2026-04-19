@@ -32,8 +32,8 @@ export async function loader({ request }: { request: Request }) {
     const recRes = await fetch(`${API_BASE_URL}/api/v1/products?page=0&size=8`, { credentials: "include" });
     const recData = recRes.ok ? await recRes.json() : { content: [] };
 
-    return { 
-      allProducts: Array.isArray(productData?.content) ? (productData.content as Product[]) : [], 
+    return {
+      allProducts: Array.isArray(productData?.content) ? (productData.content as Product[]) : [],
       initialCategory: category,
       recommended: Array.isArray(recData?.content) ? (recData.content as Product[]) : []
     };
@@ -71,7 +71,7 @@ export default function Menu() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [hiddenAllergens, setHiddenAllergens] = useState<string[]>([]);
-  
+
   const category = searchParams.get("category") || initialCategory;
 
   const handleCategoryChange = (catId: string) => {
@@ -95,7 +95,7 @@ export default function Menu() {
 
       if (hiddenAllergens.length > 0 && product.allergens) {
         const hiddenLower = hiddenAllergens.map(h => h.toLowerCase());
-        const hasHiddenAllergen = product.allergens.some(a => 
+        const hasHiddenAllergen = product.allergens.some(a =>
           a.name && hiddenLower.includes(a.name.toLowerCase().trim())
         );
         if (hasHiddenAllergen) return false;
@@ -124,31 +124,31 @@ export default function Menu() {
     <div className="bg-[#050404] min-h-screen text-white pb-32">
       <div className="container mx-auto px-4 pt-10 max-w-7xl">
         <div className="animate-fade-in bg-[#080707] border border-[#d4b88d]/10 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
-          
+
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#d4b88d]/5 blur-[120px] rounded-full pointer-events-none"></div>
-          
+
           <div className="text-center mb-24 relative">
-             <h1 className="text-5xl md:text-6xl font-serif text-[#d4b88d] italic tracking-tighter mb-6 drop-shadow-sm">Nuestro Menú</h1>
-             <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/40 to-transparent mx-auto"></div>
+            <h1 className="text-5xl md:text-6xl font-serif text-[#d4b88d] italic tracking-tighter mb-6 drop-shadow-sm">Nuestro Menú</h1>
+            <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/40 to-transparent mx-auto"></div>
           </div>
 
           <section className="mb-32 relative">
-             <div className="flex flex-col items-center mb-16">
-                <div className="flex items-center gap-3 mb-3">
-                   <span className="text-[#d4b88d]/60 text-[10px] transform rotate-12">★</span>
-                   <h2 className="text-[13px] font-extrabold tracking-[0.5em] text-[#d4b88d] uppercase">Recomendados para ti</h2>
-                </div>
-                <div className="w-40 h-[1px] bg-stone-700/50"></div>
-             </div>
+            <div className="flex flex-col items-center mb-16">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-[#d4b88d]/60 text-[10px] transform rotate-12">★</span>
+                <h2 className="text-[13px] font-extrabold tracking-[0.5em] text-[#d4b88d] uppercase">Recomendados para ti</h2>
+              </div>
+              <div className="w-40 h-[1px] bg-stone-700/50"></div>
+            </div>
 
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {recommended.slice(0, 4).map((product) => (
-                  <ProductCard key={product.id} product={product} variant="recommended" />
-                ))}
-             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {recommended.slice(0, 4).map((product) => (
+                <ProductCard key={product.id} product={product} variant="recommended" />
+              ))}
+            </div>
           </section>
 
-          <MenuFilters 
+          <MenuFilters
             categories={categories}
             activeCategory={category}
             onCategoryChange={handleCategoryChange}
@@ -162,7 +162,7 @@ export default function Menu() {
               <ProductCard key={product.id} product={product} />
             ))}
           </main>
-          <Pagination 
+          <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
