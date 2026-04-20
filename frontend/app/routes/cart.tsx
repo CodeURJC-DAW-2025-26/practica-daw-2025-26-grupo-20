@@ -5,12 +5,12 @@ import { API_BASE_URL } from "../config";
 
 interface CartItem {
   id: number;
+  productId: number;
   productName: string;
   productPrice: number;
   quantity: number;
   totalPrice: number;
   productImageUrl?: string;
-  productId: number;
 }
 
 interface CartSummary {
@@ -19,7 +19,10 @@ interface CartSummary {
   tax: number;
   total: number;
   itemCount: number;
+  totalUnits: number;
 }
+
+//For making petitions at backend
 
 export async function loader({ request }: { request: Request }) {
   // In a real app, we'd handle cookies for SSR auth.
@@ -37,7 +40,35 @@ export async function loader({ request }: { request: Request }) {
     return { cart: null };
   }
 
-  const cart = await response.json();
+  const apiCart = await response.json();
+  
+  // ✨ Convertir la respuesta del backend al formato del frontend
+  const parsePrice = (priceStr: string): number => {
+    if (typeof priceStr === 'number') return priceStr;
+    return Number(priceStr?.toString().replace('€', '').trim()) || 0;
+  };
+
+  const cart: CartSummary = {
+    items: apiCart.items.map((item: any) => ({
+      id: item.id,
+      productId: item.productId,
+      productName: item.name,           // name → productName
+      productPrice: typeof item.unitPrice === 'string' 
+        ? parsePrice(item.unitPrice)
+        : Number(item.unitPrice),       // unitPrice → productPrice
+      quantity: item.quantity,
+      totalPrice: typeof item.lineTotal === 'string'
+        ? parsePrice(item.lineTotal)
+        : Number(item.lineTotal),       // lineTotal → totalPrice
+      productImageUrl: item.imageUrl,   // imageUrl → productImageUrl
+    })),
+    subtotal: parsePrice(apiCart.subtotal),    // String → number
+    tax: parsePrice(apiCart.tax),              // String → number
+    total: parsePrice(apiCart.total),          // String → number
+    itemCount: apiCart.itemCount,
+    totalUnits: apiCart.totalUnits || 0,
+  };
+  
   return { cart };
 }
 
