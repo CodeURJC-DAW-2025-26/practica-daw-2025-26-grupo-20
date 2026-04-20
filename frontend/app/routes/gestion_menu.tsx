@@ -1,21 +1,27 @@
 import { useState, useEffect, useRef } from "react";
 import { API_BASE_URL } from "../config";
-import { ProductService, Product } from "../services/gestionMenu.service";
+import { ProductService, Product, Allergen } from "../services/gestionMenu.service";
 
 export default function GestionMenu() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [allAllergens, setAllAllergens] = useState<Allergen[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [filter, setFilter] = useState("ALL");
   const [errorMsg, setErrorMsg] = useState("");
+  const [selectedAllergens, setSelectedAllergens] = useState<number[]>([]);
   
   const formRef = useRef<HTMLFormElement>(null);
 
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
-      const data = await ProductService.getProducts();
-      setProducts(data);
+      const [prods, algns] = await Promise.all([
+        ProductService.getProducts(),
+        ProductService.getAllergens()
+      ]);
+      setProducts(prods);
+      setAllAllergens(algns);
     } catch (err) {
       console.error(err);
     } finally {
@@ -23,8 +29,17 @@ export default function GestionMenu() {
     }
   };
 
+  const fetchOnlyProducts = async () => {
+    try {
+      const prods = await ProductService.getProducts();
+      setProducts(prods);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    fetchProducts();
+    fetchData();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,6 +48,11 @@ export default function GestionMenu() {
     if (!formRef.current) return;
     
     const formData = new FormData(formRef.current);
+    
+    // Append allergens
+    selectedAllergens.forEach((aId) => {
+      formData.append("allergenIds", aId.toString());
+    });
     
     // Check if image is provided when adding
     const imageFile = formData.get("imageFile") as File;
@@ -49,8 +69,9 @@ export default function GestionMenu() {
       }
       setShowForm(false);
       setEditingId(null);
+      setSelectedAllergens([]);
       formRef.current.reset();
-      fetchProducts();
+      fetchOnlyProducts();
     } catch (err: any) {
       setErrorMsg(err.message || "Error de red al intentar guardar.");
     }
@@ -60,7 +81,7 @@ export default function GestionMenu() {
     if (!window.confirm("¿Seguro que deseas eliminar este producto?")) return;
     try {
       await ProductService.deleteProduct(id);
-      fetchProducts();
+      fetchOnlyProducts();
     } catch (err: any) {
       alert(err.message);
       console.error(err);
@@ -70,6 +91,7 @@ export default function GestionMenu() {
   const handleEdit = (product: Product) => {
     setShowForm(true);
     setEditingId(product.id);
+    setSelectedAllergens(product.allergens?.map(a => a.id) || []);
     setErrorMsg("");
     setTimeout(() => {
       if (!formRef.current) return;
@@ -85,8 +107,30 @@ export default function GestionMenu() {
   const handleAddNew = () => {
     setEditingId(null);
     setShowForm(!showForm);
+    setSelectedAllergens([]);
     setErrorMsg("");
     if (formRef.current) formRef.current.reset();
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setSelectedAllergens([]);
+  };
+
+  const toggleAllergen = (id: number) => {
+    setSelectedAllergens(prev => 
+      prev.includes(id) ? prev.filter(aId => aId !== id) : [...prev, id]
+    );
+  };
+
+  const getColorForAllergen = (allergenName: string) => {
+    const colors = ["#e63946", "#f4a261", "#2a9d8f", "#264653", "#e76f51", "#8ab17d"];
+    let hash = 0;
+    for (let i = 0; i < allergenName.length; i++) {
+        hash = allergenName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const colorIndex = Math.abs(hash) % colors.length;
+    return colors[colorIndex];
   };
 
   const filteredProducts = filter === "ALL" ? products : products.filter(p => p.category === filter);
@@ -185,8 +229,38 @@ export default function GestionMenu() {
                 <textarea name="description" required rows={3} className="w-full bg-transparent border border-[#d4b88d]/20 rounded-lg px-4 py-3 focus:border-[#d4b88d] focus:bg-white/5 outline-none transition-all text-white text-sm resize-none" placeholder="Descripción breve..."></textarea>
               </div>
 
+              {/* Allergens Picker */}
+              <div className="space-y-2 mt-4">
+                  <label className="text-white text-xs font-medium ml-1">Alérgenos (Selección múltiple)</label>
+                  <div className="flex flex-wrap gap-2 p-4 border border-[#d4b88d]/20 rounded-lg bg-white/5">
+                    {allAllergens.length > 0 ? (
+                      allAllergens.map(a => {
+                         const isSelected = selectedAllergens.includes(a.id);
+                         return (
+                            <span 
+                               key={a.id}
+                               onClick={() => toggleAllergen(a.id)}
+                               style={{ 
+                                 backgroundColor: getColorForAllergen(a.name),
+                                 opacity: isSelected ? 1 : 0.5,
+                                 transform: isSelected ? 'scale(1.05)' : 'scale(1)'
+                               }}
+                               className="px-4 py-1.5 rounded-full text-xs font-bold text-white cursor-pointer transition-all flex items-center"
+                            >
+                               {isSelected && <i className="fas fa-check mr-1.5"></i>}
+                               {a.name}
+                            </span>
+                         )
+                      })
+                    ) : (
+                      <p className="text-[#d4b88d]/50 text-xs py-1">No hay alérgenos registrados en el sistema.</p>
+                    )}
+                  </div>
+                  <p className="text-[#d4b88d]/60 text-[10px] ml-1">Haz clic en los alérgenos para añadirlos o quitarlos del producto.</p>
+              </div>
+
               <div className="flex justify-end gap-3 pt-4 border-t border-[#d4b88d]/10">
-                <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2.5 bg-transparent border border-[#d4b88d]/30 text-[#d4b88d] font-bold text-sm rounded-lg hover:bg-[#d4b88d]/10 transition-all">
+                <button type="button" onClick={handleCancel} className="px-6 py-2.5 bg-transparent border border-[#d4b88d]/30 text-[#d4b88d] font-bold text-sm rounded-lg hover:bg-[#d4b88d]/10 transition-all">
                   Cancelar
                 </button>
                 <button type="submit" className="px-6 py-2.5 bg-[#d4b88d] text-[#050404] font-bold text-sm rounded-lg hover:bg-white transition-all">
@@ -223,6 +297,7 @@ export default function GestionMenu() {
                     <th className="px-6 py-4">Nombre</th>
                     <th className="px-6 py-4">Categoría</th>
                     <th className="px-6 py-4">Precio</th>
+                    <th className="px-6 py-4">Alérgenos</th>
                     <th className="px-6 py-4 text-right rounded-tr-xl">Acciones</th>
                   </tr>
                 </thead>
@@ -243,6 +318,20 @@ export default function GestionMenu() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-[#d4b88d] font-medium">{p.priceBase}€</td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {p.allergens?.map(a => (
+                            <span 
+                               key={a.id} 
+                               style={{ backgroundColor: getColorForAllergen(a.name) }}
+                               className="px-2 py-0.5 rounded-full text-[10px] uppercase font-bold text-white border border-[#050404]"
+                               title={a.name}
+                            >
+                              {a.name}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
                       <td className="px-6 py-4 text-right">
                         <button onClick={() => handleEdit(p)} className="text-[#d4b88d]/60 hover:text-[#d4b88d] transition-colors mr-4" title="Editar">
                           <i className="fas fa-edit text-lg"></i>
@@ -254,11 +343,11 @@ export default function GestionMenu() {
                     </tr>
                   ))}
                   {filteredProducts.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="px-6 py-10 text-center text-[#d4b88d]/50">
-                        No hay productos que mostrar.
-                      </td>
-                    </tr>
+                     <tr>
+                       <td colSpan={6} className="px-6 py-10 text-center text-[#d4b88d]/50">
+                         No hay productos que mostrar.
+                       </td>
+                     </tr>
                   )}
                 </tbody>
               </table>

@@ -7,10 +7,21 @@ export interface Product {
   priceBase: number;
   description: string;
   imageId?: number;
-  allergens?: any[];
+  allergens?: Allergen[];
+}
+
+export interface Allergen {
+  id: number;
+  name: string;
 }
 
 export const ProductService = {
+  getAllergens: async (): Promise<Allergen[]> => {
+    const res = await fetch(`${API_BASE_URL}/api/v1/allergens`, { credentials: "include" });
+    if (!res.ok) return [];
+    return await res.json();
+  },
+
   getProducts: async (): Promise<Product[]> => {
     const res = await fetch(`${API_BASE_URL}/api/v1/products?size=100`, { credentials: "include" });
     if (!res.ok) throw new Error("Error fetching products");

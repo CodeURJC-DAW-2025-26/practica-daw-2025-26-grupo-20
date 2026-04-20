@@ -24,6 +24,11 @@ import org.springframework.http.MediaType;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import es.codeurjc.mokaf.service.AllergenService;
+import es.codeurjc.mokaf.model.Allergen;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -34,6 +39,9 @@ public class ProductRestController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private AllergenService allergenService;
 
     @Autowired
     private ReviewMapper reviewMapper;
@@ -95,7 +103,9 @@ public class ProductRestController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductDTO> createProduct(@ModelAttribute ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> createProduct(
+            @ModelAttribute ProductDTO productDTO,
+            @RequestParam(required = false) List<Long> allergenIds) {
         Product product = new Product();
         product.setName(productDTO.name());
         product.setDescription(productDTO.description());
@@ -119,6 +129,14 @@ public class ProductRestController {
             }
         }
 
+        Set<Allergen> allergenSet = new HashSet<>();
+        if (allergenIds != null) {
+            for (Long aId : allergenIds) {
+                allergenService.findById(aId).ifPresent(allergenSet::add);
+            }
+        }
+        product.setAllergens(allergenSet);
+
         productService.addProduct(product);
         ProductDTO savedDto = productMapper.toProductDTO(product);
 
@@ -132,7 +150,10 @@ public class ProductRestController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ProductDTO updateProduct(@PathVariable Long id, @ModelAttribute ProductDTO productDTO) {
+    public ProductDTO updateProduct(
+            @PathVariable Long id, 
+            @ModelAttribute ProductDTO productDTO,
+            @RequestParam(required = false) List<Long> allergenIds) {
         Product product = productService.getProductById(id);
 
         if (product == null) {
@@ -160,6 +181,14 @@ public class ProductRestController {
                 throw new RuntimeException("Error guardando la imagen", e);
             }
         }
+
+        Set<Allergen> allergenSet = new HashSet<>();
+        if (allergenIds != null) {
+            for (Long aId : allergenIds) {
+                allergenService.findById(aId).ifPresent(allergenSet::add);
+            }
+        }
+        product.setAllergens(allergenSet);
 
         productService.addProduct(product);
 
