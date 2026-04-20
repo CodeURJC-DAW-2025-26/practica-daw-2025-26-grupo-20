@@ -1,15 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { API_BASE_URL } from "../config";
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  priceBase: number;
-  description: string;
-  imageId?: number;
-  allergens?: any[];
-}
+import { ProductService, Product } from "../services/gestionMenu.service";
 
 export default function GestionMenu() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,11 +14,8 @@ export default function GestionMenu() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/products?size=100`, { credentials: "include" });
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data.content || []);
-      }
+      const data = await ProductService.getProducts();
+      setProducts(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -53,46 +41,28 @@ export default function GestionMenu() {
        return;
     }
 
-    const url = editingId 
-      ? `${API_BASE_URL}/api/v1/products/${editingId}`
-      : `${API_BASE_URL}/api/v1/products`;
-      
-    const method = editingId ? "PUT" : "POST";
-    
     try {
-      const res = await fetch(url, {
-        method,
-        body: formData, // fetch natively supports multipart/form-data with FormData
-        credentials: "include"
-      });
-      
-      if (res.ok) {
-        setShowForm(false);
-        setEditingId(null);
-        formRef.current.reset();
-        fetchProducts();
+      if (editingId) {
+        await ProductService.updateProduct(editingId, formData);
       } else {
-        const err = await res.json();
-        setErrorMsg(err.message || "Error al guardar el producto.");
+        await ProductService.createProduct(formData);
       }
-    } catch (err) {
-      setErrorMsg("Error de red al intentar guardar.");
+      setShowForm(false);
+      setEditingId(null);
+      formRef.current.reset();
+      fetchProducts();
+    } catch (err: any) {
+      setErrorMsg(err.message || "Error de red al intentar guardar.");
     }
   };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm("¿Seguro que deseas eliminar este producto?")) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/products/${id}`, {
-        method: "DELETE",
-        credentials: "include"
-      });
-      if (res.ok) {
-        fetchProducts();
-      } else {
-        alert("No se pudo borrar el producto (puede que esté referenciado en otro lugar).");
-      }
-    } catch (err) {
+      await ProductService.deleteProduct(id);
+      fetchProducts();
+    } catch (err: any) {
+      alert(err.message);
       console.error(err);
     }
   };
