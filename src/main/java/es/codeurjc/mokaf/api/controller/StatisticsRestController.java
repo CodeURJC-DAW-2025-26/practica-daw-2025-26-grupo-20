@@ -29,12 +29,9 @@ public class StatisticsRestController {
     @Autowired
     private UserService userService;
 
-    // ============ Helper para verificar que es ADMIN ============
+    // ============ Helper To verify that is admin============
 
-    /**
-     * Verifica que el usuario esté autenticado y sea ADMIN.
-     * Lanza 401 si no está autenticado, 403 si no es ADMIN.
-     */
+
     private User resolveAdmin(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 

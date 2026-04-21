@@ -4,17 +4,19 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 react-router dev",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@react-router/node": "7.14.0",
     "@react-router/serve": "7.14.0",
+    "@types/react-router-dom": "^5.3.3",
     "isbot": "^5.1.36",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "7.14.0",
+    "react-router-dom": "^7.14.1",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
@@ -23,6 +25,7 @@
     "@types/node": "^22",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "cross-env": "^10.1.0",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "vite": "^8.0.3"

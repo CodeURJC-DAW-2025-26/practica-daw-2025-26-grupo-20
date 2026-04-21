@@ -1,5 +1,5 @@
 import { useLoaderData, Form, useActionData, Link } from "react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 
 export async function loader() {
@@ -21,11 +21,16 @@ export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   
+  const payload = {
+    ...data,
+    newsletter: data.newsletter === "on" || data.newsletter === "true"
+  };
+
   const response = await fetch(`${API_BASE_URL}/api/v1/contact`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
   
   if (!response.ok) {
@@ -39,6 +44,13 @@ export default function Contact() {
   const { team, faqs } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (actionData?.success && formRef.current) {
+      formRef.current.reset();
+    }
+  }, [actionData]);
 
   return (
     <div className="bg-[#050404] min-h-screen text-white pb-32 pt-10 font-sans">
@@ -74,7 +86,7 @@ export default function Contact() {
                 </div>
               )}
 
-              <Form method="post" className="space-y-6 flex-grow flex flex-col">
+              <Form ref={formRef} method="post" className="space-y-6 flex-grow flex flex-col">
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label className="text-white text-xs font-medium ml-1">Nombre *</label>
@@ -115,6 +127,15 @@ export default function Contact() {
                 <div className="space-y-2">
                   <label className="text-white text-xs font-medium ml-1">Mensaje *</label>
                   <textarea name="message" required rows={6} placeholder="Escribe tu mensaje aquí..." className="w-full bg-transparent border border-[#d4b88d]/20 rounded-lg px-4 py-3 focus:border-[#d4b88d] focus:bg-white/5 outline-none transition-all text-white text-sm resize-none"></textarea>
+                </div>
+
+                <div className="flex items-start gap-3 mt-4">
+                  <div className="flex items-center h-5">
+                    <input name="newsletter" id="newsletter" type="checkbox" className="w-4 h-4 bg-transparent border border-[#d4b88d]/30 rounded focus:ring-2 focus:ring-[#d4b88d]/50 accent-[#d4b88d]" />
+                  </div>
+                  <label htmlFor="newsletter" className="text-[#d4b88d]/70 text-xs leading-tight">
+                    Quiero suscribirme a la newsletter de Mokaf para recibir ofertas, novedades y contenido exclusivo sobre café de especialidad.
+                  </label>
                 </div>
 
                 <div className="mt-8">
