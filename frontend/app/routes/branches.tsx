@@ -8,11 +8,15 @@ interface Branch {
   purchaseDiscountPercent?: number;
 }
 
-export async function loader() {
+export async function loader({ request }: { request: Request }) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/branches`, { credentials: "include" });
-    if (!response.ok) return { branches: [] };
-    const branches = await response.json();
+    const url = new URL(request.url);
+    // allow future query params (page/size/filter) if backend supports them
+    const res = await fetch(`${API_BASE_URL}/api/v1/branches`, { credentials: "include" });
+    if (!res.ok) return { branches: [] };
+    const data = await res.json();
+    // backend might return a plain array or a paged response with .content
+    const branches = Array.isArray(data) ? data : (Array.isArray(data?.content) ? data.content : []);
     return { branches };
   } catch (error) {
     console.error("Error fetching branches:", error);
@@ -21,7 +25,8 @@ export async function loader() {
 }
 
 export default function Branches() {
-  const { branches } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+  const branches: Branch[] = data?.branches || [];
 
   return (
     <div className="bg-[#050404] min-h-screen text-white pb-32">
@@ -33,15 +38,16 @@ export default function Branches() {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#d4b88d]/5 blur-[120px] rounded-full pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#d4b88d]/5 blur-[120px] rounded-full pointer-events-none"></div>
 
-          {/* Header Section */}
-          <div className="text-center relative">
-             <div className="inline-flex items-center gap-3 mb-6">
-                <span className="h-[1px] w-8 bg-[#d4b88d]/30"></span>
-                <span className="text-[10px] text-[#d4b88d] font-bold uppercase tracking-[0.5em]">Nuestra Presencia</span>
-                <span className="h-[1px] w-8 bg-[#d4b88d]/30"></span>
+           {/* Header Section: icon + title like mockup */}
+           <div className="text-center relative">
+             <div className="flex items-center justify-center gap-6 mb-6">
+               <div className="w-16 h-16 rounded-lg flex items-center justify-center text-[#d4b88d]">
+                 <i className="fas fa-shop text-4xl"></i>
+               </div>
+               <h1 className="text-5xl md:text-6xl font-serif text-[#d4b88d] tracking-tight font-medium">Nuestras Sucursales</h1>
              </div>
-             <h1 className="text-5xl md:text-7xl font-serif text-[#d4b88d] italic tracking-tighter mb-8 drop-shadow-sm leading-tight">Mokaf en <br className="hidden md:block"/> <span className="text-white opacity-90">tu ciudad</span></h1>
-          </div>
+             <div className="mx-auto w-40 h-1 bg-gradient-to-r from-transparent via-[#d4b88d]/60 to-transparent rounded-full"></div>
+           </div>
 
           {/* Branches Grid */}
           <div className="grid md:grid-cols-2 gap-10 relative z-10">
@@ -97,22 +103,6 @@ export default function Branches() {
               </div>
             )}
           </div>
-
-          {/* Global CTA section for Branches */}
-          <section className="mt-12 text-center py-24 bg-gradient-to-b from-[#0c0b0b] to-transparent rounded-[4rem] border-t border-white/5 relative">
-             <div className="relative z-10 space-y-12">
-                <div className="space-y-4">
-                  <h2 className="text-4xl md:text-5xl font-serif italic text-white/90">¿Buscas una ubicación específica?</h2>
-                  <p className="text-stone-400 max-w-2xl mx-auto font-light leading-relaxed">Cada sucursal de Mokaf mantiene nuestros estándares de calidad pero con una atmósfera única inspirada en su arquitectura local.</p>
-                </div>
-                <div className="flex flex-wrap justify-center gap-6">
-                   <button className="bg-[#d4b88d] text-black px-12 py-5 rounded-full font-black text-xs uppercase tracking-[0.3em] hover:bg-white transition-all duration-700 shadow-xl overflow-hidden group">
-                      <span className="relative z-10 flex items-center gap-2">Ver Mapa Global <i className="fas fa-chevron-right text-[8px]"></i></span>
-                   </button>
-                </div>
-             </div>
-          </section>
-
         </div>
       </div>
     </div>
