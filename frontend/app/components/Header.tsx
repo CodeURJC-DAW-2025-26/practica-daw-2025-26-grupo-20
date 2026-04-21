@@ -47,6 +47,16 @@ export default function Header() {
             Gestión
           </NavLink>
           {/* ============================================================== */}
+          {/* Cart Button */}
+          <Link
+            to="/cart"
+            className="relative text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg text-stone-300 hover:text-[#d4b88d] hover:bg-white/[0.05]"
+          >
+            <i className="fas fa-shopping-cart text-xl"></i>
+            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              0
+            </span>
+          </Link>
         </nav>
 
         {/* Account Button */}

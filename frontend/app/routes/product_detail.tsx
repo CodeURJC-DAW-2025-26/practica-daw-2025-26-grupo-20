@@ -1,6 +1,7 @@
 import { useLoaderData, Link, Form } from "react-router";
 import { useState } from "react";
 import { API_BASE_URL } from "../config";
+import { addToCart } from "./cart";
 
 export async function loader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes, userRes] = await Promise.all([
@@ -130,6 +131,21 @@ export default function ProductDetail() {
                 <div className="meta-item">
                   <i className="fas fa-truck"></i>
                   <span>Entrega 24/48h</span>
+              <button 
+                onClick={async () => {
+                  try {
+                    await addToCart(product.id, qty);
+                    alert("Producto añadido al carrito");
+                  } catch (error) {
+                    alert("Error al añadir el producto al carrito");
+                  }
+                }}
+                className="flex-grow group/btn relative h-16 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl shadow-amber-900/40 active:scale-95 transition-all"
+              >
+                <div className="absolute inset-0 bg-amber-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
+                <div className="relative z-10 flex items-center justify-center gap-4 text-white">
+                  <i className="fas fa-cart-plus text-2xl animate-pulse"></i>
+                  <span className="font-black uppercase tracking-[0.2em] text-sm">Añadir al Carrito</span>
                 </div>
                 <div className="meta-item">
                   <i className="fas fa-shield-alt"></i>

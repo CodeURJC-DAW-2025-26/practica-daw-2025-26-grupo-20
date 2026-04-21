@@ -27,8 +27,13 @@ public class ContactEmailService {
 
             // We send the email to ourselves (support team)
             helper.setTo(supportEmail);
-            // The from / reply-to address is the customer's email
-            helper.setFrom(request.getEmail());
+            // We CC the client so they have a copy
+            if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+                helper.setCc(request.getEmail());
+            }
+            // The from address MUST be the authenticated user to avoid Gmail SMTP errors
+            helper.setFrom(supportEmail);
+            // The reply-to address is the customer's email
             helper.setReplyTo(request.getEmail());
 
             helper.setSubject("Nuevo mensaje de Contacto: " + request.getSubject());

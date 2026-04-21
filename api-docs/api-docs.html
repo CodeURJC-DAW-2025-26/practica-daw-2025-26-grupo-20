@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>API Documentation | CodeURJC DAW</title>
+  <!-- needed for adaptive design -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* Customizing Redoc slightly to look more premium */
+    .redoc-wrap {
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+      We use Redoc to render the OpenAPI YAML. 
+      The spec-url points to the same directory. 
+      When hosted on GitHub/Githack, it will resolve correctly.
+    -->
+  <redoc spec-url='./api-docs.yaml' expand-responses="200,201" hide-hostname="false" path-in-middle-panel="true" theme='{
+        "typography": {
+          "fontFamily": "Roboto, sans-serif",
+          "headings": {
+            "fontFamily": "Montserrat, sans-serif"
+          }
+        },
+        "colors": {
+          "primary": {
+            "main": "#32329f"
+          }
+        }
+      }'></redoc>
+
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
+</body>
+
+</html>

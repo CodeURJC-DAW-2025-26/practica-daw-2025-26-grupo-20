@@ -193,14 +193,14 @@ public class UserRestController {
         if (userService.existsByEmail(userDTO.email()))
             throw new IllegalArgumentException("Email already in use: " + userDTO.email());
         
-        // Validar que venga password
+        // Validate password
         if (userDTO.password() == null || userDTO.password().isBlank()) {
             throw new IllegalArgumentException("Password is required");
         }
         
         User user = userMapper.toEntity(userDTO);
         
-        // CODIFICAR EL PASSWORD antes de guardar (esto faltaba)
+        // Codify password before saving
         user.setPasswordHash(passwordEncoder.encode(userDTO.password()));
         
         if (user.getRole() == null) user.setRole(User.Role.CUSTOMER);
