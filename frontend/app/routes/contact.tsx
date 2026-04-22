@@ -2,7 +2,7 @@ import { useLoaderData, Form, useActionData, Link } from "react-router";
 import { useState, useRef, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 
-export async function loader() {
+export async function clientLoader() {
   try {
     const teamRes = await fetch(`${API_BASE_URL}/api/v1/about-us`, { credentials: "include" });
     const faqRes = await fetch(`${API_BASE_URL}/api/v1/faqs`, { credentials: "include" });
@@ -17,7 +17,7 @@ export async function loader() {
   }
 }
 
-export async function action({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   
@@ -41,8 +41,8 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Contact() {
-  const { team, faqs } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
+  const { team, faqs } = useLoaderData<typeof clientLoader>();
+  const actionData = useActionData<typeof clientAction>();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 

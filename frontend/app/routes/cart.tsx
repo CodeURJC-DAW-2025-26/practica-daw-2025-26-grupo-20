@@ -3,6 +3,24 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
+export async function addToCart(productId: number | string, quantity: number = 1) {
+    const formData = new FormData();
+    formData.append("productId", productId.toString());
+    formData.append("quantity", quantity.toString());
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al añadir al carrito");
+    }
+
+    return await response.json();
+}
+
 interface CartItem {
   id: number;
   productId: number;
@@ -24,7 +42,7 @@ interface CartSummary {
 
 //For making petitions at backend
 
-export async function loader({ request }: { request: Request }) {
+export async function clientLoader({ request }: { request: Request }) {
   // In a real app, we'd handle cookies for SSR auth.
   // For now, we'll try to fetch, expecting the browser to send HttpOnly cookies.
   const response = await fetch("/api/v1/cart", {
@@ -72,7 +90,7 @@ export async function loader({ request }: { request: Request }) {
   return { cart };
 }
 
-export async function action({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   const formData = await request.formData();
   const intent = formData.get("intent");
   const itemId = formData.get("itemId");
@@ -107,7 +125,7 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Cart() {
-  const { cart, isUnauthorized } = useLoaderData<typeof loader>();
+  const { cart, isUnauthorized } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
   const isLogged = useAuthStore(state => state.isLogged);
 

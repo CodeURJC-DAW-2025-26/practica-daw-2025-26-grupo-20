@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function loader() {
+export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/statistics/dashboard`, {
     credentials: "include"
   });
@@ -17,7 +17,7 @@ export async function loader() {
 }
 
 export default function Statistics() {
-  const { stats, isUnauthorized, isForbidden } = useLoaderData<typeof loader>();
+  const { stats, isUnauthorized, isForbidden } = useLoaderData<typeof clientLoader>();
   const { user, isLogged } = useAuthStore();
   const navigate = useNavigate();
 

@@ -3,6 +3,6 @@ import type { Config } from "@react-router/dev/config";
 export default {
   // Config options...
   basename: "/new/",
-  // Server-side render by default, to enable SPA mode set this to `false`
-  ssr: true,
+  // Server-side render disabled to allow serving as SPA from Spring Boot
+  ssr: false,
 } satisfies Config;

@@ -8,7 +8,7 @@ interface Branch {
   purchaseDiscountPercent?: number;
 }
 
-export async function loader({ request }: { request: Request }) {
+export async function clientLoader({ request }: { request: Request }) {
   try {
     const url = new URL(request.url);
     // allow future query params (page/size/filter) if backend supports them
@@ -25,7 +25,7 @@ export async function loader({ request }: { request: Request }) {
 }
 
 export default function Branches() {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof clientLoader>();
   const branches: Branch[] = data?.branches || [];
 
   return (

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function loader({ request }: { request: Request }) {
+export async function clientLoader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const page = url.searchParams.get("page") || "0";
   
@@ -19,7 +19,7 @@ export async function loader({ request }: { request: Request }) {
 }
 
 export default function Orders() {
-  const { orders, isUnauthorized } = useLoaderData<typeof loader>();
+  const { orders, isUnauthorized } = useLoaderData<typeof clientLoader>();
   const { isLogged } = useAuthStore();
   const navigate = useNavigate();
 
