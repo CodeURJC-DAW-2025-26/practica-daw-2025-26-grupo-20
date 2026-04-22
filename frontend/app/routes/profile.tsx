@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function loader() {
+export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
     credentials: "include"
   });
@@ -15,7 +15,7 @@ export async function loader() {
   return { user };
 }
 
-export async function action({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -57,8 +57,8 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Profile() {
-  const { user: initialUser, isUnauthorized } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
+  const { user: initialUser, isUnauthorized } = useLoaderData<typeof clientLoader>();
+  const actionData = useActionData<typeof clientAction>();
   const { setUser, logout, isLogged } = useAuthStore();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);

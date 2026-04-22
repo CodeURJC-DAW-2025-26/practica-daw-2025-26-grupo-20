@@ -21,7 +21,7 @@ interface Product {
   allergens?: Allergen[];
 }
 
-export async function loader({ request }: { request: Request }) {
+export async function clientLoader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const category = url.searchParams.get("category") || "all";
 
@@ -64,7 +64,7 @@ const allergensData = [
 ];
 
 export default function Menu() {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof clientLoader>();
   const allProducts = data?.allProducts || [];
   const initialCategory = data?.initialCategory || "all";
   const recommended = data?.recommended || [];

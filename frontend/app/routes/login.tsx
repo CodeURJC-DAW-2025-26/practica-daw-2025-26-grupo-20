@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function action({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   try {
     const formData = await request.formData();
     const email = formData.get("email");
@@ -29,7 +29,7 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Login() {
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<typeof clientAction>();
   const setUser = useAuthStore(state => state.setUser);
   const navigate = useNavigate();
 

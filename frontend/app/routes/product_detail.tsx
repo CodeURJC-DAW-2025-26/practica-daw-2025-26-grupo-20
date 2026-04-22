@@ -3,7 +3,7 @@ import { useState } from "react";
 import { API_BASE_URL } from "../config";
 import { addToCart } from "./cart";
 
-export async function loader({ params }: { params: { id: string } }) {
+export async function clientLoader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes, userRes] = await Promise.all([
     fetch(`${API_BASE_URL}/api/v1/products/${params.id}`, { credentials: "include" }),
     fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, { credentials: "include" }),
@@ -19,7 +19,7 @@ export async function loader({ params }: { params: { id: string } }) {
   return { product, reviews: reviewsData.content, user };
 }
 
-export async function action({ request, params }: { request: Request; params: { id: string } }) {
+export async function clientAction({ request, params }: { request: Request; params: { id: string } }) {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -34,11 +34,33 @@ export async function action({ request, params }: { request: Request; params: { 
      if (!response.ok) return { error: "Error al publicar la reseña." };
      return { success: true };
   }
+
+  if (intent === "cart") {
+    const productId = formData.get("productId");
+    const qty = formData.get("qty");
+    
+    try {
+      const fd = new FormData();
+      fd.append("productId", String(productId));
+      fd.append("quantity", String(qty));
+      
+      const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+      
+      if (!response.ok) return { error: "Error al añadir al carrito." };
+      return { success: true, message: "Añadido al carrito" };
+    } catch (e) {
+      return { error: "Error de red." };
+    }
+  }
   return null;
 }
 
 export default function ProductDetail() {
-  const { product, reviews, user } = useLoaderData<typeof loader>();
+  const { product, reviews, user } = useLoaderData<typeof clientLoader>();
   const [qty, setQty] = useState(1);
 
   const getProductImage = (product: any) => {
@@ -115,6 +137,7 @@ export default function ProductDetail() {
                     <Form method="post" className="ajax-cart-form" style={{ display: 'inline' }}>
                       <input type="hidden" name="productId" value={product.id} />
                       <input type="hidden" name="qty" value={qty} />
+                      <input type="hidden" name="intent" value="cart" />
                       <button className="btn btn-product-primary" type="submit">
                         <i className="fas fa-cart-plus me-2"></i>Añadir
                       </button>
@@ -127,33 +150,39 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <div className="product-meta">
-                <div className="meta-item">
+              <div className="product-meta mt-4 space-y-4">
+                <div className="meta-item flex items-center gap-2 text-stone-500 text-sm">
                   <i className="fas fa-truck"></i>
                   <span>Entrega 24/48h</span>
-              <button 
-                onClick={async () => {
-                  try {
-                    await addToCart(product.id, qty);
-                    alert("Producto añadido al carrito");
-                  } catch (error) {
-                    alert("Error al añadir el producto al carrito");
-                  }
-                }}
-                className="flex-grow group/btn relative h-16 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl shadow-amber-900/40 active:scale-95 transition-all"
-              >
-                <div className="absolute inset-0 bg-amber-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
-                <div className="relative z-10 flex items-center justify-center gap-4 text-white">
-                  <i className="fas fa-cart-plus text-2xl animate-pulse"></i>
-                  <span className="font-black uppercase tracking-[0.2em] text-sm">Añadir al Carrito</span>
                 </div>
-                <div className="meta-item">
-                  <i className="fas fa-shield-alt"></i>
-                  <span>Pago seguro</span>
-                </div>
-                <div className="meta-item">
-                  <i className="fas fa-undo"></i>
-                  <span>14 días</span>
+
+                <button 
+                  onClick={async () => {
+                    try {
+                      await addToCart(product.id, qty);
+                      alert("Producto añadido al carrito");
+                    } catch (error) {
+                      alert("Error al añadir el producto al carrito");
+                    }
+                  }}
+                  className="w-full group/btn relative h-16 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl shadow-amber-900/40 active:scale-95 transition-all"
+                >
+                  <div className="absolute inset-0 bg-amber-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
+                  <div className="relative z-10 flex items-center justify-center gap-4 text-white">
+                    <i className="fas fa-cart-plus text-2xl animate-pulse"></i>
+                    <span className="font-black uppercase tracking-[0.2em] text-sm">Añadir al Carrito</span>
+                  </div>
+                </button>
+
+                <div className="flex flex-wrap gap-4 pt-2">
+                  <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">
+                    <i className="fas fa-shield-alt"></i>
+                    <span>Pago seguro</span>
+                  </div>
+                  <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">
+                    <i className="fas fa-undo"></i>
+                    <span>14 días de devolución</span>
+                  </div>
                 </div>
               </div>
             </div>

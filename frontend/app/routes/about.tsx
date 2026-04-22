@@ -1,7 +1,7 @@
 import { useLoaderData, Link } from "react-router";
 import { API_BASE_URL } from "../config";
 
-export async function loader() {
+export async function clientLoader() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/about-us`, { credentials: "include" });
     if (!response.ok) return { team: [] };
@@ -14,7 +14,7 @@ export async function loader() {
 }
 
 export default function About() {
-  const { team } = useLoaderData<typeof loader>();
+  const { team } = useLoaderData<typeof clientLoader>();
 
   return (
     <div className="bg-[#050404] min-h-screen text-white pb-32">
