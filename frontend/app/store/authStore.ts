@@ -33,7 +33,8 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
+          // Limpia las cookies JWT en el servidor
+          await fetch(`${API_BASE_URL}/api/v1/auth/sessions/current`, {
             method: 'DELETE',
             credentials: 'include',
           });
@@ -44,7 +45,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       initializeAuth: async () => {
-        // Solo ejecutar una vez por sesión de app
         if (get().isInitialized) return;
 
         try {
@@ -56,18 +56,17 @@ export const useAuthStore = create<AuthState>()(
             const user: User = await response.json();
             set({ user, isLogged: true, isInitialized: true });
           } else {
-            // 401 → sesión inválida o expirada
+            // 401 → sin sesión válida
             set({ user: null, isLogged: false, isInitialized: true });
           }
         } catch {
-          // Sin conexión → mantenemos el estado persistido
           set({ isInitialized: true });
         }
       },
     }),
     {
       name: 'mokaf-auth',
-      // isInitialized NO se persiste: siempre arranca en false para re-verificar con el servidor
+      // isInitialized nunca se persiste, siempre re-verifica con el servidor al arrancar
       partialize: (state) => ({ user: state.user, isLogged: state.isLogged }),
     }
   )

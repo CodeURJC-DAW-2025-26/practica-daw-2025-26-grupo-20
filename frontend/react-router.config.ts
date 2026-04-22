@@ -1,8 +1,7 @@
 import type { Config } from "@react-router/dev/config";
 
 export default {
-  // Config options...
   basename: "/new/",
-  // Server-side render by default, to enable SPA mode set this to `false`
-  ssr: true,
+  // SPA mode: el action/loader se ejecuta en el cliente, no en el servidor
+  ssr: false,
 } satisfies Config;

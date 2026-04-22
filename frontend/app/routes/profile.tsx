@@ -3,19 +3,19 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function loader() {
+export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-    credentials: "include"
+    credentials: "include",
   });
-  
+
   if (response.status === 401) return { isUnauthorized: true };
   if (!response.ok) return { user: null };
-  
+
   const user = await response.json();
   return { user };
 }
 
-export async function action({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -27,7 +27,7 @@ export async function action({ request }: { request: Request }) {
       credentials: "include",
       body: JSON.stringify(data),
     });
-    
+
     if (response.ok) {
       const user = await response.json();
       return { success: true, user };
@@ -45,10 +45,10 @@ export async function action({ request }: { request: Request }) {
       credentials: "include",
       body,
     });
-    
+
     if (response.ok) {
-        const data = await response.json();
-        return { success: true, profileImageUrl: data.profileImageUrl };
+      const data = await response.json();
+      return { success: true, profileImageUrl: data.profileImageUrl };
     }
     return { error: "Error al subir la imagen." };
   }
@@ -57,8 +57,8 @@ export async function action({ request }: { request: Request }) {
 }
 
 export default function Profile() {
-  const { user: initialUser, isUnauthorized } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
+  const { user: initialUser, isUnauthorized } = useLoaderData<typeof clientLoader>();
+  const actionData = useActionData<typeof clientAction>();
   const { setUser, logout, isLogged } = useAuthStore();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
@@ -81,23 +81,22 @@ export default function Profile() {
   return (
     <div className="container mx-auto px-4 py-20 max-w-5xl animate-fade-in">
       <div className="bg-white rounded-[3rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100">
-        {/* Header / Cover */}
         <div className="h-64 bg-stone-900 relative">
           <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-             <i className="fas fa-mug-hot text-[300px] text-white -rotate-12 translate-x-2/3 translate-y-1/2"></i>
+            <i className="fas fa-mug-hot text-[300px] text-white -rotate-12 translate-x-2/3 translate-y-1/2" />
           </div>
-          
+
           <div className="absolute -bottom-16 left-12 flex items-end gap-8">
             <div className="relative group">
-              <img 
-                src={actionData?.profileImageUrl || initialUser.profileImageUrl || `https://i.pravatar.cc/150?u=${initialUser.id}`} 
-                className="w-44 h-44 rounded-[2.5rem] border-8 border-white shadow-2xl object-cover transform transition-transform group-hover:scale-105" 
+              <img
+                src={actionData?.profileImageUrl || initialUser.profileImageUrl || `https://i.pravatar.cc/150?u=${initialUser.id}`}
+                className="w-44 h-44 rounded-[2.5rem] border-8 border-white shadow-2xl object-cover transform transition-transform group-hover:scale-105"
                 alt={initialUser.name}
               />
               <Form method="post" encType="multipart/form-data" className="absolute bottom-4 right-4">
                 <input type="hidden" name="intent" value="upload-image" />
                 <label className="w-12 h-12 bg-amber-800 text-white rounded-2xl flex items-center justify-center cursor-pointer hover:bg-amber-900 transition-colors shadow-xl">
-                  <i className="fas fa-camera"></i>
+                  <i className="fas fa-camera" />
                   <input type="file" name="image" className="hidden" onChange={(e) => e.target.form?.requestSubmit()} />
                 </label>
               </Form>
@@ -107,20 +106,20 @@ export default function Profile() {
               <p className="text-amber-500 font-black text-xs uppercase tracking-[0.3em]">{initialUser.role}</p>
             </div>
           </div>
-          
+
           <div className="absolute top-8 right-8 flex gap-4">
-             <button 
-               onClick={() => { logout(); navigate("/"); }}
-               className="bg-white/10 hover:bg-red-500/20 text-white border border-white/20 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all backdrop-blur-md"
-             >
-               Cerrar Sesión
-             </button>
-             <button 
-               onClick={() => setEditing(!editing)}
-               className="bg-amber-800 hover:bg-amber-700 text-white px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-amber-900/40"
-             >
-               {editing ? 'Cancelar' : 'Editar Perfil'}
-             </button>
+            <button
+              onClick={() => { logout(); navigate("/"); }}
+              className="bg-white/10 hover:bg-red-500/20 text-white border border-white/20 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all backdrop-blur-md"
+            >
+              Cerrar Sesión
+            </button>
+            <button
+              onClick={() => setEditing(!editing)}
+              className="bg-amber-800 hover:bg-amber-700 text-white px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-amber-900/40"
+            >
+              {editing ? "Cancelar" : "Editar Perfil"}
+            </button>
           </div>
         </div>
 
@@ -163,43 +162,40 @@ export default function Profile() {
                     {initialUser.description || "Este barista entusiasta aún no ha escrito su historia en Mokaf. ¡Pero sus pedidos hablan por él!"}
                   </p>
                 </section>
-                
                 <div className="grid grid-cols-2 gap-8">
-                   <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Miembro desde</p>
-                      <p className="font-black text-stone-800">Enero, 2026</p>
-                   </div>
-                   <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Total Pedidos</p>
-                      <p className="font-black text-stone-800">12 Cafés</p>
-                   </div>
+                  <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Miembro desde</p>
+                    <p className="font-black text-stone-800">Enero, 2026</p>
+                  </div>
+                  <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Total Pedidos</p>
+                    <p className="font-black text-stone-800">12 Cafés</p>
+                  </div>
                 </div>
               </div>
-
               <div className="space-y-10">
                 <section className="space-y-6">
-                   <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em] mb-4">Información de Contacto</h3>
-                   <div className="space-y-4">
-                      <div className="flex items-center gap-4 group">
-                         <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
-                           <i className="fas fa-envelope text-xs"></i>
-                         </div>
-                         <span className="text-stone-500 font-bold text-sm truncate">{initialUser.email}</span>
+                  <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em] mb-4">Información de Contacto</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 group">
+                      <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
+                        <i className="fas fa-envelope text-xs" />
                       </div>
-                      <div className="flex items-center gap-4 group">
-                         <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
-                           <i className="fas fa-user-tag text-xs"></i>
-                         </div>
-                         <span className="text-stone-500 font-bold text-sm">@{initialUser.name}</span>
+                      <span className="text-stone-500 font-bold text-sm truncate">{initialUser.email}</span>
+                    </div>
+                    <div className="flex items-center gap-4 group">
+                      <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
+                        <i className="fas fa-user-tag text-xs" />
                       </div>
-                   </div>
+                      <span className="text-stone-500 font-bold text-sm">@{initialUser.name}</span>
+                    </div>
+                  </div>
                 </section>
-
                 <div className="bg-amber-50 p-8 rounded-[2rem] border-2 border-amber-100 space-y-4 relative overflow-hidden group">
-                   <i className="fas fa-mug-hot absolute -bottom-4 -right-4 text-8xl text-amber-100 -rotate-12 transform group-hover:scale-125 transition-transform duration-500"></i>
-                   <p className="text-xs font-black uppercase tracking-widest text-amber-800 relative z-10">Estado de Lealtad</p>
-                   <h4 className="text-3xl font-black text-stone-800 relative z-10">Mokaf Gold</h4>
-                   <p className="text-[10px] font-bold text-amber-700/60 relative z-10 uppercase tracking-widest">Tienes un cupón del 10% disponible</p>
+                  <i className="fas fa-mug-hot absolute -bottom-4 -right-4 text-8xl text-amber-100 -rotate-12 transform group-hover:scale-125 transition-transform duration-500" />
+                  <p className="text-xs font-black uppercase tracking-widest text-amber-800 relative z-10">Estado de Lealtad</p>
+                  <h4 className="text-3xl font-black text-stone-800 relative z-10">Mokaf Gold</h4>
+                  <p className="text-[10px] font-bold text-amber-700/60 relative z-10 uppercase tracking-widest">Tienes un cupón del 10% disponible</p>
                 </div>
               </div>
             </div>
