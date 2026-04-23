@@ -3,6 +3,24 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
+export async function addToCart(productId: number | string, quantity: number = 1) {
+    const formData = new FormData();
+    formData.append("productId", productId.toString());
+    formData.append("quantity", quantity.toString());
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al añadir al carrito");
+    }
+
+    return await response.json();
+}
+
 interface CartItem {
   id: number;
   productId: number;
@@ -22,7 +40,11 @@ interface CartSummary {
   totalUnits: number;
 }
 
-export async function clientLoader() {
+//For making petitions at backend
+
+export async function clientLoader({ request }: { request: Request }) {
+  // In a real app, we'd handle cookies for SSR auth.
+  // For now, we'll try to fetch, expecting the browser to send HttpOnly cookies.
   const response = await fetch("/api/v1/cart", {
     headers: { "Content-Type": "application/json" },
     credentials: "include"

@@ -4,6 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
 export async function clientAction({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   try {
     const formData = await request.formData();
     const email = formData.get("email") as string;

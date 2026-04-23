@@ -1,19 +1,22 @@
 import { useLoaderData, Link, Form } from "react-router";
 import { useState } from "react";
 import { API_BASE_URL } from "../config";
+import { addToCart } from "./cart";
 
 export async function clientLoader({ params }: { params: { id: string } }) {
-  const [productRes, reviewRes] = await Promise.all([
+  const [productRes, reviewRes, userRes] = await Promise.all([
     fetch(`${API_BASE_URL}/api/v1/products/${params.id}`, { credentials: "include" }),
     fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, { credentials: "include" }),
+    fetch(`${API_BASE_URL}/api/v1/users/me`, { credentials: "include" })
   ]);
 
   if (!productRes.ok) throw new Response("Producto no encontrado", { status: 404 });
 
   const product = await productRes.json();
   const reviewsData = reviewRes.ok ? await reviewRes.json() : { content: [] };
+  const user = userRes.ok ? await userRes.json() : null;
 
-  return { product, reviews: reviewsData.content };
+  return { product, reviews: reviewsData.content, user };
 }
 
 export async function clientAction({ request, params }: { request: Request; params: { id: string } }) {
@@ -21,107 +24,240 @@ export async function clientAction({ request, params }: { request: Request; para
   const intent = formData.get("intent");
 
   if (intent === "review") {
-    const data = Object.fromEntries(formData);
-    const response = await fetch(`/api/v1/products/${params.id}/reviews`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ stars: Number(data.stars), text: data.text }),
-    });
-    if (!response.ok) return { error: "Error al publicar la reseña." };
-    return { success: true };
+     const data = Object.fromEntries(formData);
+     const response = await fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       credentials: "include",
+       body: JSON.stringify({ stars: Number(data.stars), text: data.text }),
+     });
+     if (!response.ok) return { error: "Error al publicar la reseña." };
+     return { success: true };
+  }
+
+  if (intent === "cart") {
+    const productId = formData.get("productId");
+    const qty = formData.get("qty");
+    
+    try {
+      const fd = new FormData();
+      fd.append("productId", String(productId));
+      fd.append("quantity", String(qty));
+      
+      const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+      
+      if (!response.ok) return { error: "Error al añadir al carrito." };
+      return { success: true, message: "Añadido al carrito" };
+    } catch (e) {
+      return { error: "Error de red." };
+    }
   }
   return null;
 }
 
 export default function ProductDetail() {
-  const { product, reviews } = useLoaderData<typeof clientLoader>();
+  const { product, reviews, user } = useLoaderData<typeof clientLoader>();
   const [qty, setQty] = useState(1);
 
+  const getProductImage = (product: any) => {
+    if (product.imageUrl) {
+      if (product.imageUrl.startsWith("http")) return product.imageUrl;
+      return `${API_BASE_URL}${product.imageUrl}`;
+    }
+    return "https://via.placeholder.com/900x700?text=Producto";
+  };
+
+  const productPrice = Number(product.priceBase || 0).toFixed(2);
+
   return (
-    <div className="container mx-auto px-4 py-12 animate-fade-in max-w-6xl">
-      <nav className="mb-12 text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">
-        <Link to="/" className="hover:text-amber-800 transition-colors">Inicio</Link>
-        <span className="mx-3 opacity-30">/</span>
-        <Link to="/menu" className="hover:text-amber-800 transition-colors">Menú</Link>
-        <span className="mx-3 opacity-30">/</span>
-        <span className="text-stone-800 font-black">{product.name}</span>
-      </nav>
-
-      <div className="grid lg:grid-cols-2 gap-20 mb-32">
-        <div className="relative group">
-          <div className="absolute -inset-4 bg-stone-100 rounded-[3rem] -z-10 group-hover:rotate-2 group-hover:scale-105 transition-transform duration-700"></div>
-          <div className="relative aspect-square overflow-hidden rounded-[2.5rem] shadow-2xl">
-            <img src={product.imageUrl ? `${API_BASE_URL}${product.imageUrl}` : `https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=800`} alt={product.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000" />
-          </div>
-        </div>
-
-        <div className="flex flex-col">
-          <div className="flex flex-wrap items-center gap-3 mb-8">
-            <span className="bg-stone-900 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">{product.category || 'Specialty'}</span>
-            {product.allergens?.map((a: any) => (
-              <span key={a.id} className="bg-white text-stone-400 px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest border-2 border-stone-100 uppercase">
-                <i className="fas fa-info-circle mr-2 text-amber-600 opacity-50"></i>{a.name}
-              </span>
-            ))}
-          </div>
-          <h1 className="text-6xl font-black text-stone-800 mb-6 leading-tight uppercase tracking-tight italic">{product.name}</h1>
-          <div className="flex items-center gap-4 mb-8">
-            <div className="flex text-amber-500 gap-1 pb-1">
-              {[1,2,3,4,5].map(i => <i key={i} className="fas fa-star text-sm"></i>)}
+    <main className="container my-5 product-page">
+      <div className="product-shell">
+        <div className="row g-4 align-items-stretch flex flex-col lg:flex-row">
+          <div className="col-lg-6 lg:w-1/2">
+            <div className="product-image-wrap">
+              <img
+                src={getProductImage(product)}
+                className="product-image"
+                alt={product.name}
+              />
             </div>
-            <span className="text-stone-400 font-bold text-xs uppercase tracking-widest">{reviews.length} Reseñas</span>
           </div>
-          <p className="text-xl text-stone-500 leading-relaxed mb-12 font-medium italic border-l-4 border-amber-800/20 pl-8">"{product.description}"</p>
-          <div className="text-6xl font-black text-amber-800 mb-12 flex items-baseline gap-1">
-            {product.priceBase.toFixed(2)}<span className="text-xl tracking-tighter">€</span>
-          </div>
-          <div className="space-y-8 mt-auto">
-            <div className="flex items-center gap-8 border-t border-stone-100 pt-12">
-              <div className="flex items-center bg-stone-50 rounded-3xl p-2 border-2 border-stone-100 shadow-inner">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-14 h-14 flex items-center justify-center text-stone-400 hover:text-amber-800 hover:bg-white rounded-2xl transition-all text-xl"><i className="fas fa-minus"></i></button>
-                <div className="w-20 text-center flex flex-col">
-                  <span className="text-2xl font-black text-stone-800 leading-none">{qty}</span>
-                  <span className="text-[8px] font-black uppercase text-stone-400 tracking-widest mt-1">UDS</span>
+
+          <div className="col-lg-6 lg:w-1/2">
+            <div className="product-info ml-lg-4">
+              <div className="product-top">
+                <span className="product-category">{product.category}</span>
+                <div className="product-allergens">
+                  {product.allergens?.map((a: any) => (
+                    <span key={a.id} className="allergen-badge">{a.name}</span>
+                  ))}
                 </div>
-                <button onClick={() => setQty(qty + 1)} className="w-14 h-14 flex items-center justify-center text-stone-400 hover:text-amber-800 hover:bg-white rounded-2xl transition-all text-xl"><i className="fas fa-plus"></i></button>
               </div>
-              <button className="flex-grow group/btn relative h-16 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl active:scale-95 transition-all">
-                <div className="absolute inset-0 bg-amber-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
-                <div className="relative z-10 flex items-center justify-center gap-4 text-white">
-                  <i className="fas fa-cart-plus text-2xl"></i>
-                  <span className="font-black uppercase tracking-[0.2em] text-sm">Añadir al Carrito</span>
+
+              <h1 className="product-title">{product.name}</h1>
+              <p className="product-subtitle">{product.description}</p>
+
+              <div className="product-price-row">
+                <div className="product-price">{productPrice}€</div>
+              </div>
+
+              <hr className="product-divider" />
+              
+              <div className="product-actions">
+                {user ? (
+                  <>
+                    <div className="qty-control">
+                      <button
+                        className="qty-btn"
+                        type="button"
+                        onClick={() => setQty(Math.max(1, qty - 1))}
+                      >
+                        −
+                      </button>
+
+                      <input
+                        className="qty-input"
+                        type="number"
+                        value={qty}
+                        readOnly
+                      />
+                      <button
+                        className="qty-btn"
+                        type="button"
+                        onClick={() => setQty(qty + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <Form method="post" className="ajax-cart-form" style={{ display: 'inline' }}>
+                      <input type="hidden" name="productId" value={product.id} />
+                      <input type="hidden" name="qty" value={qty} />
+                      <input type="hidden" name="intent" value="cart" />
+                      <button className="btn btn-product-primary" type="submit">
+                        <i className="fas fa-cart-plus me-2"></i>Añadir
+                      </button>
+                    </Form>
+                  </>
+                ) : (
+                  <Link to="/login" className="btn btn-product-primary">
+                    Inicia sesión para comprar
+                  </Link>
+                )}
+              </div>
+
+              <div className="product-meta mt-4 space-y-4">
+                <div className="meta-item flex items-center gap-2 text-stone-500 text-sm">
+                  <i className="fas fa-truck"></i>
+                  <span>Entrega 24/48h</span>
                 </div>
-              </button>
+
+                <button 
+                  onClick={async () => {
+                    try {
+                      await addToCart(product.id, qty);
+                      alert("Producto añadido al carrito");
+                    } catch (error) {
+                      alert("Error al añadir el producto al carrito");
+                    }
+                  }}
+                  className="w-full group/btn relative h-16 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl shadow-amber-900/40 active:scale-95 transition-all"
+                >
+                  <div className="absolute inset-0 bg-amber-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
+                  <div className="relative z-10 flex items-center justify-center gap-4 text-white">
+                    <i className="fas fa-cart-plus text-2xl animate-pulse"></i>
+                    <span className="font-black uppercase tracking-[0.2em] text-sm">Añadir al Carrito</span>
+                  </div>
+                </button>
+
+                <div className="flex flex-wrap gap-4 pt-2">
+                  <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">
+                    <i className="fas fa-shield-alt"></i>
+                    <span>Pago seguro</span>
+                  </div>
+                  <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">
+                    <i className="fas fa-undo"></i>
+                    <span>14 días de devolución</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <section className="bg-stone-50 rounded-[3rem] p-12 md:p-20 border border-stone-100 shadow-inner">
-        <h2 className="text-4xl font-black text-stone-800 uppercase tracking-tight mb-16">Experiencias Mokaf</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="product-section mt-4">
+        <h3 className="section-title">Descripción</h3>
+        <p className="section-text">{product.description}</p>
+      </section>
+
+      <section className="product-section">
+        <h3 className="section-title">Detalles</h3>
+        <ul className="details-list">
+          <li><strong>Categoría:</strong> {product.category}</li>
+          <li><strong>Precio:</strong> {productPrice}€</li>
+        </ul>
+      </section>
+
+      <section className="product-section" id="reviews">
+        <h3 className="section-title">Reseñas</h3>
+
+        <div id="reviewsList">
           {reviews.map((review: any) => (
-            <div key={review.id} className="bg-white p-10 rounded-[2.5rem] border border-stone-100 shadow-sm hover:shadow-2xl transition-all duration-500 group">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h4 className="font-black text-stone-800 uppercase text-sm tracking-tight mb-2">{review.user?.name || 'Cliente Apasionado'}</h4>
-                  <div className="flex text-amber-500 text-[10px] gap-0.5">
-                    {[...Array(5)].map((_, i) => <i key={i} className={`fas fa-star ${i < review.stars ? "" : "text-stone-100"}`}></i>)}
+            <div key={review.id} className="review-card">
+               <div className="review-head">
+                  <div className="review-user" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <div className="avatar">{review.user?.name?.[0] || 'U'}</div>
+                    <span className="review-name">{review.user?.name || 'Usuario'}</span>
                   </div>
-                </div>
-              </div>
-              <p className="text-stone-500 italic leading-relaxed font-medium line-clamp-4">"{review.text}"</p>
+                  <div className="review-stars">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <i key={i} className={`fas fa-star ${i <= review.stars ? "" : "opacity-30"}`}></i>
+                    ))}
+                  </div>
+               </div>
+               <p className="review-text">{review.text}</p>
             </div>
           ))}
-          {reviews.length === 0 && (
-            <div className="col-span-full text-center py-20 bg-stone-100/50 rounded-3xl border-2 border-dashed border-stone-200">
-              <i className="fas fa-comment-dots text-4xl text-stone-300 mb-4 block"></i>
-              <p className="text-stone-400 font-black uppercase tracking-widest text-xs">Sé el primero en compartir tu experiencia</p>
-            </div>
-          )}
+          {reviews.length === 0 && <p className="section-text mt-3">No hay reseñas aún.</p>}
         </div>
+
+        {user ? (
+          <div className="mt-4">
+            <h4 className="section-title">Escribe una reseña</h4>
+            <Form method="post">
+              <input type="hidden" name="intent" value="review" />
+              <div className="mb-3">
+                <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Puntuación</label>
+                <select name="stars" className="form-select w-full bg-transparent border border-white/20 p-2 rounded" required>
+                  <option value="5">5</option>
+                  <option value="4">4</option>
+                  <option value="3">3</option>
+                  <option value="2">2</option>
+                  <option value="1">1</option>
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Comentario</label>
+                <textarea name="text" className="form-control w-full bg-transparent border border-white/20 p-2 rounded" rows={4} required></textarea>
+              </div>
+
+              <button className="btn btn-product-primary" type="submit">
+                Enviar reseña
+              </button>
+            </Form>
+          </div>
+        ) : (
+          <p className="section-text mt-4">
+            <Link to="/login" className="text-decoration-none" style={{ color: 'var(--dorado)' }}>Inicia sesión</Link> para escribir una reseña.
+          </p>
+        )}
       </section>
-    </div>
+    </main>
   );
 }

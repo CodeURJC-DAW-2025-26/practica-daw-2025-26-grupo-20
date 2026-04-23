@@ -4,8 +4,10 @@ import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
 export async function clientLoader() {
-  const response = await fetch(`${API_BASE_URL}/api/v1/statistics/dashboard`, { credentials: "include" });
-
+  const response = await fetch(`${API_BASE_URL}/api/v1/statistics/dashboard`, {
+    credentials: "include"
+  });
+  
   if (response.status === 401) return { isUnauthorized: true };
   if (response.status === 403) return { isForbidden: true };
   if (!response.ok) return { stats: null };

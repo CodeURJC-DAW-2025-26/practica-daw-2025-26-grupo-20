@@ -8,7 +8,7 @@ interface Branch {
   purchaseDiscountPercent?: number;
 }
 
-export async function clientLoader() {
+export async function clientLoader({ request }: { request: Request }) {
   try {
     const res = await fetch(`${API_BASE_URL}/api/v1/branches`, { credentials: "include" });
     if (!res.ok) return { branches: [] };

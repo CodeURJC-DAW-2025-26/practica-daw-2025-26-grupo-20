@@ -22,7 +22,7 @@ export function AddToCartButton({ productId, productName }: AddToCartButtonProps
 
     setIsAdding(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/cart/items?productId=${productId}&quantity=1`, {
+      const response = await fetch(`/api/v1/cart/items?productId=${productId}&quantity=1`, {
         method: 'POST',
         credentials: 'include',
       });

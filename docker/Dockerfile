@@ -1,31 +1,45 @@
-# Etapa 1: Compilación (Build)
-# Utilizamos una imagen con Maven y JDK 21 para compilar el proyecto
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+# Etapa 1: Construcción del Frontend (React con React Router v7)
+FROM node:22-alpine AS frontend-builder
+WORKDIR /frontend
 
-# Select working Directory
+# Copiamos archivos de dependencias para aprovechar la caché de Docker
+COPY frontend/package*.json ./
+RUN npm install
+
+# Copiamos el código fuente del frontend
+COPY frontend/ ./
+
+# Construimos la aplicación
+RUN npm run build
+
+# Etapa 2: Compilación del Backend (Maven + JDK 21)
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /project
 
-# copy pom.xml and download dependencies
-COPY ../pom.xml .
+# Copiamos el pom.xml y descargamos dependencias
+COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# copy source code
+# Copiamos el código fuente del backend
 COPY src ./src
 
-# run mvn
+# Copiamos los archivos generados por el frontend a la carpeta de recursos estáticos de Spring
+# Como el frontend tiene basename "/new/", lo colocamos en static/new
+RUN mkdir -p src/main/resources/static/new
+COPY --from=frontend-builder /frontend/build/client/ src/main/resources/static/new/
+
+# Compilamos el proyecto y generamos el JAR
 RUN mvn clean package -DskipTests
 
-#image for run no jdk or mvn 
+# Etapa 3: Imagen Final de Ejecución (JRE)
 FROM eclipse-temurin:21-jre-alpine
-
-#select working directory
 WORKDIR /app
 
-# copy jar file
+# Copiamos el JAR generado
 COPY --from=builder /project/target/*.jar app.jar
 
-# Expose port
+# Exponemos el puerto
 EXPOSE 8443
 
-#  command to run
+# Comando de ejecución
 ENTRYPOINT ["java", "-jar", "app.jar"]
