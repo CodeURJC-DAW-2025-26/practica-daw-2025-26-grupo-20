@@ -46,16 +46,28 @@ export default function Header() {
 
           {/* Gestión — solo para ADMIN */}
           {isLogged && user?.role === "ADMIN" && (
-            <NavLink
-              to="/gestion-menu"
-              className={({ isActive }) =>
-                `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg ${
-                  isActive ? "text-amber-400 bg-white/[0.05]" : "text-amber-500"
-                } hover:text-amber-400 hover:bg-white/[0.05] border border-amber-500/30`
-              }
-            >
-              Gestión
-            </NavLink>
+            <div className="flex items-center gap-2">
+              <NavLink
+                to="/gestion-menu"
+                className={({ isActive }) =>
+                  `text-[10px] font-bold uppercase tracking-[0.2em] transition-all px-3 py-2 rounded-lg ${
+                    isActive ? "text-amber-400 bg-white/[0.05]" : "text-amber-500"
+                  } hover:text-amber-400 hover:bg-white/[0.05] border border-amber-500/30`
+                }
+              >
+                Menú
+              </NavLink>
+              <NavLink
+                to="/gestion-usuarios"
+                className={({ isActive }) =>
+                  `text-[10px] font-bold uppercase tracking-[0.2em] transition-all px-3 py-2 rounded-lg ${
+                    isActive ? "text-amber-400 bg-white/[0.05]" : "text-amber-500"
+                  } hover:text-amber-400 hover:bg-white/[0.05] border border-amber-500/30`
+                }
+              >
+                Usuarios
+              </NavLink>
+            </div>
           )}
 
           {/* Cart Button */}

@@ -23,5 +23,6 @@ export default [
     route("profile-admin", "routes/profile_admin.tsx"),
     route("statistics", "routes/statistics.tsx"),
     route("gestion-menu", "routes/gestion_menu.tsx"),
+    route("gestion-usuarios", "routes/gestion_usuarios.tsx"),
   ]),
 ] satisfies RouteConfig;
