@@ -1,6 +1,7 @@
 import { useLoaderData, Link, useActionData, Form, useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
+import { useCartStore } from "../store/cartStore";
 import { API_BASE_URL } from "../config";
 
 export async function addToCart(productId: number | string, quantity: number = 1) {
@@ -105,6 +106,14 @@ export default function Cart() {
   const { cart, isUnauthorized } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
   const isLogged = useAuthStore(state => state.isLogged);
+  const setItemCount = useCartStore(state => state.setItemCount);
+
+  // Sincronizar el contador global con los datos que acabamos de cargar en esta página
+  useEffect(() => {
+    if (cart) {
+      setItemCount(cart.totalUnits);
+    }
+  }, [cart, setItemCount]);
 
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");

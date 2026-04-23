@@ -1,9 +1,11 @@
 import { Link, NavLink, useNavigate } from "react-router";
 import { useAuthStore } from "../store/authStore";
+import { useCartStore } from "../store/cartStore";
 import { API_BASE_URL } from "../config";
 
 export default function Header() {
   const { isLogged, user, logout } = useAuthStore();
+  const { itemCount } = useCartStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -63,7 +65,7 @@ export default function Header() {
           >
             <i className="fas fa-shopping-cart text-xl"></i>
             <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              0
+              {itemCount}
             </span>
           </Link>
         </nav>

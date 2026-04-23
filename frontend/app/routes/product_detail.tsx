@@ -1,7 +1,9 @@
 import { useLoaderData, Link, Form } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 import { addToCart } from "./cart";
+import { useCartStore } from "../store/cartStore";
+import { useActionData } from "react-router";
 
 export async function clientLoader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes, userRes] = await Promise.all([
@@ -61,7 +63,16 @@ export async function clientAction({ request, params }: { request: Request; para
 
 export default function ProductDetail() {
   const { product, reviews, user } = useLoaderData<typeof clientLoader>();
+  const actionData = useActionData<typeof clientAction>();
+  const updateItemCount = useCartStore((state) => state.updateItemCount);
   const [qty, setQty] = useState(1);
+
+  // Cada vez que el formulario de añadir al carrito (clientAction) tenga éxito, refrescamos el contador
+  useEffect(() => {
+    if (actionData?.success && actionData?.message === "Añadido al carrito") {
+      updateItemCount();
+    }
+  }, [actionData, updateItemCount]);
 
   const getProductImage = (product: any) => {
     if (product.imageUrl) {
@@ -160,6 +171,7 @@ export default function ProductDetail() {
                   onClick={async () => {
                     try {
                       await addToCart(product.id, qty);
+                      await updateItemCount(); // <--- Aquí actualizamos tras el click manual
                       alert("Producto añadido al carrito");
                     } catch (error) {
                       alert("Error al añadir el producto al carrito");

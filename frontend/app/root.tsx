@@ -13,6 +13,7 @@ import { useEffect } from "react";
 
 
 import { useAuthStore } from "./store/authStore";
+import { useCartStore } from "./store/cartStore";
 import stylesheet from "./app.css?url";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -64,12 +65,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
+  const isLogged = useAuthStore((state) => state.isLogged);
+  const updateItemCount = useCartStore((state) => state.updateItemCount);
 
-  // Al arrancar la app sincronizamos el estado local con la cookie de sesión del servidor.
-  // Cubre: recarga de página, nueva pestaña, vuelta desde otra app.
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
+
+  // Si estamos logueados, cargamos el contador del carrito
+  useEffect(() => {
+    if (isLogged) {
+      updateItemCount();
+    }
+  }, [isLogged, updateItemCount]);
 
   return <Outlet />;
 }
