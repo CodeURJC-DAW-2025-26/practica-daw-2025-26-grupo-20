@@ -20,6 +20,7 @@ export default [
 
   // Rutas solo para ADMIN
   layout("components/AdminLayout.tsx", [
+    route("profile-admin", "routes/profile_admin.tsx"),
     route("statistics", "routes/statistics.tsx"),
     route("gestion-menu", "routes/gestion_menu.tsx"),
   ]),

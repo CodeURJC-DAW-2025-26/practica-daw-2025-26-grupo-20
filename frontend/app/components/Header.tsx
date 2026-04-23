@@ -29,24 +29,33 @@ export default function Header() {
             { to: "/branches", label: "Sucursales" },
             { to: "/contact", label: "Contacto" },
           ].map((link) => (
-            <NavLink 
-              key={link.to} 
+            <NavLink
+              key={link.to}
               to={link.to}
-              className={({ isActive }) => `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg hover:text-[#d4b88d] hover:bg-white/[0.05] ${isActive ? 'text-[#d4b88d] bg-white/[0.03]' : 'text-stone-300'}`}
+              className={({ isActive }) =>
+                `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg hover:text-[#d4b88d] hover:bg-white/[0.05] ${
+                  isActive ? "text-[#d4b88d] bg-white/[0.03]" : "text-stone-300"
+                }`
+              }
             >
               {link.label}
             </NavLink>
           ))}
-          {/* ============================================================== */}
-          {/* TODO: FRONTEND ROLLBACK SEC - GESTIÓN PRODUCTOS TEMP BYPASS    */}
-          {/* Elimina o condiciona (solo admin) este botón cuando haya login */}
-          <NavLink 
-            to="/gestion-menu"
-            className={({ isActive }) => `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg ${isActive ? 'text-amber-400 bg-white/[0.05]' : 'text-amber-500'} hover:text-amber-400 hover:bg-white/[0.05] border border-amber-500/30`}
-          >
-            Gestión
-          </NavLink>
-          {/* ============================================================== */}
+
+          {/* Gestión — solo para ADMIN */}
+          {isLogged && user?.role === "ADMIN" && (
+            <NavLink
+              to="/gestion-menu"
+              className={({ isActive }) =>
+                `text-[12px] font-bold uppercase tracking-[0.25em] transition-all px-4 py-2 rounded-lg ${
+                  isActive ? "text-amber-400 bg-white/[0.05]" : "text-amber-500"
+                } hover:text-amber-400 hover:bg-white/[0.05] border border-amber-500/30`
+              }
+            >
+              Gestión
+            </NavLink>
+          )}
+
           {/* Cart Button */}
           <Link
             to="/cart"
@@ -62,27 +71,36 @@ export default function Header() {
         {/* Account Button */}
         <div className="flex items-center gap-6">
           {isLogged ? (
-             <div className="flex items-center gap-5">
-                <Link to="/profile" className="flex items-center gap-3 group">
-                   <div className="text-right flex flex-col items-end">
-                      <span className="text-[11px] text-stone-300 font-bold uppercase tracking-widest leading-none mb-1">{user?.name}</span>
-                      <span className="text-[12px] text-[#d4b88d] font-serif italic">Mi Perfil</span>
-                   </div>
-                   <div className="w-12 h-12 rounded-full border-2 border-[#d4b88d]/40 flex items-center justify-center text-[#d4b88d] group-hover:border-[#d4b88d] group-hover:bg-[#d4b88d] group-hover:text-black transition-all duration-500 shadow-xl overflow-hidden">
-                      {user?.profileImageUrl ? (
-                        <img src={user.profileImageUrl} alt="user" className="w-full h-full object-cover" />
-                      ) : (
-                        <i className="fas fa-user text-[14px]"></i>
-                      )}
-                   </div>
-                </Link>
-                <button onClick={handleLogout} className="w-10 h-10 flex items-center justify-center text-stone-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
-                   <i className="fas fa-sign-out-alt text-[14px]"></i>
-                </button>
-             </div>
+            <div className="flex items-center gap-5">
+              {/* Perfil — ruta dinámica según rol */}
+              <Link
+                to={user?.role === "ADMIN" ? "/profile-admin" : "/profile"}
+                className="flex items-center gap-3 group"
+              >
+                <div className="text-right flex flex-col items-end">
+                  <span className="text-[11px] text-stone-300 font-bold uppercase tracking-widest leading-none mb-1">
+                    {user?.name}
+                  </span>
+                  <span className="text-[12px] text-[#d4b88d] font-serif italic">Mi Perfil</span>
+                </div>
+                <div className="w-12 h-12 rounded-full border-2 border-[#d4b88d]/40 flex items-center justify-center text-[#d4b88d] group-hover:border-[#d4b88d] group-hover:bg-[#d4b88d] group-hover:text-black transition-all duration-500 shadow-xl overflow-hidden">
+                  {user?.profileImageUrl ? (
+                    <img src={user.profileImageUrl} alt="user" className="w-full h-full object-cover" />
+                  ) : (
+                    <i className="fas fa-user text-[14px]"></i>
+                  )}
+                </div>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-10 h-10 flex items-center justify-center text-stone-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
+              >
+                <i className="fas fa-sign-out-alt text-[14px]"></i>
+              </button>
+            </div>
           ) : (
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="bg-transparent border border-[#d4b88d]/50 px-8 py-3 rounded-full flex items-center gap-3 text-[#d4b88d] hover:bg-[#d4b88d] hover:text-black transition-all duration-700 font-bold text-[11px] uppercase tracking-widest shadow-lg"
             >
               <i className="fas fa-user text-[10px]"></i>
