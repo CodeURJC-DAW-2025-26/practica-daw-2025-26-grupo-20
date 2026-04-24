@@ -1,13 +1,14 @@
 import { useLoaderData, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
+import Chart from "chart.js/auto";
 
 export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/statistics/dashboard`, {
     credentials: "include"
   });
-  
+
   if (response.status === 401) return { isUnauthorized: true };
   if (response.status === 403) return { isForbidden: true };
   if (!response.ok) return { stats: null };
@@ -21,112 +22,308 @@ export default function Statistics() {
   const { user, isLogged } = useAuthStore();
   const navigate = useNavigate();
 
+  const categoryChartRef = useRef<HTMLCanvasElement>(null);
+  const branchesChartRef = useRef<HTMLCanvasElement>(null);
+  const categoryInstance = useRef<Chart | null>(null);
+  const branchesInstance = useRef<Chart | null>(null);
+
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");
     else if (isForbidden || user?.role !== 'ADMIN') navigate("/menu");
   }, [isUnauthorized, isForbidden, isLogged, user, navigate]);
 
+  useEffect(() => {
+    if (!stats) return;
+
+    if (categoryInstance.current) {
+      categoryInstance.current.destroy();
+      categoryInstance.current = null;
+    }
+
+    if (stats.allCategories && stats.allCategories.length > 0 && categoryChartRef.current) {
+      const ctx = categoryChartRef.current.getContext("2d");
+      if (ctx) {
+        categoryInstance.current = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: stats.allCategories.map((c: any) => c.category || c.name),
+            datasets: [{
+              data: stats.allCategories.map((c: any) => c.units || 0),
+              backgroundColor: stats.allCategories.map((c: any) => c.color || "#c6a87d"),
+              borderColor: "#1a1a1a",
+              borderWidth: 2,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "65%",
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+    }
+
+    if (branchesInstance.current) {
+      branchesInstance.current.destroy();
+      branchesInstance.current = null;
+    }
+
+    if (stats.allBranches && stats.allBranches.length > 0 && branchesChartRef.current) {
+      const ctx = branchesChartRef.current.getContext("2d");
+      if (ctx) {
+        branchesInstance.current = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: stats.allBranches.map((b: any) => b.name),
+            datasets: [{
+              label: "Ingresos (€)",
+              data: stats.allBranches.map((b: any) => b.revenue || b.totalRevenue || 0),
+              backgroundColor: stats.allBranches.map((b: any) => b.color || "#c6a87d"),
+              borderRadius: 8,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.1)" } },
+              x: { ticks: { color: "#e0e0e0" } }
+            }
+          }
+        });
+      }
+    }
+
+    return () => {
+      categoryInstance.current?.destroy();
+      branchesInstance.current?.destroy();
+    };
+  }, [stats]);
+
   if (!stats) return null;
 
   return (
-    <div className="container mx-auto px-4 py-20 max-w-7xl animate-fade-in space-y-16">
-      <div className="flex flex-col md:flex-row justify-between items-end gap-8 border-b-2 border-stone-100 pb-12">
-        <div className="space-y-4">
-          <div className="inline-block bg-amber-100 text-amber-800 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em]">Panel de Control</div>
-          <h1 className="text-6xl font-black text-stone-800 uppercase tracking-tighter italic">Estadísticas <span className="text-amber-800">Mokaf</span></h1>
-          <p className="text-stone-400 font-bold text-xs uppercase tracking-widest leading-relaxed max-w-lg">Análisis detallado de ventas, rendimiento de sucursales y preferencias de clientes.</p>
+    <div className="stats-container">
+      <h1 className="stats-title">☕ Estadísticas Mokaf</h1>
+
+      <div className="stats-grid">
+        {/* ========== CARD 1: Producto Mejor Valorado ========== */}
+        <div className="stats-card">
+          <h2>⭐ Producto Mejor Valorado</h2>
+
+          {stats.topRatedProduct ? (
+            <>
+              <div className="product-spotlight" >
+                <div className="product-image-frame" >
+                  <img
+                    src={
+                      (() => {
+                        const img = stats.topRatedProduct?.imageUrl
+                                  || stats.topRatedProduct?.imagePath
+                                  || stats.topRatedProduct?.image;
+                        if (!img) return "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500";
+                        if (img.startsWith("http")) return img;
+                        return `${API_BASE_URL}${img}`;
+                      })()
+                    } 
+                    alt={stats.topRatedProduct.name}
+                  />
+                </div>
+                <div className="product-details">
+                  <div className="product-name">{stats.topRatedProduct.name}</div>
+                  <span className="product-category">{stats.topRatedProduct.category}</span>
+                </div>
+              </div>
+
+              <div className="kpi-grid">
+                <div className="kpi-item">
+                  <div className="kpi-label">Valoración Media</div>
+                  <div className="kpi-value">
+                    {stats.topRatedProduct.averageRatingFormatted || stats.topRatedProduct.averageRating?.toFixed(1) || "—"}
+                    <span className="kpi-unit">⭐</span>
+                  </div>
+                </div>
+                <div className="kpi-item">
+                  <div className="kpi-label">Nº de Reseñas</div>
+                  <div className="kpi-value">{stats.topRatedProduct.reviewCount || 0}</div>
+                </div>
+              </div>
+
+              {/* Reseñas recientes */}
+              {stats.topRatedProduct.recentReviews && stats.topRatedProduct.recentReviews.length > 0 && (
+                <div style={{ marginTop: "1rem", borderTop: "1px solid rgba(198,168,125,0.15)", paddingTop: "0.8rem" }}>
+                  <h5 style={{ color: "var(--color-mokaf-gold)", fontSize: "0.85rem", marginBottom: "0.6rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                    <i className="fas fa-comment" style={{ marginRight: "0.4rem" }} /> Reseñas recientes
+                  </h5>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                    {stats.topRatedProduct.recentReviews.map((review: any, i: number) => (
+                      <div key={i} style={{ background: "rgba(0,0,0,0.15)", borderRadius: "6px", padding: "0.5rem 0.7rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.15rem" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <span style={{ color: "var(--color-mokaf-gold)", fontSize: "0.75rem", fontWeight: 500 }}>{review.userName}</span>
+                            <span style={{ color: "gold", fontSize: "0.65rem" }}>{'⭐'.repeat(review.stars)}</span>
+                          </div>
+                        </div>
+                        <p style={{ color: "var(--beige)", fontSize: "0.75rem", margin: 0, lineHeight: 1.2, opacity: 0.9 }}>"{review.text}"</p>
+                        <div style={{ textAlign: "right", color: "#e0e0e0", fontSize: "0.55rem", marginTop: "0.15rem", opacity: 0.6 }}>{review.createdAt}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="no-data">📭 No hay suficientes reseñas este mes</div>
+          )}
+        </div>
+
+        {/* ========== CARD 2: Ventas por Categoría ========== */}
+        <div className="stats-card">
+          <h2>📊 Ventas por Categoría</h2>
+
+          {stats.topCategory ? (
+            <>
+              <div className="kpi-grid">
+                <div className="kpi-item">
+                  <div className="kpi-label">Categoría Top</div>
+                  <div className="kpi-value">{stats.topCategory.category || stats.topCategory.name}</div>
+                </div>
+                <div className="kpi-item">
+                  <div className="kpi-label">Unidades</div>
+                  <div className="kpi-value">
+                    {stats.topCategory.totalUnits || stats.topCategory.units || 0}
+                    <span className="kpi-unit"> uds</span>
+                  </div>
+                </div>
+              </div>
+              <div className="summary-row">
+                <span className="summary-label">Ingresos totales</span>
+                <span className="summary-value">{stats.topCategory.totalAmountFormatted || stats.topCategory.totalAmount || "0,00"} €</span>
+              </div>
+              <div className="summary-row">
+                <span className="summary-label">Pedidos</span>
+                <span className="summary-value">{stats.topCategory.orderCount || 0}</span>
+              </div>
+
+              {stats.allCategories?.length > 0 && (
+                <>
+                  <h3 style={{ color: "var(--color-mokaf-gold)", fontSize: "1.2rem", fontWeight: 400, margin: "1rem 0 0.8rem" }}>
+                    Distribución por categorías
+                  </h3>
+                  <div className="chart-container">
+                    <canvas ref={categoryChartRef}></canvas>
+                  </div>
+                </>
+              )}
+            </>
+          ) : (
+            <div className="no-data">📭 No hay datos de categorías en los últimos 3 meses</div>
+          )}
+        </div>
+
+        {/* ========== CARD 3: Sucursal Destacada ========== */}
+        <div className="stats-card">
+          <h2>📍Sucursal Destacada</h2>
+
+          {stats.topBranch ? (
+            <>
+              <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+                <span style={{ color: "var(--color-mokaf-gold)", fontSize: "1.4rem", fontWeight: 500 }}>
+                  {stats.topBranch.name}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-around", marginBottom: "1rem", background: "rgba(0,0,0,0.15)", borderRadius: "10px", padding: "0.8rem" }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ color: "#e0e0e0", fontSize: "0.8rem", textTransform: "uppercase" }}>Pedidos</div>
+                  <div style={{ color: "var(--color-mokaf-gold)", fontSize: "2rem", fontWeight: 700, lineHeight: 1.2 }}>
+                    {stats.topBranch.totalOrders}
+                  </div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ color: "#e0e0e0", fontSize: "0.8rem", textTransform: "uppercase" }}>Unidades</div>
+                  <div style={{ color: "var(--color-mokaf-gold)", fontSize: "2rem", fontWeight: 700, lineHeight: 1.2 }}>
+                    {stats.topBranch.totalUnits}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+                <div style={{ background: "linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro))", borderRadius: "12px", padding: "0.8rem", border: "2px dashed var(--color-mokaf-gold)", position: "relative", overflow: "hidden", textAlign: "center" }}>
+                  <div style={{ position: "absolute", top: "-15px", left: "-15px", width: "50px", height: "50px", borderRadius: "50%", background: "rgba(198,168,125,0.2)" }} />
+                  <div style={{ position: "absolute", bottom: "-15px", right: "-15px", width: "50px", height: "50px", borderRadius: "50%", background: "rgba(198,168,125,0.15)" }} />
+                  <div style={{ position: "relative", zIndex: 1 }}>
+                    <span style={{ color: "var(--color-mokaf-gold)", fontSize: "0.7rem", textTransform: "uppercase", display: "block", marginBottom: "0.2rem" }}>Cupón</span>
+                    <span style={{ color: "#fff", fontSize: "2rem", fontWeight: 700 }}>{stats.topBranch.discountPercent || 0}%</span>
+                    <span style={{ background: "var(--color-mokaf-gold)", color: "var(--negro)", padding: "0.15rem 0.5rem", borderRadius: "4px", fontSize: "0.6rem", fontWeight: "bold", display: "inline-block", marginLeft: "0.3rem" }}>EXC</span>
+                  </div>
+                </div>
+
+                <div style={{ background: "rgba(0,0,0,0.25)", borderRadius: "12px", padding: "0.8rem", textAlign: "center", border: "1px solid rgba(198,168,125,0.3)", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                  <span style={{ color: "#e0e0e0", fontSize: "0.7rem", textTransform: "uppercase", display: "block" }}>Ingresos</span>
+                  <span style={{ color: "var(--color-mokaf-gold)", fontSize: "1.6rem", fontWeight: 700 }}>{stats.topBranch.totalRevenueFormatted || stats.topBranch.totalRevenue || "0,00"}€</span>
+                  <span style={{ color: "#e0e0e0", fontSize: "0.65rem" }}>{stats.topBranch.avgOrderValue || "—"} €/pedido</span>
+                </div>
+              </div>
+
+              <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "10px", padding: "1rem", border: "1px solid rgba(198,168,125,0.2)", flex: 1, minHeight: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                  <i className="fas fa-store" style={{ color: "var(--color-mokaf-gold)", fontSize: "1rem" }} />
+                  <span style={{ color: "var(--color-mokaf-gold)", fontSize: "0.9rem", fontWeight: 500 }}>Sobre esta sucursal</span>
+                </div>
+                <div style={{ color: "var(--beige)", fontSize: "0.9rem", lineHeight: 1.5, overflowY: "auto", flex: 1, paddingRight: "0.3rem", scrollbarWidth: "thin", scrollbarColor: "var(--dorado) rgba(0,0,0,0.2)" }}>
+                  {stats.topBranch.description || "Sin descripción disponible para esta sucursal."}
+                </div>
+                <div style={{ textAlign: "right", fontSize: "0.6rem", color: "rgba(198,168,125,0.3)", marginTop: "0.3rem" }}>
+                  <i className="fas fa-coffee" /> <i className="fas fa-coffee" /> <i className="fas fa-coffee" />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="no-data">📭 No hay datos de sucursales</div>
+          )}
+        </div>
+
+        {/* ========== CARD 4: Ranking de Sucursales ========== */}
+        <div className="stats-card full-width-card">
+          <h2>📈 Ranking de Sucursales</h2>
+
+          {stats.allBranches?.length > 0 ? (
+            <>
+              <div className="chart-container" style={{ height: "300px", width: "100%" }}>
+                <canvas ref={branchesChartRef}></canvas>
+              </div>
+
+              <div className="branches-grid" style={{ width: "100%" }}>
+                {stats.allBranches.map((branch: any, idx: number) => (
+                  <div className="branch-card" key={idx}>
+                    <div
+                      className="branch-color"
+                      style={{ backgroundColor: branch.color || "#c6a87d" }}
+                    />
+                    <div className="branch-info">
+                      <div className="branch-name">{branch.name}</div>
+                      <div className="branch-stats">
+                        <span>📦 {branch.units || branch.totalUnits || 0} uds</span>
+                        <span>💰 {branch.revenueFormatted || branch.totalRevenue || "0,00"}€</span>
+                      </div>
+                    </div>
+                    <span className="branch-badge">{branch.percentage || 0}%</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="no-data">📭 No hay datos de sucursales para mostrar</div>
+          )}
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 group bg-white rounded-[3rem] p-12 border border-stone-100 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center gap-10">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50"></div>
-          <div className="relative w-64 h-64 flex-shrink-0">
-            <img src={stats.bestProduct?.imageUrl ? `${API_BASE_URL}${stats.bestProduct.imageUrl}` : "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500"} className="w-full h-full object-cover rounded-[2.5rem] shadow-2xl" alt="Best Product" />
-            <div className="absolute -top-4 -left-4 bg-amber-800 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl border-4 border-white animate-bounce">
-              <i className="fas fa-crown"></i>
-            </div>
-          </div>
-          <div className="flex-grow space-y-6 relative z-10 text-center md:text-left">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-800 mb-2">Producto Estrella</p>
-              <h2 className="text-4xl font-black text-stone-800 uppercase tracking-tight leading-tight">{stats.bestProduct?.name || 'Caramel Macchiato'}</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-8 pt-4">
-              <div className="space-y-1">
-                <p className="text-[8px] font-black uppercase tracking-widest text-stone-300">Ventas Totales</p>
-                <p className="text-3xl font-black text-stone-800 italic">{stats.bestProduct?.totalSales || 1540}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[8px] font-black uppercase tracking-widest text-stone-300">Calificación Promedio</p>
-                <div className="flex items-center gap-2 text-amber-500 font-black text-xl italic">
-                  {stats.bestProduct?.averageRating || 4.9} <i className="fas fa-star text-sm"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-stone-900 rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between group">
-          <i className="fas fa-mug-hot absolute -bottom-10 -right-10 text-[200px] opacity-[0.03]"></i>
-          <div className="space-y-8 relative z-10">
-            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-amber-500 text-2xl"><i className="fas fa-layer-group"></i></div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-stone-500 mb-2">Categoría Dominante</p>
-              <h3 className="text-4xl font-black uppercase tracking-tight italic">{stats.topCategory?.name || 'Café Caliente'}</h3>
-            </div>
-          </div>
-          <div className="mt-12 pt-12 border-t border-stone-800 relative z-10 flex justify-between items-end">
-            <div>
-              <p className="text-[8px] font-black uppercase tracking-widest text-stone-500 mb-1">Crecimiento Mensual</p>
-              <p className="text-4xl font-black text-amber-500 italic">+18.5%</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-10">
-        <div className="bg-white rounded-[3rem] p-12 border border-stone-100 shadow-xl">
-          <h3 className="text-2xl font-black text-stone-800 uppercase tracking-tight mb-10 flex items-center gap-4">
-            <i className="fas fa-store text-amber-800"></i>Rendimiento por Sucursal
-          </h3>
-          <div className="space-y-8">
-            {stats.allBranches?.map((branch: any, idx: number) => (
-              <div key={branch.name} className="flex items-center gap-6">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-amber-800 text-white' : 'bg-stone-50 text-stone-400'}`}>{idx + 1}</div>
-                <div className="flex-grow space-y-2">
-                  <div className="flex justify-between items-end">
-                    <span className="font-black text-stone-700 uppercase tracking-tight text-sm">{branch.name}</span>
-                    <span className="text-[10px] font-black text-stone-400">{branch.totalSales || 0} Ventas</span>
-                  </div>
-                  <div className="h-2 bg-stone-50 rounded-full overflow-hidden border border-stone-100 shadow-inner">
-                    <div className="h-full bg-amber-800 rounded-full transition-all duration-1000" style={{ width: `${(branch.totalSales / (stats.allBranches[0]?.totalSales || 1)) * 100}%` }}></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-stone-50 rounded-[3rem] p-12 border border-stone-100">
-          <h3 className="text-2xl font-black text-stone-800 uppercase tracking-tight mb-10 flex items-center gap-4">
-            <i className="fas fa-pie-chart text-amber-800"></i>Distribución de Mercado
-          </h3>
-          <div className="grid grid-cols-2 gap-6">
-            {stats.allCategories?.map((cat: any) => (
-              <div key={cat.name} className="bg-white p-8 rounded-3xl border border-stone-100 shadow-sm hover:shadow-xl transition-all group">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-10 h-10 bg-stone-50 text-amber-800 rounded-xl flex items-center justify-center group-hover:bg-amber-800 group-hover:text-white transition-all">
-                    <i className="fas fa-mug-hot text-xs"></i>
-                  </div>
-                  <span className="text-amber-800 font-black text-xs italic">{cat.percentage || '15'}%</span>
-                </div>
-                <h4 className="text-sm font-black text-stone-800 uppercase tracking-tight truncate">{cat.name}</h4>
-                <p className="text-[8px] font-black uppercase tracking-widest text-stone-400 mt-2">{cat.totalSales} Pedidos</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="stats-footer">
+        <a href="/" className="back-button">← Volver al Inicio</a>
       </div>
     </div>
   );
