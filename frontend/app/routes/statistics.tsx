@@ -105,6 +105,13 @@ export default function Statistics() {
 
   if (!stats) return null;
 
+  // Obtenemos la categoría top y sus valores reales desde allCategories
+  const topCategoryName = stats.topCategory?.category;
+  const matchedCategory = stats.allCategories?.find((cat: any) => cat.category === topCategoryName);
+  const topUnits = matchedCategory?.units ?? 0;
+  const topAmountFormatted = matchedCategory?.amountFormatted ?? "0,00";
+  const topOrderCount = stats.topCategory?.orderCount ?? 0;
+
   return (
     <div className="stats-container">
       <h1 className="stats-title">☕ Estadísticas Mokaf</h1>
@@ -116,19 +123,19 @@ export default function Statistics() {
 
           {stats.topRatedProduct ? (
             <>
-              <div className="product-spotlight" >
-                <div className="product-image-frame" >
+              <div className="product-spotlight">
+                <div className="product-image-frame">
                   <img
                     src={
                       (() => {
-                        const img = stats.topRatedProduct?.imageUrl
-                                  || stats.topRatedProduct?.imagePath
-                                  || stats.topRatedProduct?.image;
+                        const img = stats.topRatedProduct?.imageUrl ||
+                          stats.topRatedProduct?.imagePath ||
+                          stats.topRatedProduct?.image;
                         if (!img) return "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500";
                         if (img.startsWith("http")) return img;
                         return `${API_BASE_URL}${img}`;
                       })()
-                    } 
+                    }
                     alt={stats.topRatedProduct.name}
                   />
                 </div>
@@ -189,23 +196,25 @@ export default function Statistics() {
               <div className="kpi-grid">
                 <div className="kpi-item">
                   <div className="kpi-label">Categoría Top</div>
-                  <div className="kpi-value">{stats.topCategory.category || stats.topCategory.name}</div>
+                  <div className="kpi-value">{topCategoryName}</div>
                 </div>
                 <div className="kpi-item">
                   <div className="kpi-label">Unidades</div>
                   <div className="kpi-value">
-                    {stats.topCategory.totalUnits || stats.topCategory.units || 0}
+                    {topUnits}
                     <span className="kpi-unit"> uds</span>
                   </div>
                 </div>
               </div>
+
               <div className="summary-row">
                 <span className="summary-label">Ingresos totales</span>
-                <span className="summary-value">{stats.topCategory.totalAmountFormatted || stats.topCategory.totalAmount || "0,00"} €</span>
+                <span className="summary-value">{topAmountFormatted} €</span>
               </div>
+
               <div className="summary-row">
                 <span className="summary-label">Pedidos</span>
-                <span className="summary-value">{stats.topCategory.orderCount || 0}</span>
+                <span className="summary-value">{topOrderCount}</span>
               </div>
 
               {stats.allCategories?.length > 0 && (
@@ -226,7 +235,7 @@ export default function Statistics() {
 
         {/* ========== CARD 3: Sucursal Destacada ========== */}
         <div className="stats-card">
-          <h2>📍Sucursal Destacada</h2>
+          <h2>📍 Sucursal Destacada</h2>
 
           {stats.topBranch ? (
             <>
