@@ -33,13 +33,13 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          // Limpia las cookies JWT en el servidor
+          // Cleaning cookies on the client side is not enough, we need to tell the server to clear the session cookie as well
           await fetch(`${API_BASE_URL}/api/v1/auth/sessions/current`, {
             method: 'DELETE',
             credentials: 'include',
           });
         } catch {
-          // Si falla el servidor limpiamos igualmente el estado local
+          // if it fails (e.g. network error), we still want to clear the local state
         }
         set({ user: null, isLogged: false });
       },
@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'mokaf-auth',
-      // isInitialized nunca se persiste, siempre re-verifica con el servidor al arrancar
+      // isInitialized never persists, so we can use it to detect if the store has been rehydrated or not
       partialize: (state) => ({ user: state.user, isLogged: state.isLogged }),
     }
   )
