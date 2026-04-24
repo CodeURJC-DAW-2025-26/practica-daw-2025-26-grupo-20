@@ -1,5 +1,5 @@
-import { useLoaderData, Link, useActionData, Form, useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useLoaderData, Link, useActionData, Form, useNavigate, useSubmit } from "react-router";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { useCartStore } from "../store/cartStore";
 import { API_BASE_URL } from "../config";
@@ -107,6 +107,10 @@ export default function Cart() {
   const navigate = useNavigate();
   const isLogged = useAuthStore(state => state.isLogged);
   const setItemCount = useCartStore(state => state.setItemCount);
+  const submit = useSubmit();
+  const [paymentMethod, setPaymentMethod] = useState("PAYPAL");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutMessage, setCheckoutMessage] = useState("");
 
   // Sincronizar el contador global con los datos que acabamos de cargar en esta página
   useEffect(() => {
@@ -118,6 +122,35 @@ export default function Cart() {
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");
   }, [isUnauthorized, isLogged, navigate]);
+
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    setCheckoutMessage("");
+
+    try {
+      const response = await fetch("/api/v1/cart/payments?paymentMethod=" + paymentMethod, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCheckoutMessage(data.message || "¡Pedido realizado con éxito!");
+        // Recargar la página después de un momento
+        setTimeout(() => {
+          window.location.href = "/orders";
+        }, 2000);
+      } else {
+        const errorData = await response.json();
+        setCheckoutMessage(errorData.message || "Error al procesar el pago");
+      }
+    } catch (error) {
+      setCheckoutMessage("Error al procesar el pago");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (!cart || cart.items?.length === 0) {
     return (
@@ -199,12 +232,99 @@ export default function Cart() {
                 </div>
               </div>
             </div>
-            <Form method="post" className="relative z-10 pt-4">
-              <input type="hidden" name="intent" value="checkout" />
-              <button type="submit" className="w-full bg-amber-800 hover:bg-amber-700 text-white py-6 rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl transition-all active:scale-95 group">
-                Confirmar y Pagar <i className="fas fa-arrow-right ml-4 group-hover:translate-x-2 transition-transform"></i>
-              </button>
-            </Form>
+
+            {/* Payment Methods */}
+            <div className="relative z-10 pt-4">
+              <h3 className="text-sm font-black uppercase tracking-widest text-stone-400 mb-4">Método de pago</h3>
+              <div className="space-y-3">
+                <label className="flex items-center gap-4 p-4 rounded-2xl bg-stone-800 cursor-pointer hover:bg-stone-700 transition-all border-2 border-transparent has-[:checked]:border-amber-500">
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="PAYPAL" 
+                    checked={paymentMethod === "PAYPAL"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-5 h-5 accent-amber-500"
+                  />
+                  <i className="fab fa-paypal text-2xl text-blue-400"></i>
+                  <span className="font-black uppercase text-sm tracking-wider">PayPal</span>
+                </label>
+                <label className="flex items-center gap-4 p-4 rounded-2xl bg-stone-800 cursor-pointer hover:bg-stone-700 transition-all border-2 border-transparent has-[:checked]:border-amber-500">
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="CARD" 
+                    checked={paymentMethod === "CARD"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-5 h-5 accent-amber-500"
+                  />
+                  <i className="fas fa-credit-card text-2xl text-amber-400"></i>
+                  <span className="font-black uppercase text-sm tracking-wider">Tarjeta de Crédito</span>
+                </label>
+                <label className="flex items-center gap-4 p-4 rounded-2xl bg-stone-800 cursor-pointer hover:bg-stone-700 transition-all border-2 border-transparent has-[:checked]:border-amber-500">
+                  <input 
+                    type="radio" 
+                    name="paymentMethod" 
+                    value="CASH" 
+                    checked={paymentMethod === "CASH"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-5 h-5 accent-amber-500"
+                  />
+                  <i className="fas fa-money-bill-wave text-2xl text-green-400"></i>
+                  <span className="font-black uppercase text-sm tracking-wider">Efectivo en Tienda</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Checkout Button */}
+            <button 
+              onClick={handleCheckout}
+              disabled={isProcessing}
+              className="w-full bg-amber-800 hover:bg-amber-700 disabled:bg-stone-600 text-white py-6 rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl transition-all active:scale-95 group relative z-10"
+            >
+              {isProcessing ? (
+                <span className="flex items-center justify-center gap-3">
+                  <i className="fas fa-spinner fa-spin"></i>
+                  Procesando...
+                </span>
+              ) : (
+                <>
+                  <i className="fas fa-lock mr-3"></i>
+                  Proceder al Pago
+                </>
+              )}
+            </button>
+
+            {/* Checkout Message */}
+            {checkoutMessage && (
+              <div className={`p-4 rounded-2xl text-center font-black text-sm uppercase tracking-wider ${checkoutMessage.includes("éxito") ? "bg-green-800" : "bg-red-800"}`}>
+                {checkoutMessage}
+              </div>
+            )}
+
+            {/* Security Info */}
+            <div className="text-center relative z-10">
+              <small className="text-stone-500">
+                <i className="fas fa-shield-alt mr-2"></i>
+                Pago 100% seguro - Tus datos están protegidos
+              </small>
+            </div>
+          </div>
+
+          {/* Delivery Info */}
+          <div className="bg-white rounded-[2rem] p-6 mt-4 shadow-lg border border-stone-100">
+            <h4 className="text-sm font-black uppercase tracking-widest text-stone-800 mb-4">
+              <i className="fas fa-shipping-fast mr-2 text-amber-800"></i>
+              Entrega Estimada
+            </h4>
+            <p className="text-stone-500 text-sm mb-2">
+              <i className="fas fa-clock mr-2"></i>
+              25-35 minutos
+            </p>
+            <p className="text-stone-400 text-xs">
+              <i className="fas fa-info-circle mr-1"></i>
+              Envío gratuito en pedidos superiores a 15€
+            </p>
           </div>
         </div>
       </div>
