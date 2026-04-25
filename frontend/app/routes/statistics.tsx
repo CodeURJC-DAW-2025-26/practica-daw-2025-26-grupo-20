@@ -46,8 +46,8 @@ export default function Statistics() {
 
   const categoryChartRef = useRef<HTMLCanvasElement>(null);
   const branchesChartRef = useRef<HTMLCanvasElement>(null);
-  const categoryInstance = useRef<Chart | null>(null);
-  const branchesInstance = useRef<Chart | null>(null);
+  const categoryInstance = useRef<any>(null);
+  const branchesInstance = useRef<any>(null);
 
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");

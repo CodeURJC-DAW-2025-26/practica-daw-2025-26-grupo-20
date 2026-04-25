@@ -73,17 +73,11 @@ public class StatisticsRestController {
 
         Map<String, Object> stats = statisticsService.getChartStatistics();
 
-        @SuppressWarnings("unchecked")
         Map<String, Object> bestProductMap = (Map<String, Object>) stats.get("bestProduct");
-        @SuppressWarnings("unchecked")
         Map<String, Object> topRatedProductMap = (Map<String, Object>) stats.get("topRatedProduct");
-        @SuppressWarnings("unchecked")
         Map<String, Object> topCategoryMap = (Map<String, Object>) stats.get("topCategory");
-        @SuppressWarnings("unchecked")
         List<Map<String, Object>> allCategoriesMaps = (List<Map<String, Object>>) stats.get("allCategories");
-        @SuppressWarnings("unchecked")
         Map<String, Object> topBranchMap = (Map<String, Object>) stats.get("topBranch");
-        @SuppressWarnings("unchecked")
         List<Map<String, Object>> allBranchesMaps = (List<Map<String, Object>>) stats.get("allBranches");
 
         ProductStatDTO bestProduct = processProductWithReviews(bestProductMap);

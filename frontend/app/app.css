@@ -3,32 +3,6 @@
 /* =========================
    THEME BASE
 ========================= */
-@theme {
-  --font-serif: "Lora", serif;
-  --font-sans: "Inter", sans-serif;
-
-  --color-mokaf-bg: #070606;
-  --color-mokaf-gold: #d4b88d;
-  --color-mokaf-gold-light: #f3e5d0;
-  --color-mokaf-gold-dark: #2a1f14;
-  --color-mokaf-card: #0c0b0a;
-
-  --cafe-oscuro: #3a2a1d;
-  --cafe-medio: #5d4037;
-  --cafe-claro: #8b6b61;
-  --negro: #1a1a1a;
-  --beige: #d7ccc8;
-  --dorado: #c6a87d;
-  --color-allergen-cacahuetes: #e76f51;
-  --color-allergen-frutos-secos: #2a9d8f;
-  --color-allergen-gluten: #8ab17d;
-  --color-allergen-huevos: #e63946;
-  --color-allergen-lacteos: #f4a261;
-  --color-allergen-sesamo: #e63946;
-  --color-allergen-soja: #f4a261;
-  --color-allergen-sulfitos: #264653;
-}
-
 :root {
   --cafe-oscuro: #3a2a1d;
   --cafe-medio: #5d4037;
