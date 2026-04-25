@@ -2,7 +2,10 @@ import { useLoaderData, useNavigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
-import Chart from "chart.js/auto";
+
+declare global {
+  var Chart: any;
+}
 
 export async function clientLoader() {
   console.log("🔵 1. Iniciando petición al dashboard...");

@@ -1,8 +1,8 @@
 package es.codeurjc.mokaf.api.mapper;
 
-import es.codeurjc.mokaf.api.dto.StatsDTO.ProductStatDTO;
-import es.codeurjc.mokaf.api.dto.StatsDTO.CategoryStatDTO;
-import es.codeurjc.mokaf.api.dto.StatsDTO.BranchStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.ProductStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.CategoryStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.BranchStatDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

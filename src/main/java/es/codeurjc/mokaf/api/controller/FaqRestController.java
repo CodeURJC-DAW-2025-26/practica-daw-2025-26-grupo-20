@@ -8,7 +8,6 @@ import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -57,11 +56,11 @@ public class FaqRestController {
         FaqDTO savedDto = faqMapper.toDto(savedFaq);
 
         return ResponseEntity.created(
-                        ServletUriComponentsBuilder
-                                .fromCurrentRequest()
-                                .path("/{id}")
-                                .buildAndExpand(savedDto.id())
-                                .toUri())
+                ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(savedDto.id())
+                        .toUri())
                 .body(savedDto);
     }
 

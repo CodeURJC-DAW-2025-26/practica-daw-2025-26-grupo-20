@@ -24,7 +24,7 @@ export default function About() {
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#d4b88d]/5 blur-[120px] rounded-full pointer-events-none"></div>
 
           <div className="text-center relative">
-            <h1 className="text-5xl md:text-7xl font-serif text-[#d4b88d] italic tracking-tighter mb-8 drop-shadow-sm">Nuestra Esencia</h1>
+            <h1 className="text-5xl md:text-7xl text-[#d4b88d] tracking-tighter mb-8 drop-shadow-sm">Nuestra Esencia</h1>
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/40 to-transparent mx-auto"></div>
           </div>
 
@@ -32,7 +32,7 @@ export default function About() {
             <div className="space-y-10 order-2 lg:order-1">
               <div className="space-y-4">
                 <span className="text-[10px] text-[#d4b88d] font-bold uppercase tracking-[0.5em] opacity-80">Desde 2010</span>
-                <h2 className="text-4xl md:text-5xl font-serif text-white/90 italic leading-tight">Mokaf nació de un sueño bajo el sol del grano.</h2>
+                <h2 className="text-4xl md:text-5xl text-white/90 leading-tight">Mokaf nació de un sueño bajo el sol del grano.</h2>
               </div>
               <div className="space-y-6 text-stone-200 text-lg leading-relaxed font-light">
                 <p>Lo que comenzó como un pequeño rincón para los amantes del espresso en el corazón del barrio, se ha transformado en un santuario del <span className="text-[#f3e5d0] font-bold">café de especialidad</span>. En Mokaf, no solo servimos tazas; destilamos pasiones.</p>
@@ -63,7 +63,7 @@ export default function About() {
 
           <section className="space-y-24">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl md:text-4xl font-serif text-white/90 italic tracking-tight uppercase">Nuestros Pilares</h2>
+              <h2 className="text-3xl md:text-4xl text-white/90 tracking-tight uppercase">Nuestros Pilares</h2>
               <div className="w-12 h-[2px] bg-[#d4b88d] mx-auto rounded-full"></div>
             </div>
             <div className="grid md:grid-cols-3 gap-10">
@@ -72,7 +72,7 @@ export default function About() {
                   <div className="w-16 h-16 bg-[#d4b88d]/10 text-[#d4b88d] rounded-2xl flex items-center justify-center mb-8 text-2xl group-hover:bg-[#d4b88d] group-hover:text-black transition-all duration-500">
                     <i className={`fas ${val.icon}`}></i>
                   </div>
-                  <h4 className="text-2xl font-serif italic text-white mb-5 group-hover:text-[#d4b88d] transition-colors">{val.title}</h4>
+                  <h4 className="text-2xl text-white mb-5 group-hover:text-[#d4b88d] transition-colors">{val.title}</h4>
                   <p className="text-stone-300 text-[16px] font-light leading-relaxed">{val.desc}</p>
                 </div>
               ))}
@@ -83,7 +83,7 @@ export default function About() {
             <div className="flex flex-col items-center gap-6">
               <div className="flex items-center gap-4">
                 <div className="h-[1px] w-12 bg-[#d4b88d]/30"></div>
-                <h2 className="text-2xl font-serif text-[#d4b88d] italic">Artesanos detrás de tu taza</h2>
+                <h2 className="text-2xl text-[#d4b88d]">Artesanos detrás de tu taza</h2>
                 <div className="h-[1px] w-12 bg-[#d4b88d]/30"></div>
               </div>
             </div>
@@ -96,9 +96,9 @@ export default function About() {
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <h4 className="text-2xl font-serif italic text-white group-hover:text-[#d4b88d] transition-colors">{member.firstName} {member.lastName}</h4>
+                    <h4 className="text-2xl text-white/90 group-hover:text-[#d4b88d] transition-colors">{member.firstName} {member.lastName}</h4>
                     <p className="text-[#d4b88d] font-black text-[10px] uppercase tracking-[0.4em]">{member.position || 'Staff'}</p>
-                    <p className="text-stone-300 text-[15px] leading-relaxed italic line-clamp-2">"{member.description || 'Devoto del arte del espresso.'}"</p>
+                    <p className="text-stone-300 text-[15px] leading-relaxed line-clamp-2">"{member.description || 'Devoto del arte del espresso.'}"</p>
                   </div>
                 </div>
               ))}
@@ -113,7 +113,7 @@ export default function About() {
           <section className="mt-12 text-center py-24 bg-gradient-to-b from-[#0c0b0b] to-transparent rounded-[4rem] border-t border-white/5 relative overflow-hidden">
             <div className="relative z-10 space-y-12">
               <div className="space-y-4">
-                <h2 className="text-4xl md:text-5xl font-serif italic text-white/90">¿Quieres ser parte de la historia?</h2>
+                <h2 className="text-4xl md:text-5xl text-white/90">¿Quieres ser parte de la historia?</h2>
                 <p className="text-stone-400 max-w-2xl mx-auto font-light leading-relaxed">Constantemente buscamos baristas y apasionados que quieran elevar el estándar del café de especialidad junto a nosotros.</p>
               </div>
               <Link to="/contact" className="inline-block bg-[#d4b88d] text-black px-12 py-5 rounded-full font-black text-xs uppercase tracking-[0.3em] hover:bg-white transition-all duration-700 shadow-[0_20px_60px_rgba(212,184,141,0.2)] hover:scale-105 active:scale-95">

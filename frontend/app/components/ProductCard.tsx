@@ -64,7 +64,7 @@ export default function ProductCard({ product, variant = "grid" }: ProductCardPr
       </div>
       
       <div className="flex flex-col flex-grow px-2">
-        <h3 className="text-3xl font-serif italic text-white mb-6 group-hover:text-[#d4b88d] transition-colors tracking-tighter">{product.name}</h3>
+        <h3 className="text-3xl text-white mb-6 group-hover:text-[#d4b88d] transition-colors tracking-tighter">{product.name}</h3>
         <p className="text-stone-200 text-[16px] font-light leading-relaxed mb-12 line-clamp-3 opacity-100 transition-opacity">
           {product.description}
         </p>

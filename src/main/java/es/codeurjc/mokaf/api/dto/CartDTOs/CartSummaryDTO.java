@@ -1,4 +1,4 @@
-package es.codeurjc.mokaf.api.dto.CartDTOs;
+package es.codeurjc.mokaf.api.dto.cartdtos;
 
 import java.util.List;
 

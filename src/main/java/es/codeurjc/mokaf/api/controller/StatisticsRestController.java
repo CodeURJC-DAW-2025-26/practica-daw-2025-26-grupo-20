@@ -10,7 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import es.codeurjc.mokaf.api.dto.StatsDTO.*;
+import es.codeurjc.mokaf.api.dto.statsdto.StatisticsDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.ProductStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.ProductWithReviewsDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.ReviewStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.CategoryStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.BranchStatDTO;
 import es.codeurjc.mokaf.api.exception.ResourceNotFoundException;
 import es.codeurjc.mokaf.api.mapper.StatisticsMapper;
 import es.codeurjc.mokaf.model.User;

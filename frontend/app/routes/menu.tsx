@@ -94,7 +94,7 @@ export default function Menu() {
         <div className="animate-fade-in bg-[#080707] border border-[#d4b88d]/10 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#d4b88d]/5 blur-[120px] rounded-full pointer-events-none"></div>
           <div className="text-center mb-24 relative">
-            <h1 className="text-5xl md:text-6xl font-serif text-[#d4b88d] italic tracking-tighter mb-6 drop-shadow-sm">Nuestro Menú</h1>
+            <h1 className="text-5xl md:text-6xl text-[#d4b88d] tracking-tighter mb-6 drop-shadow-sm">Nuestro Menú</h1>
             <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/40 to-transparent mx-auto"></div>
           </div>
           <section className="mb-32 relative">

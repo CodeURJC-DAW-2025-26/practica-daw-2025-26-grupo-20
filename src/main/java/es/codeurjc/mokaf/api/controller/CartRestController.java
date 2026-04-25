@@ -1,8 +1,8 @@
 package es.codeurjc.mokaf.api.controller;
 
 import es.codeurjc.mokaf.api.dto.BranchDTO;
-import es.codeurjc.mokaf.api.dto.CartDTOs.CartResponseDTO;
-import es.codeurjc.mokaf.api.dto.CartDTOs.CartSummaryDTO;
+import es.codeurjc.mokaf.api.dto.cartdtos.CartResponseDTO;
+import es.codeurjc.mokaf.api.dto.cartdtos.CartSummaryDTO;
 import es.codeurjc.mokaf.api.mapper.CartMapper;
 import es.codeurjc.mokaf.model.Order;
 import es.codeurjc.mokaf.model.User;

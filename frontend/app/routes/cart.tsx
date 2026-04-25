@@ -318,7 +318,7 @@ export default function Cart() {
   // Loading state
   if (!cart && loadingItems) {
     return (
-      <main className="container my-5 cart-container">
+      <main className="legacy-container cart-container">
         <div className="text-center p-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -332,7 +332,7 @@ export default function Cart() {
   // Empty cart state
   if (!cart || cart.items.length === 0) {
     return (
-      <main className="container my-5 cart-container">
+      <main className="legacy-container cart-container">
         <div className="row">
           <div className="col-lg-12">
             <div className="alert alert-info text-center p-5">
@@ -352,7 +352,7 @@ export default function Cart() {
   // Main cart view with exact same IDs and classes as the Mustache template
   return (
     <>
-      <main className="container my-5 cart-container">
+      <main className="legacy-container cart-container">
         <div className="row">
           {/* Left Column - Cart Items */}
           <div className="col-lg-8 cart-items-column">

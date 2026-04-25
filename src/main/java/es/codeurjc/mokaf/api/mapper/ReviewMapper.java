@@ -2,7 +2,7 @@ package es.codeurjc.mokaf.api.mapper;
 
 import es.codeurjc.mokaf.api.dto.ReviewDTO;
 import es.codeurjc.mokaf.api.dto.UserBasicDTO;
-import es.codeurjc.mokaf.api.dto.StatsDTO.ReviewStatDTO;
+import es.codeurjc.mokaf.api.dto.statsdto.ReviewStatDTO;
 import es.codeurjc.mokaf.model.Review;
 import es.codeurjc.mokaf.model.User;
 import org.mapstruct.Mapper;

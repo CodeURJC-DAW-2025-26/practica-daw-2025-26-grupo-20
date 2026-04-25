@@ -1,9 +1,7 @@
-import { useLoaderData, Link, Form } from "react-router";
+import { useLoaderData, Link, Form, useActionData } from "react-router";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../config";
-import { addToCart } from "./cart";
 import { useCartStore } from "../store/cartStore";
-import { useActionData } from "react-router";
 
 export async function clientLoader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes, userRes] = await Promise.all([
@@ -85,7 +83,7 @@ export default function ProductDetail() {
   const productPrice = Number(product.priceBase || 0).toFixed(2);
 
   return (
-    <main className="container my-5 product-page">
+    <main className="legacy-container product-page">
       <div className="product-shell">
         <div className="row g-4 align-items-stretch flex flex-col lg:flex-row">
           <div className="col-lg-6 lg:w-1/2">
@@ -167,24 +165,9 @@ export default function ProductDetail() {
                   <span>Entrega 24/48h</span>
                 </div>
 
-                <button 
-                  onClick={async () => {
-                    try {
-                      await addToCart(product.id, qty);
-                      await updateItemCount(); // <--- Aquí actualizamos tras el click manual
-                      alert("Producto añadido al carrito");
-                    } catch (error) {
-                      alert("Error al añadir el producto al carrito");
-                    }
-                  }}
-                  className="w-full group/btn relative h-16 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl shadow-amber-900/40 active:scale-95 transition-all"
-                >
-                  <div className="absolute inset-0 bg-amber-900 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
-                  <div className="relative z-10 flex items-center justify-center gap-4 text-white">
-                    <i className="fas fa-cart-plus text-2xl animate-pulse"></i>
-                    <span className="font-black uppercase tracking-[0.2em] text-sm">Añadir al Carrito</span>
-                  </div>
-                </button>
+                <div className="w-full h-16 bg-stone-900/50 rounded-3xl flex items-center justify-center border border-white/5">
+                   <span className="text-stone-500 text-[10px] uppercase tracking-widest font-bold">Usa el selector superior para añadir</span>
+                </div>
 
                 <div className="flex flex-wrap gap-4 pt-2">
                   <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">

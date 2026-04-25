@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -28,24 +27,23 @@ public class MainRestController {
     private final UserMapper userMapper;
 
     public MainRestController(OrdersService ordersService,
-                              UserService userService,
-                              BranchService branchService,
-                              ContactEmailService contactEmailService,
-                              UserMapper userMapper) {
+            UserService userService,
+            BranchService branchService,
+            ContactEmailService contactEmailService,
+            UserMapper userMapper) {
         this.userService = userService;
         this.contactEmailService = contactEmailService;
         this.userMapper = userMapper;
     }
 
-
     // ── POST /api/v1/contact ──────────────────────────────────────────────────
     @Operation(summary = "Send a contact message")
-        @ApiResponses({
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Message sent successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request body")
-        })
-        @PostMapping(value = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
-        public Map<String, String> sendContactMessage(@Valid @RequestBody ContactRequestDTO dto) {
+    })
+    @PostMapping(value = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> sendContactMessage(@Valid @RequestBody ContactRequestDTO dto) {
 
         ContactRequest request = new ContactRequest();
         request.setFirstName(dto.firstName());
@@ -62,7 +60,7 @@ public class MainRestController {
     }
 
     // ── GET /api/v1/about-us ──────────────────────────────────────────────────
-    // Devuelve el equipo de atención al cliente 
+    // Devuelve el equipo de atención al cliente
     @Operation(summary = "Get customer service team (about us)")
     @GetMapping("/about-us")
     public List<UserDTO> getAboutUsTeam() {

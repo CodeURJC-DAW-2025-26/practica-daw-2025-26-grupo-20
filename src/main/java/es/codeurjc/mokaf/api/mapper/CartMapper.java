@@ -1,8 +1,8 @@
 package es.codeurjc.mokaf.api.mapper;
 
-import es.codeurjc.mokaf.api.dto.CartDTOs.CartItemDTO;
-import es.codeurjc.mokaf.api.dto.CartDTOs.CartResponseDTO;
-import es.codeurjc.mokaf.api.dto.CartDTOs.CartSummaryDTO;
+import es.codeurjc.mokaf.api.dto.cartdtos.CartItemDTO;
+import es.codeurjc.mokaf.api.dto.cartdtos.CartResponseDTO;
+import es.codeurjc.mokaf.api.dto.cartdtos.CartSummaryDTO;
 import es.codeurjc.mokaf.model.OrderItem;
 import es.codeurjc.mokaf.service.CartService;
 import org.mapstruct.Mapper;

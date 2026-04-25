@@ -37,7 +37,7 @@ export default function Branches() {
               <div className="w-16 h-16 rounded-lg flex items-center justify-center text-[#d4b88d]">
                 <i className="fas fa-shop text-4xl"></i>
               </div>
-              <h1 className="text-5xl md:text-6xl font-serif text-[#d4b88d] tracking-tight font-medium">Nuestras Sucursales</h1>
+              <h1 className="text-5xl md:text-6xl text-[#d4b88d] tracking-tight font-medium">Nuestras Sucursales</h1>
             </div>
             <div className="mx-auto w-40 h-1 bg-gradient-to-r from-transparent via-[#d4b88d]/60 to-transparent rounded-full"></div>
           </div>
@@ -51,10 +51,10 @@ export default function Branches() {
                     <div className="w-14 h-14 bg-[#d4b88d]/10 text-[#d4b88d] rounded-2xl flex items-center justify-center text-xl group-hover:bg-[#d4b88d] group-hover:text-black transition-all duration-500">
                       <i className="fas fa-location-dot text-sm"></i>
                     </div>
-                    <h3 className="text-3xl font-serif italic text-white/90 group-hover:text-[#d4b88d] transition-colors">{branch.name}</h3>
+                    <h3 className="text-3xl text-white/90 group-hover:text-[#d4b88d] transition-colors">{branch.name}</h3>
                   </div>
                   <div className="flex-grow">
-                    <p className="text-stone-400 text-[16px] leading-relaxed font-light line-clamp-4 italic opacity-80 group-hover:opacity-100 transition-opacity">"{branch.description}"</p>
+                    <p className="text-stone-400 text-[16px] leading-relaxed font-light line-clamp-4 opacity-80 group-hover:opacity-100 transition-opacity">"{branch.description}"</p>
                   </div>
                   <div className="pt-8 border-t border-white/5 flex flex-wrap justify-between items-center gap-6">
                     {branch.purchaseDiscountPercent ? (
@@ -75,7 +75,7 @@ export default function Branches() {
                 <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-stone-700 animate-pulse">
                   <i className="fas fa-map-pin fa-2x"></i>
                 </div>
-                <h4 className="text-xl font-serif italic text-stone-500">Buscando nuevas tierras para Mokaf...</h4>
+                <h4 className="text-xl text-stone-500">Buscando nuevas tierras para Mokaf...</h4>
               </div>
             )}
           </div>
