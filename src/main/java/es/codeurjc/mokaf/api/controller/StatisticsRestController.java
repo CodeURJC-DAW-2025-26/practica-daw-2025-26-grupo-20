@@ -1,6 +1,7 @@
 package es.codeurjc.mokaf.api.controller;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,10 @@ public class StatisticsRestController {
 
     // ============ Helper To verify that is admin============
 
-
     private User resolveAdmin(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
-                "Debes iniciar sesión para acceder a las estadísticas");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Debes iniciar sesión para acceder a las estadísticas");
         }
 
         Object principal = authentication.getPrincipal();
@@ -48,13 +48,13 @@ public class StatisticsRestController {
                     .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
         } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, 
-                "No se pudo identificar al usuario");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "No se pudo identificar al usuario");
         }
 
         if (user.getRole() != User.Role.ADMIN) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, 
-                "Acceso denegado. Solo administradores pueden ver estadísticas");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Acceso denegado. Solo administradores pueden ver estadísticas");
         }
 
         return user;
@@ -64,7 +64,7 @@ public class StatisticsRestController {
 
     @GetMapping("/dashboard")
     public StatisticsDTO getDashboardStatistics(Authentication authentication) {
-        resolveAdmin(authentication); 
+        resolveAdmin(authentication);
 
         Map<String, Object> stats = statisticsService.getChartStatistics();
 
@@ -81,7 +81,6 @@ public class StatisticsRestController {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> allBranchesMaps = (List<Map<String, Object>>) stats.get("allBranches");
 
-        
         ProductStatDTO bestProduct = processProductWithReviews(bestProductMap);
         ProductStatDTO topRatedProduct = processProductWithReviews(topRatedProductMap);
 
@@ -96,21 +95,48 @@ public class StatisticsRestController {
         return statisticsDTO;
     }
 
-   
     @GetMapping("/top-rated-product")
-    public ProductStatDTO getTopRatedProduct(Authentication authentication) {
+    public ProductWithReviewsDTO getTopRatedProduct(Authentication authentication) {
         resolveAdmin(authentication);
 
         Map<String, Object> topRatedProduct = statisticsService.getTopRatedProductLastMonth();
+        System.out.println("=== DEBUG: topRatedProduct MAP ===");
+        System.out.println("Claves del mapa: " + topRatedProduct.keySet());
+        System.out.println("averageRating: " + topRatedProduct.get("averageRating"));
+        System.out.println("reviewCount: " + topRatedProduct.get("reviewCount"));
+        System.out.println("recentReviews: " + topRatedProduct.get("recentReviews"));
+
         if (topRatedProduct == null || !Boolean.TRUE.equals(topRatedProduct.get("exists"))) {
             throw new ResourceNotFoundException("No hay datos de producto mejor valorado");
         }
-        return processProductWithReviews(topRatedProduct);
+
+        return new ProductWithReviewsDTO(
+                (Long) topRatedProduct.get("id"),
+                (String) topRatedProduct.get("name"),
+                (String) topRatedProduct.get("category"),
+                (String) topRatedProduct.get("imagePath"),
+                (Boolean) topRatedProduct.get("exists"),
+                (Double) topRatedProduct.get("averageRating"),
+                (String) topRatedProduct.get("averageRatingFormatted"),
+                (Long) topRatedProduct.get("reviewCount"),
+                convertReviews((List<Map<String, Object>>) topRatedProduct.get("recentReviews")));
+    }
+
+    private List<ReviewStatDTO> convertReviews(List<Map<String, Object>> reviews) {
+        if (reviews == null)
+            return List.of();
+        return reviews.stream()
+                .map(rev -> new ReviewStatDTO(
+                        (Integer) rev.get("stars"),
+                        (String) rev.get("text"),
+                        (String) rev.get("userName"),
+                        (String) rev.get("createdAt")))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/top-category")
     public CategoryStatDTO getTopCategory(Authentication authentication) {
-        resolveAdmin(authentication); 
+        resolveAdmin(authentication);
 
         Map<String, Object> topCategory = statisticsService.getTopCategoryLast3Months();
         if (topCategory == null || !Boolean.TRUE.equals(topCategory.get("exists"))) {
@@ -121,7 +147,7 @@ public class StatisticsRestController {
 
     @GetMapping("/categories")
     public List<CategoryStatDTO> getAllCategories(Authentication authentication) {
-        resolveAdmin(authentication); 
+        resolveAdmin(authentication);
 
         List<Map<String, Object>> categories = statisticsService.getAllCategoriesLast3Months();
         return statisticsMapper.toCategoryStatDTOs(categories);
@@ -129,7 +155,7 @@ public class StatisticsRestController {
 
     @GetMapping("/top-branch")
     public BranchStatDTO getTopBranch(Authentication authentication) {
-        resolveAdmin(authentication); 
+        resolveAdmin(authentication);
 
         Map<String, Object> topBranch = statisticsService.getTopBranch();
         if (topBranch == null || !Boolean.TRUE.equals(topBranch.get("exists"))) {
@@ -155,19 +181,17 @@ public class StatisticsRestController {
 
     @GetMapping("/health")
     public Map<String, String> healthCheck() {
-        
+
         return Map.of(
                 "status", "OK",
                 "service", "Statistics REST API",
                 "timestamp", java.time.LocalDateTime.now().toString());
     }
 
-    
     private ProductStatDTO processProductWithReviews(Map<String, Object> productMap) {
         if (productMap == null)
             return null;
 
-        
         return statisticsMapper.toProductStatDTO(productMap);
     }
 }

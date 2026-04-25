@@ -5,6 +5,7 @@ import { API_BASE_URL } from "../config";
 import Chart from "chart.js/auto";
 
 export async function clientLoader() {
+  console.log("🔵 1. Iniciando petición al dashboard...");
   const response = await fetch(`${API_BASE_URL}/api/v1/statistics/dashboard`, {
     credentials: "include"
   });
@@ -14,6 +15,24 @@ export async function clientLoader() {
   if (!response.ok) return { stats: null };
 
   const stats = await response.json();
+  
+  if (stats.topRatedProduct?.id) {
+    try {
+      const productResponse = await fetch(`${API_BASE_URL}/api/v1/statistics/top-rated-product`, {
+        credentials: "include"
+      });
+      
+      if (productResponse.ok) {
+        const fullProduct = await productResponse.json();
+        stats.topRatedProduct = fullProduct;
+      }
+    } catch (error) {
+      console.error("🔴 Error al obtener detalles del producto mejor valorado:", error);
+    }
+  } else {
+    console.warn("🟡 No hay ID en topRatedProduct, no se puede hacer la segunda petición");
+  }
+
   return { stats };
 }
 
@@ -55,15 +74,30 @@ export default function Statistics() {
               hoverOffset: 8
             }]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: "65%",
-            plugins: { legend: { display: false } }
+     options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "65%",
+        plugins: { 
+          legend: { 
+            display: true,
+            labels: {
+              color: '#ffffff',      
+              font: {
+                size: 11,
+                weight: 'normal'
+              }
+            }
+          },
+          tooltip: {
+            bodyColor: '#ffffff',    // ← Tooltip blanco
+            titleColor: '#c6a87d'    // ← Título del tooltip dorado
           }
-        });
+        }
       }
-    }
+    });
+  }
+}
 
     if (branchesInstance.current) {
       branchesInstance.current.destroy();
@@ -105,7 +139,14 @@ export default function Statistics() {
 
   if (!stats) return null;
 
-  // Obtenemos la categoría top y sus valores reales desde allCategories
+  console.log("=== DATOS DEL PRODUCTO MEJOR VALORADO ===");
+console.log("topRatedProduct completo:", stats.topRatedProduct);
+console.log("averageRatingFormatted:", stats.topRatedProduct?.averageRatingFormatted);
+console.log("reviewCount:", stats.topRatedProduct?.reviewCount);
+console.log("recentReviews:", stats.topRatedProduct?.recentReviews);
+console.log("¿recentReviews es array?", Array.isArray(stats.topRatedProduct?.recentReviews));
+
+
   const topCategoryName = stats.topCategory?.category;
   const matchedCategory = stats.allCategories?.find((cat: any) => cat.category === topCategoryName);
   const topUnits = matchedCategory?.units ?? 0;

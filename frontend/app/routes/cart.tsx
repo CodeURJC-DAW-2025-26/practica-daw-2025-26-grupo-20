@@ -1,27 +1,10 @@
-import { useLoaderData, Link, useActionData, Form, useNavigate, useSubmit } from "react-router";
+import { useLoaderData, Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { useCartStore } from "../store/cartStore";
 import { API_BASE_URL } from "../config";
 
-export async function addToCart(productId: number | string, quantity: number = 1) {
-    const formData = new FormData();
-    formData.append("productId", productId.toString());
-    formData.append("quantity", quantity.toString());
-
-    const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-    });
-
-    if (!response.ok) {
-        throw new Error("Error al añadir al carrito");
-    }
-
-    return await response.json();
-}
-
+// Interfaces
 interface CartItem {
   id: number;
   productId: number;
@@ -39,36 +22,32 @@ interface CartSummary {
   total: number;
   itemCount: number;
   totalUnits: number;
+  hasDiscount?: boolean;
+  discountInfo?: string;
+  discountAmount?: number;
 }
 
-//For making petitions at backend
-
+// Loader function (runs on the client side with React Router)
 export async function clientLoader({ request }: { request: Request }) {
-  // In a real app, we'd handle cookies for SSR auth.
-  // For now, we'll try to fetch, expecting the browser to send HttpOnly cookies.
   const response = await fetch("/api/v1/cart", {
     headers: { "Content-Type": "application/json" },
     credentials: "include"
   });
-
   if (response.status === 401) return { isUnauthorized: true };
   if (!response.ok) return { cart: null };
-
   const apiCart = await response.json();
-
   const parsePrice = (priceStr: any): number => {
     if (typeof priceStr === 'number') return priceStr;
     return Number(priceStr?.toString().replace('€', '').trim()) || 0;
   };
-
   const cart: CartSummary = {
     items: apiCart.items.map((item: any) => ({
       id: item.id,
       productId: item.productId,
       productName: item.name,
-      productPrice: typeof item.unitPrice === 'string' ? parsePrice(item.unitPrice) : Number(item.unitPrice),
+      productPrice: parsePrice(item.unitPrice),
       quantity: item.quantity,
-      totalPrice: typeof item.lineTotal === 'string' ? parsePrice(item.lineTotal) : Number(item.lineTotal),
+      totalPrice: parsePrice(item.lineTotal),
       productImageUrl: item.imageUrl,
     })),
     subtotal: parsePrice(apiCart.subtotal),
@@ -76,258 +55,541 @@ export async function clientLoader({ request }: { request: Request }) {
     total: parsePrice(apiCart.total),
     itemCount: apiCart.itemCount,
     totalUnits: apiCart.totalUnits || 0,
+    hasDiscount: apiCart.hasDiscount || false,
+    discountInfo: apiCart.discountInfo,
+    discountAmount: apiCart.discountAmount,
   };
-
   return { cart };
 }
 
-export async function clientAction({ request }: { request: Request }) {
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  const itemId = formData.get("itemId");
-  const quantity = formData.get("quantity");
-
-  if (intent === "update") {
-    const res = await fetch(`/api/v1/cart/items/${itemId}?quantity=${quantity}`, { method: "PUT", credentials: "include" });
-    return { success: res.ok };
-  }
-  if (intent === "delete") {
-    const res = await fetch(`/api/v1/cart/items/${itemId}`, { method: "DELETE", credentials: "include" });
-    return { success: res.ok };
-  }
-  if (intent === "checkout") {
-    const res = await fetch("/api/v1/cart/payments?paymentMethod=CARD", { method: "POST", credentials: "include" });
-    return { success: res.ok, checkout: true };
-  }
-  return null;
-}
-
 export default function Cart() {
-  const { cart, isUnauthorized } = useLoaderData<typeof clientLoader>();
+  const { cart: initialCart, isUnauthorized } = useLoaderData<typeof clientLoader>();
   const navigate = useNavigate();
   const isLogged = useAuthStore(state => state.isLogged);
   const setItemCount = useCartStore(state => state.setItemCount);
-  const submit = useSubmit();
-  const [paymentMethod, setPaymentMethod] = useState("PAYPAL");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [checkoutMessage, setCheckoutMessage] = useState("");
 
-  // Sincronizar el contador global con los datos que acabamos de cargar en esta página
+  // Main state variables
+  const [cart, setCart] = useState<CartSummary | null>(initialCart || null);
+  const [branches, setBranches] = useState<any[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<string>("");
+  const [branchDescription, setBranchDescription] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("payPal"); // 'payPal' or 'creditCard'
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [loadingItems, setLoadingItems] = useState(true);
+  const [loadingBranches, setLoadingBranches] = useState(true);
+
+  // Sync global cart count
   useEffect(() => {
     if (cart) {
       setItemCount(cart.totalUnits);
     }
   }, [cart, setItemCount]);
 
+  // Redirect if not authenticated
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");
   }, [isUnauthorized, isLogged, navigate]);
 
-  const handleCheckout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    setCheckoutMessage("");
-
+  // Load cart items (same as original loadCartItems)
+  const loadCartItems = async () => {
+    setLoadingItems(true);
     try {
-      const response = await fetch("/api/v1/cart/payments?paymentMethod=" + paymentMethod, {
+      const response = await fetch("/api/v1/cart", { credentials: "include" });
+      if (!response.ok) throw new Error("Error loading cart");
+      const data = await response.json();
+      const parsePrice = (p: any) => Number(p?.toString().replace('€', '').trim()) || 0;
+      const newCart: CartSummary = {
+        items: data.items.map((item: any) => ({
+          id: item.id,
+          productId: item.productId,
+          productName: item.name,
+          productPrice: parsePrice(item.unitPrice),
+          quantity: item.quantity,
+          totalPrice: parsePrice(item.lineTotal),
+          productImageUrl: item.imageUrl,
+        })),
+        subtotal: parsePrice(data.subtotal),
+        tax: parsePrice(data.tax),
+        total: parsePrice(data.total),
+        itemCount: data.itemCount,
+        totalUnits: data.totalUnits || 0,
+        hasDiscount: data.hasDiscount,
+        discountInfo: data.discountInfo,
+        discountAmount: data.discountAmount,
+      };
+      setCart(newCart);
+      updateSummaryDOM(newCart); // update summary spans
+    } catch (error) {
+      console.error(error);
+      showToast("Error loading cart", "error");
+    } finally {
+      setLoadingItems(false);
+    }
+  };
+
+  // Update order summary DOM elements (so IDs match Mustache)
+  const updateSummaryDOM = (cartData: CartSummary) => {
+    const subtotalEl = document.getElementById("cart-subtotal");
+    const taxEl = document.getElementById("tax-amount");
+    const totalEl = document.getElementById("cart-total");
+    const discountRow = document.getElementById("discountRow");
+    const discountAmountEl = document.getElementById("discount-amount");
+    if (subtotalEl) subtotalEl.textContent = `${cartData.subtotal.toFixed(2)}€`;
+    if (taxEl) taxEl.textContent = `${cartData.tax.toFixed(2)}€`;
+    if (totalEl) totalEl.textContent = `${cartData.total.toFixed(2)}€`;
+    if (cartData.hasDiscount && discountRow && discountAmountEl) {
+      discountRow.style.display = "flex";
+      discountAmountEl.textContent = `-${cartData.discountInfo || cartData.discountAmount?.toFixed(2)+"€"}`;
+    } else if (discountRow) {
+      discountRow.style.display = "none";
+    }
+  };
+
+  // Load branches (sucursales)
+  const loadBranches = async () => {
+    setLoadingBranches(true);
+    try {
+      const response = await fetch("/api/v1/cart/branches", { credentials: "include" });
+      const data = await response.json();
+      if (data.success) {
+        setBranches(data.branches);
+        const currentBranch = data.currentBranchId;
+        setSelectedBranchId(currentBranch || "");
+        const branch = data.branches.find((b: any) => b.id == currentBranch);
+        if (branch?.description) {
+          setBranchDescription(branch.description);
+        } else {
+          setBranchDescription("");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      showToast("Error loading branches", "error");
+    } finally {
+      setLoadingBranches(false);
+    }
+  };
+
+  // Change selected branch
+  const changeBranch = async (branchId: string) => {
+    if (!branchId) return;
+    try {
+      const response = await fetch(`/api/v1/cart/change-branch?branchId=${branchId}`, {
         method: "POST",
         credentials: "include",
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCheckoutMessage(data.message || "¡Pedido realizado con éxito!");
-        // Recargar la página después de un momento
-        setTimeout(() => {
-          window.location.href = "/orders";
-        }, 2000);
+      const data = await response.json();
+      if (data.success) {
+        // Update summary with possible discounts
+        const subtotalEl = document.getElementById("cart-subtotal");
+        const totalEl = document.getElementById("cart-total");
+        const discountRow = document.getElementById("discountRow");
+        const discountAmountEl = document.getElementById("discount-amount");
+        if (subtotalEl && data.subtotal) subtotalEl.textContent = data.subtotal;
+        if (totalEl && data.total) totalEl.textContent = data.total;
+        if (data.hasDiscount && discountRow && discountAmountEl) {
+          discountRow.style.display = "flex";
+          discountAmountEl.textContent = "-" + data.discountInfo;
+        } else if (discountRow) {
+          discountRow.style.display = "none";
+        }
+        // Update branch description
+        const branch = branches.find(b => b.id == branchId);
+        if (branch?.description) {
+          setBranchDescription(branch.description);
+        } else {
+          setBranchDescription("");
+        }
+        showToast("Branch updated", "success");
+        // Reload items to apply branch-specific discounts
+        await loadCartItems();
       } else {
-        const errorData = await response.json();
-        setCheckoutMessage(errorData.message || "Error al procesar el pago");
+        showToast("Error changing branch", "error");
       }
     } catch (error) {
-      setCheckoutMessage("Error al procesar el pago");
+      showToast("Connection error", "error");
+    }
+  };
+
+  // Update item quantity
+  const updateQuantity = async (itemId: number, newQuantity: number) => {
+    if (newQuantity < 0) return;
+    try {
+      const response = await fetch(`/api/v1/cart/items/${itemId}?quantity=${newQuantity}`, {
+        method: "PUT",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        await loadCartItems();
+        showToast("Quantity updated", "success");
+      } else {
+        showToast("Error updating quantity", "error");
+      }
+    } catch (error) {
+      showToast("Connection error", "error");
+    }
+  };
+
+  // Remove item from cart
+  const removeItem = async (itemId: number) => {
+    try {
+      const response = await fetch(`/api/v1/cart/items/${itemId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        // Optional removal animation
+        const itemElement = document.querySelector(`[data-item-id="${itemId}"]`) as HTMLElement;
+        if (itemElement) {
+          itemElement.style.transition = "opacity 0.3s ease";
+          itemElement.style.opacity = "0";
+          setTimeout(async () => {
+            await loadCartItems();
+          }, 300);
+        } else {
+          await loadCartItems();
+        }
+        showToast("Product removed", "success");
+      } else {
+        showToast("Error removing product", "error");
+      }
+    } catch (error) {
+      showToast("Connection error", "error");
+    }
+  };
+
+  // Process checkout
+  const processCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedBranchId) {
+      showToast("Please select a pickup branch", "error");
+      return;
+    }
+    if (!cart || cart.items.length === 0) {
+      showToast("Your cart is empty", "error");
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      const method = paymentMethod === "payPal" ? "PAYPAL" : "CARD";
+      const response = await fetch(`/api/v1/cart/payments?paymentMethod=${method}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (response.ok) {
+        showToast(data.message || "Order placed successfully!", "success");
+        setItemCount(0);
+        setTimeout(() => {
+          window.location.href = "/orders";
+        }, 1500);
+      } else {
+        showToast(data.message || "Error processing payment", "error");
+      }
+    } catch (error) {
+      showToast("Connection error", "error");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  if (!cart || cart.items?.length === 0) {
+  const showToast = (text: string, type: "success" | "error") => {
+    setToastMessage({ text, type });
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  // Expose global functions for compatibility with inline onclicks (optional)
+  useEffect(() => {
+    (window as any).updateQuantity = updateQuantity;
+    (window as any).removeItem = removeItem;
+    (window as any).changeBranch = (branchId: string) => changeBranch(branchId);
+    (window as any).processCheckout = processCheckout;
+  }, []);
+
+  // Initial data loading
+  useEffect(() => {
+    loadCartItems();
+    loadBranches();
+  }, []);
+
+  // Loading state
+  if (!cart && loadingItems) {
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center p-4 bg-stone-50 animate-fade-in">
-        <div className="relative group mb-10">
-          <i className="fas fa-shopping-cart text-8xl text-stone-200 relative z-10"></i>
+      <main className="container my-5 cart-container">
+        <div className="text-center p-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3">Loading your cart...</p>
         </div>
-        <h2 className="text-3xl font-black text-stone-800 uppercase tracking-tight mb-4">Tu carrito está vacío</h2>
-        <p className="text-stone-400 font-bold text-xs uppercase tracking-widest mb-12 italic">Parece que aún no has descubierto tu café favorito</p>
-        <Link to="/menu" className="group relative h-16 px-12 bg-amber-800 rounded-3xl overflow-hidden shadow-2xl active:scale-95 transition-all flex items-center justify-center">
-          <span className="relative z-10 text-white font-black uppercase tracking-[0.2em] text-xs">Ir al Menú</span>
-        </Link>
-      </div>
+      </main>
     );
   }
 
+  // Empty cart state
+  if (!cart || cart.items.length === 0) {
+    return (
+      <main className="container my-5 cart-container">
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="alert alert-info text-center p-5">
+              <i className="fas fa-shopping-cart fa-3x mb-3"></i>
+              <h4>Your cart is empty</h4>
+              <p className="mb-3">Ready to order? Explore our menu</p>
+              <Link to="/menu" className="btn btn-primary">
+                <i className="fas fa-arrow-left me-2"></i>View Menu
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Main cart view with exact same IDs and classes as the Mustache template
   return (
-    <div className="container mx-auto px-4 py-20 animate-fade-in max-w-7xl">
-      <div className="flex flex-col lg:flex-row gap-16">
-        <div className="flex-grow space-y-8 lg:w-2/3">
-          <div className="flex items-center justify-between mb-4 px-4">
-            <h1 className="text-4xl font-black text-stone-800 uppercase tracking-tight">Tu Carrito</h1>
-            <span className="text-[10px] font-black uppercase tracking-widest text-stone-400 border border-stone-200 px-4 py-1.5 rounded-full bg-stone-50">{cart.itemCount} Productos</span>
-          </div>
-          <div className="space-y-6">
-            {cart.items.map((item: CartItem) => (
-              <div key={item.id} className="group bg-white rounded-[3rem] p-8 flex flex-col md:flex-row items-center gap-8 border border-stone-100 shadow-sm hover:shadow-2xl transition-all duration-500">
-                <Link to={`/product/${item.productId}`} className="w-40 h-40 rounded-[2rem] overflow-hidden flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform">
-                  <img src={item.productImageUrl ? `${API_BASE_URL}${item.productImageUrl}` : `https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500`} alt={item.productName} className="w-full h-full object-cover" />
-                </Link>
-                <div className="flex-grow space-y-2 text-center md:text-left">
-                  <h3 className="text-2xl font-black text-stone-800 group-hover:text-amber-800 transition-colors uppercase tracking-tight">{item.productName}</h3>
-                  <p className="text-stone-400 font-bold text-[10px] uppercase tracking-widest">Mokaf Specialty Coffee</p>
-                  <div className="text-2xl font-black text-amber-800 pt-2 italic">{item.productPrice.toFixed(2)}€</div>
+    <>
+      <main className="container my-5 cart-container">
+        <div className="row">
+          {/* Left Column - Cart Items */}
+          <div className="col-lg-8 cart-items-column">
+            <h1 className="mb-4">
+              <i className="fas fa-shopping-cart me-2"></i>Your Cart
+            </h1>
+
+            {/* Cart Items List - loaded dynamically */}
+            <div className="cart-items" id="cartItemsContainer">
+              {cart.items.map((item) => (
+                <div key={item.id} className="cart-item card mb-3" data-item-id={item.id}>
+                  <div className="row g-0">
+                    <div className="col-md-2 d-flex align-items-center justify-content-center p-3">
+                      <img
+                        src={item.productImageUrl ? `${API_BASE_URL}${item.productImageUrl}` : `https://via.placeholder.com/300x200?text=${encodeURIComponent(item.productName)}`}
+                        className="img-fluid rounded cart-item-image"
+                        alt={item.productName}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://via.placeholder.com/300x200?text=${encodeURIComponent(item.productName)}`;
+                        }}
+                      />
+                    </div>
+                    <div className="col-md-8">
+                      <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-start">
+                          <div>
+                            <h5 className="cart-item-title mb-1">{item.productName}</h5>
+                            <p className="cart-item-price text-muted mb-0">{item.productPrice.toFixed(2)}€ each</p>
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center mt-3">
+                          <div className="quantity-controls">
+                            <button
+                              className="btn btn-quantity btn-sm"
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              disabled={item.quantity <= 1}
+                            >
+                              <i className="fas fa-minus"></i>
+                            </button>
+                            <span className="quantity-display mx-3 fw-bold">{item.quantity}</span>
+                            <button
+                              className="btn btn-quantity btn-sm"
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            >
+                              <i className="fas fa-plus"></i>
+                            </button>
+                          </div>
+                          <div>
+                            <span className="item-subtotal me-3 fw-bold">{(item.productPrice * item.quantity).toFixed(2)}€</span>
+                            <button className="btn btn-remove btn-sm" onClick={() => removeItem(item.id)}>
+                              <i className="fas fa-trash"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-6">
-                  <Form method="post" className="flex items-center bg-stone-50 rounded-2xl p-1.5 border border-stone-100 shadow-inner">
-                    <input type="hidden" name="itemId" value={item.id} />
-                    <input type="hidden" name="intent" value="update" />
-                    <button name="quantity" value={Math.max(1, item.quantity - 1)} disabled={item.quantity <= 1} className="w-10 h-10 flex items-center justify-center text-stone-300 hover:text-amber-800 hover:bg-white rounded-xl transition-all disabled:opacity-30">
-                      <i className="fas fa-minus text-xs"></i>
-                    </button>
-                    <span className="w-10 text-center font-black text-stone-800">{item.quantity}</span>
-                    <button name="quantity" value={item.quantity + 1} className="w-10 h-10 flex items-center justify-center text-stone-300 hover:text-amber-800 hover:bg-white rounded-xl transition-all">
-                      <i className="fas fa-plus text-xs"></i>
-                    </button>
-                  </Form>
-                  <Form method="post">
-                    <input type="hidden" name="itemId" value={item.id} />
-                    <input type="hidden" name="intent" value="delete" />
-                    <button className="w-14 h-14 rounded-2xl bg-stone-50 border border-stone-100 text-stone-300 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all shadow-sm">
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                  </Form>
+              ))}
+            </div>
+
+            {/* Continue Shopping Button */}
+            <div className="mt-4">
+              <Link to="/menu" className="btn btn-outline-primary">
+                <i className="fas fa-arrow-left me-2"></i>Continue Shopping
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Column - Order Summary */}
+          <div className="col-lg-4">
+            {/* Order Summary */}
+            <div className="order-summary-fixed card" id="orderSummaryFixed">
+              <div className="card-header bg-dark text-light">
+                <h4 className="mb-0">
+                  <i className="fas fa-receipt me-2"></i>Order Summary
+                </h4>
+              </div>
+              <div className="card-body">
+                {/* Order Details */}
+                <div className="order-details mb-4">
+                  <div className="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">{cart.subtotal.toFixed(2)}€</span>
+                  </div>
+
+                  {/* Discount row (hidden if no discount) */}
+                  <div
+                    className="d-flex justify-content-between mb-2 text-success"
+                    id="discountRow"
+                    style={{ display: cart.hasDiscount ? "flex" : "none" }}
+                  >
+                    <span>Discount:</span>
+                    <span id="discount-amount">{cart.hasDiscount ? `-${cart.discountInfo || cart.discountAmount?.toFixed(2)+"€"}` : ""}</span>
+                  </div>
+
+                  <div className="d-flex justify-content-between mb-3">
+                    <span>Tax:</span>
+                    <span id="tax-amount">{cart.tax.toFixed(2)}€</span>
+                  </div>
+                  <hr />
+                  <div className="d-flex justify-content-between fw-bold fs-5">
+                    <span>Total:</span>
+                    <span id="cart-total">{cart.total.toFixed(2)}€</span>
+                  </div>
+                </div>
+
+                {/* Branch Selector */}
+                <div className="branch-selector mb-4">
+                  <h6 className="mb-3">
+                    <i className="fas fa-store me-2"></i>Pickup branch
+                  </h6>
+
+                  {loadingBranches ? (
+                    <div className="branch-loading text-center p-3" id="branchLoading">
+                      <div className="spinner-border spinner-border-sm text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                      <span className="ms-2">Loading branches...</span>
+                    </div>
+                  ) : (
+                    <div className="branch-list" id="branchList">
+                      <select
+                        className="form-select"
+                        id="branchSelect"
+                        value={selectedBranchId}
+                        onChange={(e) => changeBranch(e.target.value)}
+                      >
+                        <option value="">Select a branch</option>
+                        {branches.map((branch) => (
+                          <option key={branch.id} value={branch.id}>
+                            {branch.name}
+                          </option>
+                        ))}
+                      </select>
+                      {branchDescription && (
+                        <div className="branch-info mt-2 text-muted small" id="branchInfo">
+                          <i className="fas fa-info-circle me-1"></i>
+                          <span id="branchDescription">{branchDescription}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Payment Methods */}
+                <div className="payment-methods mb-4">
+                  <h6 className="mb-3">Payment method</h6>
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="paymentMethod"
+                      id="payPal"
+                      checked={paymentMethod === "payPal"}
+                      onChange={() => setPaymentMethod("payPal")}
+                    />
+                    <label className="form-check-label" htmlFor="payPal">
+                      <i className="fab fa-cc-paypal me-2"></i>PayPal
+                    </label>
+                  </div>
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="paymentMethod"
+                      id="creditCard"
+                      checked={paymentMethod === "creditCard"}
+                      onChange={() => setPaymentMethod("creditCard")}
+                    />
+                    <label className="form-check-label" htmlFor="creditCard">
+                      <i className="fas fa-credit-card me-2"></i>Credit Card
+                    </label>
+                  </div>
+                </div>
+
+                {/* Checkout Button */}
+                <form action="/cart/checkout" method="POST" onSubmit={processCheckout}>
+                  <button
+                    type="submit"
+                    className="btn btn-checkout w-100 py-3"
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-2"></i>Processing...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-lock me-2"></i>Proceed to Checkout
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                {/* Security Info */}
+                <div className="text-center mt-3">
+                  <small className="text-muted">
+                    <i className="fas fa-shield-alt me-1"></i> 100% secure payment - Your data is protected
+                  </small>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Estimated Delivery */}
+            <div className="card mt-3 delivery-info-fixed" id="deliveryInfoFixed">
+              <div className="card-body">
+                <h6 className="mb-3">
+                  <i className="fas fa-shipping-fast me-2"></i>Maximum pickup time
+                </h6>
+                <p className="mb-2">
+                  <i className="fas fa-clock me-2"></i>
+                  <span id="delivery-time">24 Hours</span>
+                </p>
+                <p className="mb-0 text-muted small">
+                  <i className="fas fa-info-circle me-1"></i>
+                  Enjoy branch discounts!
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+      </main>
 
-        <div className="lg:w-1/3 lg:sticky lg:top-24 h-fit">
-          <div className="bg-stone-900 rounded-[3rem] p-10 md:p-14 text-white shadow-2xl space-y-10 relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber-800 rounded-full blur-3xl opacity-20"></div>
-            <h2 className="text-3xl font-black uppercase tracking-tight relative z-10 border-b border-stone-800 pb-8">Resumen de Pago</h2>
-            <div className="space-y-6 relative z-10">
-              <div className="flex justify-between items-center text-stone-400 font-bold uppercase text-[10px] tracking-widest">
-                <span>Subtotal</span><span className="text-white text-lg font-black italic">{cart.subtotal.toFixed(2)}€</span>
-              </div>
-              <div className="flex justify-between items-center text-stone-400 font-bold uppercase text-[10px] tracking-widest">
-                <span>Envío / Comisión</span><span className="text-white text-lg font-black italic">0.00€</span>
-              </div>
-              <div className="flex justify-between items-center text-stone-400 font-bold uppercase text-[10px] tracking-widest">
-                <span>Impuestos (IVA)</span><span className="text-white text-lg font-black italic">{cart.tax.toFixed(2)}€</span>
-              </div>
-              <div className="pt-8 border-t border-stone-800 mt-4 flex justify-between items-end">
-                <div>
-                  <p className="text-stone-400 text-[10px] font-black uppercase tracking-[0.3em] mb-1">Total a Pagar</p>
-                  <p className="text-5xl font-black text-amber-500 tracking-tighter italic">{cart.total.toFixed(2)}€</p>
-                </div>
-              </div>
+      {/* Toast Notifications (same structure as Mustache) */}
+      <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        {toastMessage && (
+          <div className="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div className={`toast-header ${toastMessage.type === "success" ? "bg-success text-white" : "bg-danger text-white"}`}>
+              <i className={`${toastMessage.type === "success" ? "fas fa-check-circle" : "fas fa-exclamation-triangle"} me-2`}></i>
+              <strong className="me-auto">{toastMessage.type === "success" ? "Success" : "Error"}</strong>
+              <button type="button" className="btn-close btn-close-white" data-bs-dismiss="toast" onClick={() => setToastMessage(null)}></button>
             </div>
-
-            {/* Payment Methods */}
-            <div className="relative z-10 pt-4">
-              <h3 className="text-sm font-black uppercase tracking-widest text-stone-400 mb-4">Método de pago</h3>
-              <div className="space-y-3">
-                <label className="flex items-center gap-4 p-4 rounded-2xl bg-stone-800 cursor-pointer hover:bg-stone-700 transition-all border-2 border-transparent has-[:checked]:border-amber-500">
-                  <input 
-                    type="radio" 
-                    name="paymentMethod" 
-                    value="PAYPAL" 
-                    checked={paymentMethod === "PAYPAL"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-5 h-5 accent-amber-500"
-                  />
-                  <i className="fab fa-paypal text-2xl text-blue-400"></i>
-                  <span className="font-black uppercase text-sm tracking-wider">PayPal</span>
-                </label>
-                <label className="flex items-center gap-4 p-4 rounded-2xl bg-stone-800 cursor-pointer hover:bg-stone-700 transition-all border-2 border-transparent has-[:checked]:border-amber-500">
-                  <input 
-                    type="radio" 
-                    name="paymentMethod" 
-                    value="CARD" 
-                    checked={paymentMethod === "CARD"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-5 h-5 accent-amber-500"
-                  />
-                  <i className="fas fa-credit-card text-2xl text-amber-400"></i>
-                  <span className="font-black uppercase text-sm tracking-wider">Tarjeta de Crédito</span>
-                </label>
-                <label className="flex items-center gap-4 p-4 rounded-2xl bg-stone-800 cursor-pointer hover:bg-stone-700 transition-all border-2 border-transparent has-[:checked]:border-amber-500">
-                  <input 
-                    type="radio" 
-                    name="paymentMethod" 
-                    value="CASH" 
-                    checked={paymentMethod === "CASH"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-5 h-5 accent-amber-500"
-                  />
-                  <i className="fas fa-money-bill-wave text-2xl text-green-400"></i>
-                  <span className="font-black uppercase text-sm tracking-wider">Efectivo en Tienda</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Checkout Button */}
-            <button 
-              onClick={handleCheckout}
-              disabled={isProcessing}
-              className="w-full bg-amber-800 hover:bg-amber-700 disabled:bg-stone-600 text-white py-6 rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl transition-all active:scale-95 group relative z-10"
-            >
-              {isProcessing ? (
-                <span className="flex items-center justify-center gap-3">
-                  <i className="fas fa-spinner fa-spin"></i>
-                  Procesando...
-                </span>
-              ) : (
-                <>
-                  <i className="fas fa-lock mr-3"></i>
-                  Proceder al Pago
-                </>
-              )}
-            </button>
-
-            {/* Checkout Message */}
-            {checkoutMessage && (
-              <div className={`p-4 rounded-2xl text-center font-black text-sm uppercase tracking-wider ${checkoutMessage.includes("éxito") ? "bg-green-800" : "bg-red-800"}`}>
-                {checkoutMessage}
-              </div>
-            )}
-
-            {/* Security Info */}
-            <div className="text-center relative z-10">
-              <small className="text-stone-500">
-                <i className="fas fa-shield-alt mr-2"></i>
-                Pago 100% seguro - Tus datos están protegidos
-              </small>
-            </div>
+            <div className="toast-body">{toastMessage.text}</div>
           </div>
-
-          {/* Delivery Info */}
-          <div className="bg-white rounded-[2rem] p-6 mt-4 shadow-lg border border-stone-100">
-            <h4 className="text-sm font-black uppercase tracking-widest text-stone-800 mb-4">
-              <i className="fas fa-shipping-fast mr-2 text-amber-800"></i>
-              Entrega Estimada
-            </h4>
-            <p className="text-stone-500 text-sm mb-2">
-              <i className="fas fa-clock mr-2"></i>
-              25-35 minutos
-            </p>
-            <p className="text-stone-400 text-xs">
-              <i className="fas fa-info-circle mr-1"></i>
-              Envío gratuito en pedidos superiores a 15€
-            </p>
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }
