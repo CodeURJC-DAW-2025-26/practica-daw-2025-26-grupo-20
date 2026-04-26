@@ -1,4 +1,4 @@
-import { useLoaderData, useActionData, Form, useNavigate } from "react-router";
+import { useLoaderData, useActionData, Form, useNavigate, Link } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
@@ -162,17 +162,18 @@ export default function Profile() {
                     {initialUser.description || "Este barista entusiasta aún no ha escrito su historia en Mokaf. ¡Pero sus pedidos hablan por él!"}
                   </p>
                 </section>
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Miembro desde</p>
-                    <p className="font-black text-stone-800">Enero, 2026</p>
-                  </div>
-                  <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Total Pedidos</p>
-                    <p className="font-black text-stone-800">12 Cafés</p>
-                  </div>
-                </div>
+
+                {/* Botón historial de pedidos */}
+                <Link
+                  to="/orders"
+                  className="inline-flex items-center gap-4 bg-stone-900 hover:bg-stone-800 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl active:scale-95 group"
+                >
+                  <i className="fas fa-history text-amber-500 group-hover:rotate-180 transition-transform duration-500" />
+                  Historial de Pedidos
+                  <i className="fas fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
+
               <div className="space-y-10">
                 <section className="space-y-6">
                   <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em] mb-4">Información de Contacto</h3>
@@ -191,12 +192,6 @@ export default function Profile() {
                     </div>
                   </div>
                 </section>
-                <div className="bg-amber-50 p-8 rounded-[2rem] border-2 border-amber-100 space-y-4 relative overflow-hidden group">
-                  <i className="fas fa-mug-hot absolute -bottom-4 -right-4 text-8xl text-amber-100 -rotate-12 transform group-hover:scale-125 transition-transform duration-500" />
-                  <p className="text-xs font-black uppercase tracking-widest text-amber-800 relative z-10">Estado de Lealtad</p>
-                  <h4 className="text-3xl font-black text-stone-800 relative z-10">Mokaf Gold</h4>
-                  <p className="text-[10px] font-bold text-amber-700/60 relative z-10 uppercase tracking-widest">Tienes un cupón del 10% disponible</p>
-                </div>
               </div>
             </div>
           )}
