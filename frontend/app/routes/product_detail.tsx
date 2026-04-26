@@ -1,4 +1,4 @@
-import { useLoaderData, Link, Form, useActionData } from "react-router";
+import { useLoaderData, Link, Form, useActionData, useNavigation } from "react-router";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 import { useCartStore } from "../store/cartStore";
@@ -6,17 +6,17 @@ import { useCartStore } from "../store/cartStore";
 export async function clientLoader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes, userRes] = await Promise.all([
     fetch(`${API_BASE_URL}/api/v1/products/${params.id}`, { credentials: "include" }),
-    fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, { credentials: "include" }),
+    fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews?size=6`, { credentials: "include" }),
     fetch(`${API_BASE_URL}/api/v1/users/me`, { credentials: "include" })
   ]);
 
   if (!productRes.ok) throw new Response("Producto no encontrado", { status: 404 });
 
   const product = await productRes.json();
-  const reviewsData = reviewRes.ok ? await reviewRes.json() : { content: [] };
+  const reviewsData = reviewRes.ok ? await reviewRes.json() : { content: [], last: true };
   const user = userRes.ok ? await userRes.json() : null;
 
-  return { product, reviews: reviewsData.content, user };
+  return { product, reviewsData, user };
 }
 
 export async function clientAction({ request, params }: { request: Request; params: { id: string } }) {
@@ -24,32 +24,32 @@ export async function clientAction({ request, params }: { request: Request; para
   const intent = formData.get("intent");
 
   if (intent === "review") {
-     const data = Object.fromEntries(formData);
-     const response = await fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, {
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-       credentials: "include",
-       body: JSON.stringify({ stars: Number(data.stars), text: data.text }),
-     });
-     if (!response.ok) return { error: "Error al publicar la reseña." };
-     return { success: true };
+    const data = Object.fromEntries(formData);
+    const response = await fetch(`${API_BASE_URL}/api/v1/products/${params.id}/reviews`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ stars: Number(data.stars), text: data.text }),
+    });
+    if (!response.ok) return { error: "Error al publicar la reseña." };
+    return { success: true };
   }
 
   if (intent === "cart") {
     const productId = formData.get("productId");
     const qty = formData.get("qty");
-    
+
     try {
       const fd = new FormData();
       fd.append("productId", String(productId));
       fd.append("quantity", String(qty));
-      
+
       const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
         method: "POST",
         credentials: "include",
         body: fd,
       });
-      
+
       if (!response.ok) return { error: "Error al añadir al carrito." };
       return { success: true, message: "Añadido al carrito" };
     } catch (e) {
@@ -60,10 +60,42 @@ export async function clientAction({ request, params }: { request: Request; para
 }
 
 export default function ProductDetail() {
-  const { product, reviews, user } = useLoaderData<typeof clientLoader>();
+  const { product, reviewsData: initialReviewsData, user } = useLoaderData<typeof clientLoader>();
   const actionData = useActionData<typeof clientAction>();
+  const navigation = useNavigation();
+  const isSubmittingReview = navigation.formData?.get("intent") === "review";
   const updateItemCount = useCartStore((state) => state.updateItemCount);
+  
+  const [reviews, setReviews] = useState(initialReviewsData.content);
+  const [page, setPage] = useState(0);
+  const [isLast, setIsLast] = useState(initialReviewsData.last);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [qty, setQty] = useState(1);
+
+  // Sincronizar estado cuando el loader refresca los datos (p.ej. tras publicar reseña)
+  useEffect(() => {
+    setReviews(initialReviewsData.content);
+    setPage(0);
+    setIsLast(initialReviewsData.last);
+  }, [initialReviewsData]);
+
+  const loadMore = async () => {
+    if (isLoadingMore || isLast) return;
+    setIsLoadingMore(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/products/${product.id}/reviews?page=${page + 1}&size=6`, { credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        setReviews((prev: any) => [...prev, ...data.content]);
+        setPage((prev) => prev + 1);
+        setIsLast(data.last);
+      }
+    } catch (err) {
+      console.error("Error loading more reviews:", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   // Cada vez que el formulario de añadir al carrito (clientAction) tenga éxito, refrescamos el contador
   useEffect(() => {
@@ -115,7 +147,7 @@ export default function ProductDetail() {
               </div>
 
               <hr className="product-divider" />
-              
+
               <div className="product-actions">
                 {user ? (
                   <>
@@ -159,25 +191,18 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <div className="product-meta mt-4 space-y-4">
-                <div className="meta-item flex items-center gap-2 text-stone-500 text-sm">
+              <div className="product-meta mt-4">
+                <div className="meta-item">
                   <i className="fas fa-truck"></i>
                   <span>Entrega 24/48h</span>
                 </div>
-
-                <div className="w-full h-16 bg-stone-900/50 rounded-3xl flex items-center justify-center border border-white/5">
-                   <span className="text-stone-500 text-[10px] uppercase tracking-widest font-bold">Usa el selector superior para añadir</span>
+                <div className="meta-item">
+                  <i className="fas fa-shield-alt"></i>
+                  <span>Pago seguro</span>
                 </div>
-
-                <div className="flex flex-wrap gap-4 pt-2">
-                  <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">
-                    <i className="fas fa-shield-alt"></i>
-                    <span>Pago seguro</span>
-                  </div>
-                  <div className="meta-item flex items-center gap-2 text-stone-500 text-xs">
-                    <i className="fas fa-undo"></i>
-                    <span>14 días de devolución</span>
-                  </div>
+                <div className="meta-item">
+                  <i className="fas fa-undo"></i>
+                  <span>14 días de devolución</span>
                 </div>
               </div>
             </div>
@@ -204,22 +229,42 @@ export default function ProductDetail() {
         <div id="reviewsList">
           {reviews.map((review: any) => (
             <div key={review.id} className="review-card">
-               <div className="review-head">
-                  <div className="review-user" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <div className="avatar">{review.user?.name?.[0] || 'U'}</div>
-                    <span className="review-name">{review.user?.name || 'Usuario'}</span>
-                  </div>
-                  <div className="review-stars">
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <i key={i} className={`fas fa-star ${i <= review.stars ? "" : "opacity-30"}`}></i>
-                    ))}
-                  </div>
-               </div>
-               <p className="review-text">{review.text}</p>
+              <div className="review-head">
+                <div className="review-user" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="avatar">{review.user?.name?.[0] || 'U'}</div>
+                  <span className="review-name">{review.user?.name || 'Usuario'}</span>
+                </div>
+                <div className="review-stars">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <i key={i} className={`fas fa-star ${i <= review.stars ? "" : "opacity-30"}`}></i>
+                  ))}
+                </div>
+              </div>
+              <p className="review-text">{review.text}</p>
             </div>
           ))}
           {reviews.length === 0 && <p className="section-text mt-3">No hay reseñas aún.</p>}
         </div>
+
+        {!isLast && (
+          <div className="text-center mt-4">
+            <button 
+              className="btn btn-product-secondary" 
+              onClick={loadMore}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? (
+                <>
+                  <i className="fas fa-spinner fa-spin me-2"></i>Cargando...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-plus me-2"></i>Cargar más reseñas
+                </>
+              )}
+            </button>
+          </div>
+        )}
 
         {user ? (
           <div className="mt-4">
@@ -228,23 +273,50 @@ export default function ProductDetail() {
               <input type="hidden" name="intent" value="review" />
               <div className="mb-3">
                 <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Puntuación</label>
-                <select name="stars" className="form-select w-full bg-transparent border border-white/20 p-2 rounded" required>
-                  <option value="5">5</option>
-                  <option value="4">4</option>
-                  <option value="3">3</option>
-                  <option value="2">2</option>
-                  <option value="1">1</option>
+                <select name="stars" className="form-select w-full bg-black/20 border border-white/20 p-2 rounded text-[#D7CCC8]" required>
+                  <option value="5" className="bg-[#3A2A1D]">5 Estrellas</option>
+                  <option value="4" className="bg-[#3A2A1D]">4 Estrellas</option>
+                  <option value="3" className="bg-[#3A2A1D]">3 Estrellas</option>
+                  <option value="2" className="bg-[#3A2A1D]">2 Estrellas</option>
+                  <option value="1" className="bg-[#3A2A1D]">1 Estrella</option>
                 </select>
               </div>
 
               <div className="mb-3">
                 <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Comentario</label>
-                <textarea name="text" className="form-control w-full bg-transparent border border-white/20 p-2 rounded" rows={4} required></textarea>
+                <textarea 
+                  name="text" 
+                  className="form-control w-full bg-black/20 border border-white/20 p-2 rounded text-[#D7CCC8] placeholder:text-white/20" 
+                  rows={4} 
+                  placeholder="Escribe tu opinión aquí..."
+                  required
+                ></textarea>
               </div>
 
-              <button className="btn btn-product-primary" type="submit">
-                Enviar reseña
+              <button 
+                className="btn btn-product-primary w-full md:w-auto" 
+                type="submit"
+                disabled={isSubmittingReview}
+              >
+                {isSubmittingReview ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin me-2"></i>Enviando...
+                  </>
+                ) : (
+                  "Enviar reseña"
+                )}
               </button>
+
+              {actionData?.error && (
+                <div className="mt-3 text-red-400 text-sm">
+                  <i className="fas fa-exclamation-circle me-2"></i>{actionData.error}
+                </div>
+              )}
+              {actionData?.success && actionData?.message !== "Añadido al carrito" && (
+                <div className="mt-3 text-green-400 text-sm animate-fade-in">
+                  <i className="fas fa-check-circle me-2"></i>¡Reseña publicada con éxito!
+                </div>
+              )}
             </Form>
           </div>
         ) : (
