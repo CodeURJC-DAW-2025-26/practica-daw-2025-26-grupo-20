@@ -26,9 +26,7 @@ export async function clientAction({ request }: { request: Request }) {
       const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
         credentials: "include",
       });
-      const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-        credentials: "include",
-      });
+     
 
       if (!meResponse.ok) {
         return { loginError: "Login correcto pero no se pudo obtener el perfil." };
