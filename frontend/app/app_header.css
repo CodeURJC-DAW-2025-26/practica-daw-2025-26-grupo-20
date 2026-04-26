@@ -4,66 +4,61 @@
 
 .site-header {
   background-color: #1a1a1a;
-  padding: 2rem 0;
+  padding: 0.75rem 0;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(198, 168, 125, 0.1);
 }
 
 .site-header .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0.75rem;
 }
 
 /* Logo */
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   text-decoration: none;
 }
 
 .logo i {
   color: var(--dorado);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 
 .logo span {
   color: var(--dorado);
   font-size: 1.5rem;
-  font-weight: bold;
-  letter-spacing: -0.5px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .logo:hover {
   text-decoration: none;
 }
 
-.logo:hover span {
-  color: var(--beige);
-}
-
 /* Navigation Desktop */
 .nav-desktop {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
   flex: 1;
-  margin-left: 3rem;
+  margin-left: 2rem;
   justify-content: flex-start;
 }
 
 .nav-link {
   color: var(--beige);
-  font-size: 0.95rem;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0.02em;
+  font-size: 1.2rem;
+  font-weight: 400;
   text-decoration: none;
   padding: 0.5rem 1.2rem;
   border-radius: 4px;
@@ -81,12 +76,13 @@
 .nav-link.active:after {
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
-  height: 1px;
+  width: 15px;
+  height: 2px;
   background-color: var(--dorado);
+  border-radius: 2px;
 }
 
 /* Admin Links */
@@ -160,121 +156,74 @@
 .account-section {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
 }
 
-.user-profile {
+.logged-in-buttons {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
+  gap: 1rem;
 }
 
-.user-info {
-  text-align: right;
+.account-btn {
   display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-size: 0.7rem;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: #3a2a1d;
+  border: 1px solid var(--dorado);
   color: var(--beige);
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  line-height: 1.2;
-}
-
-.user-label {
-  font-size: 0.7rem;
-  color: var(--dorado);
-  font-style: italic;
-}
-
-.user-avatar {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  border: 2px solid rgba(198, 168, 125, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
   transition: all 0.3s ease;
-  overflow: hidden;
 }
 
-.user-profile:hover .user-avatar {
-  border-color: var(--dorado);
-  background-color: var(--dorado);
+.account-btn i {
+  font-size: 1rem;
 }
 
-.user-profile:hover .user-avatar i {
-  color: var(--cafe-oscuro);
-}
-
-.user-profile:hover .user-name {
+.account-btn:hover {
+  background-color: #4a3a2d;
   color: var(--dorado);
+  transform: translateY(-1px);
 }
 
-.user-avatar i {
-  color: var(--dorado);
-  font-size: 0.9rem;
-}
-
-.user-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.logout-button {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.logout-mini-btn {
   background: transparent;
   border: none;
   color: var(--cafe-claro);
   cursor: pointer;
-  border-radius: 50%;
+  padding: 0.5rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logout-button:hover {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.05);
+.logout-mini-btn:hover {
+  color: #ef4444;
 }
 
-.logout-button i {
-  font-size: 0.9rem;
-}
-
-/* Login/Account Button */
-.login-button,
-.cart-button {
+/* Login Button */
+.login-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, var(--cafe-medio), var(--cafe-oscuro));
+  background-color: #3a2a1d;
   border: 1px solid var(--dorado);
-  padding: 0.5rem 1.5rem;
+  padding: 0.4rem 1.2rem;
   border-radius: 4px;
   text-decoration: none;
   color: var(--beige);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  text-transform: none;
-  letter-spacing: normal;
   transition: all 0.3s ease;
 }
 
-.login-button:hover,
-.cart-button:hover {
-  background: linear-gradient(to right, var(--cafe-oscuro), var(--cafe-medio));
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+.login-button:hover {
+  background-color: #4a3a2d;
   color: var(--dorado);
 }
 

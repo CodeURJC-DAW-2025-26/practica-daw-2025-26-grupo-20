@@ -1,7 +1,9 @@
-import { useLoaderData, useActionData, Form, useNavigate, Link } from "react-router";
+import { useLoaderData, useActionData, Form, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
+import { ProfileLayout, ProfileField } from "../components/ProfileLayout";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 
 export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
@@ -86,178 +88,96 @@ export default function Profile() {
     || initialUser.profileImageUrl
     || `https://i.pravatar.cc/150?u=${initialUser.id}`;
 
+  const sidebarLinks = [
+    { to: "/orders", icon: "fa-history", label: "Historial de Pedidos" },
+    { to: "#", icon: "fa-sign-out-alt", label: "Cerrar Sesión", isButton: true, onClick: () => { logout(); navigate("/"); } },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#1a1a1a] py-10 px-4 animate-fade-in">
-      <div className="max-w-6xl mx-auto">
+    <>
+      <ProfileLayout
+        title="Mi Perfil"
+        role={initialUser.role}
+        roleColor="var(--dorado)"
+        avatarSrc={avatarSrc}
+        userName={initialUser.name}
+        userEmail={initialUser.email}
+        sidebarLinks={sidebarLinks}
+        onDeleteClick={() => setShowDeleteModal(true)}
+        accentColor="var(--dorado)"
+      >
+        <div className="p-10">
+          <h2 className="text-xl font-bold m-0 mb-1" style={{ color: 'var(--dorado)' }}>Configuración del Perfil</h2>
+          <p className="text-stone-500 text-xs mb-8 uppercase tracking-widest">Gestiona tu información personal y cuenta</p>
 
-        <h1 className="text-center text-3xl font-serif italic text-[#c6a87d] mb-2">Mi Perfil</h1>
-        <div className="w-16 h-0.5 bg-[#c6a87d] mx-auto mb-10" />
-
-        <div className="flex flex-col lg:flex-row gap-6">
-
-          {/* ── Sidebar izquierdo ── */}
-          <div className="lg:w-72 flex-shrink-0">
-            <div className="border border-[#c6a87d]/40 rounded-2xl p-6 flex flex-col items-center gap-4 bg-[#111]">
-
-              <span className="bg-[#c6a87d] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
-                {initialUser.role}
-              </span>
-
-              {/* Avatar con cámara */}
-              <div className="relative">
-                <img
-                  src={avatarSrc}
-                  alt={initialUser.name}
-                  className="w-28 h-28 rounded-full border-4 border-[#c6a87d]/50 object-cover"
-                />
-                <Form method="post" encType="multipart/form-data">
-                  <input type="hidden" name="intent" value="upload-image" />
-                  <label className="absolute bottom-1 right-1 w-8 h-8 bg-[#c6a87d] rounded-full flex items-center justify-center cursor-pointer hover:bg-amber-600 transition-colors shadow-lg">
-                    <i className="fas fa-camera text-black text-xs" />
-                    <input type="file" name="image" accept="image/png,image/jpeg,image/jpg" className="hidden" onChange={e => e.target.form?.requestSubmit()} />
-                  </label>
-                </Form>
-              </div>
-
-              <div className="text-center">
-                <p className="text-[#c6a87d] font-bold text-base">{initialUser.name}</p>
-                <p className="text-stone-400 text-xs mt-1">{initialUser.email}</p>
-              </div>
-
-              <div className="w-full border-t border-white/10 pt-4 mt-2 flex flex-col gap-2">
-                <Link
-                  to="/orders"
-                  className="flex items-center gap-3 bg-[#c6a87d] hover:bg-amber-600 text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
-                >
-                  <i className="fas fa-history w-4 text-center" />
-                  Historial de Pedidos
-                </Link>
-                <button
-                  onClick={() => { logout(); navigate("/"); }}
-                  className="flex items-center gap-3 bg-[#c6a87d] hover:bg-amber-600 text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all w-full"
-                >
-                  <i className="fas fa-sign-out-alt w-4 text-center" />
-                  Cerrar Sesión
-                </button>
-              </div>
+          {actionData?.success && actionData.user && (
+            <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-8 text-sm font-medium flex items-center gap-3 animate-fade-in">
+              <i className="fas fa-check-circle" /> Perfil actualizado correctamente
             </div>
-          </div>
+          )}
+          {actionData?.error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-8 text-sm font-medium flex items-center gap-3 animate-fade-in">
+              <i className="fas fa-exclamation-circle" /> {actionData.error}
+            </div>
+          )}
 
-          {/* ── Panel derecho — solo configuración ── */}
-          <div className="flex-1 border border-[#c6a87d]/40 rounded-2xl bg-[#111] overflow-hidden">
-            <div className="p-8">
-              <h2 className="text-[#c6a87d] text-xl font-bold mb-1">Configuración del Perfil</h2>
-              <p className="text-stone-500 text-sm mb-8">Gestiona tu información personal</p>
+          <Form method="post" className="space-y-6">
+            <input type="hidden" name="intent" value="update" />
 
-              {actionData?.success && actionData.user && (
-                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
-                  <i className="fas fa-check-circle" /> Perfil actualizado correctamente
-                </div>
-              )}
-              {actionData?.error && (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
-                  <i className="fas fa-exclamation-circle" /> {actionData.error}
-                </div>
-              )}
-
-              <Form method="post" className="space-y-6">
-                <input type="hidden" name="intent" value="update" />
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre de Usuario</label>
-                    <input
-                      name="name" defaultValue={initialUser.name}
-                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Email</label>
-                    <input
-                      name="email" type="email" defaultValue={initialUser.email}
-                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre</label>
-                    <input
-                      name="firstName" defaultValue={initialUser.firstName}
-                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Apellidos</label>
-                    <input
-                      name="lastName" defaultValue={initialUser.lastName}
-                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Biografía</label>
-                  <textarea
-                    name="description" defaultValue={initialUser.description} rows={4}
-                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all resize-none"
-                  />
-                </div>
-
-                <div className="flex justify-end gap-4 pt-4 border-t border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="px-8 py-3 border border-white/20 text-stone-300 hover:text-white rounded-xl text-sm font-bold transition-all"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-8 py-3 bg-[#c6a87d] hover:bg-amber-600 text-black rounded-xl text-sm font-bold transition-all"
-                  >
-                    Guardar Cambios
-                  </button>
-                </div>
-              </Form>
+            <div className="grid md:grid-cols-2 gap-6">
+              <ProfileField label="Nombre de Usuario" name="name" defaultValue={initialUser.name} />
+              <ProfileField label="Email" name="email" type="email" defaultValue={initialUser.email} />
+              <ProfileField label="Nombre" name="firstName" defaultValue={initialUser.firstName} />
+              <ProfileField label="Apellidos" name="lastName" defaultValue={initialUser.lastName} />
             </div>
 
-            {/* Eliminar cuenta */}
-            <div className="border-t border-white/10">
+            <div className="space-y-2">
+              <label className="text-[11px] text-white font-bold opacity-80 uppercase tracking-tight">Biografía / Descripción</label>
+              <textarea
+                name="description" defaultValue={initialUser.description} rows={4}
+                className="w-full bg-[#1a1a1a] border border-white/5 rounded-lg px-5 py-3 text-white outline-none focus:border-[var(--dorado)]/40 transition-all resize-none text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[11px] text-white font-bold opacity-80 uppercase tracking-tight">Foto de perfil (PNG)</label>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-4 bg-[#1a1a1a] border border-white/5 rounded-lg p-2 overflow-hidden">
+                  <Form method="post" encType="multipart/form-data" className="w-full">
+                    <input type="hidden" name="intent" value="upload-image" />
+                    <input 
+                      type="file" name="image" accept="image/png,image/jpeg,image/jpg" 
+                      className="text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-stone-200 cursor-pointer w-full"
+                      onChange={e => e.target.form?.requestSubmit()}
+                    />
+                  </Form>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-4 pt-8">
               <button
-                onClick={() => setShowDeleteModal(true)}
-                className="w-full flex items-center justify-center gap-3 py-4 text-red-400 hover:bg-red-500/10 font-bold text-sm uppercase tracking-widest transition-all"
-              >
-                <i className="fas fa-trash-alt" /> Eliminar cuenta
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Modal confirmación */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-[#111] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-            <h5 className="text-lg font-black text-white uppercase tracking-tight mb-3">Eliminar cuenta</h5>
-            <p className="text-stone-400 text-sm leading-relaxed mb-8">
-              Esta acción es <strong className="text-red-400">permanente e irreversible</strong>. Se eliminarán todos tus datos, pedidos e historial en Mokaf. ¿Estás seguro?
-            </p>
-            <div className="flex gap-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 border border-white/20 text-stone-400 hover:text-white rounded-xl text-sm font-black transition-all"
+                type="button"
+                onClick={() => navigate(-1)}
+                className="px-8 py-2.5 border border-white/20 text-stone-400 hover:text-white rounded-lg text-xs font-bold transition-all"
               >
                 Cancelar
               </button>
-              <Form method="post" className="flex-1">
-                <input type="hidden" name="intent" value="delete" />
-                <button type="submit" className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-black transition-all">
-                  Sí, eliminar cuenta
-                </button>
-              </Form>
+              <button
+                type="submit"
+                className="px-8 py-2.5 bg-[var(--dorado)] hover:bg-[#b5966d] text-black rounded-lg text-xs font-bold transition-all shadow-lg"
+              >
+                Guardar Cambios
+              </button>
             </div>
-          </div>
+          </Form>
         </div>
-      )}
-    </div>
+      </ProfileLayout>
+
+      <ConfirmDeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+      />
+    </>
   );
 }

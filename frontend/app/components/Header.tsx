@@ -39,37 +39,24 @@ export default function Header() {
           <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Contacto
           </NavLink>
-
-          {/* Cart Button */}
-          {isLogged && (
-            <Link to="/cart" className="cart-button">
-              <i className="fas fa-shopping-cart"></i>
-              <span className="cart-count">{itemCount}</span>
-            </Link>
-          )}
         </nav>
 
         {/* Account Section */}
         <div className="account-section">
           {isLogged ? (
-            <>
-              <Link to={user?.role === "ADMIN" ? "/profile-admin" : "/profile"} className="user-profile">
-                <div className="user-info">
-                  <span className="user-name">{user?.name}</span>
-                  <span className="user-label">Mi Perfil</span>
-                </div>
-                <div className="user-avatar">
-                  {user?.profileImageUrl ? (
-                    <img src={user.profileImageUrl} alt="user" />
-                  ) : (
-                    <i className="fas fa-user"></i>
-                  )}
-                </div>
+            <div className="logged-in-buttons">
+              <Link to={user?.role === "ADMIN" ? "/profile-admin" : "/profile"} className="account-btn profile-btn">
+                <i className="fas fa-user"></i>
+                <span>Mi Perfil</span>
               </Link>
-              <button onClick={handleLogout} className="logout-button">
+              <Link to="/cart" className="account-btn cart-btn">
+                <i className="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+              </Link>
+              <button onClick={handleLogout} className="logout-mini-btn" title="Cerrar Sesión">
                 <i className="fas fa-sign-out-alt"></i>
               </button>
-            </>
+            </div>
           ) : (
             <Link to="/login" className="login-button">
               <i className="fas fa-user"></i>

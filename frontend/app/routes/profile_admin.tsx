@@ -1,7 +1,9 @@
-import { useLoaderData, useActionData, Form, useNavigate, Link } from "react-router";
+import { useLoaderData, useActionData, Form, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
+import { ProfileLayout, ProfileField } from "../components/ProfileLayout";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 
 export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
@@ -93,194 +95,96 @@ export default function ProfileAdmin() {
     || initialUser.profileImageUrl
     || `https://i.pravatar.cc/150?u=${initialUser.id}`;
 
-  const navLinks = [
+  const sidebarLinks = [
     { to: "/gestion-menu",     icon: "fa-coffee",         label: "Gestión de Productos" },
     { to: "/statistics",       icon: "fa-chart-bar",      label: "Ver Estadísticas"     },
     { to: "/gestion-usuarios", icon: "fa-users",          label: "Gestionar Usuarios"   },
     { to: "/orders",           icon: "fa-clipboard-list", label: "Ver Pedidos"          },
+    { to: "#", icon: "fa-sign-out-alt", label: "Cerrar Sesión", isButton: true, onClick: () => { logout(); navigate("/"); } },
   ];
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a] py-10 px-4 animate-fade-in">
-      <div className="max-w-6xl mx-auto">
+    <>
+      <ProfileLayout
+        title="Perfil de Administrador"
+        role="ADMINISTRADOR"
+        roleColor="#e05252"
+        avatarSrc={avatarSrc}
+        userName={initialUser.name}
+        userEmail={initialUser.email}
+        sidebarLinks={sidebarLinks}
+        onDeleteClick={() => setShowDeleteModal(true)}
+        accentColor="var(--dorado)"
+      >
+        <div className="p-10">
+          <h2 className="text-xl font-bold m-0 mb-1" style={{ color: 'var(--dorado)' }}>Configuración del Administrador</h2>
+          <p className="text-stone-500 text-xs mb-8 uppercase tracking-widest">Gestiona tu cuenta de administrador</p>
 
-        {/* Título */}
-        <h1 className="text-center text-3xl font-serif italic text-[#c6a87d] mb-2">Perfil de Administrador</h1>
-        <div className="w-16 h-0.5 bg-[#c6a87d] mx-auto mb-10" />
-
-        <div className="flex flex-col lg:flex-row gap-6">
-
-          {/* ── Sidebar izquierdo ── */}
-          <div className="lg:w-72 flex-shrink-0">
-            <div className="border border-[#e05252]/60 rounded-2xl p-6 flex flex-col items-center gap-4 bg-[#111]">
-
-              <span className="bg-[#e05252] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
-                Administrador
-              </span>
-
-              {/* Avatar con cámara */}
-              <div className="relative">
-                <img
-                  src={avatarSrc}
-                  alt={initialUser.name}
-                  className="w-28 h-28 rounded-full border-4 border-[#e05252]/60 object-cover"
-                />
-                <Form method="post" encType="multipart/form-data">
-                  <input type="hidden" name="intent" value="upload-image" />
-                  <label className="absolute bottom-1 right-1 w-8 h-8 bg-[#e05252] rounded-full flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors shadow-lg">
-                    <i className="fas fa-camera text-white text-xs" />
-                    <input type="file" name="image" accept="image/png,image/jpeg,image/jpg" className="hidden" onChange={e => e.target.form?.requestSubmit()} />
-                  </label>
-                </Form>
-              </div>
-
-              <div className="text-center">
-                <p className="text-[#c6a87d] font-bold text-base">{initialUser.name}</p>
-                <p className="text-stone-400 text-xs mt-1">{initialUser.email}</p>
-              </div>
-
-              <div className="w-full border-t border-white/10 pt-4 mt-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-stone-500 text-center mb-3">Panel de Control</p>
-                <div className="flex flex-col gap-2">
-                  {navLinks.map(item => (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      className="flex items-center gap-3 bg-[#e05252] hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
-                    >
-                      <i className={`fas ${item.icon} w-4 text-center`} />
-                      {item.label}
-                    </Link>
-                  ))}
-                  <button
-                    onClick={() => { logout(); navigate("/"); }}
-                    className="flex items-center gap-3 bg-[#e05252] hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all w-full mt-1"
-                  >
-                    <i className="fas fa-sign-out-alt w-4 text-center" />
-                    Cerrar Sesión
-                  </button>
-                </div>
-              </div>
+          {actionData?.success && actionData.user && (
+            <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-8 text-sm font-medium flex items-center gap-3 animate-fade-in">
+              <i className="fas fa-check-circle" /> Perfil actualizado correctamente
             </div>
-          </div>
+          )}
+          {actionData?.error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-8 text-sm font-medium flex items-center gap-3 animate-fade-in">
+              <i className="fas fa-exclamation-circle" /> {actionData.error}
+            </div>
+          )}
 
-          {/* ── Panel derecho — solo configuración ── */}
-          <div className="flex-1 border border-[#e05252]/60 rounded-2xl bg-[#111] overflow-hidden">
-            <div className="p-8">
-              <h2 className="text-[#e05252] text-xl font-bold mb-1">Configuración del Administrador</h2>
-              <p className="text-stone-500 text-sm mb-8">Gestiona tu cuenta de administrador</p>
+          <Form method="post" className="space-y-6">
+            <input type="hidden" name="intent" value="update" />
 
-              {actionData?.success && actionData.user && (
-                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
-                  <i className="fas fa-check-circle" /> Perfil actualizado correctamente
-                </div>
-              )}
-              {actionData?.error && (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
-                  <i className="fas fa-exclamation-circle" /> {actionData.error}
-                </div>
-              )}
+            <ProfileField label="Nombre completo" name="name" defaultValue={initialUser.name} required />
 
-              <Form method="post" className="space-y-6">
-                <input type="hidden" name="intent" value="update" />
+            <div className="grid md:grid-cols-2 gap-6">
+              <ProfileField label="Nombre de usuario" defaultValue={initialUser.email} readOnly />
+              <ProfileField label="Correo electrónico" name="email" type="email" defaultValue={initialUser.email} required />
+            </div>
 
-                <div>
-                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre completo</label>
-                  <input
-                    name="name" defaultValue={initialUser.name} required
-                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#e05252]/60 transition-all"
-                  />
-                </div>
+            <ProfileField label="ID de Empleado" defaultValue={initialUser.id?.toString() ?? "Sin ID asignado"} readOnly />
+            <ProfileField label="Nueva contraseña" name="password" type="password" />
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre de usuario</label>
-                    <input
-                      value={initialUser.email} readOnly
-                      className="w-full bg-[#222] border border-white/10 rounded-xl px-5 py-3.5 text-stone-500 outline-none cursor-not-allowed"
+            <div className="space-y-2">
+              <label className="text-[11px] text-white font-bold opacity-80 uppercase tracking-tight">Foto de perfil (PNG)</label>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-4 bg-[#1a1a1a] border border-white/5 rounded-lg p-2 overflow-hidden">
+                  <Form method="post" encType="multipart/form-data" className="w-full">
+                    <input type="hidden" name="intent" value="upload-image" />
+                    <input 
+                      type="file" name="image" accept="image/png,image/jpeg,image/jpg" 
+                      className="text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-stone-200 cursor-pointer w-full"
+                      onChange={e => e.target.form?.requestSubmit()}
                     />
-                  </div>
-                  <div>
-                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Correo electrónico</label>
-                    <input
-                      name="email" type="email" defaultValue={initialUser.email} required
-                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#e05252]/60 transition-all"
-                    />
-                  </div>
+                  </Form>
                 </div>
-
-                <div>
-                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">ID de Empleado</label>
-                  <input
-                    value={initialUser.id ?? "Sin ID asignado"} readOnly
-                    className="w-full bg-[#222] border border-white/10 rounded-xl px-5 py-3.5 text-stone-500 outline-none cursor-not-allowed"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nueva contraseña</label>
-                  <input
-                    name="password" type="password" placeholder="Dejar en blanco para mantener la actual"
-                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#e05252]/60 transition-all"
-                  />
-                </div>
-
-                <div className="flex justify-end gap-4 pt-4 border-t border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="px-8 py-3 border border-white/20 text-stone-300 hover:text-white rounded-xl text-sm font-bold transition-all"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-8 py-3 bg-[#e05252] hover:bg-red-600 text-white rounded-xl text-sm font-bold transition-all"
-                  >
-                    Guardar Cambios
-                  </button>
-                </div>
-              </Form>
+              </div>
             </div>
 
-            {/* Eliminar cuenta */}
-            <div className="border-t border-white/10">
+            <div className="flex justify-end gap-4 pt-8">
               <button
-                onClick={() => setShowDeleteModal(true)}
-                className="w-full flex items-center justify-center gap-3 py-4 text-[#e05252] hover:bg-[#e05252]/10 font-bold text-sm uppercase tracking-widest transition-all"
-              >
-                <i className="fas fa-trash-alt" /> Eliminar cuenta
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Modal confirmación borrado */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-[#111] border border-[#e05252]/40 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-            <h5 className="text-lg font-black text-white uppercase tracking-tight mb-3">Eliminar cuenta de administrador</h5>
-            <p className="text-stone-400 text-sm leading-relaxed mb-8">
-              <strong className="text-red-400">Advertencia:</strong> Esta acción es permanente e irreversible y podría afectar la gestión del sistema. ¿Estás absolutamente seguro?
-            </p>
-            <div className="flex gap-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 border border-white/20 text-stone-400 hover:text-white rounded-xl text-sm font-black transition-all"
+                type="button"
+                onClick={() => navigate(-1)}
+                className="px-8 py-2.5 border border-white/20 text-stone-400 hover:text-white rounded-lg text-xs font-bold transition-all"
               >
                 Cancelar
               </button>
-              <Form method="post" className="flex-1">
-                <input type="hidden" name="intent" value="delete" />
-                <button type="submit" className="w-full px-6 py-3 bg-[#e05252] hover:bg-red-600 text-white rounded-xl text-sm font-black transition-all">
-                  Sí, eliminar definitivamente
-                </button>
-              </Form>
+              <button
+                type="submit"
+                className="px-8 py-2.5 bg-[#e05252] hover:bg-red-600 text-white rounded-lg text-xs font-bold transition-all shadow-lg"
+              >
+                Guardar Cambios
+              </button>
             </div>
-          </div>
+          </Form>
         </div>
-      )}
-    </div>
+      </ProfileLayout>
+
+      <ConfirmDeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Eliminar cuenta de administrador"
+        message="¿Estás seguro de que deseas eliminar definitivamente tu cuenta de administrador? Esta acción no se puede deshacer y afectará a la gestión del sistema."
+      />
+    </>
   );
 }
