@@ -26,6 +26,9 @@ export async function clientAction({ request }: { request: Request }) {
       const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
         credentials: "include",
       });
+      const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+        credentials: "include",
+      });
 
       if (!meResponse.ok) {
         return { loginError: "Login correcto pero no se pudo obtener el perfil." };
@@ -91,7 +94,7 @@ export async function clientAction({ request }: { request: Request }) {
   }
 }
 
-export default function Login() {
+export default function Auth() {
   const actionData = useActionData<typeof clientAction>();
   const setUser = useAuthStore((state) => state.setUser);
   const navigate = useNavigate();
