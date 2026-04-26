@@ -152,7 +152,7 @@ export default function ProductDetail() {
               <hr className="product-divider" />
 
               <div className="product-actions">
-                {user ? (
+                {user && (
                   <div className="joined-actions">
                     <div className="qty-control">
                       <button
@@ -187,10 +187,6 @@ export default function ProductDetail() {
                       </button>
                     </Form>
                   </div>
-                ) : (
-                  <Link to="/login" className="btn btn-product-primary">
-                    Inicia sesión para comprar
-                  </Link>
                 )}
               </div>
 
