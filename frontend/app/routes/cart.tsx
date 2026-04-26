@@ -217,7 +217,7 @@ const changeBranch = async (branchId: string) => {
   }
 };
 
-  // Update item quantity
+  // Update item quantity in cart
   const updateQuantity = async (itemId: number, newQuantity: number) => {
     if (newQuantity < 0) return;
     try {
