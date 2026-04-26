@@ -53,6 +53,14 @@ export async function clientAction({ request }: { request: Request }) {
     return { error: "Error al subir la imagen." };
   }
 
+  if (intent === "delete") {
+    await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    return { deleted: true };
+  }
+
   return null;
 }
 
@@ -62,6 +70,7 @@ export default function Profile() {
   const { setUser, logout, isLogged } = useAuthStore();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (isUnauthorized || !isLogged) {
@@ -74,7 +83,11 @@ export default function Profile() {
       setUser(actionData.user);
       setEditing(false);
     }
-  }, [actionData, setUser]);
+    if (actionData?.deleted) {
+      logout();
+      navigate("/");
+    }
+  }, [actionData, setUser, logout, navigate]);
 
   if (!initialUser) return null;
 
@@ -149,9 +162,18 @@ export default function Profile() {
                 <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Biografía / Descripción</label>
                 <textarea name="description" defaultValue={initialUser.description} rows={4} className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800 resize-none" />
               </div>
-              <button type="submit" className="bg-stone-900 text-white px-12 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-stone-800 transition-all shadow-xl active:scale-95">
-                Guardar Cambios
-              </button>
+              <div className="flex items-center gap-6">
+                <button type="submit" className="bg-stone-900 text-white px-12 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-stone-800 transition-all shadow-xl active:scale-95">
+                  Guardar Cambios
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="text-red-400 hover:text-red-600 font-black text-xs uppercase tracking-widest transition-colors flex items-center gap-2"
+                >
+                  <i className="fas fa-trash-alt" /> Eliminar cuenta
+                </button>
+              </div>
             </Form>
           ) : (
             <div className="grid md:grid-cols-3 gap-16 animate-fade-in">
@@ -163,7 +185,6 @@ export default function Profile() {
                   </p>
                 </section>
 
-                {/* Botón historial de pedidos */}
                 <Link
                   to="/orders"
                   className="inline-flex items-center gap-4 bg-stone-900 hover:bg-stone-800 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl active:scale-95 group"
@@ -197,6 +218,32 @@ export default function Profile() {
           )}
         </div>
       </div>
+
+      {/* Modal de confirmación de borrado */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
+            <h5 className="text-lg font-black text-stone-800 uppercase tracking-tight mb-3">Eliminar cuenta</h5>
+            <p className="text-stone-500 text-sm leading-relaxed mb-8">
+              Esta acción es <strong className="text-red-500">permanente e irreversible</strong>. Se eliminarán todos tus datos, pedidos e historial en Mokaf. ¿Estás seguro?
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 px-6 py-3 border-2 border-stone-200 text-stone-500 hover:text-stone-800 rounded-2xl text-sm font-black transition-all"
+              >
+                Cancelar
+              </button>
+              <Form method="post" className="flex-1">
+                <input type="hidden" name="intent" value="delete" />
+                <button type="submit" className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-2xl text-sm font-black transition-all active:scale-95">
+                  Sí, eliminar cuenta
+                </button>
+              </Form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

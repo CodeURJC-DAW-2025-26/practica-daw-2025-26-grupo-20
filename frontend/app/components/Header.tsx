@@ -40,17 +40,7 @@ export default function Header() {
             Contacto
           </NavLink>
 
-          {/* Admin Links */}
-          {isLogged && user?.role === "ADMIN" && (
-            <div className="admin-links">
-              <NavLink to="/gestion-menu" className={({ isActive }) => `admin-link ${isActive ? 'active' : ''}`}>
-                Menú
-              </NavLink>
-              <NavLink to="/gestion-usuarios" className={({ isActive }) => `admin-link ${isActive ? 'active' : ''}`}>
-                Usuarios
-              </NavLink>
-            </div>
-          )}
+          
 
           {/* Cart Button */}
           <Link to="/cart" className="cart-button">
