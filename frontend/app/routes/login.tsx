@@ -3,40 +3,91 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-
 export async function clientAction({ request }: { request: Request }) {
   try {
     const formData = await request.formData();
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const intent = formData.get("intent") as string;
 
-    // 1. Login → solo devuelve { status, message } + sets JWT cookies
-    const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+    if (intent === "login") {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
 
-    if (!loginResponse.ok) {
-      return { error: "Credenciales incorrectas. Inténtalo de nuevo." };
+      const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!loginResponse.ok) {
+        return { loginError: "Credenciales incorrectas. Inténtalo de nuevo." };
+      }
+
+      const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+        credentials: "include",
+      });
+
+      if (!meResponse.ok) {
+        return { loginError: "Login correcto pero no se pudo obtener el perfil." };
+      }
+
+      const user = await meResponse.json();
+      return { success: true, user };
     }
 
-    // 2. Fetch user data with the JWT cookie that was just set
-    const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-      credentials: "include",
-    });
+    if (intent === "register") {
+      const name = formData.get("name") as string;
+      const email = formData.get("email-register") as string;
+      const password = formData.get("password-register") as string;
 
-    if (!meResponse.ok) {
-      return { error: "Login correcto pero no se pudo obtener el perfil." };
+      const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+
+      if (!name?.trim()) return { registerError: "El nombre es obligatorio." };
+      if (!emailRegex.test(email)) return { registerError: "El formato del email no es válido." };
+      if (password.length < 6) return { registerError: "La contraseña debe tener al menos 6 caracteres." };
+      if (!passwordRegex.test(password)) return { registerError: "La contraseña debe contener letras y números." };
+
+      const registerResponse = await fetch(`${API_BASE_URL}/api/v1/auth/registrations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!registerResponse.ok) {
+        const errorData = await registerResponse.json().catch(() => ({}));
+        if (registerResponse.status === 400 && errorData.message?.includes("Email already registered")) {
+          return { registerError: "Este email ya está registrado." };
+        }
+        return { registerError: errorData.message || "No se pudo crear la cuenta. Inténtalo de nuevo." };
+      }
+
+      const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!loginResponse.ok) return { registerSuccess: true };
+
+      const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+        credentials: "include",
+      });
+
+      if (meResponse.ok) {
+        const user = await meResponse.json();
+        return { success: true, user };
+      }
+
+      return { registerSuccess: true };
     }
 
-    const user = await meResponse.json();
-    return { success: true, user };
-
+    return null;
   } catch (err) {
-    console.error("Login error:", err);
-    return { error: "Error de conexión con el servidor." };
+    console.error("Auth error:", err);
+    return { loginError: "Error de conexión con el servidor." };
   }
 }
 
@@ -53,77 +104,111 @@ export default function Login() {
   }, [actionData, setUser, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050404] px-4 py-20 animate-fade-in relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#d4b88d]/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#d4b88d]/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none select-none">
-        <i className="fas fa-mug-hot text-[600px] text-white -rotate-12" />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A] px-4 py-16 animate-fade-in">
 
-      <div className="w-full max-w-lg relative z-10 p-4">
-        <div className="bg-[#080707] border border-[#d4b88d]/10 rounded-[3rem] p-10 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.8)] backdrop-blur-3xl flex flex-col items-center relative overflow-hidden">
-          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/30 to-transparent" />
+      {/* Contenedor principal */}
+      <div className="w-full max-w-5xl border border-[#c6a87d]/20 rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
 
-          <Link to="/" className="mb-12 group transition-all duration-700">
-            <div className="w-24 h-24 bg-[#0c0b0b] border border-[#d4b88d]/20 rounded-[2.5rem] flex items-center justify-center text-[#d4b88d] text-4xl shadow-2xl group-hover:bg-[#d4b88d] group-hover:text-black group-hover:scale-110 transition-all duration-700">
-              <i className="fas fa-mug-hot" />
-            </div>
-          </Link>
-
-          <div className="text-center mb-16 space-y-4">
-            <h1 className="text-4xl md:text-5xl font-serif text-[#d4b88d] italic tracking-tighter drop-shadow-sm">Bienvenido</h1>
-            <p className="text-stone-500 font-bold text-[10px] uppercase tracking-[0.5em] italic">Café de especialidad en cada taza</p>
-          </div>
-
-          {actionData?.error && (
-            <div className="w-full bg-red-500/10 border border-red-500/30 text-red-400 p-6 rounded-2xl mb-12 flex items-center gap-4">
-              <i className="fas fa-exclamation-circle text-lg" />
-              <p className="text-[11px] font-bold uppercase tracking-widest">{actionData.error}</p>
-            </div>
-          )}
-
-          <Form method="post" className="w-full space-y-10">
-            <div className="space-y-4">
-              <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-600 ml-6">Email</label>
-              <div className="relative group">
-                <i className="fas fa-envelope absolute left-8 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-[#d4b88d] transition-colors" />
-                <input
-                  name="email" type="email" required placeholder="tu@esencia.com" autoComplete="email"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-[2rem] px-16 py-6 focus:bg-white/[0.05] focus:border-[#d4b88d] outline-none transition-all text-white placeholder:text-stone-800 font-light tracking-wide lg:text-lg"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-600 ml-6">Contraseña</label>
-              <div className="relative group">
-                <i className="fas fa-lock absolute left-8 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-[#d4b88d] transition-colors" />
-                <input
-                  name="password" type="password" required placeholder="••••••••" autoComplete="current-password"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-[2rem] px-16 py-6 focus:bg-white/[0.05] focus:border-[#d4b88d] outline-none transition-all text-white placeholder:text-stone-800 font-light lg:text-lg"
-                />
-              </div>
-            </div>
-
-            <button type="submit" className="w-full group relative h-20 bg-transparent border border-[#d4b88d]/30 rounded-[2rem] overflow-hidden shadow-2xl active:scale-95 transition-all mt-10">
-              <div className="absolute inset-0 bg-[#d4b88d] translate-y-full group-hover:translate-y-0 transition-transform duration-700" />
-              <div className="relative z-10 flex items-center justify-center gap-4 text-[#d4b88d] group-hover:text-black font-black uppercase tracking-[0.4em] text-[11px] transition-colors duration-700">
-                <span>Acceder a Mokaf</span>
-                <i className="fas fa-chevron-right text-[10px] group-hover:translate-x-2 transition-transform" />
-              </div>
-            </button>
-          </Form>
-
-          <div className="mt-20 text-center space-y-6">
-            <p className="text-stone-600 text-[10px] font-bold uppercase tracking-[0.4em]">¿Sin cuenta todavía?</p>
-            <Link to="/register" className="inline-block text-[#d4b88d] hover:text-white font-bold uppercase text-[12px] tracking-[0.25em] transition-all border-b border-[#d4b88d]/30 hover:border-white pb-2">
-              Regístrate aquí
-            </Link>
-          </div>
+        {/* Título */}
+        <div className="text-center py-10 border-b border-[#c6a87d]/20 bg-[#111]/60">
+          <h1 className="text-3xl font-serif text-[#c6a87d] italic tracking-tight">Login o Registro</h1>
         </div>
 
-        <div className="mt-16 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-stone-800">&copy; 2026 Mokaf Specialty Coffee</p>
+        {/* Columnas */}
+        <div className="grid md:grid-cols-2">
+
+          {/* ── Columna Login ── */}
+          <div className="p-10 md:p-12 border-b md:border-b-0 md:border-r border-[#c6a87d]/20 bg-[#111]/40">
+            <h2 className="text-2xl font-bold text-[#c6a87d] mb-1 tracking-tight font-serif italic">Login</h2>
+            <div className="w-8 h-0.5 bg-[#c6a87d]/50 mb-8" />
+
+            {actionData?.loginError && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                <i className="fas fa-exclamation-circle" /> {actionData.loginError}
+              </div>
+            )}
+
+            <Form method="post" className="space-y-6">
+              <input type="hidden" name="intent" value="login" />
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#D7CCC8]/70 uppercase tracking-widest">Email</label>
+                <input
+                  name="email" type="email" required placeholder="Tu email" autoComplete="email"
+                  className="w-full bg-white/[0.04] border border-[#c6a87d]/20 rounded-lg px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#c6a87d]/60 transition-all font-light"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#D7CCC8]/70 uppercase tracking-widest">Contraseña</label>
+                <input
+                  name="password" type="password" required placeholder="Tu contraseña" autoComplete="current-password"
+                  className="w-full bg-white/[0.04] border border-[#c6a87d]/20 rounded-lg px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#c6a87d]/60 transition-all font-light"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-lg font-bold uppercase tracking-widest text-sm transition-all duration-300 mt-2"
+              >
+                Login
+              </button>
+            </Form>
+          </div>
+
+          {/* ── Columna Registro ── */}
+          <div className="p-10 md:p-12 bg-[#111]/40">
+            <h2 className="text-2xl font-bold text-[#c6a87d] mb-1 tracking-tight font-serif italic">Registro</h2>
+            <div className="w-8 h-0.5 bg-[#c6a87d]/50 mb-8" />
+
+            {actionData?.registerError && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                <i className="fas fa-exclamation-circle" /> {actionData.registerError}
+              </div>
+            )}
+
+            {actionData?.registerSuccess && (
+              <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                <i className="fas fa-check-circle" /> Cuenta creada. Inicia sesión.
+              </div>
+            )}
+
+            <Form method="post" className="space-y-6">
+              <input type="hidden" name="intent" value="register" />
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#D7CCC8]/70 uppercase tracking-widest">Nombre completo</label>
+                <input
+                  name="name" type="text" required placeholder="Tu nombre completo" autoComplete="name"
+                  className="w-full bg-white/[0.04] border border-[#c6a87d]/20 rounded-lg px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#c6a87d]/60 transition-all font-light"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#D7CCC8]/70 uppercase tracking-widest">Email</label>
+                <input
+                  name="email-register" type="email" required placeholder="Tu email" autoComplete="off"
+                  className="w-full bg-white/[0.04] border border-[#c6a87d]/20 rounded-lg px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#c6a87d]/60 transition-all font-light"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#D7CCC8]/70 uppercase tracking-widest">Contraseña</label>
+                <input
+                  name="password-register" type="password" required minLength={6} placeholder="Mín. 6 caracteres, letras y números"
+                  className="w-full bg-white/[0.04] border border-[#c6a87d]/20 rounded-lg px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#c6a87d]/60 transition-all font-light"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3.5 rounded-lg font-bold uppercase tracking-widest text-sm transition-all duration-300 mt-2"
+              >
+                Registrarse
+              </button>
+            </Form>
+          </div>
+
         </div>
       </div>
     </div>
