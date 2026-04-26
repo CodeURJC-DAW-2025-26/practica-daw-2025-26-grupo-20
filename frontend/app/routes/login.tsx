@@ -48,7 +48,7 @@ export default function Login() {
   useEffect(() => {
     if (actionData?.success && actionData.user) {
       setUser(actionData.user);
-      navigate(actionData.user.role === "ADMIN" ? "/statistics" : "/menu", { replace: true });
+      navigate(actionData.user.role === "ADMIN" ? "/profile-admin" : "/menu", { replace: true });
     }
   }, [actionData, setUser, navigate]);
 
