@@ -202,17 +202,6 @@ export default function ProfileAdmin() {
                   </p>
                 </section>
 
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">Miembro desde</p>
-                    <p className="font-black text-stone-800">Enero, 2026</p>
-                  </div>
-                  <div className="bg-stone-50 p-6 rounded-3xl border border-stone-100">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-stone-300 mb-2">ID de Empleado</p>
-                    <p className="font-black text-stone-800">#{initialUser.id}</p>
-                  </div>
-                </div>
-
                 {/* Información de contacto */}
                 <section className="space-y-4">
                   <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em]">Información de Contacto</h3>
