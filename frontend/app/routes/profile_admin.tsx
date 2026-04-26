@@ -72,7 +72,6 @@ export default function ProfileAdmin() {
   const { setUser, logout, isLogged } = useAuthStore();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");
@@ -81,7 +80,6 @@ export default function ProfileAdmin() {
   useEffect(() => {
     if (actionData?.success && actionData.user) {
       setUser(actionData.user);
-      setEditing(false);
     }
     if (actionData?.deleted) {
       logout();
@@ -95,180 +93,187 @@ export default function ProfileAdmin() {
     || initialUser.profileImageUrl
     || `https://i.pravatar.cc/150?u=${initialUser.id}`;
 
+  const navLinks = [
+    { to: "/gestion-menu",     icon: "fa-coffee",         label: "Gestión de Productos" },
+    { to: "/statistics",       icon: "fa-chart-bar",      label: "Ver Estadísticas"     },
+    { to: "/gestion-usuarios", icon: "fa-users",          label: "Gestionar Usuarios"   },
+    { to: "/orders",           icon: "fa-clipboard-list", label: "Ver Pedidos"          },
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-20 max-w-5xl animate-fade-in">
-      <div className="bg-white rounded-[3rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100">
+    <div className="min-h-screen bg-[#1a1a1a] py-10 px-4 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
 
-        {/* ── Header / Cover ───────────────────────────────────────────── */}
-        <div className="h-64 bg-stone-900 relative">
-          <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-            <i className="fas fa-mug-hot text-[300px] text-white -rotate-12 translate-x-2/3 translate-y-1/2" />
-          </div>
+        {/* Título */}
+        <h1 className="text-center text-3xl font-serif italic text-[#c6a87d] mb-2">Perfil de Administrador</h1>
+        <div className="w-16 h-0.5 bg-[#c6a87d] mx-auto mb-10" />
 
-          <div className="absolute -bottom-16 left-12 flex items-end gap-8">
-            <div className="relative group">
-              <img
-                src={avatarSrc}
-                className="w-44 h-44 rounded-[2.5rem] border-8 border-white shadow-2xl object-cover transform transition-transform group-hover:scale-105"
-                alt={initialUser.name}
-              />
-              <Form method="post" encType="multipart/form-data" className="absolute bottom-4 right-4">
-                <input type="hidden" name="intent" value="upload-image" />
-                <label className="w-12 h-12 bg-amber-800 text-white rounded-2xl flex items-center justify-center cursor-pointer hover:bg-amber-900 transition-colors shadow-xl">
-                  <i className="fas fa-camera" />
-                  <input type="file" name="image" accept="image/png,image/jpeg,image/jpg" className="hidden" onChange={e => e.target.form?.requestSubmit()} />
-                </label>
-              </Form>
-            </div>
-            <div className="pb-4 space-y-1">
-              <h1 className="text-4xl font-black text-white drop-shadow-md uppercase tracking-tight">{initialUser.name}</h1>
-              <p className="text-amber-500 font-black text-xs uppercase tracking-[0.3em]">ADMIN</p>
-            </div>
-          </div>
+        <div className="flex flex-col lg:flex-row gap-6">
 
-          <div className="absolute top-8 right-8 flex gap-4">
-            <button
-              onClick={() => { logout(); navigate("/"); }}
-              className="bg-white/10 hover:bg-red-500/20 text-white border border-white/20 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all backdrop-blur-md"
-            >
-              Cerrar Sesión
-            </button>
-            <button
-              onClick={() => setEditing(!editing)}
-              className="bg-amber-800 hover:bg-amber-700 text-white px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-amber-900/40"
-            >
-              {editing ? "Cancelar" : "Editar Perfil"}
-            </button>
-          </div>
-        </div>
+          {/* ── Sidebar izquierdo ── */}
+          <div className="lg:w-72 flex-shrink-0">
+            <div className="border border-[#e05252]/60 rounded-2xl p-6 flex flex-col items-center gap-4 bg-[#111]">
 
-        <div className="pt-24 px-12 pb-16">
-          {actionData?.success && actionData.user && (
-            <div className="mb-8 bg-green-50 border border-green-200 text-green-700 p-4 rounded-2xl flex items-center gap-3 text-sm font-bold">
-              <i className="fas fa-check-circle" /> Perfil actualizado correctamente
-            </div>
-          )}
-          {actionData?.error && (
-            <div className="mb-8 bg-red-50 border border-red-200 text-red-600 p-4 rounded-2xl flex items-center gap-3 text-sm font-bold">
-              <i className="fas fa-exclamation-circle" /> {actionData.error}
-            </div>
-          )}
+              <span className="bg-[#e05252] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
+                Administrador
+              </span>
 
-          {editing ? (
-            /* ── Edit Form ─────────────────────────────────────────────── */
-            <Form method="post" className="space-y-10 animate-fade-in">
-              <input type="hidden" name="intent" value="update" />
-              <div className="grid md:grid-cols-2 gap-10">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Nombre completo</label>
-                  <input name="name" defaultValue={initialUser.name} required className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">ID de Empleado</label>
-                  <input value={initialUser.id || "Sin ID asignado"} readOnly className="w-full bg-stone-100 border-2 border-stone-100 rounded-2xl px-6 py-4 outline-none font-bold text-stone-400 cursor-not-allowed" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Correo electrónico</label>
-                  <input name="email" type="email" defaultValue={initialUser.email} required className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Nueva contraseña</label>
-                  <input name="password" type="password" placeholder="Dejar en blanco para mantener la actual" className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800 placeholder:font-normal placeholder:text-stone-400" />
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <button type="submit" className="bg-stone-900 text-white px-12 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-stone-800 transition-all shadow-xl active:scale-95">
-                  Guardar Cambios
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteModal(true)}
-                  className="text-red-400 hover:text-red-600 font-black text-xs uppercase tracking-widest transition-colors flex items-center gap-2"
-                >
-                  <i className="fas fa-trash-alt" /> Eliminar cuenta
-                </button>
-              </div>
-            </Form>
-          ) : (
-            /* ── Normal View with Control Panel ────────────────────────── */
-            <div className="grid md:grid-cols-3 gap-16 animate-fade-in">
-
-              {/* Left column — personal info */}
-              <div className="md:col-span-2 space-y-12">
-                <section className="space-y-6">
-                  <h3 className="text-xl font-black text-stone-800 uppercase tracking-tight border-b-4 border-amber-100 pb-2 w-fit">Resumen Personal</h3>
-                  <p className="text-stone-500 font-medium leading-relaxed italic text-lg">
-                    {initialUser.description || "Gestor general de la plataforma Mokaf."}
-                  </p>
-                </section>
-
-                {/* Contact info */}
-                <section className="space-y-4">
-                  <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em]">Información de Contacto</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4 group">
-                      <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
-                        <i className="fas fa-envelope text-xs" />
-                      </div>
-                      <span className="text-stone-500 font-bold text-sm truncate">{initialUser.email}</span>
-                    </div>
-                    <div className="flex items-center gap-4 group">
-                      <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
-                        <i className="fas fa-user-tag text-xs" />
-                      </div>
-                      <span className="text-stone-500 font-bold text-sm">@{initialUser.name}</span>
-                    </div>
-                  </div>
-                </section>
+              {/* Avatar con cámara */}
+              <div className="relative">
+                <img
+                  src={avatarSrc}
+                  alt={initialUser.name}
+                  className="w-28 h-28 rounded-full border-4 border-[#e05252]/60 object-cover"
+                />
+                <Form method="post" encType="multipart/form-data">
+                  <input type="hidden" name="intent" value="upload-image" />
+                  <label className="absolute bottom-1 right-1 w-8 h-8 bg-[#e05252] rounded-full flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors shadow-lg">
+                    <i className="fas fa-camera text-white text-xs" />
+                    <input type="file" name="image" accept="image/png,image/jpeg,image/jpg" className="hidden" onChange={e => e.target.form?.requestSubmit()} />
+                  </label>
+                </Form>
               </div>
 
-              {/* Right column — Quick control panel */}
-              <div className="space-y-6">
-                <div className="bg-stone-900 rounded-[2rem] p-6 space-y-4 relative overflow-hidden">
-                  <i className="fas fa-mug-hot absolute -bottom-4 -right-4 text-8xl text-white/5 -rotate-12" />
-                  <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 relative z-10">Panel de Control</p>
+              <div className="text-center">
+                <p className="text-[#c6a87d] font-bold text-base">{initialUser.name}</p>
+                <p className="text-stone-400 text-xs mt-1">{initialUser.email}</p>
+              </div>
 
-                  {[
-                    { to: "/gestion-menu",      icon: "fa-coffee",         label: "Gestión de Productos" },
-                    { to: "/statistics",         icon: "fa-chart-bar",      label: "Ver Estadísticas" },
-                    { to: "/gestion-usuarios",   icon: "fa-users",          label: "Gestionar Usuarios" },
-                    { to: "/orders",             icon: "fa-clipboard-list", label: "Ver Pedidos" },
-                  ].map(item => (
+              <div className="w-full border-t border-white/10 pt-4 mt-2">
+                <p className="text-[10px] font-black uppercase tracking-widest text-stone-500 text-center mb-3">Panel de Control</p>
+                <div className="flex flex-col gap-2">
+                  {navLinks.map(item => (
                     <Link
                       key={item.to}
                       to={item.to}
-                      className="flex items-center gap-3 bg-white/5 hover:bg-amber-800/30 border border-white/5 hover:border-amber-800/50 rounded-2xl px-4 py-3 text-sm font-bold text-stone-300 hover:text-white transition-all relative z-10"
+                      className="flex items-center gap-3 bg-[#e05252] hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
                     >
-                      <i className={`fas ${item.icon} text-amber-500 w-4`} />
+                      <i className={`fas ${item.icon} w-4 text-center`} />
                       {item.label}
                     </Link>
                   ))}
+                  <button
+                    onClick={() => { logout(); navigate("/"); }}
+                    className="flex items-center gap-3 bg-[#e05252] hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all w-full mt-1"
+                  >
+                    <i className="fas fa-sign-out-alt w-4 text-center" />
+                    Cerrar Sesión
+                  </button>
                 </div>
               </div>
-
             </div>
-          )}
+          </div>
+
+          {/* ── Panel derecho — solo configuración ── */}
+          <div className="flex-1 border border-[#e05252]/60 rounded-2xl bg-[#111] overflow-hidden">
+            <div className="p-8">
+              <h2 className="text-[#e05252] text-xl font-bold mb-1">Configuración del Administrador</h2>
+              <p className="text-stone-500 text-sm mb-8">Gestiona tu cuenta de administrador</p>
+
+              {actionData?.success && actionData.user && (
+                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
+                  <i className="fas fa-check-circle" /> Perfil actualizado correctamente
+                </div>
+              )}
+              {actionData?.error && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
+                  <i className="fas fa-exclamation-circle" /> {actionData.error}
+                </div>
+              )}
+
+              <Form method="post" className="space-y-6">
+                <input type="hidden" name="intent" value="update" />
+
+                <div>
+                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre completo</label>
+                  <input
+                    name="name" defaultValue={initialUser.name} required
+                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#e05252]/60 transition-all"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre de usuario</label>
+                    <input
+                      value={initialUser.email} readOnly
+                      className="w-full bg-[#222] border border-white/10 rounded-xl px-5 py-3.5 text-stone-500 outline-none cursor-not-allowed"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Correo electrónico</label>
+                    <input
+                      name="email" type="email" defaultValue={initialUser.email} required
+                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#e05252]/60 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">ID de Empleado</label>
+                  <input
+                    value={initialUser.id ?? "Sin ID asignado"} readOnly
+                    className="w-full bg-[#222] border border-white/10 rounded-xl px-5 py-3.5 text-stone-500 outline-none cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nueva contraseña</label>
+                  <input
+                    name="password" type="password" placeholder="Dejar en blanco para mantener la actual"
+                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white placeholder:text-stone-700 outline-none focus:border-[#e05252]/60 transition-all"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-4 pt-4 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="px-8 py-3 border border-white/20 text-stone-300 hover:text-white rounded-xl text-sm font-bold transition-all"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-8 py-3 bg-[#e05252] hover:bg-red-600 text-white rounded-xl text-sm font-bold transition-all"
+                  >
+                    Guardar Cambios
+                  </button>
+                </div>
+              </Form>
+            </div>
+
+            {/* Eliminar cuenta */}
+            <div className="border-t border-white/10">
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="w-full flex items-center justify-center gap-3 py-4 text-[#e05252] hover:bg-[#e05252]/10 font-bold text-sm uppercase tracking-widest transition-all"
+              >
+                <i className="fas fa-trash-alt" /> Eliminar cuenta
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── Delete Confirmation Modal ──────────────────────────────── */}
+      {/* Modal confirmación borrado */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
-            <h5 className="text-lg font-black text-stone-800 uppercase tracking-tight mb-3">Eliminar cuenta de administrador</h5>
-            <p className="text-stone-500 text-sm leading-relaxed mb-8">
-              <strong className="text-red-500">Advertencia:</strong> Estás a punto de eliminar una cuenta de administrador. Esta acción no se puede deshacer y podría afectar la gestión del sistema. ¿Estás absolutamente seguro?
+          <div className="bg-[#111] border border-[#e05252]/40 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h5 className="text-lg font-black text-white uppercase tracking-tight mb-3">Eliminar cuenta de administrador</h5>
+            <p className="text-stone-400 text-sm leading-relaxed mb-8">
+              <strong className="text-red-400">Advertencia:</strong> Esta acción es permanente e irreversible y podría afectar la gestión del sistema. ¿Estás absolutamente seguro?
             </p>
             <div className="flex gap-4">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 border-2 border-stone-200 text-stone-500 hover:text-stone-800 rounded-2xl text-sm font-black transition-all"
+                className="flex-1 px-6 py-3 border border-white/20 text-stone-400 hover:text-white rounded-xl text-sm font-black transition-all"
               >
                 Cancelar
               </button>
               <Form method="post" className="flex-1">
                 <input type="hidden" name="intent" value="delete" />
-                <button type="submit" className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-2xl text-sm font-black transition-all active:scale-95">
+                <button type="submit" className="w-full px-6 py-3 bg-[#e05252] hover:bg-red-600 text-white rounded-xl text-sm font-black transition-all">
                   Sí, eliminar definitivamente
                 </button>
               </Form>

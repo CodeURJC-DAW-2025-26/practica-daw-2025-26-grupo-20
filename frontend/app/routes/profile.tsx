@@ -7,10 +7,8 @@ export async function clientLoader() {
   const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
     credentials: "include",
   });
-
   if (response.status === 401) return { isUnauthorized: true };
   if (!response.ok) return { user: null };
-
   const user = await response.json();
   return { user };
 }
@@ -27,7 +25,6 @@ export async function clientAction({ request }: { request: Request }) {
       credentials: "include",
       body: JSON.stringify(data),
     });
-
     if (response.ok) {
       const user = await response.json();
       return { success: true, user };
@@ -39,13 +36,11 @@ export async function clientAction({ request }: { request: Request }) {
     const file = formData.get("image") as File;
     const body = new FormData();
     body.append("image", file);
-
     const response = await fetch(`${API_BASE_URL}/api/v1/users/me/image`, {
       method: "POST",
       credentials: "include",
       body,
     });
-
     if (response.ok) {
       const data = await response.json();
       return { success: true, profileImageUrl: data.profileImageUrl };
@@ -69,19 +64,15 @@ export default function Profile() {
   const actionData = useActionData<typeof clientAction>();
   const { setUser, logout, isLogged } = useAuthStore();
   const navigate = useNavigate();
-  const [editing, setEditing] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (isUnauthorized || !isLogged) {
-      navigate("/login");
-    }
+    if (isUnauthorized || !isLogged) navigate("/login");
   }, [isUnauthorized, isLogged, navigate]);
 
   useEffect(() => {
     if (actionData?.success && actionData.user) {
       setUser(actionData.user);
-      setEditing(false);
     }
     if (actionData?.deleted) {
       logout();
@@ -91,152 +82,175 @@ export default function Profile() {
 
   if (!initialUser) return null;
 
+  const avatarSrc = actionData?.profileImageUrl
+    || initialUser.profileImageUrl
+    || `https://i.pravatar.cc/150?u=${initialUser.id}`;
+
   return (
-    <div className="container mx-auto px-4 py-20 max-w-5xl animate-fade-in">
-      <div className="bg-white rounded-[3rem] shadow-2xl shadow-stone-200/60 overflow-hidden border border-stone-100">
-        <div className="h-64 bg-stone-900 relative">
-          <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-            <i className="fas fa-mug-hot text-[300px] text-white -rotate-12 translate-x-2/3 translate-y-1/2" />
-          </div>
+    <div className="min-h-screen bg-[#1a1a1a] py-10 px-4 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
 
-          <div className="absolute -bottom-16 left-12 flex items-end gap-8">
-            <div className="relative group">
-              <img
-                src={actionData?.profileImageUrl || initialUser.profileImageUrl || `https://i.pravatar.cc/150?u=${initialUser.id}`}
-                className="w-44 h-44 rounded-[2.5rem] border-8 border-white shadow-2xl object-cover transform transition-transform group-hover:scale-105"
-                alt={initialUser.name}
-              />
-              <Form method="post" encType="multipart/form-data" className="absolute bottom-4 right-4">
-                <input type="hidden" name="intent" value="upload-image" />
-                <label className="w-12 h-12 bg-amber-800 text-white rounded-2xl flex items-center justify-center cursor-pointer hover:bg-amber-900 transition-colors shadow-xl">
-                  <i className="fas fa-camera" />
-                  <input type="file" name="image" className="hidden" onChange={(e) => e.target.form?.requestSubmit()} />
-                </label>
-              </Form>
-            </div>
-            <div className="pb-4 space-y-1">
-              <h1 className="text-4xl font-black text-white drop-shadow-md uppercase tracking-tight">{initialUser.name}</h1>
-              <p className="text-amber-500 font-black text-xs uppercase tracking-[0.3em]">{initialUser.role}</p>
-            </div>
-          </div>
+        <h1 className="text-center text-3xl font-serif italic text-[#c6a87d] mb-2">Mi Perfil</h1>
+        <div className="w-16 h-0.5 bg-[#c6a87d] mx-auto mb-10" />
 
-          <div className="absolute top-8 right-8 flex gap-4">
-            <button
-              onClick={() => { logout(); navigate("/"); }}
-              className="bg-white/10 hover:bg-red-500/20 text-white border border-white/20 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all backdrop-blur-md"
-            >
-              Cerrar Sesión
-            </button>
-            <button
-              onClick={() => setEditing(!editing)}
-              className="bg-amber-800 hover:bg-amber-700 text-white px-8 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-amber-900/40"
-            >
-              {editing ? "Cancelar" : "Editar Perfil"}
-            </button>
-          </div>
-        </div>
+        <div className="flex flex-col lg:flex-row gap-6">
 
-        <div className="pt-24 px-12 pb-16">
-          {editing ? (
-            <Form method="post" className="space-y-10 animate-fade-in">
-              <input type="hidden" name="intent" value="update" />
-              <div className="grid md:grid-cols-2 gap-10">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Nombre de Usuario</label>
-                  <input name="name" defaultValue={initialUser.name} className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Email de Contacto</label>
-                  <input name="email" defaultValue={initialUser.email} className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Nombre</label>
-                  <input name="firstName" defaultValue={initialUser.firstName} className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Apellidos</label>
-                  <input name="lastName" defaultValue={initialUser.lastName} className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800" />
-                </div>
+          {/* ── Sidebar izquierdo ── */}
+          <div className="lg:w-72 flex-shrink-0">
+            <div className="border border-[#c6a87d]/40 rounded-2xl p-6 flex flex-col items-center gap-4 bg-[#111]">
+
+              <span className="bg-[#c6a87d] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full">
+                {initialUser.role}
+              </span>
+
+              {/* Avatar con cámara */}
+              <div className="relative">
+                <img
+                  src={avatarSrc}
+                  alt={initialUser.name}
+                  className="w-28 h-28 rounded-full border-4 border-[#c6a87d]/50 object-cover"
+                />
+                <Form method="post" encType="multipart/form-data">
+                  <input type="hidden" name="intent" value="upload-image" />
+                  <label className="absolute bottom-1 right-1 w-8 h-8 bg-[#c6a87d] rounded-full flex items-center justify-center cursor-pointer hover:bg-amber-600 transition-colors shadow-lg">
+                    <i className="fas fa-camera text-black text-xs" />
+                    <input type="file" name="image" accept="image/png,image/jpeg,image/jpg" className="hidden" onChange={e => e.target.form?.requestSubmit()} />
+                  </label>
+                </Form>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-stone-400 ml-4">Biografía / Descripción</label>
-                <textarea name="description" defaultValue={initialUser.description} rows={4} className="w-full bg-stone-50 border-2 border-stone-100 rounded-2xl px-6 py-4 focus:border-amber-800 outline-none transition-all font-bold text-stone-800 resize-none" />
-              </div>
-              <div className="flex items-center gap-6">
-                <button type="submit" className="bg-stone-900 text-white px-12 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-stone-800 transition-all shadow-xl active:scale-95">
-                  Guardar Cambios
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteModal(true)}
-                  className="text-red-400 hover:text-red-600 font-black text-xs uppercase tracking-widest transition-colors flex items-center gap-2"
-                >
-                  <i className="fas fa-trash-alt" /> Eliminar cuenta
-                </button>
-              </div>
-            </Form>
-          ) : (
-            <div className="grid md:grid-cols-3 gap-16 animate-fade-in">
-              <div className="md:col-span-2 space-y-12">
-                <section className="space-y-6">
-                  <h3 className="text-xl font-black text-stone-800 uppercase tracking-tight border-b-4 border-amber-100 pb-2 w-fit">Resumen Personal</h3>
-                  <p className="text-stone-500 font-medium leading-relaxed italic text-lg">
-                    {initialUser.description || "Este barista entusiasta aún no ha escrito su historia en Mokaf. ¡Pero sus pedidos hablan por él!"}
-                  </p>
-                </section>
 
+              <div className="text-center">
+                <p className="text-[#c6a87d] font-bold text-base">{initialUser.name}</p>
+                <p className="text-stone-400 text-xs mt-1">{initialUser.email}</p>
+              </div>
+
+              <div className="w-full border-t border-white/10 pt-4 mt-2 flex flex-col gap-2">
                 <Link
                   to="/orders"
-                  className="inline-flex items-center gap-4 bg-stone-900 hover:bg-stone-800 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl active:scale-95 group"
+                  className="flex items-center gap-3 bg-[#c6a87d] hover:bg-amber-600 text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
                 >
-                  <i className="fas fa-history text-amber-500 group-hover:rotate-180 transition-transform duration-500" />
+                  <i className="fas fa-history w-4 text-center" />
                   Historial de Pedidos
-                  <i className="fas fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </div>
-
-              <div className="space-y-10">
-                <section className="space-y-6">
-                  <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em] mb-4">Información de Contacto</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4 group">
-                      <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
-                        <i className="fas fa-envelope text-xs" />
-                      </div>
-                      <span className="text-stone-500 font-bold text-sm truncate">{initialUser.email}</span>
-                    </div>
-                    <div className="flex items-center gap-4 group">
-                      <div className="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-amber-800 group-hover:bg-amber-100 transition-colors">
-                        <i className="fas fa-user-tag text-xs" />
-                      </div>
-                      <span className="text-stone-500 font-bold text-sm">@{initialUser.name}</span>
-                    </div>
-                  </div>
-                </section>
+                <button
+                  onClick={() => { logout(); navigate("/"); }}
+                  className="flex items-center gap-3 bg-[#c6a87d] hover:bg-amber-600 text-black px-4 py-2.5 rounded-xl text-sm font-bold transition-all w-full"
+                >
+                  <i className="fas fa-sign-out-alt w-4 text-center" />
+                  Cerrar Sesión
+                </button>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* ── Panel derecho — solo configuración ── */}
+          <div className="flex-1 border border-[#c6a87d]/40 rounded-2xl bg-[#111] overflow-hidden">
+            <div className="p-8">
+              <h2 className="text-[#c6a87d] text-xl font-bold mb-1">Configuración del Perfil</h2>
+              <p className="text-stone-500 text-sm mb-8">Gestiona tu información personal</p>
+
+              {actionData?.success && actionData.user && (
+                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
+                  <i className="fas fa-check-circle" /> Perfil actualizado correctamente
+                </div>
+              )}
+              {actionData?.error && (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-xs font-bold flex items-center gap-3">
+                  <i className="fas fa-exclamation-circle" /> {actionData.error}
+                </div>
+              )}
+
+              <Form method="post" className="space-y-6">
+                <input type="hidden" name="intent" value="update" />
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre de Usuario</label>
+                    <input
+                      name="name" defaultValue={initialUser.name}
+                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Email</label>
+                    <input
+                      name="email" type="email" defaultValue={initialUser.email}
+                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Nombre</label>
+                    <input
+                      name="firstName" defaultValue={initialUser.firstName}
+                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Apellidos</label>
+                    <input
+                      name="lastName" defaultValue={initialUser.lastName}
+                      className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs text-stone-400 uppercase tracking-widest block mb-2">Biografía</label>
+                  <textarea
+                    name="description" defaultValue={initialUser.description} rows={4}
+                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-3.5 text-white outline-none focus:border-[#c6a87d]/60 transition-all resize-none"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-4 pt-4 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => navigate(-1)}
+                    className="px-8 py-3 border border-white/20 text-stone-300 hover:text-white rounded-xl text-sm font-bold transition-all"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-8 py-3 bg-[#c6a87d] hover:bg-amber-600 text-black rounded-xl text-sm font-bold transition-all"
+                  >
+                    Guardar Cambios
+                  </button>
+                </div>
+              </Form>
+            </div>
+
+            {/* Eliminar cuenta */}
+            <div className="border-t border-white/10">
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="w-full flex items-center justify-center gap-3 py-4 text-red-400 hover:bg-red-500/10 font-bold text-sm uppercase tracking-widest transition-all"
+              >
+                <i className="fas fa-trash-alt" /> Eliminar cuenta
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Delete confirmation modal */}
+      {/* Modal confirmación */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
-            <h5 className="text-lg font-black text-stone-800 uppercase tracking-tight mb-3">Eliminar cuenta</h5>
-            <p className="text-stone-500 text-sm leading-relaxed mb-8">
-              Esta acción es <strong className="text-red-500">permanente e irreversible</strong>. Se eliminarán todos tus datos, pedidos e historial en Mokaf. ¿Estás seguro?
+          <div className="bg-[#111] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h5 className="text-lg font-black text-white uppercase tracking-tight mb-3">Eliminar cuenta</h5>
+            <p className="text-stone-400 text-sm leading-relaxed mb-8">
+              Esta acción es <strong className="text-red-400">permanente e irreversible</strong>. Se eliminarán todos tus datos, pedidos e historial en Mokaf. ¿Estás seguro?
             </p>
             <div className="flex gap-4">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-6 py-3 border-2 border-stone-200 text-stone-500 hover:text-stone-800 rounded-2xl text-sm font-black transition-all"
+                className="flex-1 px-6 py-3 border border-white/20 text-stone-400 hover:text-white rounded-xl text-sm font-black transition-all"
               >
                 Cancelar
               </button>
               <Form method="post" className="flex-1">
                 <input type="hidden" name="intent" value="delete" />
-                <button type="submit" className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-2xl text-sm font-black transition-all active:scale-95">
+                <button type="submit" className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-black transition-all">
                   Sí, eliminar cuenta
                 </button>
               </Form>
