@@ -155,7 +155,7 @@ export default function ProfileAdmin() {
           )}
 
           {editing ? (
-            /* ── Formulario de edición ─────────────────────────────────── */
+            /* ── Edit Form ─────────────────────────────────────────────── */
             <Form method="post" className="space-y-10 animate-fade-in">
               <input type="hidden" name="intent" value="update" />
               <div className="grid md:grid-cols-2 gap-10">
@@ -190,10 +190,10 @@ export default function ProfileAdmin() {
               </div>
             </Form>
           ) : (
-            /* ── Vista normal con panel de control ─────────────────────── */
+            /* ── Normal View with Control Panel ────────────────────────── */
             <div className="grid md:grid-cols-3 gap-16 animate-fade-in">
 
-              {/* Columna izquierda — info personal */}
+              {/* Left column — personal info */}
               <div className="md:col-span-2 space-y-12">
                 <section className="space-y-6">
                   <h3 className="text-xl font-black text-stone-800 uppercase tracking-tight border-b-4 border-amber-100 pb-2 w-fit">Resumen Personal</h3>
@@ -202,7 +202,7 @@ export default function ProfileAdmin() {
                   </p>
                 </section>
 
-                {/* Información de contacto */}
+                {/* Contact info */}
                 <section className="space-y-4">
                   <h3 className="text-sm font-black text-stone-800 uppercase tracking-[0.2em]">Información de Contacto</h3>
                   <div className="space-y-3">
@@ -222,7 +222,7 @@ export default function ProfileAdmin() {
                 </section>
               </div>
 
-              {/* Columna derecha — Panel de control rápido */}
+              {/* Right column — Quick control panel */}
               <div className="space-y-6">
                 <div className="bg-stone-900 rounded-[2rem] p-6 space-y-4 relative overflow-hidden">
                   <i className="fas fa-mug-hot absolute -bottom-4 -right-4 text-8xl text-white/5 -rotate-12" />
@@ -251,7 +251,7 @@ export default function ProfileAdmin() {
         </div>
       </div>
 
-      {/* ── Modal de confirmación de borrado ──────────────────────────── */}
+      {/* ── Delete Confirmation Modal ──────────────────────────────── */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">

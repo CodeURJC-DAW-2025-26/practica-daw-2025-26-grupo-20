@@ -11,7 +11,7 @@ export interface User {
   position?: string;
   department?: string;
   profileImageUrl?: string;
-  password?: string; // Solo para creación/edición
+  password?: string; // Only for creation/edit
 }
 
 export const UserService = {

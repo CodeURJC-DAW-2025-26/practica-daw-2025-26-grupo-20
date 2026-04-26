@@ -3,20 +3,20 @@ import { useNavigate, Outlet } from 'react-router';
 import { useAuthStore } from '../store/authStore';
 
 interface ProtectedRouteProps {
-  /** Si se especifica, solo usuarios con ese rol pueden acceder */
+  /** If specified, only users with this role can access */
   requiredRole?: 'CUSTOMER' | 'ADMIN';
-  /** Ruta a la que redirigir si no hay sesión. Por defecto /login */
+  /** Route to redirect to if no session. Defaults to /login */
   redirectTo?: string;
 }
 
 /**
- * Envuelve rutas que requieren autenticación.
+ * Wraps routes that require authentication.
  *
- * Uso en routes.ts:
+ * Usage in routes.ts:
  *   route("profile", "routes/profile.tsx", { element: <ProtectedRoute /> })
  *
- * O como layout padre:
- *   route("admin", "layouts/AdminLayout.tsx")   ← este usa <ProtectedRoute requiredRole="ADMIN" />
+ * Or as parent layout:
+ *   route("admin", "layouts/AdminLayout.tsx")   <- this uses <ProtectedRoute requiredRole="ADMIN" />
  */
 export default function ProtectedRoute({
   requiredRole,
@@ -26,7 +26,7 @@ export default function ProtectedRoute({
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Esperamos a que initializeAuth haya terminado antes de decidir
+    // Wait for initializeAuth to finish before deciding
     if (!isInitialized) return;
 
     if (!isLogged || !user) {
@@ -35,24 +35,24 @@ export default function ProtectedRoute({
     }
 
     if (requiredRole && user.role !== requiredRole) {
-      // Usuario autenticado pero sin el rol correcto → mandamos a su perfil
+      // Authenticated user but wrong role -> redirect to profile
       navigate(user.role === 'ADMIN' ? '/profile-admin' : '/profile', { replace: true });
     }
   }, [isInitialized, isLogged, user, requiredRole, redirectTo, navigate]);
 
-  // Mientras initializeAuth no termina mostramos un loader mínimo
+  // While initializeAuth is running, show a minimal loader
   if (!isInitialized) {
     return <AuthLoader />;
   }
 
-  // Si no hay sesión o rol incorrecto no renderizamos nada (el useEffect redirige)
+  // If no session or wrong role, render nothing (useEffect redirects)
   if (!isLogged || !user) return null;
   if (requiredRole && user.role !== requiredRole) return null;
 
   return <Outlet />;
 }
 
-// ─── Loader minimalista acorde al estilo Mokaf ────────────────────────────────
+// ─── Minimalist loader matching Mokaf style ────────────────────────────────
 function AuthLoader() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#050404] gap-6">

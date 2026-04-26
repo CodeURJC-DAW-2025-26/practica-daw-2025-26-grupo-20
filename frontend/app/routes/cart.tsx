@@ -146,19 +146,18 @@ export default function Cart() {
     }
   };
 
-  // Load branches (sucursales)
-  // Load branches (sucursales)
+  // Load branches (branches)
 const loadBranches = async () => {
   setLoadingBranches(true);
   try {
     const response = await fetch("/api/v1/cart/branches", { credentials: "include" });
     const data = await response.json();
     
-    // El backend devuelve directamente el array de branches
+    // The backend directly returns the branches array
     if (Array.isArray(data)) {
       setBranches(data);
-      // Si necesitas una sucursal actual, tendrás que llamar a otro endpoint
-      // o agregar un endpoint adicional que devuelva la sucursal actual del usuario
+      // If you need a current branch, call another endpoint
+      // or add an additional endpoint that returns the user's current branch
       const currentBranchResponse = await fetch("/api/v1/cart/branch/current", { 
         credentials: "include" 
       });
@@ -198,7 +197,7 @@ const changeBranch = async (branchId: string) => {
     console.log("Response data:", data);
     
     if (response.ok && data.success) {
-      // Actualizar descripción
+      // Update description
       const branch = branches.find(b => b.id.toString() === branchId);
       if (branch?.description) {
         setBranchDescription(branch.description);

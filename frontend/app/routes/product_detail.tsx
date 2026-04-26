@@ -74,7 +74,7 @@ export default function ProductDetail() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [qty, setQty] = useState(1);
 
-  // Sincronizar estado cuando el loader refresca los datos (p.ej. tras publicar reseña)
+  // Sync state when loader refreshes data (e.g. after posting review)
   useEffect(() => {
     setReviews(initialReviewsData.content);
     setPage(0);
@@ -99,7 +99,7 @@ export default function ProductDetail() {
     }
   };
 
-  // Cada vez que el formulario de añadir al carrito (clientAction) tenga éxito, refrescamos el contador
+  // Refresh counter on successful add to cart (clientAction)
   useEffect(() => {
     if (actionData?.success && actionData?.message === "Añadido al carrito") {
       updateItemCount();
@@ -152,7 +152,7 @@ export default function ProductDetail() {
               <hr className="product-divider" />
 
               <div className="product-actions">
-                {user ? (
+                {user && (
                   <div className="joined-actions">
                     <div className="qty-control">
                       <button
@@ -187,10 +187,6 @@ export default function ProductDetail() {
                       </button>
                     </Form>
                   </div>
-                ) : (
-                  <Link to="/login" className="btn btn-product-primary">
-                    Inicia sesión para comprar
-                  </Link>
                 )}
               </div>
 

@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 
 /**
- * Layout para rutas que requieren autenticación (cualquier rol).
- * En React Router v7 framework mode, este componente actúa como
- * padre de las rutas hijas y renderiza <Outlet /> cuando hay sesión.
+ * Layout for routes requiring authentication (any role).
+ * In React Router v7 framework mode, this component acts as
+ * parent for child routes and renders <Outlet /> when there is a session.
  */
 export default function ProtectedLayout() {
   const { user, isLogged, isInitialized } = useAuthStore();

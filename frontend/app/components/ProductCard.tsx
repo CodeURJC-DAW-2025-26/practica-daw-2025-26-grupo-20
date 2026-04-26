@@ -1,4 +1,5 @@
 import { Link, Form } from "react-router";
+import { useAuthStore } from "../store/authStore";
 
 interface Allergen {
   id: number;
@@ -22,6 +23,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, variant = "grid" }: ProductCardProps) {
+  const { isLogged } = useAuthStore();
+
   const getProductImage = (product: Product) => {
     if (product.imageUrl) return product.imageUrl;
     if (product.imageId) return `/images/${product.imageId}`;
@@ -42,17 +45,19 @@ export default function ProductCard({ product, variant = "grid" }: ProductCardPr
             <h5>{product.name}</h5>
             <div className="price-action-wrapper">
               <span className="price-tag">{(product.priceBase || 0).toFixed(2)}€</span>
-              <Form method="post" className="d-inline" onClick={(e) => e.stopPropagation()}>
-                <input type="hidden" name="productId" value={product.id} />
-                <input type="hidden" name="qty" value="1" />
-                <input type="hidden" name="intent" value="cart" />
-                <button 
-                  type="submit"
-                  className="btn-recommended-cart"
-                >
-                  <i className="fas fa-cart-plus me-2"></i>Añadir
-                </button>
-              </Form>
+              {isLogged && (
+                <Form method="post" className="d-inline" onClick={(e) => e.stopPropagation()}>
+                  <input type="hidden" name="productId" value={product.id} />
+                  <input type="hidden" name="qty" value="1" />
+                  <input type="hidden" name="intent" value="cart" />
+                  <button 
+                    type="submit"
+                    className="btn-recommended-cart"
+                  >
+                    <i className="fas fa-cart-plus me-2"></i>Añadir
+                  </button>
+                </Form>
+              )}
             </div>
           </div>
         </div>
@@ -74,17 +79,19 @@ export default function ProductCard({ product, variant = "grid" }: ProductCardPr
           <p className="card-text">{product.description}</p>
           <div className="price-action-wrapper mt-auto">
             <span className="price-tag">{(product.priceBase || 0).toFixed(2)}€</span>
-            <Form method="post" className="d-inline" onClick={(e) => e.stopPropagation()}>
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="qty" value="1" />
-              <input type="hidden" name="intent" value="cart" />
-              <button 
-                type="submit"
-                className="btn-add-cart"
-              >
-                <i className="fas fa-cart-plus me-2"></i>Añadir
-              </button>
-            </Form>
+            {isLogged && (
+              <Form method="post" className="d-inline" onClick={(e) => e.stopPropagation()}>
+                <input type="hidden" name="productId" value={product.id} />
+                <input type="hidden" name="qty" value="1" />
+                <input type="hidden" name="intent" value="cart" />
+                <button 
+                  type="submit"
+                  className="btn-add-cart"
+                >
+                  <i className="fas fa-cart-plus me-2"></i>Añadir
+                </button>
+              </Form>
+            )}
           </div>
         </div>
       </div>

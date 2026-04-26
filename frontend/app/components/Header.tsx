@@ -40,13 +40,13 @@ export default function Header() {
             Contacto
           </NavLink>
 
-          
-
           {/* Cart Button */}
-          <Link to="/cart" className="cart-button">
-            <i className="fas fa-shopping-cart"></i>
-            <span className="cart-count">{itemCount}</span>
-          </Link>
+          {isLogged && (
+            <Link to="/cart" className="cart-button">
+              <i className="fas fa-shopping-cart"></i>
+              <span className="cart-count">{itemCount}</span>
+            </Link>
+          )}
         </nav>
 
         {/* Account Section */}

@@ -79,12 +79,12 @@ export default function Orders() {
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl">
-      {/* Título */}
+      {/* Title */}
       <h2 className="text-3xl font-serif italic text-[#d4b88d] text-center mb-10">
         Historial de Pedidos
       </h2>
 
-      {/* Lista de pedidos */}
+      {/* Orders list */}
       <div className="flex flex-col gap-6">
         {orders.content.map((order: any) => (
           <div
@@ -146,7 +146,7 @@ export default function Orders() {
 
             {/* Card Body */}
             <div className="px-6 py-5">
-              {/* Sucursal */}
+              {/* Branch */}
               <div className="mb-4">
                 <h6 className="font-bold text-stone-800 mb-1 flex items-center gap-2">
                   <i className="fas fa-map-marker-alt text-red-500"></i>Sucursal
@@ -154,7 +154,7 @@ export default function Orders() {
                 <p className="text-stone-500 text-sm ml-6">{order.branchName}</p>
               </div>
 
-              {/* Productos */}
+              {/* Products */}
               <div className="mb-4">
                 <h6 className="font-bold text-stone-800 mb-3 flex items-center gap-2">
                   <i className="fas fa-shopping-bag"></i>Productos
