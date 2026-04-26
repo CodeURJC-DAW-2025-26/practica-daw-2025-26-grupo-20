@@ -93,8 +93,8 @@ export default function Statistics() {
             }
           },
           tooltip: {
-            bodyColor: '#ffffff',    // ← Tooltip blanco
-            titleColor: '#c6a87d'    // ← Título del tooltip dorado
+            bodyColor: '#ffffff',    // <- White tooltip
+            titleColor: '#c6a87d'    // <- Golden tooltip title
           }
         }
       }
@@ -161,7 +161,7 @@ console.log("¿recentReviews es array?", Array.isArray(stats.topRatedProduct?.re
       <h1 className="stats-title">☕ Estadísticas Mokaf</h1>
 
       <div className="stats-grid">
-        {/* ========== CARD 1: Producto Mejor Valorado ========== */}
+        {/* ========== CARD 1: Top Rated Product ========== */}
         <div className="stats-card">
           <h2>⭐ Producto Mejor Valorado</h2>
 
@@ -203,7 +203,7 @@ console.log("¿recentReviews es array?", Array.isArray(stats.topRatedProduct?.re
                 </div>
               </div>
 
-              {/* Reseñas recientes */}
+              {/* Recent reviews */}
               {stats.topRatedProduct.recentReviews && stats.topRatedProduct.recentReviews.length > 0 && (
                 <div style={{ marginTop: "1rem", borderTop: "1px solid rgba(198,168,125,0.15)", paddingTop: "0.8rem" }}>
                   <h5 style={{ color: "var(--color-mokaf-gold)", fontSize: "0.85rem", marginBottom: "0.6rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
@@ -231,7 +231,7 @@ console.log("¿recentReviews es array?", Array.isArray(stats.topRatedProduct?.re
           )}
         </div>
 
-        {/* ========== CARD 2: Ventas por Categoría ========== */}
+        {/* ========== CARD 2: Sales by Category ========== */}
         <div className="stats-card">
           <h2>📊 Ventas por Categoría</h2>
 
@@ -277,7 +277,7 @@ console.log("¿recentReviews es array?", Array.isArray(stats.topRatedProduct?.re
           )}
         </div>
 
-        {/* ========== CARD 3: Sucursal Destacada ========== */}
+        {/* ========== CARD 3: Featured Branch ========== */}
         <div className="stats-card">
           <h2>📍 Sucursal Destacada</h2>
 
@@ -340,7 +340,7 @@ console.log("¿recentReviews es array?", Array.isArray(stats.topRatedProduct?.re
           )}
         </div>
 
-        {/* ========== CARD 4: Ranking de Sucursales ========== */}
+        {/* ========== CARD 4: Branches Ranking ========== */}
         <div className="stats-card full-width-card">
           <h2>📈 Ranking de Sucursales</h2>
 

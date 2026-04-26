@@ -90,7 +90,7 @@ export default function Menu() {
   const [hiddenAllergens, setHiddenAllergens] = useState<string[]>([]);
   const category = searchParams.get("category") || initialCategory;
 
-  // Manejar notificaciones y actualización de carrito
+  // Handle notifications and cart update
   useEffect(() => {
     if (actionData?.success && actionData?.message === "Añadido al carrito") {
       updateItemCount();
@@ -147,7 +147,7 @@ export default function Menu() {
             Nuestro Menú
           </h1>
 
-          {/* Sección de recomendados */}
+          {/* Recommended section */}
           {recommended.length > 0 && (
             <section className="recommended-section mb-5">
               <div className="recommended-header">
@@ -163,7 +163,7 @@ export default function Menu() {
             </section>
           )}
 
-          {/* Filtros */}
+          {/* Filters */}
           <MenuFilters
             categories={categories}
             activeCategory={category}
@@ -180,7 +180,7 @@ export default function Menu() {
             ))}
           </div>
 
-          {/* Botón Cargar Más */}
+          {/* Load More button */}
           {hasMore && (
             <div className="mt-16 flex justify-center">
               <button 

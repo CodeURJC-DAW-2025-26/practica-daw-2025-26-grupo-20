@@ -10,7 +10,7 @@
   --negro: #1a1a1a;
   --beige: #d7ccc8;
   --dorado: #c6a87d;
-  --color-mokaf-gold: var(--dorado); /* Así ambas funcionan */
+  --color-mokaf-gold: var(--dorado); /* So both work */
   --sombra: rgba(0, 0, 0, 0.5);
   --color-allergen-cacahuetes: #e76f51;
   --color-allergen-frutos-secos: #2a9d8f;
@@ -103,7 +103,7 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
 }
 
-/* TITULO */
+/* TITLE */
 .stats-title {
   font-size: 2.6rem;
   font-weight: 300;
@@ -145,9 +145,9 @@
     rgba(58, 42, 29, 0.95)
   );
   border-radius: 20px;
-  padding: 2rem; /* un poco más de espacio interior */
+  padding: 2rem; /* A little more inner space */
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-  border: 2px solid rgba(198, 168, 125, 0.4); /* borde más grueso y visible */
+  border: 2px solid rgba(198, 168, 125, 0.4); /* Thicker and more visible border */
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
@@ -178,7 +178,7 @@
   border-bottom: 1px solid rgba(198, 168, 125, 0.2);
 }
 
-/* PRODUCTO */
+/* PRODUCT */
 .product-spotlight {
   display: flex;
   gap: 1.5rem;
@@ -771,7 +771,7 @@
 }
 
 .cart-item-category {
-  color: rgba(212, 175, 55, 0.7); /* Dorado más suave */
+  color: rgba(212, 175, 55, 0.7); /* Softer golden */
   font-size: 0.9rem;
 }
 
@@ -1004,11 +1004,11 @@
 }
 
 .text-success {
-  color: #a3d977 !important; /* Verde suave que combine */
+  color: #a3d977 !important; /* Soft green that matches */
 }
 
 .text-danger {
-  color: #ff9a9a !important; /* Rojo suave */
+  color: #ff9a9a !important; /* Soft red */
 }
 
 /* Badge for cart count */
@@ -1300,8 +1300,8 @@
 .contact-form-container {
   backdrop-filter: blur(
     10px
-  ); /* Esto hace que el fondo se vea desenfocado tras el panel */
-  -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
+  ); /* This makes the background blurred behind the panel */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
 }
 
 .qty-input:focus {

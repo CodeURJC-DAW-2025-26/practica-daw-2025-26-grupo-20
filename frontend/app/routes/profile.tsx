@@ -219,7 +219,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Modal de confirmación de borrado */}
+      {/* Delete confirmation modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl">

@@ -46,7 +46,7 @@ export interface CartSummary {
 export function transformCartItem(dto: CartItemDTO): CartItem {
   const parsePrice = (price: string | number): number => {
     if (typeof price === 'number') return price;
-    // Eliminar '€' y espacios, convertir a número
+    // Remove '€' and spaces, convert to number
     const cleaned = price.toString().replace('€', '').trim();
     return parseFloat(cleaned) || 0;
   };

@@ -11,7 +11,7 @@ export async function clientAction({ request }: { request: Request }) {
     const email    = formData.get("email")    as string;
     const password = formData.get("password") as string;
 
-    // Validación cliente (misma que SignupRequest en AuthRestController.java)
+    // Client validation (matches SignupRequest in AuthRestController.java)
     const emailRegex    = /^[A-Za-z0-9+_.-]+@(.+)$/;
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
 
@@ -20,7 +20,7 @@ export async function clientAction({ request }: { request: Request }) {
     if (password.length < 6) return { error: "La contraseña debe tener al menos 6 caracteres." };
     if (!passwordRegex.test(password)) return { error: "La contraseña debe contener letras y números." };
 
-    // 1. Registro → POST /api/v1/auth/registrations
+    // 1. Register -> POST /api/v1/auth/registrations
     const registerResponse = await fetch(`${API_BASE_URL}/api/v1/auth/registrations`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,7 +36,7 @@ export async function clientAction({ request }: { request: Request }) {
       return { error: errorData.message || "No se pudo crear la cuenta. Inténtalo de nuevo." };
     }
 
-    // 2. Auto-login → POST /api/v1/auth/sessions (sets JWT cookies)
+    // 2. Auto-login -> POST /api/v1/auth/sessions (sets JWT cookies)
     const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -45,11 +45,11 @@ export async function clientAction({ request }: { request: Request }) {
     });
 
     if (!loginResponse.ok) {
-      // Registro OK pero login falló → mandamos al login manual
+      // Registration OK but login failed -> redirect to manual login
       return { success: true, needsLogin: true };
     }
 
-    // 3. Obtener perfil del usuario recién logueado
+    // 3. Get profile of newly logged user
     const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
       credentials: "include",
     });
@@ -109,7 +109,7 @@ export default function Register() {
           )}
 
           <Form method="post" className="w-full space-y-10">
-            {/* name → campo que espera SignupRequest en el backend */}
+            {/* name -> field expected by SignupRequest in backend */}
             <div className="space-y-4">
               <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-600 ml-6">Nombre completo</label>
               <div className="relative group">

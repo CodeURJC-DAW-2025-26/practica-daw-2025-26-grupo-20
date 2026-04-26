@@ -56,7 +56,7 @@ export const useAuthStore = create<AuthState>()(
             const user: User = await response.json();
             set({ user, isLogged: true, isInitialized: true });
           } else {
-            // 401 → sin sesión válida
+            // 401 -> no valid session
             set({ user: null, isLogged: false, isInitialized: true });
           }
         } catch {

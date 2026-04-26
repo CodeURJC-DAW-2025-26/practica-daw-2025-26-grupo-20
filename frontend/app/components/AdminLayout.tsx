@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 
 /**
- * Layout para rutas exclusivas de administrador.
- * Si el usuario no es ADMIN lo redirige a su perfil de cliente.
+ * Layout for admin-exclusive routes.
+ * If the user is not ADMIN, it redirects to their client profile.
  */
 export default function AdminLayout() {
   const { user, isLogged, isInitialized } = useAuthStore();

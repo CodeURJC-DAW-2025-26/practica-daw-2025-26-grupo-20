@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { API_BASE_URL } from "../config";
 import { UserService, User } from "../services/userService";
 
 export default function GestionUsuarios() {
@@ -39,7 +38,7 @@ export default function GestionUsuarios() {
     
     try {
       if (editingId) {
-        // En edición, si el password está vacío lo borramos para que el backend no lo toque
+        // On edit, if password is empty, remove it so backend doesn't touch it
         if (!data.password) delete data.password;
         await UserService.updateUser(editingId, data);
       } else {

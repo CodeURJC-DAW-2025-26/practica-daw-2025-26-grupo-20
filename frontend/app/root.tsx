@@ -77,7 +77,7 @@ export default function App() {
     initializeAuth();
   }, [initializeAuth]);
 
-  // Si estamos logueados, cargamos el contador del carrito
+  // If logged in, load cart counter
   useEffect(() => {
     if (isLogged) {
       updateItemCount();

@@ -10,7 +10,7 @@ export async function clientAction({ request }: { request: Request }) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // 1. Login → solo devuelve { status, message } + sets JWT cookies
+    // 1. Login -> only returns { status, message } + sets JWT cookies
     const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

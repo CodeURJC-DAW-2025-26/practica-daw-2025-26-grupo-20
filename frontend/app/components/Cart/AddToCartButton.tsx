@@ -28,7 +28,7 @@ export function AddToCartButton({ productId, productName }: AddToCartButtonProps
       });
 
       if (response.ok) {
-        // Mostrar toast o notificación
+        // Show toast or notification
         console.log(`${productName} añadido al carrito`);
       }
     } catch (error) {
