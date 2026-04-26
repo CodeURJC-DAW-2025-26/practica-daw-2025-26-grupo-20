@@ -28,7 +28,7 @@
 @layer base {
   body {
     @apply antialiased;
-    background: linear-gradient(to bottom, #1a1a1a, var(--negro));
+    background: linear-gradient(to bottom, var(--negro), var(--cafe-oscuro));
     color: var(--beige);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
