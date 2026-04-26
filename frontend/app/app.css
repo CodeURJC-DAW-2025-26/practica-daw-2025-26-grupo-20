@@ -1221,8 +1221,8 @@
 .review-card {
   padding: 1.2rem;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(198, 168, 125, 0.2);
+  background: transparent;
   margin-top: 1rem;
 }
 
@@ -1289,4 +1289,94 @@
 .qty-input:focus {
   box-shadow: 0 0 0 2px var(--dorado);
   border-radius: 4px;
+}
+
+/* Extra styles from product.css to match mustache version */
+.product-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--beige) !important;
+  font-size: 0.9rem;
+}
+
+.meta-item i {
+  color: var(--dorado) !important;
+}
+
+.allergen-badge {
+  background-color: rgba(198, 168, 125, 0.15);
+  color: var(--dorado);
+  border: 1px solid rgba(198, 168, 125, 0.4);
+  border-radius: 12px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+}
+
+.section-text,
+.details-list {
+  color: var(--beige);
+  opacity: 0.95;
+}
+
+.review-name, .review-text {
+  color: var(--beige);
+}
+
+.review-date {
+  opacity: 0.75;
+  font-size: 0.9rem;
+  color: var(--beige);
+}
+
+.review-stars i {
+  color: var(--dorado);
+}
+
+/* Global Form Visibility Fixes */
+.form-control, .form-select {
+  color: var(--beige) !important;
+}
+
+.form-control::placeholder {
+  color: rgba(215, 204, 200, 0.3) !important;
+}
+
+.form-select option {
+  background-color: var(--cafe-oscuro) !important;
+  color: var(--beige) !important;
+}
+
+.btn-product-secondary {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(198, 168, 125, 0.25);
+  color: var(--beige);
+  padding: 0.6rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 500;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.btn-product-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  color: var(--dorado);
 }
