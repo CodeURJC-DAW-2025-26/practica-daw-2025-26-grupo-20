@@ -17,6 +17,7 @@ import { useCartStore } from "./store/cartStore";
 import stylesheet from "./app.css?url";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import Toast from "./components/Toast";
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -54,6 +55,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased">
+        <Toast />
         <Header />
         <main>
           {children}

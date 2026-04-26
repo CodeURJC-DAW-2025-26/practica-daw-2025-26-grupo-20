@@ -1,9 +1,10 @@
-import { useState, useMemo } from "react";
-import { useLoaderData, useSearchParams } from "react-router";
+import { useState, useMemo, useEffect } from "react";
+import { useLoaderData, useSearchParams, useActionData, useNavigation } from "react-router";
+import { useCartStore } from "../store/cartStore";
+import { useNotificationStore } from "../store/notificationStore";
 import { API_BASE_URL } from "../config";
 import ProductCard from "../components/ProductCard";
 import MenuFilters from "../components/MenuFilters";
-import Pagination from "../components/Pagination";
 import "../app_menu.css";
 
 interface Allergen { id: number; name: string; }
@@ -32,6 +33,34 @@ export async function clientLoader({ request }: { request: Request }) {
   }
 }
 
+export async function clientAction({ request }: { request: Request }) {
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  if (intent === "cart") {
+    const productId = formData.get("productId");
+    const qty = formData.get("qty");
+
+    try {
+      const fd = new FormData();
+      fd.append("productId", String(productId));
+      fd.append("quantity", String(qty));
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/cart/items`, {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+
+      if (!response.ok) return { error: "Error al añadir al carrito." };
+      return { success: true, message: "Añadido al carrito", productId };
+    } catch (e) {
+      return { error: "Error de red." };
+    }
+  }
+  return null;
+}
+
 const categories = [
   { id: 'all', label: 'Todos' },
   { id: 'HOT', label: 'Calientes' },
@@ -49,13 +78,27 @@ const allergensData = [
 
 export default function Menu() {
   const data = useLoaderData<typeof clientLoader>();
+  const actionData = useActionData<typeof clientAction>();
   const allProducts = data?.allProducts || [];
   const initialCategory = data?.initialCategory || "all";
   const recommended = data?.recommended || [];
 
+  const updateItemCount = useCartStore((state) => state.updateItemCount);
+  const showNotification = useNotificationStore((state) => state.showNotification);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [hiddenAllergens, setHiddenAllergens] = useState<string[]>([]);
   const category = searchParams.get("category") || initialCategory;
+
+  // Manejar notificaciones y actualización de carrito
+  useEffect(() => {
+    if (actionData?.success && actionData?.message === "Añadido al carrito") {
+      updateItemCount();
+      const product = allProducts.find(p => p.id === Number(actionData.productId));
+      const productName = product ? product.name : "Producto";
+      showNotification(`${productName} añadido al carrito!`, 'success');
+    }
+  }, [actionData, updateItemCount, showNotification, allProducts]);
 
   const handleCategoryChange = (catId: string) => {
     setSearchParams({ category: catId, page: "0" });
@@ -84,14 +127,17 @@ export default function Menu() {
   const currentPage = parseInt(searchParams.get("page") || "0");
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const paginatedProducts = useMemo(() => {
-    const start = currentPage * ITEMS_PER_PAGE;
-    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+    return filteredProducts.slice(0, (currentPage + 1) * ITEMS_PER_PAGE);
   }, [filteredProducts, currentPage]);
 
-  const handlePageChange = (newPage: number) => {
-    setSearchParams(params => { params.set("page", newPage.toString()); return params; });
-    window.scrollTo({ top: 300, behavior: 'smooth' });
+  const handleLoadMore = () => {
+    setSearchParams(params => { 
+      params.set("page", (currentPage + 1).toString()); 
+      return params; 
+    }, { scroll: false });
   };
+
+  const hasMore = (currentPage + 1) < totalPages;
 
   return (
     <div>
@@ -134,9 +180,16 @@ export default function Menu() {
             ))}
           </div>
 
-          {/* Paginación */}
-          {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          {/* Botón Cargar Más */}
+          {hasMore && (
+            <div className="mt-16 flex justify-center">
+              <button 
+                onClick={handleLoadMore}
+                className="px-16 py-4 rounded-full border-2 border-[#d4b88d]/40 text-[14px] font-bold uppercase tracking-[0.3em] text-[#d4b88d] hover:bg-[#d4b88d] hover:text-black transition-all duration-500 shadow-lg hover:shadow-[#d4b88d]/20"
+              >
+                Cargar más
+              </button>
+            </div>
           )}
         </div>
       </div>

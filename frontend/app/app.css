@@ -4,12 +4,12 @@
    THEME BASE
 ========================= */
 :root {
---cafe-oscuro: #3A2A1D;
-    --cafe-medio: #5D4037;
-    --cafe-claro: #8B6B61;
-    --negro: #1A1A1A;
-    --beige: #D7CCC8;
-    --dorado: #C6A87D;
+  --cafe-oscuro: #3a2a1d;
+  --cafe-medio: #5d4037;
+  --cafe-claro: #8b6b61;
+  --negro: #1a1a1a;
+  --beige: #d7ccc8;
+  --dorado: #c6a87d;
   --color-mokaf-gold: var(--dorado); /* Así ambas funcionan */
   --sombra: rgba(0, 0, 0, 0.5);
   --color-allergen-cacahuetes: #e76f51;
@@ -728,7 +728,7 @@
   backdrop-filter: blur(5px);
 }
 
-#cartItemsContainer{
+#cartItemsContainer {
   background-color: #1a1a1a;
 }
 
@@ -1145,60 +1145,74 @@
   margin: 24px 0;
 }
 
+.joined-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .qty-control {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
   overflow: hidden;
-  border: 1px solid rgba(198, 168, 125, 0.25);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--dorado);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px;
 }
 
 .qty-btn {
-  width: 42px;
-  height: 42px;
+  width: 32px;
+  height: 32px;
   border: 0;
   background: transparent;
   color: var(--beige);
   font-size: 1.2rem;
   transition: all 0.2s ease;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qty-btn:hover {
   color: var(--dorado);
-  background: rgba(198, 168, 125, 0.08);
 }
 
 .qty-input {
-  width: 50px;
-  height: 42px;
-  text-align: center;
-  border: 0;
-  outline: none;
+  width: 40px;
   background: transparent;
+  border: none;
   color: var(--beige);
+  text-align: center;
   font-weight: bold;
+  font-size: 1.1rem;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .btn-product-primary {
-  background: linear-gradient(to right, var(--cafe-medio), var(--cafe-oscuro));
+  background: linear-gradient(135deg, var(--cafe-medio), var(--cafe-oscuro));
   border: 1px solid var(--dorado);
   color: var(--beige);
-  padding: 0.8rem 2rem;
-  border-radius: 999px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
   transition: all 0.3s;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .btn-product-primary:hover {
-  background: linear-gradient(to right, var(--cafe-oscuro), var(--cafe-medio));
+  background: var(--dorado);
+  color: var(--cafe-oscuro);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  color: var(--dorado);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .product-section {
@@ -1281,8 +1295,12 @@
   background: linear-gradient(45deg, #e6c260, var(--dorado));
 }
 
-.menu-frame, .cart-item, .contact-form-container {
-  backdrop-filter: blur(10px); /* Esto hace que el fondo se vea desenfocado tras el panel */
+.menu-frame,
+.cart-item,
+.contact-form-container {
+  backdrop-filter: blur(
+    10px
+  ); /* Esto hace que el fondo se vea desenfocado tras el panel */
   -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
 }
 
@@ -1335,7 +1353,8 @@
   opacity: 0.95;
 }
 
-.review-name, .review-text {
+.review-name,
+.review-text {
   color: var(--beige);
 }
 
@@ -1350,8 +1369,20 @@
 }
 
 /* Global Form Visibility Fixes */
-.form-control, .form-select {
+.form-control,
+.form-select {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   color: var(--beige) !important;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--dorado) !important;
+  box-shadow: 0 0 0 3px rgba(198, 168, 125, 0.2) !important;
+  outline: none;
 }
 
 .form-control::placeholder {

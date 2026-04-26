@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, Form } from "react-router";
 
 interface Allergen {
   id: number;
@@ -42,15 +42,17 @@ export default function ProductCard({ product, variant = "grid" }: ProductCardPr
             <h5>{product.name}</h5>
             <div className="price-action-wrapper">
               <span className="price-tag">{(product.priceBase || 0).toFixed(2)}€</span>
-              <button 
-                className="btn-recommended-cart"
-                onClick={(e) => {
-                  e.preventDefault();
-                  console.log("Añadir al carrito:", product.id);
-                }}
-              >
-                <i className="fas fa-cart-plus me-2"></i>Añadir
-              </button>
+              <Form method="post" className="d-inline" onClick={(e) => e.stopPropagation()}>
+                <input type="hidden" name="productId" value={product.id} />
+                <input type="hidden" name="qty" value="1" />
+                <input type="hidden" name="intent" value="cart" />
+                <button 
+                  type="submit"
+                  className="btn-recommended-cart"
+                >
+                  <i className="fas fa-cart-plus me-2"></i>Añadir
+                </button>
+              </Form>
             </div>
           </div>
         </div>
@@ -67,19 +69,22 @@ export default function ProductCard({ product, variant = "grid" }: ProductCardPr
             alt={product.name} 
           />
         </div>
-        <div className="card-body">
+        <div className="card-body d-flex flex-column">
           <h5 className="card-title">{product.name}</h5>
-          <div className="price-action-wrapper">
+          <p className="card-text">{product.description}</p>
+          <div className="price-action-wrapper mt-auto">
             <span className="price-tag">{(product.priceBase || 0).toFixed(2)}€</span>
-            <button 
-              className="btn-add-cart"
-              onClick={(e) => {
-                e.preventDefault();
-                console.log("Añadir al carrito:", product.id);
-              }}
-            >
-              <i className="fas fa-cart-plus me-2"></i>Añadir
-            </button>
+            <Form method="post" className="d-inline" onClick={(e) => e.stopPropagation()}>
+              <input type="hidden" name="productId" value={product.id} />
+              <input type="hidden" name="qty" value="1" />
+              <input type="hidden" name="intent" value="cart" />
+              <button 
+                type="submit"
+                className="btn-add-cart"
+              >
+                <i className="fas fa-cart-plus me-2"></i>Añadir
+              </button>
+            </Form>
           </div>
         </div>
       </div>

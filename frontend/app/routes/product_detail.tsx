@@ -2,6 +2,7 @@ import { useLoaderData, Link, Form, useActionData, useNavigation } from "react-r
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 import { useCartStore } from "../store/cartStore";
+import { useNotificationStore } from "../store/notificationStore";
 
 export async function clientLoader({ params }: { params: { id: string } }) {
   const [productRes, reviewRes, userRes] = await Promise.all([
@@ -62,9 +63,10 @@ export async function clientAction({ request, params }: { request: Request; para
 export default function ProductDetail() {
   const { product, reviewsData: initialReviewsData, user } = useLoaderData<typeof clientLoader>();
   const actionData = useActionData<typeof clientAction>();
-  const navigation = useNavigation();
+   const navigation = useNavigation();
   const isSubmittingReview = navigation.formData?.get("intent") === "review";
   const updateItemCount = useCartStore((state) => state.updateItemCount);
+  const showNotification = useNotificationStore((state) => state.showNotification);
   
   const [reviews, setReviews] = useState(initialReviewsData.content);
   const [page, setPage] = useState(0);
@@ -101,8 +103,9 @@ export default function ProductDetail() {
   useEffect(() => {
     if (actionData?.success && actionData?.message === "Añadido al carrito") {
       updateItemCount();
+      showNotification(`${product.name} añadido al carrito!`, 'success');
     }
-  }, [actionData, updateItemCount]);
+  }, [actionData, updateItemCount, showNotification, product.name]);
 
   const getProductImage = (product: any) => {
     if (product.imageUrl) {
@@ -150,7 +153,7 @@ export default function ProductDetail() {
 
               <div className="product-actions">
                 {user ? (
-                  <>
+                  <div className="joined-actions">
                     <div className="qty-control">
                       <button
                         className="qty-btn"
@@ -175,7 +178,7 @@ export default function ProductDetail() {
                       </button>
                     </div>
 
-                    <Form method="post" className="ajax-cart-form" style={{ display: 'inline' }}>
+                    <Form method="post" className="ajax-cart-form">
                       <input type="hidden" name="productId" value={product.id} />
                       <input type="hidden" name="qty" value={qty} />
                       <input type="hidden" name="intent" value="cart" />
@@ -183,7 +186,7 @@ export default function ProductDetail() {
                         <i className="fas fa-cart-plus me-2"></i>Añadir
                       </button>
                     </Form>
-                  </>
+                  </div>
                 ) : (
                   <Link to="/login" className="btn btn-product-primary">
                     Inicia sesión para comprar
