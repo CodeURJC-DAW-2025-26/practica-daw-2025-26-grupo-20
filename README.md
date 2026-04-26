@@ -736,11 +736,11 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [FEAT: created User page, with his menues, orders doesnt work](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8f3e0574712fb7cec8b58360bb7da59e4e7a0001) | [profile_admin](frontend/app/routes/profile_admin.tsx) |
+|  2  | [Feat: working routes, now register a user](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/5ac49f52d835729f44542aa42a671b6ffa2422d7) | [root](frontend/app/root.tsx) |
+|  3  | [feat: login y registro actualizado](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/06c918aaad8ec6c59d92571d93b00dae4ac9738f) | [login](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/06c918aaad8ec6c59d92571d93b00dae4ac9738f/frontend/app/routes/login.tsx) |
+|  4  | [feat: authentication changes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/061194f6e92e25884c6d88de15788cdb537dbe0f#diff-c8c1b4e84b259a737eaa442dee3c84088a0234516782a29717e29ed6ec65155d) | [auth](frontend/app/store/authStore.ts) |
+|  5  | [feat: Layout working]([URL_commit_5](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9bd1148d260f39bfa071682b9496fb8a9109f636) | [AdminLayout](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9bd1148d260f39bfa071682b9496fb8a9109f636/frontend/app/components/AdminLayout.tsx) |
 
 ---
 
