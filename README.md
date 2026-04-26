@@ -730,9 +730,12 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 ---
 
-#### **Alumno 3 - [Nombre Completo]**
+#### **Alumno 3 - [Guillermo Blázquez Barbacid]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+
+- Implementación de las paginas de perfil, de usuario y admin.
+- Implementacion de la pagina lde login y registro.
+- Implementacion de la parte de seguridad de rutas.
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
@@ -740,7 +743,7 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 |  2  | [Feat: working routes, now register a user](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/5ac49f52d835729f44542aa42a671b6ffa2422d7) | [root](frontend/app/root.tsx) |
 |  3  | [feat: login y registro actualizado](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/06c918aaad8ec6c59d92571d93b00dae4ac9738f) | [login](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/06c918aaad8ec6c59d92571d93b00dae4ac9738f/frontend/app/routes/login.tsx) |
 |  4  | [feat: authentication changes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/061194f6e92e25884c6d88de15788cdb537dbe0f#diff-c8c1b4e84b259a737eaa442dee3c84088a0234516782a29717e29ed6ec65155d) | [auth](frontend/app/store/authStore.ts) |
-|  5  | [feat: Layout working]([URL_commit_5](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9bd1148d260f39bfa071682b9496fb8a9109f636) | [AdminLayout](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9bd1148d260f39bfa071682b9496fb8a9109f636/frontend/app/components/AdminLayout.tsx) |
+|  5  | [feat: Layout working](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9bd1148d260f39bfa071682b9496fb8a9109f636) | [AdminLayout](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9bd1148d260f39bfa071682b9496fb8a9109f636/frontend/app/components/AdminLayout.tsx) |
 
 ---
 
