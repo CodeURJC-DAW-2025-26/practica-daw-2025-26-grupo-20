@@ -1,0 +1,252 @@
+/* =========================
+   FOOTER STYLES - MOKAF
+========================= */
+
+.site-footer {
+    background: linear-gradient(135deg, var(--cafe-oscuro), #1a1a1a);
+    border-top: 3px solid var(--dorado);
+    padding-top: 3rem;
+    padding-bottom: 1.5rem;
+    color: var(--cafe-claro);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+/* Brand Column */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.footer-logo i {
+    color: var(--dorado);
+    font-size: 1.8rem;
+    transition: transform 0.3s ease;
+}
+
+.footer-logo:hover i {
+    transform: rotate(12deg) scale(1.1);
+}
+
+.footer-logo span {
+    color: var(--dorado);
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+}
+
+.footer-description {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--cafe-claro);
+    font-style: italic;
+}
+
+/* Social Icons */
+.social-icons {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cafe-claro);
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: var(--dorado);
+    color: var(--cafe-oscuro);
+}
+
+.social-icon i {
+    font-size: 0.85rem;
+}
+
+/* Footer Titles */
+.footer-title {
+    color: var(--dorado);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    font-size: 0.7rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Navigation Links */
+.footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--cafe-claro);
+    font-size: 0.8rem;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: white;
+}
+
+.footer-link-dot {
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+    background-color: rgba(198, 168, 125, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.footer-link:hover .footer-link-dot {
+    background-color: var(--dorado);
+}
+
+/* Contact List */
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--cafe-claro);
+    font-style: italic;
+}
+
+.contact-item i {
+    color: var(--dorado);
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+}
+
+.contact-item span {
+    line-height: 1.4;
+}
+
+.contact-item span strong {
+    color: white;
+    font-weight: bold;
+}
+
+/* Hours List */
+.hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hours-item {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hours-day {
+    font-size: 0.8rem;
+    color: var(--cafe-claro);
+}
+
+.hours-time {
+    font-size: 0.8rem;
+    color: white;
+    font-style: italic;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+}
+
+.footer-bottom-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.copyright {
+    font-size: 0.65rem;
+    color: var(--cafe-claro);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.legal-link {
+    font-size: 0.65rem;
+    color: var(--cafe-claro);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.legal-link:hover {
+    color: var(--dorado);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+    
+    .footer-bottom-container {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+}

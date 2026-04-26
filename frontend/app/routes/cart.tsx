@@ -147,70 +147,75 @@ export default function Cart() {
   };
 
   // Load branches (sucursales)
-  const loadBranches = async () => {
-    setLoadingBranches(true);
-    try {
-      const response = await fetch("/api/v1/cart/branches", { credentials: "include" });
-      const data = await response.json();
-      if (data.success) {
-        setBranches(data.branches);
-        const currentBranch = data.currentBranchId;
-        setSelectedBranchId(currentBranch || "");
-        const branch = data.branches.find((b: any) => b.id == currentBranch);
-        if (branch?.description) {
-          setBranchDescription(branch.description);
-        } else {
-          setBranchDescription("");
-        }
+  // Load branches (sucursales)
+const loadBranches = async () => {
+  setLoadingBranches(true);
+  try {
+    const response = await fetch("/api/v1/cart/branches", { credentials: "include" });
+    const data = await response.json();
+    
+    // El backend devuelve directamente el array de branches
+    if (Array.isArray(data)) {
+      setBranches(data);
+      // Si necesitas una sucursal actual, tendrás que llamar a otro endpoint
+      // o agregar un endpoint adicional que devuelva la sucursal actual del usuario
+      const currentBranchResponse = await fetch("/api/v1/cart/branch/current", { 
+        credentials: "include" 
+      });
+      if (currentBranchResponse.ok) {
+        const currentBranch = await currentBranchResponse.json();
+        setSelectedBranchId(currentBranch.id?.toString() || "");
+        setBranchDescription(currentBranch.description || "");
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      console.error("Unexpected response format:", data);
       showToast("Error loading branches", "error");
-    } finally {
-      setLoadingBranches(false);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    showToast("Error loading branches", "error");
+  } finally {
+    setLoadingBranches(false);
+  }
+};
 
   // Change selected branch
-  const changeBranch = async (branchId: string) => {
-    if (!branchId) return;
-    try {
-      const response = await fetch(`/api/v1/cart/change-branch?branchId=${branchId}`, {
-        method: "POST",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.success) {
-        // Update summary with possible discounts
-        const subtotalEl = document.getElementById("cart-subtotal");
-        const totalEl = document.getElementById("cart-total");
-        const discountRow = document.getElementById("discountRow");
-        const discountAmountEl = document.getElementById("discount-amount");
-        if (subtotalEl && data.subtotal) subtotalEl.textContent = data.subtotal;
-        if (totalEl && data.total) totalEl.textContent = data.total;
-        if (data.hasDiscount && discountRow && discountAmountEl) {
-          discountRow.style.display = "flex";
-          discountAmountEl.textContent = "-" + data.discountInfo;
-        } else if (discountRow) {
-          discountRow.style.display = "none";
-        }
-        // Update branch description
-        const branch = branches.find(b => b.id == branchId);
-        if (branch?.description) {
-          setBranchDescription(branch.description);
-        } else {
-          setBranchDescription("");
-        }
-        showToast("Branch updated", "success");
-        // Reload items to apply branch-specific discounts
-        await loadCartItems();
-      } else {
-        showToast("Error changing branch", "error");
+const changeBranch = async (branchId: string) => {
+  if (!branchId) return;
+  try {
+    console.log("Changing branch to:", branchId);
+    
+    const response = await fetch(`/api/v1/cart/branch?branchId=${branchId}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
       }
-    } catch (error) {
-      showToast("Connection error", "error");
+    });
+    
+    console.log("Response status:", response.status);
+    const data = await response.json();
+    console.log("Response data:", data);
+    
+    if (response.ok && data.success) {
+      // Actualizar descripción
+      const branch = branches.find(b => b.id.toString() === branchId);
+      if (branch?.description) {
+        setBranchDescription(branch.description);
+      } else {
+        setBranchDescription("");
+      }
+      showToast("Branch updated", "success");
+      await loadCartItems();
+    } else {
+      console.error("Error response:", data);
+      showToast(data.message || "Error changing branch", "error");
     }
-  };
+  } catch (error) {
+    console.error("Connection error:", error);
+    showToast("Connection error: " + error, "error");
+  }
+};
 
   // Update item quantity
   const updateQuantity = async (itemId: number, newQuantity: number) => {
@@ -318,7 +323,7 @@ export default function Cart() {
   // Loading state
   if (!cart && loadingItems) {
     return (
-      <main className="legacy-container cart-container">
+      <main className="container my-5 cart-container">
         <div className="text-center p-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>

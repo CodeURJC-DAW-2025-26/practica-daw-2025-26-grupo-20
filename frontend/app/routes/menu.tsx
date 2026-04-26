@@ -4,13 +4,13 @@ import { API_BASE_URL } from "../config";
 import ProductCard from "../components/ProductCard";
 import MenuFilters from "../components/MenuFilters";
 import Pagination from "../components/Pagination";
+import "../app_menu.css";
 
 interface Allergen { id: number; name: string; }
 interface Product {
   id: number; name: string; priceBase: number; description: string;
   category: string; imageId?: number; imageUrl?: string; allergens?: Allergen[];
 }
-
 
 export async function clientLoader({ request }: { request: Request }) {
   const url = new URL(request.url);
@@ -33,9 +33,12 @@ export async function clientLoader({ request }: { request: Request }) {
 }
 
 const categories = [
-  { id: 'all', label: 'Todos' }, { id: 'HOT', label: 'Calientes' },
-  { id: 'COLD', label: 'Fríos' }, { id: 'BLENDED', label: 'Mezclados' },
-  { id: 'DESSERTS', label: 'Postres' }, { id: 'NON_COFFEE', label: 'Sin Café' }
+  { id: 'all', label: 'Todos' },
+  { id: 'HOT', label: 'Calientes' },
+  { id: 'COLD', label: 'Fríos' },
+  { id: 'BLENDED', label: 'Mezclados' },
+  { id: 'DESSERTS', label: 'Postres' },
+  { id: 'NON_COFFEE', label: 'Sin Café' }
 ];
 
 const allergensData = [
@@ -54,7 +57,9 @@ export default function Menu() {
   const [hiddenAllergens, setHiddenAllergens] = useState<string[]>([]);
   const category = searchParams.get("category") || initialCategory;
 
-  const handleCategoryChange = (catId: string) => setSearchParams({ category: catId, page: "0" });
+  const handleCategoryChange = (catId: string) => {
+    setSearchParams({ category: catId, page: "0" });
+  };
 
   const toggleAllergen = (name: string) => {
     setHiddenAllergens(prev => {
@@ -89,35 +94,50 @@ export default function Menu() {
   };
 
   return (
-    <div className="bg-[#050404] min-h-screen text-white pb-32">
-      <div className="container mx-auto px-4 pt-10 max-w-7xl">
-        <div className="animate-fade-in bg-[#080707] border border-[#d4b88d]/10 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#d4b88d]/5 blur-[120px] rounded-full pointer-events-none"></div>
-          <div className="text-center mb-24 relative">
-            <h1 className="text-5xl md:text-6xl text-[#d4b88d] tracking-tighter mb-6 drop-shadow-sm">Nuestro Menú</h1>
-            <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/40 to-transparent mx-auto"></div>
-          </div>
-          <section className="mb-32 relative">
-            <div className="flex flex-col items-center mb-16">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-[#d4b88d]/60 text-[10px] transform rotate-12">★</span>
-                <h2 className="text-[13px] font-extrabold tracking-[0.5em] text-[#d4b88d] uppercase">Recomendados para ti</h2>
+    <div>
+      <div className="menu-wrapper">
+        <div className="container mx-auto px-4 py-5">
+          <h1 className="text-center mb-4" style={{ color: "var(--dorado)" }}>
+            Nuestro Menú
+          </h1>
+
+          {/* Sección de recomendados */}
+          {recommended.length > 0 && (
+            <section className="recommended-section mb-5">
+              <div className="recommended-header">
+                <i className="fas fa-star"></i>
+                <h3>Recomendados para ti</h3>
+                <i className="fas fa-star"></i>
               </div>
-              <div className="w-40 h-[1px] bg-stone-700/50"></div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {recommended.slice(0, 4).map((product) => (
-                <ProductCard key={product.id} product={product} variant="recommended" />
-              ))}
-            </div>
-          </section>
-          <MenuFilters categories={categories} activeCategory={category} onCategoryChange={handleCategoryChange} allergens={allergensData} hiddenAllergens={hiddenAllergens} onToggleAllergen={toggleAllergen} />
-          <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              <div className="recommended-grid">
+                {recommended.slice(0, 4).map((product) => (
+                  <ProductCard key={product.id} product={product} variant="recommended" />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Filtros */}
+          <MenuFilters
+            categories={categories}
+            activeCategory={category}
+            onCategoryChange={handleCategoryChange}
+            allergens={allergensData}
+            hiddenAllergens={hiddenAllergens}
+            onToggleAllergen={toggleAllergen}
+          />
+
+          
+          <div className="stats-grid">
             {paginatedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
-          </main>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          </div>
+
+          {/* Paginación */}
+          {totalPages > 1 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          )}
         </div>
       </div>
     </div>

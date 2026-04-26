@@ -1,7 +1,7 @@
 import { type RouteConfig, index, route, layout } from "@react-router/dev/routes";
 
 export default [
-  // Rutas públicas
+  // public routes
   index("routes/home.tsx"),
   route("login", "routes/login.tsx"),
   route("register", "routes/register.tsx"),
@@ -11,14 +11,14 @@ export default [
   route("contact", "routes/contact.tsx"),
   route("product/:id", "routes/product_detail.tsx"),
 
-  // Rutas protegidas — cualquier usuario autenticado
+  // protected routes (user authentication required)
   layout("components/ProtectedLayout.tsx", [
     route("cart", "routes/cart.tsx"),
     route("orders", "routes/orders.tsx"),
     route("profile", "routes/profile.tsx"),
   ]),
 
-  // Rutas solo para ADMIN
+  // Only for admin users
   layout("components/AdminLayout.tsx", [
     route("profile-admin", "routes/profile_admin.tsx"),
     route("statistics", "routes/statistics.tsx"),

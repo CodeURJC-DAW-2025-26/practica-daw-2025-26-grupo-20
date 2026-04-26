@@ -4,12 +4,14 @@
    THEME BASE
 ========================= */
 :root {
-  --cafe-oscuro: #3a2a1d;
-  --cafe-medio: #5d4037;
-  --cafe-claro: #8b6b61;
-  --negro: #1a1a1a;
-  --beige: #d7ccc8;
-  --dorado: #c6a87d;
+--cafe-oscuro: #3A2A1D;
+    --cafe-medio: #5D4037;
+    --cafe-claro: #8B6B61;
+    --negro: #1A1A1A;
+    --beige: #D7CCC8;
+    --dorado: #C6A87D;
+  --color-mokaf-gold: var(--dorado); /* Así ambas funcionan */
+  --sombra: rgba(0, 0, 0, 0.5);
   --color-allergen-cacahuetes: #e76f51;
   --color-allergen-frutos-secos: #2a9d8f;
   --color-allergen-gluten: #8ab17d;
@@ -26,10 +28,12 @@
 @layer base {
   body {
     @apply antialiased;
-    background: linear-gradient(to bottom, var(--negro), var(--cafe-oscuro));
+    background: linear-gradient(to bottom, #1a1a1a, var(--negro));
     color: var(--beige);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
+    margin: 0;
+    padding: 0;
   }
 }
 
@@ -715,13 +719,17 @@
 }
 
 /* CART */
-/* Cart Page Styles */
+
 .cart-empty {
   background-color: rgba(45, 35, 25, 0.9); /* Dark coffee, semi-transparent */
   border: 1px solid var(--cafe-claro);
   border-radius: 10px;
   color: var(--cafe-claro);
   backdrop-filter: blur(5px);
+}
+
+#cartItemsContainer{
+  background-color: #1a1a1a;
 }
 
 .cart-empty-icon {
@@ -1271,4 +1279,14 @@
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
   background: linear-gradient(45deg, #e6c260, var(--dorado));
+}
+
+.menu-frame, .cart-item, .contact-form-container {
+  backdrop-filter: blur(10px); /* Esto hace que el fondo se vea desenfocado tras el panel */
+  -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
+}
+
+.qty-input:focus {
+  box-shadow: 0 0 0 2px var(--dorado);
+  border-radius: 4px;
 }
