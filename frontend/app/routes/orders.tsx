@@ -77,7 +77,7 @@ export default function Orders() {
     );
   }
 
-  // Datos de paginación que devuelve Spring
+  // spring pagination data
   const currentPage: number = orders.number ?? 0;
   const totalPages: number = orders.totalPages ?? 1;
   const isFirst: boolean = orders.first ?? true;
@@ -90,7 +90,7 @@ export default function Orders() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl">
 
-      {/* Título igual que el backend */}
+      
       <div className="text-center mb-10">
       <h1 className="text-3xl page-title-golden">
          Historial de Pedidos
@@ -98,7 +98,7 @@ export default function Orders() {
        <div className="w-16 h-px bg-[#d4b88d]/40 mx-auto mt-3"></div>
       </div>
 
-      {/* Lista de pedidos */}
+     
       <div className="flex flex-col gap-6">
         {orders.content.map((order: any) => (
           <div
@@ -163,7 +163,7 @@ export default function Orders() {
 
             {/* Card Body */}
             <div className="px-6 py-5">
-              {/* Sucursal */}
+              
               <div className="mb-4">
                 <h6 className="font-bold text-stone-800 mb-1 flex items-center gap-2">
                   <i className="fas fa-map-marker-alt text-red-500"></i>Sucursal
@@ -171,7 +171,7 @@ export default function Orders() {
                 <p className="text-stone-500 text-sm ml-6">{order.branchName}</p>
               </div>
 
-              {/* Productos */}
+              
               <div className="mb-4">
                 <h6 className="font-bold text-stone-800 mb-3 flex items-center gap-2">
                   <i className="fas fa-shopping-bag"></i>Productos
@@ -200,7 +200,7 @@ export default function Orders() {
                 </div>
               </div>
 
-              {/* Total */}
+          
               <div className="flex justify-end">
                 <div className="bg-blue-50 rounded-xl px-6 py-3 text-right">
                   <p className="font-bold text-stone-800 text-lg">
@@ -214,7 +214,7 @@ export default function Orders() {
         ))}
       </div>
 
-      {/* Paginación */}
+     //Pagination
       {totalPages > 1 && (
         <div className="flex justify-center mt-10">
           <nav className="flex items-center bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
@@ -231,7 +231,7 @@ export default function Orders() {
               Anterior
             </button>
 
-            {/* Números de página */}
+            
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
@@ -246,7 +246,7 @@ export default function Orders() {
               </button>
             ))}
 
-            {/* Siguiente */}
+   
             <button
               onClick={() => goToPage(currentPage + 1)}
               disabled={isLast}

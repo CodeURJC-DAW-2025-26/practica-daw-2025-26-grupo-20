@@ -37,7 +37,7 @@ export default function About() {
           />
 
           <div className="row align-items-center g-5">
-            {/* Texto */}
+            
             <div className="col-lg-6">
               <div className="d-flex flex-column gap-3">
                 <p style={{ color: "var(--beige)", opacity: 0.9, lineHeight: 1.7, fontSize: "0.95rem" }}>
