@@ -754,21 +754,21 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 
 ---
-#### **Alumno 5 - [Alexandra Cararus Verdes]**
+#### **Alumno 4 - [Alexandra Cararus Verdes]**
 
-- Integración de REST utilizando JSON y pruebas con Postman en las páginas About Us, Orders y Branch.
-- Resolución y depuración de errores en la aplicación.
-- Refactorización y optimización de controladores y mappers para la API.
-- Corrección y estandarización de URLs.
-- Limpieza de código y eliminación de duplicidades.
+- Implementación de la página Branches con React
+- Implementación de la página Orders con React
+- Implementación de la página About con React
+- Corrección del archivo config.ts para la correcta visualización del proyecto
 
-| Nº  |                                                               Commits                                                               |                                                              Files                                                              |
-| :-: | :---------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
-|  1  | [fix errors](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d49640415babfc488b49911deac048f78f367257) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
-|  2  |   [Orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3a55907dd7046af747bc7a822484d4ccab5446e1)   |                [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java)                |
-|  3  |  [About_us](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/07322cc5b7632378addbae0adaac246a199e6e3b)  |                  [MainRestController](src/main/java/es/codeurjc/mokaf/api/controller/MainRestController.java)                   |
-|  4  |   [Branch](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303)   | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
-|  5  | [Orders Api](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+
+| Nº  |               Commits                |           Files           |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [Create about.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d8d1c03515872fdab3b0cdd4f4cefd11ae704458) | [about.txs](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/about.tsx) |
+|  2  | [Create orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/703e7f483a42f4fdc23f97304edc421f570445ab) | [orders.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/orders.tsx) |
+|  3  | [refactor code](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8b6c7ac174984b656e50327865a92848a5d4f6c2) | [orders.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/orders.tsx) |
+|  4  | [Update confi.ts](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/e74949e1522a274e8574955d7d408432f03b831e) | [confi.ts](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/config.ts) |
+|  5  | [Create Branches](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4af45cb81f77472554d0f1ee7399c42b779c00fd) | [branches.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/branches.tsx) |
 ---
 
 #### **Alumno 4 - [Nombre Completo]**
