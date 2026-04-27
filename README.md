@@ -692,7 +692,7 @@ $env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
 
 Diagrama mostrando los componentes React, hooks personalizados, servicios y sus relaciones:
 
-![Diagrama de Componentes React](images/spa-classes-diagram.png)
+![Diagrama de Componentes React](images/spa-classes-diagram.png.png)
 
 ### **Participación de Miembros en la Práctica 3**
 
