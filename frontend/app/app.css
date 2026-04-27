@@ -85,6 +85,10 @@
   .filter-pill {
     @apply px-4 py-1.5 rounded-full text-[10px] font-bold text-white/90 uppercase tracking-tighter opacity-70 hover:opacity-100 transition-opacity;
   }
+
+  .page-title-golden {
+    color: #d4b88d !important;
+  }
 }
 
 .stats-container {

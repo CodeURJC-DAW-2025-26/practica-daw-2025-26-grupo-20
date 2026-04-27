@@ -77,14 +77,28 @@ export default function Orders() {
     );
   }
 
+  // Datos de paginación que devuelve Spring
+  const currentPage: number = orders.number ?? 0;
+  const totalPages: number = orders.totalPages ?? 1;
+  const isFirst: boolean = orders.first ?? true;
+  const isLast: boolean = orders.last ?? true;
+
+  const goToPage = (page: number) => {
+    navigate(`/orders?page=${page}`);
+  };
+
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl">
-      {/* Title */}
-      <h2 className="text-3xl font-serif italic text-[#d4b88d] text-center mb-10">
-        Historial de Pedidos
-      </h2>
 
-      {/* Orders list */}
+      {/* Título igual que el backend */}
+      <div className="text-center mb-10">
+      <h1 className="text-3xl page-title-golden">
+         Historial de Pedidos
+       </h1>
+       <div className="w-16 h-px bg-[#d4b88d]/40 mx-auto mt-3"></div>
+      </div>
+
+      {/* Lista de pedidos */}
       <div className="flex flex-col gap-6">
         {orders.content.map((order: any) => (
           <div
@@ -104,7 +118,8 @@ export default function Orders() {
                 <div className="flex-1 min-w-[150px]">
                   <p className="text-stone-500 text-sm flex items-center gap-2">
                     <i className="fas fa-calendar"></i>
-                    <strong className="text-stone-700">Fecha:</strong> {formatDate(order.createdAt)}
+                    <strong className="text-stone-700">Fecha:</strong>{" "}
+                    {formatDate(order.createdAt)}
                   </p>
                 </div>
 
@@ -112,12 +127,14 @@ export default function Orders() {
                   {isAdmin ? (
                     <p className="text-stone-500 text-sm flex items-center gap-2">
                       <i className="fas fa-user"></i>
-                      <strong className="text-stone-700">Cliente:</strong> {order.userEmail}
+                      <strong className="text-stone-700">Cliente:</strong>{" "}
+                      {order.userEmail}
                     </p>
                   ) : (
                     <p className="text-stone-500 text-sm flex items-center gap-2">
                       <i className="fas fa-clock"></i>
-                      <strong className="text-stone-700">Hora:</strong> {formatTime(order.createdAt)}
+                      <strong className="text-stone-700">Hora:</strong>{" "}
+                      {formatTime(order.createdAt)}
                     </p>
                   )}
                 </div>
@@ -146,7 +163,7 @@ export default function Orders() {
 
             {/* Card Body */}
             <div className="px-6 py-5">
-              {/* Branch */}
+              {/* Sucursal */}
               <div className="mb-4">
                 <h6 className="font-bold text-stone-800 mb-1 flex items-center gap-2">
                   <i className="fas fa-map-marker-alt text-red-500"></i>Sucursal
@@ -154,7 +171,7 @@ export default function Orders() {
                 <p className="text-stone-500 text-sm ml-6">{order.branchName}</p>
               </div>
 
-              {/* Products */}
+              {/* Productos */}
               <div className="mb-4">
                 <h6 className="font-bold text-stone-800 mb-3 flex items-center gap-2">
                   <i className="fas fa-shopping-bag"></i>Productos
@@ -163,10 +180,10 @@ export default function Orders() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-stone-50 text-stone-600">
-                        <th className="text-left py-2 px-3 rounded-tl font-semibold">Producto</th>
+                        <th className="text-left py-2 px-3 font-semibold">Producto</th>
                         <th className="text-left py-2 px-3 font-semibold">Cantidad</th>
                         <th className="text-right py-2 px-3 font-semibold">Precio Unit.</th>
-                        <th className="text-right py-2 px-3 rounded-tr font-semibold">Subtotal</th>
+                        <th className="text-right py-2 px-3 font-semibold">Subtotal</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -192,11 +209,59 @@ export default function Orders() {
                   </p>
                 </div>
               </div>
-
             </div>
           </div>
         ))}
       </div>
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-10">
+          <nav className="flex items-center bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+            {/* Anterior */}
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={isFirst}
+              className={`px-4 py-2 text-sm font-medium border-r border-stone-200 transition-colors ${
+                isFirst
+                  ? "text-stone-300 cursor-not-allowed"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+            >
+              Anterior
+            </button>
+
+            {/* Números de página */}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => goToPage(i)}
+                className={`px-4 py-2 text-sm font-medium border-r border-stone-200 transition-colors ${
+                  i === currentPage
+                    ? "bg-blue-600 text-white"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            {/* Siguiente */}
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={isLast}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
+                isLast
+                  ? "text-stone-300 cursor-not-allowed"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+            >
+              Siguiente
+            </button>
+          </nav>
+        </div>
+      )}
+
     </div>
   );
 }
