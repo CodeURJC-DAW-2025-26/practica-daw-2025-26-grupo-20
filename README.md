@@ -773,10 +773,10 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 #### **Alumno 5 - [Elinee Nathalie Freites Muñoz]**
 
--Implementación de Statistics en frontend.
--Implementación de Cart (carrito) en frontend.
--Implementación del Global Spinner ante peticiones REST.
--Grabación de video
+- Implementación de Statistics en frontend.
+- Implementación de Cart (carrito) en frontend.
+- Implementación del Global Spinner ante peticiones REST.
+- Grabación de video
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
