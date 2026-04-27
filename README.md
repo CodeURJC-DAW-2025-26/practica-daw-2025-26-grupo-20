@@ -771,14 +771,17 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 |  5  | [Create Branches](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4af45cb81f77472554d0f1ee7399c42b779c00fd) | [branches.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/branches.tsx) |
 ---
 
-#### **Alumno 4 - [Nombre Completo]**
+#### **Alumno 5 - [Elinee Nathalie Freites Muñoz]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+-Implementación de Statistics en frontend.
+-Implementación de Cart (carrito) en frontend.
+-Implementación del Global Spinner ante peticiones REST.
+-Grabación de video
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [First Cart Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9d1ca476cbf8bb3826c5db3bf3a8293bc8f59857) | [UseCart.tsx‎](frontend/app/components/Cart/UseCart.tsx) |
+|  2  | [Second Cart Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4b3ee1b8e7bb2693307dbf729a2979d7930391b8) | [cart.types.ts](frontend/app/types/cart.types.ts) |
+|  3  | [Checkout order function](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/56652ef8d0f285183156d55595af567d0224843a) | [cart.tsx](frontend/app/routes/cart.tsx) |
+|  4  | [Statistics first implementation on front](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/cc7af14709656a7d55f07a04478e3b31b07353ec) | [‎statistics.tsx](‎frontend/app/routes/statistics.tsx) |
+|  5  | [Changing statistics and adding DTO for better organization](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/55e9cf1f6614a84cd3d4ca61859984bcdcbf55bd) | [statistics.tsx](frontend/app/routes/statistics.tsx) |
