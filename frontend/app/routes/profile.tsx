@@ -34,22 +34,6 @@ export async function clientAction({ request }: { request: Request }) {
     return { error: "Error al actualizar el perfil." };
   }
 
-  if (intent === "upload-image") {
-    const file = formData.get("image") as File;
-    const body = new FormData();
-    body.append("image", file);
-    const response = await fetch(`${API_BASE_URL}/api/v1/users/me/image`, {
-      method: "POST",
-      credentials: "include",
-      body,
-    });
-    if (response.ok) {
-      const data = await response.json();
-      return { success: true, profileImageUrl: data.profileImageUrl };
-    }
-    return { error: "Error al subir la imagen." };
-  }
-
   if (intent === "delete") {
     await fetch(`${API_BASE_URL}/api/v1/users/me`, {
       method: "DELETE",
@@ -67,10 +51,19 @@ export default function Profile() {
   const { setUser, logout, isLogged } = useAuthStore();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState<string>("");
+  const [uploadError, setUploadError] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (isUnauthorized || !isLogged) navigate("/login");
   }, [isUnauthorized, isLogged, navigate]);
+
+  useEffect(() => {
+    if (initialUser) {
+      setAvatarSrc(initialUser.profileImageUrl || `https://i.pravatar.cc/150?u=${initialUser.id}`);
+    }
+  }, [initialUser]);
 
   useEffect(() => {
     if (actionData?.success && actionData.user) {
@@ -82,11 +75,34 @@ export default function Profile() {
     }
   }, [actionData, setUser, logout, navigate]);
 
-  if (!initialUser) return null;
+  // Subida de imagen con fetch directo — sin Form anidado
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError("");
+    setUploading(true);
+    try {
+      const body = new FormData();
+      body.append("image", file);
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/me/image`, {
+        method: "POST",
+        credentials: "include",
+        body,
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAvatarSrc(data.profileImageUrl);
+      } else {
+        setUploadError("Error al subir la imagen.");
+      }
+    } catch {
+      setUploadError("Error de conexión al subir la imagen.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
-  const avatarSrc = actionData?.profileImageUrl
-    || initialUser.profileImageUrl
-    || `https://i.pravatar.cc/150?u=${initialUser.id}`;
+  if (!initialUser) return null;
 
   const sidebarLinks = [
     { to: "/orders", icon: "fa-history", label: "Historial de Pedidos" },
@@ -139,20 +155,21 @@ export default function Profile() {
               />
             </div>
 
+            {/* Foto de perfil — fetch directo, SIN Form anidado */}
             <div className="space-y-2">
-              <label className="text-[11px] text-white font-bold opacity-80 uppercase tracking-tight">Foto de perfil (PNG)</label>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-4 bg-[#1a1a1a] border border-white/5 rounded-lg p-2 overflow-hidden">
-                  <Form method="post" encType="multipart/form-data" className="w-full">
-                    <input type="hidden" name="intent" value="upload-image" />
-                    <input 
-                      type="file" name="image" accept="image/png,image/jpeg,image/jpg" 
-                      className="text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-stone-200 cursor-pointer w-full"
-                      onChange={e => e.target.form?.requestSubmit()}
-                    />
-                  </Form>
-                </div>
+              <label className="text-[11px] text-white font-bold opacity-80 uppercase tracking-tight">Foto de perfil (PNG/JPG)</label>
+              <div className="flex items-center gap-4 bg-[#1a1a1a] border border-white/5 rounded-lg p-2 overflow-hidden">
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg"
+                  onChange={handleImageUpload}
+                  className="text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-stone-200 cursor-pointer w-full"
+                />
+                {uploading && <i className="fas fa-spinner fa-spin text-[var(--dorado)]" />}
               </div>
+              {uploadError && (
+                <p className="text-red-400 text-xs mt-1">{uploadError}</p>
+              )}
             </div>
 
             <div className="flex justify-end gap-4 pt-8">
