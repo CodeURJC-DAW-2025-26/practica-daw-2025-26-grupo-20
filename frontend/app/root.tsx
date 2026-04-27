@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigation,
   type Route,
 } from "react-router";
 
@@ -35,7 +36,36 @@ export const links: LinksFunction = () => [
   },
   { rel: "stylesheet", href: stylesheet },
 ];
+
+//Global Spinner
+function GlobalSpinner() {
+  return (
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 9999,
+    }}>
+      <div className="spinner-border text-warning" style={{ width: "3rem", height: "3rem" }} role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  );
+}
+
+
+
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+  
   return (
     <html lang="es">
       <head>
@@ -55,6 +85,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="antialiased">
+        {isLoading && <GlobalSpinner />}
         <Toast />
         <Header />
         <main>
