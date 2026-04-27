@@ -51,7 +51,7 @@ public class OrdersService {
         return false;
     }
 
-    // funciones añadidas de la api
+    // Added function to get order by id, useful for order details page
 
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);

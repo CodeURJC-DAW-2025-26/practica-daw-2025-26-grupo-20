@@ -15,7 +15,7 @@
 
 <body class="body-content">
 
-    <!-- HEADER con menú de admin -->
+  
     <header class="cafe-header">
         <div class="header-container">
             <nav class="navbar navbar-expand-lg navbar-dark">
@@ -75,13 +75,13 @@
         
         <div class="row g-4 justify-content-center">
             
-            <!-- COLUMNA IZQUIERDA - AVATAR Y BOTONES RÁPIDOS -->
+            
             <div class="col-lg-4 col-md-5">
                 <div class="admin-avatar-card">
                     <div class="admin-avatar-section">
                         <span class="admin-badge">Administrador</span>
                         
-                        <!-- IMAGEN POR DEFECTO -->
+                        <!-- Default image -->
                         <div class="admin-avatar-wrapper">
                             <img src="https://via.placeholder.com/150?text=👑" 
                                  class="admin-avatar" 
@@ -96,7 +96,7 @@
                     </div>
                 </div>
 
-                <!-- BOTONES DE GESTIÓN RÁPIDOS -->
+                
                 <div class="admin-quick-actions mt-4">
                     <h5 class="admin-quick-title">Panel de Control</h5>
                     <a href="admin/gestion_menu.html" class="btn btn-admin-quick">
@@ -123,21 +123,21 @@
                 </div>
             </div>
 
-            <!-- COLUMNA DERECHA - FORMULARIO Y BOTONES ROJOS -->
+            
             <div class="col-lg-6 col-md-7">
                 <div class="admin-form-card">
                     <h4 class="admin-form-title">Configuración del Administrador</h4>
                     <p class="admin-form-subtitle">Gestiona tu cuenta de administrador</p>
                     
                     <form action="#" method="post">
-                        <!-- Nombre completo -->
+                        <!-- Whole Name -->
                         <div class="mb-3">
                             <label class="form-label">Nombre completo</label>
                             <input type="text" class="form-control" 
                                    value="Administrador Principal" required>
                         </div>
 
-                        <!-- Username y Email -->
+                        <!-- Username and Email -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Nombre de usuario</label>
@@ -151,28 +151,28 @@
                             </div>
                         </div>
 
-                        <!-- ID Empleado -->
+                        <!-- ID Employee -->
                         <div class="mb-3">
                             <label class="form-label">ID de Empleado</label>
                             <input type="text" class="form-control" 
                                    value="EMP-001" readonly>
                         </div>
 
-                        <!-- Cambiar Contraseña -->
+                        <!-- Change password -->
                         <div class="mb-3">
                             <label class="form-label">Nueva contraseña</label>
                             <input type="password" class="form-control" 
                                    placeholder="Dejar en blanco para mantener la actual">
                         </div>
 
-                        <!-- Foto de Perfil -->
+                        <!-- Profile Picture -->
                         <div class="mb-3">
                             <label class="form-label">Foto de perfil (PNG)</label>
                             <input type="file" class="form-control" 
                                    accept="image/png">
                         </div>
 
-                        <!-- Botones -->
+                        <!-- Buttons -->
                         <div class="admin-actions">
                             <a href="index.html" class="btn btn-outline-light btn-cancel">Cancelar</a>
                             <button type="submit" class="btn btn-admin-save">Guardar Cambios</button>
@@ -180,9 +180,9 @@
                     </form>
                 </div>
 
-                <!-- BOTONES FUERA DEL RECUADRO (3 botones) -->
+                
                 <div class="admin-external-buttons">
-                    <!-- Botón eliminar (original) -->
+                    
                     <button type="button" class="btn btn-admin-delete" 
                             data-bs-toggle="modal" data-bs-target="#deleteModal">
                         <i class="fas fa-trash-alt"></i> Eliminar cuenta

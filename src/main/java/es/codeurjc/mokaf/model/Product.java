@@ -45,7 +45,7 @@ public class Product {
     @Column(nullable = false)
     private boolean active = true;
 
-    // Reviews para borrar en cascada al borrar el producto
+    //Reviews to delete in cascade when deleting the product
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 

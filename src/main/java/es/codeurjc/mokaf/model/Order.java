@@ -62,7 +62,6 @@ public class Order {
     public Order() {
     }
 
-    // Conveniencia para asegurar consistencia bidireccional
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
