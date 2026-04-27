@@ -648,7 +648,7 @@ $env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
 
 ### **Vídeo de Demostración**
 
-📹 **[Enlace al vídeo en YouTube](URL_del_video)**
+📹 **[Enlace al vídeo en YouTube](https://youtu.be/zUvoC4d9mnY)**
 
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
@@ -760,7 +760,7 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 - Implementación de la página Orders con React
 - Implementación de la página About con React
 - Corrección del archivo config.ts para la correcta visualización del proyecto
-
+- Subida del vídeo a YouTube con sus correspondientes comentarios
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
