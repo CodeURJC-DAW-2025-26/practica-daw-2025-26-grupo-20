@@ -716,17 +716,24 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - Gonzalo Pérez Roca**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+**Responsabilidades:**
 
-| Nº  |               Commits                |           Files           |
-| :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+- Implementación de la gestión de usuarios en la SPA para administradores.
+- Integración y corrección del carrito de compra con productos.
+- Adaptación de rutas frontend y configuración Docker para servir la SPA.
+- Implementación y mejora de la página de detalle de producto en React.
+- Integración de reseñas paginadas en la vista de detalle de producto.
+
+| Nº  | Commits | Files |
+| :-: | :------ | :---- |
+|  1  | [feat: implement user management dashboard and navigation for administrators](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/ad3959ce7cd8fe77ff54fd6f50a90cf054555a3a) | [Header.tsx](frontend/app/components/Header.tsx), [routes.ts](frontend/app/routes.ts), [gestion_usuarios.tsx](frontend/app/routes/gestion_usuarios.tsx), [userService.ts](frontend/app/services/userService.ts) |
+|  2  | [feat: implement shopping cart functionality with product management and checkout flow](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/bfed93f0757d7bc36cb1897575e20fbe24d29cf2) | [Header.tsx](frontend/app/components/Header.tsx), [root.tsx](frontend/app/root.tsx), [cart.tsx](frontend/app/routes/cart.tsx), [product_detail.tsx](frontend/app/routes/product_detail.tsx), [cartStore.ts](frontend/app/store/cartStore.ts), [tsconfig.json](frontend/tsconfig.json) |
+|  3  | [feat: implement frontend routes and SpaController for SPA navigation and core application features](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b6e17c23374932a434e367785052491827d5c432) | [Dockerfile](docker/Dockerfile), [about.tsx](frontend/app/routes/about.tsx), [branches.tsx](frontend/app/routes/branches.tsx), [cart.tsx](frontend/app/routes/cart.tsx), [contact.tsx](frontend/app/routes/contact.tsx), [login.tsx](frontend/app/routes/login.tsx), [menu.tsx](frontend/app/routes/menu.tsx), [orders.tsx](frontend/app/routes/orders.tsx), [product_detail.tsx](frontend/app/routes/product_detail.tsx), [profile.tsx](frontend/app/routes/profile.tsx), [register.tsx](frontend/app/routes/register.tsx), [statistics.tsx](frontend/app/routes/statistics.tsx), [react-router.config.ts](frontend/react-router.config.ts), [SpaController.java](src/main/java/es/codeurjc/mokaf/controller/SpaController.java) |
+|  4  | [Merge pull request #67 from CodeURJC-DAW-2025-26/feat-SingleProductReact](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/dba680c3486e746b62411a8c63964aa9d711d414) | [app.css](frontend/app/app.css), [config.ts](frontend/app/config.ts), [menu.tsx](frontend/app/routes/menu.tsx), [product_detail.tsx](frontend/app/routes/product_detail.tsx), [vite.config.ts](frontend/vite.config.ts) |
+|  5  | [feat: add product detail route and global stylesheet with custom theme and component styles. Add paginated reviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/28db81b595a93002e223ffccb9d839037b2f2075) | [app.css](frontend/app/app.css), [product_detail.tsx](frontend/app/routes/product_detail.tsx) |
+
 
 ---
 
