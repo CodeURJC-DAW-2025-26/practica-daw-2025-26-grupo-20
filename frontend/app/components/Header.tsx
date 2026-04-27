@@ -1,12 +1,19 @@
 import { Link, NavLink, useNavigate } from "react-router";
 import { useAuthStore } from "../store/authStore";
 import { useCartStore } from "../store/cartStore";
+import { useEffect } from "react";
 import "../app_header.css";
 
 export default function Header() {
   const { isLogged, user, logout } = useAuthStore();
-  const { itemCount } = useCartStore();
+  const { itemCount, updateItemCount } = useCartStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLogged) {
+      updateItemCount();
+    }
+  }, [isLogged, updateItemCount]);
 
   const handleLogout = () => {
     logout();
@@ -52,6 +59,9 @@ export default function Header() {
               <Link to="/cart" className="account-btn cart-btn">
                 <i className="fas fa-shopping-cart"></i>
                 <span>Carrito</span>
+                {itemCount > 0 && (
+                  <span className="cart-badge">{itemCount}</span>
+                )}
               </Link>
               <button onClick={handleLogout} className="logout-mini-btn" title="Cerrar Sesión">
                 <i className="fas fa-sign-out-alt"></i>

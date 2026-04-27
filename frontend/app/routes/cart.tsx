@@ -288,7 +288,7 @@ const changeBranch = async (branchId: string) => {
         showToast(data.message || "Order placed successfully!", "success");
         setItemCount(0);
         setTimeout(() => {
-          window.location.href = "/orders";
+          window.location.href = "/new/orders";
         }, 1500);
       } else {
         showToast(data.message || "Error processing payment", "error");
