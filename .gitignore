@@ -33,6 +33,6 @@ hs_err_pid*
 
 .target
 
-docker/.env
-.env
 node_modules/*
+docker/.env
+/.env
