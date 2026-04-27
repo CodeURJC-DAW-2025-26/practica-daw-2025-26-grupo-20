@@ -752,6 +752,23 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 |  4  | [feat: authentication changes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/061194f6e92e25884c6d88de15788cdb537dbe0f#diff-c8c1b4e84b259a737eaa442dee3c84088a0234516782a29717e29ed6ec65155d) | [auth](frontend/app/store/authStore.ts) |
 |  5  | [feat: Layout working](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9bd1148d260f39bfa071682b9496fb8a9109f636) | [AdminLayout](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9bd1148d260f39bfa071682b9496fb8a9109f636/frontend/app/components/AdminLayout.tsx) |
 
+
+---
+#### **Alumno 5 - [Alexandra Cararus Verdes]**
+
+- Integración de REST utilizando JSON y pruebas con Postman en las páginas About Us, Orders y Branch.
+- Resolución y depuración de errores en la aplicación.
+- Refactorización y optimización de controladores y mappers para la API.
+- Corrección y estandarización de URLs.
+- Limpieza de código y eliminación de duplicidades.
+
+| Nº  |                                                               Commits                                                               |                                                              Files                                                              |
+| :-: | :---------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
+|  1  | [fix errors](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d49640415babfc488b49911deac048f78f367257) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  2  |   [Orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/3a55907dd7046af747bc7a822484d4ccab5446e1)   |                [AuthRestController.java](src/main/java/es/codeurjc/mokaf/api/controller/AuthRestController.java)                |
+|  3  |  [About_us](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/07322cc5b7632378addbae0adaac246a199e6e3b)  |                  [MainRestController](src/main/java/es/codeurjc/mokaf/api/controller/MainRestController.java)                   |
+|  4  |   [Branch](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303)   | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
+|  5  | [Orders Api](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4d7b98da86a1f72f266a60ff5c6aa83820672303) | [API Colection](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/api.postman_collection.json) |
 ---
 
 #### **Alumno 4 - [Nombre Completo]**
