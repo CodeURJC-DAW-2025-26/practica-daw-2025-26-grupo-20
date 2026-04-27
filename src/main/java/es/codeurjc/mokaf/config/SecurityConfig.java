@@ -156,13 +156,7 @@ public class SecurityConfig {
                                                 .requestMatchers(
                                                                 "/", "/index", "/menu", "/nosotros",
                                                                 "/branches", "/contact", "/login", "/register")
-                                                                // ==============================================================
-                                                                // TODO: FRONTEND ROLLBACK SEC - GESTIÓN PRODUCTOS TEMP
-                                                                // BYPASS
-                                                                // Borra la siguiente línea cuando tu compi termine el
-                                                                // Login
-                                                                // "/admin/gestion_menu", "/admin/gestion_menu/**")
-                                                // ==============================================================
+                                                                
                                                 .permitAll()
                                                 .requestMatchers(
                                                                 "/admin/**", "/profileADMIN", "/profileADMIN/**",
