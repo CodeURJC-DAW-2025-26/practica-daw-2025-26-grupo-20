@@ -1,4 +1,4 @@
-package es.codeurjc.mokaf.api.dto.StatsDTO;
+package es.codeurjc.mokaf.api.dto.statsdto;
 
 import java.math.BigDecimal;
 

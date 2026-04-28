@@ -19,7 +19,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       
       <div className="flex flex-col items-center gap-4">
         <span className="text-stone-400 text-[11px] font-bold uppercase tracking-[0.5em]">Vista</span>
-        <span className="text-white text-2xl font-serif italic font-bold">Página <span className="text-[#d4b88d]">{currentPage + 1}</span> de {totalPages}</span>
+        <span className="text-white text-2xl font-bold">Página <span className="text-[#d4b88d]">{currentPage + 1}</span> de {totalPages}</span>
       </div>
 
       <button 

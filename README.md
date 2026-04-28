@@ -648,7 +648,7 @@ $env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
 
 ### **Vídeo de Demostración**
 
-📹 **[Enlace al vídeo en YouTube](URL_del_video)**
+📹 **[Enlace al vídeo en YouTube](https://youtu.be/zUvoC4d9mnY)**
 
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
@@ -692,7 +692,7 @@ $env:SPRING_JPA_HIBERNATE_DDL_AUTO="none"
 
 Diagrama mostrando los componentes React, hooks personalizados, servicios y sus relaciones:
 
-![Diagrama de Componentes React](images/spa-classes-diagram.png)
+![Diagrama de Componentes React](images/spa-classes-diagram.png.png)
 
 ### **Participación de Miembros en la Práctica 3**
 
@@ -708,50 +708,80 @@ Diagrama mostrando los componentes React, hooks personalizados, servicios y sus 
 
 | Nº  | Commits                                                                                                                                                                                          | Files                                                                                                                                                                                                           |
 | :-: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  1  | [feat: Implement order confirmation emails with attached PDF invoices](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/bff00e073b448b49e29f0e21b63148ecdb6a3f713)   | [OrderEmailService.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/bff00e073b448b49e29f0e21b63148ecdb6a3f713/src/main/java/es/codeurjc/mokaf/service/OrderEmailService.java)   |
-|  2  | [feat: add dynamic product recommendations to the menu](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/ce85a6265c89b6b0e6d088db02f6bad70228325c)                   | [ProductService.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/ce85a6265c89b6b0e6d088db02f6bad70228325c/src/main/java/es/codeurjc/mokaf/service/ProductService.java)          |
-|  3  | [feat: Implement category filtering with server-side pagination and AJAX](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d349bdb812e5bec224859a88c2b56f84614ae24c) | [MenuController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/d349bdb812e5bec224859a88c2b56f84614ae24c/src/main/java/es/codeurjc/mokaf/controller/MenuController.java)       |
-|  4  | [feat: Implement a functional contact form with server-side validation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/59ebd1f6e62c4f5db3d019e5abfefe12c4d41f6d)   | [ContactController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/59ebd1f6e62c4f5db3d019e5abfefe12c4d41f6d/src/main/java/es/codeurjc/mokaf/controller/ContactController.java) |
-|  5  | [feat: Add email and password complexity validation to registration](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/e944a7042d130460bf887af4f4f5bbc219593bad)      | [AuthController.java](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/e944a7042d130460bf887af4f4f5bbc219593bad/src/main/java/es/codeurjc/mokaf/controller/AuthController.java)       |
+|  1  | [feat: add menu management route](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b5c507d) | [gestion_menu.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/b5c507d/frontend/app/routes/gestion_menu.tsx) |
+|  2  | [feat: restrict cart actions to authenticated users](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8ac1cbc) | [ProductCard.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/8ac1cbc/frontend/app/components/ProductCard.tsx) |
+|  3  | [feat: add allergen management to products](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/6261d6e) | [gestion_menu.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/6261d6e/frontend/app/routes/gestion_menu.tsx) |
+|  4  | [feat: refine product card UI and notifications](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/7aec46f) | [ProductCard.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/7aec46f/frontend/app/components/ProductCard.tsx) |
+|  5  | [refactor: update frontend typography and product detail UI](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8d1841b) | [product_detail.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/8d1841b/frontend/app/routes/product_detail.tsx) |
 
 ---
 
-#### **Alumno 2 - [Nombre Completo]**
+#### **Alumno 2 - Gonzalo Pérez Roca**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+**Responsabilidades:**
 
-| Nº  |               Commits                |           Files           |
-| :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+- Implementación de la gestión de usuarios en la SPA para administradores.
+- Integración y corrección del carrito de compra con productos.
+- Adaptación de rutas frontend y configuración Docker para servir la SPA.
+- Implementación y mejora de la página de detalle de producto en React.
+- Integración de reseñas paginadas en la vista de detalle de producto.
 
----
+| Nº  | Commits | Files |
+| :-: | :------ | :---- |
+|  1  | [feat: implement user management dashboard and navigation for administrators](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/ad3959ce7cd8fe77ff54fd6f50a90cf054555a3a) | [Header.tsx](frontend/app/components/Header.tsx), [routes.ts](frontend/app/routes.ts), [gestion_usuarios.tsx](frontend/app/routes/gestion_usuarios.tsx), [userService.ts](frontend/app/services/userService.ts) |
+|  2  | [feat: implement shopping cart functionality with product management and checkout flow](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/bfed93f0757d7bc36cb1897575e20fbe24d29cf2) | [Header.tsx](frontend/app/components/Header.tsx), [root.tsx](frontend/app/root.tsx), [cart.tsx](frontend/app/routes/cart.tsx), [product_detail.tsx](frontend/app/routes/product_detail.tsx), [cartStore.ts](frontend/app/store/cartStore.ts), [tsconfig.json](frontend/tsconfig.json) |
+|  3  | [feat: implement frontend routes and SpaController for SPA navigation and core application features](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/b6e17c23374932a434e367785052491827d5c432) | [Dockerfile](docker/Dockerfile), [about.tsx](frontend/app/routes/about.tsx), [branches.tsx](frontend/app/routes/branches.tsx), [cart.tsx](frontend/app/routes/cart.tsx), [contact.tsx](frontend/app/routes/contact.tsx), [login.tsx](frontend/app/routes/login.tsx), [menu.tsx](frontend/app/routes/menu.tsx), [orders.tsx](frontend/app/routes/orders.tsx), [product_detail.tsx](frontend/app/routes/product_detail.tsx), [profile.tsx](frontend/app/routes/profile.tsx), [register.tsx](frontend/app/routes/register.tsx), [statistics.tsx](frontend/app/routes/statistics.tsx), [react-router.config.ts](frontend/react-router.config.ts), [SpaController.java](src/main/java/es/codeurjc/mokaf/controller/SpaController.java) |
+|  4  | [Merge pull request #67 from CodeURJC-DAW-2025-26/feat-SingleProductReact](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/dba680c3486e746b62411a8c63964aa9d711d414) | [app.css](frontend/app/app.css), [config.ts](frontend/app/config.ts), [menu.tsx](frontend/app/routes/menu.tsx), [product_detail.tsx](frontend/app/routes/product_detail.tsx), [vite.config.ts](frontend/vite.config.ts) |
+|  5  | [feat: add product detail route and global stylesheet with custom theme and component styles. Add paginated reviews](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/28db81b595a93002e223ffccb9d839037b2f2075) | [app.css](frontend/app/app.css), [product_detail.tsx](frontend/app/routes/product_detail.tsx) |
 
-#### **Alumno 3 - [Nombre Completo]**
-
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
-
-| Nº  |               Commits                |           Files           |
-| :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
 
 ---
 
-#### **Alumno 4 - [Nombre Completo]**
+#### **Alumno 3 - [Guillermo Blázquez Barbacid]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+
+- Implementación de las paginas de perfil, de usuario y admin.
+- Implementacion de la pagina lde login y registro.
+- Implementacion de la parte de seguridad de rutas.
 
 | Nº  |               Commits                |           Files           |
 | :-: | :----------------------------------: | :-----------------------: |
-|  1  | [Descripción commit 1](URL_commit_1) | [Archivo1](URL_archivo_1) |
-|  2  | [Descripción commit 2](URL_commit_2) | [Archivo2](URL_archivo_2) |
-|  3  | [Descripción commit 3](URL_commit_3) | [Archivo3](URL_archivo_3) |
-|  4  | [Descripción commit 4](URL_commit_4) | [Archivo4](URL_archivo_4) |
-|  5  | [Descripción commit 5](URL_commit_5) | [Archivo5](URL_archivo_5) |
+|  1  | [FEAT: created User page, with his menues, orders doesnt work](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8f3e0574712fb7cec8b58360bb7da59e4e7a0001) | [profile_admin](frontend/app/routes/profile_admin.tsx) |
+|  2  | [Feat: working routes, now register a user](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/5ac49f52d835729f44542aa42a671b6ffa2422d7) | [root](frontend/app/root.tsx) |
+|  3  | [feat: login y registro actualizado](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/06c918aaad8ec6c59d92571d93b00dae4ac9738f) | [login](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/06c918aaad8ec6c59d92571d93b00dae4ac9738f/frontend/app/routes/login.tsx) |
+|  4  | [feat: authentication changes](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/061194f6e92e25884c6d88de15788cdb537dbe0f#diff-c8c1b4e84b259a737eaa442dee3c84088a0234516782a29717e29ed6ec65155d) | [auth](frontend/app/store/authStore.ts) |
+|  5  | [feat: Layout working](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9bd1148d260f39bfa071682b9496fb8a9109f636) | [AdminLayout](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/9bd1148d260f39bfa071682b9496fb8a9109f636/frontend/app/components/AdminLayout.tsx) |
+
+
+---
+#### **Alumno 4 - [Alexandra Cararus Verdes]**
+
+- Implementación de la página Branches con React
+- Implementación de la página Orders con React
+- Implementación de la página About con React
+- Corrección del archivo config.ts para la correcta visualización del proyecto
+- Subida del vídeo a YouTube con sus correspondientes comentarios
+
+| Nº  |               Commits                |           Files           |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [Create about.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/d8d1c03515872fdab3b0cdd4f4cefd11ae704458) | [about.txs](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/about.tsx) |
+|  2  | [Create orders](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/703e7f483a42f4fdc23f97304edc421f570445ab) | [orders.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/orders.tsx) |
+|  3  | [refactor code](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/8b6c7ac174984b656e50327865a92848a5d4f6c2) | [orders.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/orders.tsx) |
+|  4  | [Update confi.ts](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/e74949e1522a274e8574955d7d408432f03b831e) | [confi.ts](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/config.ts) |
+|  5  | [Create Branches](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4af45cb81f77472554d0f1ee7399c42b779c00fd) | [branches.tsx](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/blob/develop/frontend/app/routes/branches.tsx) |
+---
+
+#### **Alumno 5 - [Elinee Nathalie Freites Muñoz]**
+
+- Implementación de Statistics en frontend.
+- Implementación de Cart (carrito) en frontend.
+- Implementación del Global Spinner ante peticiones REST.
+- Grabación de video
+
+| Nº  |               Commits                |           Files           |
+| :-: | :----------------------------------: | :-----------------------: |
+|  1  | [First Cart Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/9d1ca476cbf8bb3826c5db3bf3a8293bc8f59857) | [UseCart.tsx‎](frontend/app/components/Cart/UseCart.tsx) |
+|  2  | [Second Cart Implementation](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/4b3ee1b8e7bb2693307dbf729a2979d7930391b8) | [cart.types.ts](frontend/app/types/cart.types.ts) |
+|  3  | [Checkout order function](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/56652ef8d0f285183156d55595af567d0224843a) | [cart.tsx](frontend/app/routes/cart.tsx) |
+|  4  | [Statistics first implementation on front](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/cc7af14709656a7d55f07a04478e3b31b07353ec) | [‎statistics.tsx](‎frontend/app/routes/statistics.tsx) |
+|  5  | [Changing statistics and adding DTO for better organization](https://github.com/CodeURJC-DAW-2025-26/practica-daw-2025-26-grupo-20/commit/55e9cf1f6614a84cd3d4ca61859984bcdcbf55bd) | [statistics.tsx](frontend/app/routes/statistics.tsx) |

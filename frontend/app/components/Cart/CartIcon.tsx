@@ -30,7 +30,7 @@ export function CartIcon() {
 
     fetchCartCount();
     
-    // Escuchar eventos de actualización del carrito
+    // Listen for cart update events
     window.addEventListener('cart-updated', fetchCartCount);
     return () => window.removeEventListener('cart-updated', fetchCartCount);
   }, [isLogged]);

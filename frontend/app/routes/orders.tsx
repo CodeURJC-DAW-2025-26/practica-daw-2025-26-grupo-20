@@ -3,132 +3,265 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function loader({ request }: { request: Request }) {
+export async function clientLoader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const page = url.searchParams.get("page") || "0";
-  
-  const response = await fetch(`${API_BASE_URL}/api/v1/orders?page=${page}&size=10`, {
-    credentials: "include"
-  });
-  
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/orders?page=${page}&size=10`,
+    { credentials: "include" }
+  );
+
   if (response.status === 401) return { isUnauthorized: true };
   if (!response.ok) return { orders: { content: [] } };
-  
+
   const orders = await response.json();
   return { orders };
 }
 
 export default function Orders() {
-  const { orders, isUnauthorized } = useLoaderData<typeof loader>();
-  const { isLogged } = useAuthStore();
+  const { orders, isUnauthorized } = useLoaderData<typeof clientLoader>();
+  const { isLogged, user } = useAuthStore();
+  const isAdmin = user?.role === "ADMIN";
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isUnauthorized || !isLogged) {
-      navigate("/login");
-    }
+    if (isUnauthorized || !isLogged) navigate("/login");
   }, [isUnauthorized, isLogged, navigate]);
 
-  if (!orders || orders.content?.length === 0) {
+  const toEuro = (val: any): string => {
+    const n = parseFloat(val);
+    return isNaN(n) ? "0.00" : n.toFixed(2);
+  };
+
+  const formatDate = (dateStr: string | undefined) => {
+    if (!dateStr) return "";
+    try {
+      const clean = dateStr.split(".")[0];
+      return new Date(clean).toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const formatTime = (dateStr: string | undefined) => {
+    if (!dateStr) return "";
+    try {
+      const clean = dateStr.split(".")[0];
+      return new Date(clean).toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "";
+    }
+  };
+
+  if (!orders || !orders.content || orders.content.length === 0) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-4 bg-stone-50 animate-fade-in">
-        <div className="w-24 h-24 bg-stone-100 rounded-[2rem] flex items-center justify-center text-stone-200 text-4xl mb-8">
-           <i className="fas fa-box-open"></i>
-        </div>
-        <h2 className="text-2xl font-black text-stone-800 uppercase tracking-tight mb-2">No se encontraron pedidos</h2>
-        <p className="text-stone-400 font-bold text-xs uppercase tracking-widest mb-10 italic">Aún no has realizado ninguna compra en Mokaf</p>
-        <Link to="/menu" className="bg-amber-800 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-amber-900 transition-all shadow-xl shadow-amber-900/20">Empezar a Comprar</Link>
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+        <i className="fas fa-shopping-bag text-4xl text-stone-500 mb-4"></i>
+        <h3 className="text-xl font-semibold text-stone-400 mb-2">No tienes pedidos aún</h3>
+        <p className="text-stone-500 mb-6">Cuando realices tu primer pedido, aparecerá aquí</p>
+        <Link
+          to="/menu"
+          className="px-6 py-2 bg-[#d4b88d] text-[#050404] font-semibold rounded hover:bg-[#c4a87d] transition-colors"
+        >
+          Ver Menú
+        </Link>
       </div>
     );
   }
 
+  // spring pagination data
+  const currentPage: number = orders.number ?? 0;
+  const totalPages: number = orders.totalPages ?? 1;
+  const isFirst: boolean = orders.first ?? true;
+  const isLast: boolean = orders.last ?? true;
+
+  const goToPage = (page: number) => {
+    navigate(`/orders?page=${page}`);
+  };
+
   return (
-    <div className="container mx-auto px-4 py-20 max-w-6xl animate-fade-in">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-        <div className="space-y-2">
-           <h1 className="text-5xl font-black text-stone-800 uppercase tracking-tight">Historial de Pedidos</h1>
-           <p className="text-stone-400 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-3">
-              <i className="fas fa-history text-amber-800"></i>
-              Tus experiencias en Mokaf
-           </p>
-        </div>
-        <div className="bg-stone-100 px-6 py-3 rounded-2xl border border-stone-200">
-           <span className="text-[10px] font-black uppercase tracking-widest text-stone-500">Total Pedidos: <span className="text-stone-800">{orders.totalElements}</span></span>
-        </div>
+    <div className="container mx-auto px-4 py-12 max-w-5xl">
+
+      
+      <div className="text-center mb-10">
+      <h1 className="text-3xl page-title-golden">
+         Historial de Pedidos
+       </h1>
+       <div className="w-16 h-px bg-[#d4b88d]/40 mx-auto mt-3"></div>
       </div>
 
-      <div className="grid gap-8">
+     
+      <div className="flex flex-col gap-6">
         {orders.content.map((order: any) => (
-          <div key={order.id} className="group bg-white rounded-[2.5rem] p-8 md:p-10 border border-stone-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
-            <div className="flex flex-col md:flex-row justify-between gap-10">
-              {/* Order Info */}
-              <div className="space-y-6 flex-grow">
-                <div className="flex items-center gap-4">
-                   <div className="w-14 h-14 bg-stone-900 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
-                      <i className="fas fa-receipt"></i>
-                   </div>
-                   <div>
-                      <h3 className="text-xl font-black text-stone-800 uppercase tracking-tighter">Pedido #{order.id}</h3>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-stone-400">{order.createdAtFormatted}</p>
-                   </div>
+          <div
+            key={order.id}
+            className="bg-white rounded-2xl shadow-sm overflow-hidden border border-stone-200"
+          >
+            {/* Card Header */}
+            <div className="bg-white border-b border-stone-200 px-6 py-4">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex-1 min-w-[150px]">
+                  <h5 className="font-bold text-stone-800 flex items-center gap-2">
+                    <i className="fas fa-receipt text-blue-500"></i>
+                    Pedido #{order.id}
+                  </h5>
                 </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                   <div className="space-y-1">
-                      <p className="text-[8px] font-black uppercase tracking-widest text-stone-300">Estado</p>
-                      <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                         order.status === 'PAID' ? 'bg-green-100 text-green-700' : 
-                         order.status === 'CART' ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-700'
-                      }`}>
-                         {order.status}
-                      </span>
-                   </div>
-                   <div className="space-y-1">
-                      <p className="text-[8px] font-black uppercase tracking-widest text-stone-300">Sucursal de Recogida</p>
-                      <p className="text-xs font-black text-stone-700 uppercase">{order.branch?.name || 'Central'}</p>
-                   </div>
-                   <div className="space-y-1">
-                      <p className="text-[8px] font-black uppercase tracking-widest text-stone-300">Items</p>
-                      <p className="text-xs font-black text-stone-700 uppercase">{order.items?.length || 0} Productos</p>
-                   </div>
+
+                <div className="flex-1 min-w-[150px]">
+                  <p className="text-stone-500 text-sm flex items-center gap-2">
+                    <i className="fas fa-calendar"></i>
+                    <strong className="text-stone-700">Fecha:</strong>{" "}
+                    {formatDate(order.createdAt)}
+                  </p>
+                </div>
+
+                <div className="flex-1 min-w-[150px]">
+                  {isAdmin ? (
+                    <p className="text-stone-500 text-sm flex items-center gap-2">
+                      <i className="fas fa-user"></i>
+                      <strong className="text-stone-700">Cliente:</strong>{" "}
+                      {order.userEmail}
+                    </p>
+                  ) : (
+                    <p className="text-stone-500 text-sm flex items-center gap-2">
+                      <i className="fas fa-clock"></i>
+                      <strong className="text-stone-700">Hora:</strong>{" "}
+                      {formatTime(order.createdAt)}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <span className={`inline-block text-sm font-semibold px-3 py-1 rounded-full ${
+                    order.status === "PAID"
+                      ? "bg-green-100 text-green-700"
+                      : order.status === "CART"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : order.status === "CANCELLED"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-stone-100 text-stone-600"
+                  }`}>
+                    {order.status === "PAID"
+                      ? "Completado"
+                      : order.status === "CART"
+                      ? "Carrito"
+                      : order.status === "CANCELLED"
+                      ? "Cancelado"
+                      : order.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card Body */}
+            <div className="px-6 py-5">
+              
+              <div className="mb-4">
+                <h6 className="font-bold text-stone-800 mb-1 flex items-center gap-2">
+                  <i className="fas fa-map-marker-alt text-red-500"></i>Sucursal
+                </h6>
+                <p className="text-stone-500 text-sm ml-6">{order.branchName}</p>
+              </div>
+
+              
+              <div className="mb-4">
+                <h6 className="font-bold text-stone-800 mb-3 flex items-center gap-2">
+                  <i className="fas fa-shopping-bag"></i>Productos
+                </h6>
+                <div className="overflow-x-auto ml-6">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-stone-50 text-stone-600">
+                        <th className="text-left py-2 px-3 font-semibold">Producto</th>
+                        <th className="text-left py-2 px-3 font-semibold">Cantidad</th>
+                        <th className="text-right py-2 px-3 font-semibold">Precio Unit.</th>
+                        <th className="text-right py-2 px-3 font-semibold">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(order.items ?? []).map((item: any) => (
+                        <tr key={item.id} className="border-b border-stone-100 last:border-0">
+                          <td className="py-2 px-3 text-stone-700">{item.productName}</td>
+                          <td className="py-2 px-3 text-stone-700">{item.quantity}</td>
+                          <td className="py-2 px-3 text-right text-stone-700">{toEuro(item.finalUnitPrice)}€</td>
+                          <td className="py-2 px-3 text-right text-stone-700">{toEuro(item.lineTotal)}€</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              {/* Price & Action */}
-              <div className="flex flex-col justify-between items-end border-l border-stone-100 pl-10">
-                <div className="text-right">
-                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-stone-300 mb-1">Monto Total</p>
-                   <p className="text-4xl font-black text-amber-800 italic">{order.totalPrice.toFixed(2)}€</p>
+          
+              <div className="flex justify-end">
+                <div className="bg-blue-50 rounded-xl px-6 py-3 text-right">
+                  <p className="font-bold text-stone-800 text-lg">
+                    <i className="fas fa-euro-sign mr-2"></i>
+                    Total: {toEuro(order.totalAmount)}€
+                  </p>
                 </div>
-                <button className="bg-stone-50 hover:bg-stone-900 border border-stone-200 hover:border-stone-900 text-stone-400 hover:text-white w-14 h-14 rounded-2xl transition-all flex items-center justify-center">
-                   <i className="fas fa-chevron-right"></i>
-                </button>
               </div>
-            </div>
-            
-            {/* Items Preview */}
-            <div className="mt-10 pt-10 border-t border-stone-50 flex flex-wrap gap-4">
-               {order.items?.slice(0, 5).map((item: any) => (
-                  <div key={item.id} className="relative group/item">
-                     <img 
-                        src={item.productImageUrl ? `${API_BASE_URL}${item.productImageUrl}` : "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=100"} 
-                        alt="Product" 
-                        className="w-12 h-12 rounded-xl object-cover border-2 border-white shadow-md group-hover/item:scale-110 transition-transform"
-                     />
-                     <div className="absolute -top-2 -right-2 bg-amber-800 text-white w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shadow-lg">
-                        {item.quantity}
-                     </div>
-                  </div>
-               ))}
-               {order.items?.length > 5 && (
-                  <div className="w-12 h-12 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-[10px] font-black text-stone-400 uppercase tracking-tighter">
-                     +{order.items.length - 5}
-                  </div>
-               )}
             </div>
           </div>
         ))}
       </div>
+
+     //Pagination
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-10">
+          <nav className="flex items-center bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+            {/* Anterior */}
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={isFirst}
+              className={`px-4 py-2 text-sm font-medium border-r border-stone-200 transition-colors ${
+                isFirst
+                  ? "text-stone-300 cursor-not-allowed"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+            >
+              Anterior
+            </button>
+
+            
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => goToPage(i)}
+                className={`px-4 py-2 text-sm font-medium border-r border-stone-200 transition-colors ${
+                  i === currentPage
+                    ? "bg-blue-600 text-white"
+                    : "text-blue-600 hover:bg-blue-50"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+   
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={isLast}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${
+                isLast
+                  ? "text-stone-300 cursor-not-allowed"
+                  : "text-blue-600 hover:bg-blue-50"
+              }`}
+            >
+              Siguiente
+            </button>
+          </nav>
+        </div>
+      )}
+
     </div>
   );
 }

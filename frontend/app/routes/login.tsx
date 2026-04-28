@@ -3,132 +3,217 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { API_BASE_URL } from "../config";
 
-export async function action({ request }: { request: Request }) {
+
+export async function clientAction({ request }: { request: Request }) {
   try {
     const formData = await request.formData();
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const intent = formData.get("intent") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    const response = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
+    if (intent === "login") {
+      const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!response.ok) {
-      return { error: "Credenciales incorrectas. Inténtalo de nuevo." };
+      if (!loginResponse.ok) {
+        return { error: "Credenciales incorrectas. Inténtalo de nuevo.", form: "login" };
+      }
+
+      const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+        credentials: "include",
+      });
+
+      if (!meResponse.ok) {
+        return { error: "Login correcto pero no se pudo obtener el perfil.", form: "login" };
+      }
+
+      const user = await meResponse.json();
+      return { success: true, user, action: "login" };
+
+    } else if (intent === "register") {
+      const name = formData.get("name") as string;
+      
+      // Client validation
+      const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+
+      if (!name?.trim()) return { error: "El nombre es obligatorio.", form: "register" };
+      if (!emailRegex.test(email)) return { error: "El formato del email no es válido.", form: "register" };
+      if (password.length < 6) return { error: "La contraseña debe tener al menos 6 caracteres.", form: "register" };
+      if (!passwordRegex.test(password)) return { error: "La contraseña debe contener letras y números.", form: "register" };
+
+      const registerResponse = await fetch(`${API_BASE_URL}/api/v1/auth/registrations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!registerResponse.ok) {
+        const errorData = await registerResponse.json().catch(() => ({}));
+        return { error: errorData.message || "No se pudo crear la cuenta.", form: "register" };
+      }
+
+      // Auto-login after register
+      const loginResponse = await fetch(`${API_BASE_URL}/api/v1/auth/sessions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (loginResponse.ok) {
+        const meResponse = await fetch(`${API_BASE_URL}/api/v1/users/me`, { credentials: "include" });
+        if (meResponse.ok) {
+          const user = await meResponse.json();
+          return { success: true, user, action: "register" };
+        }
+      }
+      return { success: true, action: "register", message: "Cuenta creada. Por favor, inicia sesión." };
     }
-
-    const data = await response.json();
-    return { success: true, user: data.user };
-  } catch (error) {
-    console.error("Login error:", error);
+  } catch (err) {
+    console.error("Auth error:", err);
     return { error: "Error de conexión con el servidor." };
   }
 }
 
-export default function Login() {
-  const actionData = useActionData<typeof action>();
-  const setUser = useAuthStore(state => state.setUser);
+export default function Auth() {
+  const actionData = useActionData<typeof clientAction>();
+  const setUser = useAuthStore((state) => state.setUser);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (actionData?.success && actionData.user) {
       setUser(actionData.user);
-      navigate("/menu");
+      navigate(actionData.user.role === "ADMIN" ? "/profile-admin" : "/menu", { replace: true });
     }
   }, [actionData, setUser, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050404] px-4 py-20 animate-fade-in relative overflow-hidden">
-      
-      {/* Premium Background Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#d4b88d]/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#d4b88d]/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2"></div>
-      
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none">
-        <i className="fas fa-mug-hot text-[600px] text-white -rotate-12"></i>
-      </div>
-
-      <div className="w-full max-w-lg relative z-10 p-4">
-        {/* Boutique Login Frame */}
-        <div className="bg-[#080707] border border-[#d4b88d]/10 rounded-[3rem] p-10 md:p-16 shadow-[0_40px_100px_rgba(0,0,0,0.8)] backdrop-blur-3xl flex flex-col items-center relative overflow-hidden">
-          
-          {/* Subtle frame glow */}
-          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#d4b88d]/30 to-transparent"></div>
-
-          <Link to="/" className="mb-12 group transition-all duration-700">
-             <div className="w-24 h-24 bg-[#0c0b0b] border border-[#d4b88d]/20 rounded-[2.5rem] flex items-center justify-center text-[#d4b88d] text-4xl shadow-2xl group-hover:bg-[#d4b88d] group-hover:text-black group-hover:scale-110 transition-all duration-700">
-               <i className="fas fa-mug-hot"></i>
-             </div>
-          </Link>
-          
-          <div className="text-center mb-16 space-y-4">
-            <h1 className="text-4xl md:text-5xl font-serif text-[#d4b88d] italic tracking-tighter drop-shadow-sm">Bienvenido</h1>
-            <p className="text-stone-500 font-bold text-[10px] uppercase tracking-[0.5em] italic">Café de especialidad en cada taza</p>
-          </div>
-
-          {actionData?.error && (
-            <div className="w-full bg-red-500/10 border border-red-500/30 text-red-400 p-6 rounded-2xl mb-12 flex items-center gap-4 animate-shake">
-              <i className="fas fa-exclamation-circle text-lg"></i>
-              <p className="text-[11px] font-bold uppercase tracking-widest">{actionData.error}</p>
-            </div>
-          )}
-
-          <Form method="post" className="w-full space-y-10">
-            <div className="space-y-4">
-              <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-600 ml-6">Email</label>
-              <div className="relative group">
-                <i className="fas fa-envelope absolute left-8 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-[#d4b88d] transition-colors"></i>
-                <input 
-                  name="email" 
-                  type="email" 
-                  required 
-                  placeholder="tu@esencia.com"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-[2rem] px-16 py-6 focus:bg-white/[0.05] focus:border-[#d4b88d] outline-none transition-all text-white placeholder:text-stone-800 font-light tracking-wide lg:text-lg" 
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between items-center px-6">
-                <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-600">Contraseña</label>
-                <Link to="/forgot-password" hidden className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#d4b88d]/50 hover:text-[#d4b88d] hover:underline transition-all">Recuperar</Link>
-              </div>
-              <div className="relative group">
-                <i className="fas fa-lock absolute left-8 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-[#d4b88d] transition-colors"></i>
-                <input 
-                  name="password" 
-                  type="password" 
-                  required 
-                  placeholder="••••••••"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-[2rem] px-16 py-6 focus:bg-white/[0.05] focus:border-[#d4b88d] outline-none transition-all text-white placeholder:text-stone-800 font-light lg:text-lg"
-                />
-              </div>
-            </div>
-
-            <button type="submit" className="w-full group relative h-20 bg-transparent border border-[#d4b88d]/30 rounded-[2rem] overflow-hidden shadow-2xl active:scale-95 transition-all mt-10">
-              <div className="absolute inset-0 bg-[#d4b88d] translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
-              <div className="relative z-10 flex items-center justify-center gap-4 text-[#d4b88d] group-hover:text-black font-black uppercase tracking-[0.4em] text-[11px] transition-colors duration-700">
-                <span>Acceder a Mokaf</span>
-                <i className="fas fa-chevron-right text-[10px] group-hover:translate-x-2 transition-transform"></i>
-              </div>
-            </button>
-          </Form>
-
-          <div className="mt-20 text-center space-y-6">
-            <p className="text-stone-600 text-[10px] font-bold uppercase tracking-[0.4em]">¿Sin cuenta todavía?</p>
-            <Link to="/register" className="inline-block text-[#d4b88d] hover:text-white font-bold uppercase text-[12px] tracking-[0.25em] transition-all border-b border-[#d4b88d]/30 hover:border-white pb-2">
-              Regístrate aquí
-            </Link>
-          </div>
+    <div className="container py-5">
+      <div 
+        className="card mx-auto shadow-lg rounded-3"
+        style={{ 
+          backgroundColor: "#1c1c1c", 
+          border: "1px solid #c6a87d",
+          maxWidth: "1000px"
+        }}
+      >
+        {/* Main Title */}
+        <div className="text-center py-4 border-bottom border-secondary border-opacity-25">
+          <h1 className="h3 mb-0" style={{ color: "#c6a87d", fontWeight: "400", letterSpacing: "1px" }}>
+            Login o Registro
+          </h1>
         </div>
 
-        <div className="mt-16 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-stone-800">
-            &copy; 2026 Mokaf Specialty Coffee
-          </p>
+        <div className="card-body p-4 p-md-5">
+          <div className="row g-5 position-relative">
+            {/* Login Column */}
+            <div className="col-md-6 pe-md-5">
+              <h2 className="h4 mb-4" style={{ color: "#c6a87d", borderBottom: "1px solid #c6a87d", display: "inline-block", paddingBottom: "5px" }}>
+                Login
+              </h2>
+              
+              {actionData?.error && actionData.form === "login" && (
+                <div className="alert alert-danger py-2 px-3 mb-4 border-0 rounded-0" style={{ backgroundColor: "rgba(220, 53, 69, 0.1)", color: "#ff9a9a", fontSize: "0.85rem" }}>
+                  {actionData.error}
+                </div>
+              )}
+
+              <Form method="post" className="mt-4">
+                <input type="hidden" name="intent" value="login" />
+                <div className="mb-4">
+                  <label className="form-label d-block mb-2 text-white opacity-75" style={{ fontSize: "0.8rem" }}>Email</label>
+                  <input
+                    name="email" type="email" required placeholder="Tu email"
+                    className="form-control border-secondary border-opacity-50 text-white"
+                    style={{ backgroundColor: "#2d2d2d", fontSize: "0.9rem", padding: "0.6rem 1rem" }}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="form-label d-block mb-2 text-white opacity-75" style={{ fontSize: "0.8rem" }}>Contraseña</label>
+                  <input
+                    name="password" type="password" required placeholder="Tu contraseña"
+                    className="form-control border-secondary border-opacity-50 text-white"
+                    style={{ backgroundColor: "#2d2d2d", fontSize: "0.9rem", padding: "0.6rem 1rem" }}
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn btn-primary w-100 py-2 mt-2 rounded-2"
+                  style={{ backgroundColor: "#0d6efd", border: "none", fontWeight: "500" }}
+                >
+                  Login
+                </button>
+              </Form>
+            </div>
+
+            {/* Vertical Separator (Desktop only) */}
+            <div className="d-none d-md-block position-absolute start-50 top-0 bottom-0 p-0" style={{ width: "1px", backgroundColor: "rgba(255,255,255,0.1)", transform: "translateX(-50%)" }}></div>
+
+            {/* Register Column */}
+            <div className="col-md-6 ps-md-5">
+              <h2 className="h4 mb-4" style={{ color: "#c6a87d", borderBottom: "1px solid #c6a87d", display: "inline-block", paddingBottom: "5px" }}>
+                Registro
+              </h2>
+
+              {actionData?.error && actionData.form === "register" && (
+                <div className="alert alert-danger py-2 px-3 mb-4 border-0 rounded-0" style={{ backgroundColor: "rgba(220, 53, 69, 0.1)", color: "#ff9a9a", fontSize: "0.85rem" }}>
+                  {actionData.error}
+                </div>
+              )}
+
+              {actionData?.success && actionData.action === "register" && actionData.message && (
+                <div className="alert alert-success py-2 px-3 mb-4 border-0 rounded-0" style={{ backgroundColor: "rgba(25, 135, 84, 0.1)", color: "#a3d977", fontSize: "0.85rem" }}>
+                  {actionData.message}
+                </div>
+              )}
+
+              <Form method="post" className="mt-4">
+                <input type="hidden" name="intent" value="register" />
+                <div className="mb-4">
+                  <label className="form-label d-block mb-2 text-white opacity-75" style={{ fontSize: "0.8rem" }}>Nombre completo</label>
+                  <input
+                    name="name" type="text" required placeholder="Tu nombre completo"
+                    className="form-control border-secondary border-opacity-50 text-white"
+                    style={{ backgroundColor: "#2d2d2d", fontSize: "0.9rem", padding: "0.6rem 1rem" }}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="form-label d-block mb-2 text-white opacity-75" style={{ fontSize: "0.8rem" }}>Email</label>
+                  <input
+                    name="email" type="email" required placeholder="Tu email"
+                    className="form-control border-secondary border-opacity-50 text-white"
+                    style={{ backgroundColor: "#2d2d2d", fontSize: "0.9rem", padding: "0.6rem 1rem" }}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="form-label d-block mb-2 text-white opacity-75" style={{ fontSize: "0.8rem" }}>Contraseña</label>
+                  <input
+                    name="password" type="password" required minLength={6} placeholder="Mín. 4 caracteres"
+                    className="form-control border-secondary border-opacity-50 text-white"
+                    style={{ backgroundColor: "#2d2d2d", fontSize: "0.9rem", padding: "0.6rem 1rem" }}
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn btn-success w-100 py-2 mt-2 rounded-2"
+                  style={{ backgroundColor: "#198754", border: "none", fontWeight: "500" }}
+                >
+                  Registrarse
+                </button>
+              </Form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

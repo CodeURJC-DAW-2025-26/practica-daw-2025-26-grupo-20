@@ -1,31 +1,36 @@
-# Etapa 1: Compilación (Build)
-# Utilizamos una imagen con Maven y JDK 21 para compilar el proyecto
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+# Etapa 1: Construcción del Frontend
+FROM node:22-alpine AS frontend-builder
+WORKDIR /frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
 
-# Select working Directory
+# Etapa 2: Compilación del Backend
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /project
 
-# copy pom.xml and download dependencies
-COPY ../pom.xml .
+# Cache de dependencias
+COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# copy source code
+# Código fuente y recursos
 COPY src ./src
 
-# run mvn
-RUN mvn clean package -DskipTests
+# Integración del Frontend: Copiamos el build a static/new ANTES del package
+# Eliminamos cualquier rastro anterior para evitar conflictos
+RUN rm -rf src/main/resources/static/new && mkdir -p src/main/resources/static/new
+COPY --from=frontend-builder /frontend/build/client/ src/main/resources/static/new/
 
-#image for run no jdk or mvn 
+# Compilamos el JAR final (sin clean para no borrar lo copiado arriba si hay plugins raros)
+RUN mvn package -DskipTests
+
+# Etapa 3: Imagen Final
 FROM eclipse-temurin:21-jre-alpine
-
-#select working directory
 WORKDIR /app
 
-# copy jar file
+# Copiamos el JAR (siendo específicos con el nombre que genera Maven normalmente)
 COPY --from=builder /project/target/*.jar app.jar
 
-# Expose port
 EXPOSE 8443
-
-#  command to run
 ENTRYPOINT ["java", "-jar", "app.jar"]

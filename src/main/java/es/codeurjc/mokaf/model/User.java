@@ -49,8 +49,7 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    // IMPORTANTE: quito updatable=false para no cerrar puertas (si de verdad lo
-    // queréis fijo, lo volvéis a poner)
+
     @Column(name = "first_name", length = 120)
     private String firstName;
 
